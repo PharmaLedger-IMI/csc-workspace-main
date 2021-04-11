@@ -1,6 +1,6 @@
 # UC2 csc-workspace-main
 
-*csc-workspace-main*  bundles all the necessary dependencies for building and running Finished Goods Traceability SSApps in a single package.
+*csc-workspace-main*  bundles all the necessary dependencies for building and running Clinical Supply Chain SSApps in a single package.
 
 ( This workspace was originally forked from the https://github.com/PharmaLedger-IMI/epi-workspace )
 
@@ -15,13 +15,13 @@ You need NodeJS version 12.
 ### Step 1: Clone the workspace
 
 ```sh
-$ git clone https://github.com/PharmaLedger-IMI/fgt-workspace.git
+$ git clone https://github.com/PharmaLedger-IMI/csc-workspace-main.git
 ```
 
 After the repository was cloned, you must install all the dependencies.
 
 ```sh
-$ cd fgt-workspace
+$ cd csc-workspace-main
 #Important: If you plan to contribute to the project and/or dependecies please set DEV:true
 #in the file env.json before you run the installation!
 $ npm install
@@ -30,7 +30,7 @@ $ npm install
 
 ### Step 2: Launch the "server"
 
-While in the *fgt-workspace* folder run:
+While in the *csc-workspace-main* folder run:
 
 ```sh
 $ npm run server
@@ -43,10 +43,10 @@ At the end of this command you get something similar to:
 
 ### Step 3: Build all things needed for the application to run.
 
-Open a new console inside *fgt-workspace* folder and run:
+Open a new console inside *csc-workspace-main* folder and run:
 
 ```sh
-# Note: Run this in a new console inside "fgt-workspace" folder
+# Note: Run this in a new console inside "csc-workspace-main" folder
 $ npm run build-all
 ```
 
@@ -55,15 +55,19 @@ $ npm run build-all
 ## Running 
 To run the application launch your browser (preferably Chrome) in Incognito mode and access the http://localhost:8080 link.
 
-### MAH Enterprise wallet
+### Sponsor wallet
 
 TODO
 
-### Wholesaler Enterprise wallet
+### Contract Manufacturing Operations wallet
 
 TODO
 
-### Pharmacy Enterprise wallet
+### Courier wallet
+
+TODO
+
+### Clinical Site wallet
 
 TODO
 
@@ -121,18 +125,21 @@ mobile/scan-app/android/app/build/outputs/apk/release
     * external-volume: configs directory;
     * internal-volume: volume folder (brick storage). contains the several configured domains
     * wallet patch folders: the folders contain, in the wallet-patch folder and for each case, the custom 'behaviour' that is added to the template folder:
-        * fgt-mah-wallet/wallet-patch;
-        * fgt-pharmacy-wallet/wallet-patch;
-        * fgt-wholesaler-wallet/wallet-patch;
-* fgt-dsu-wizard: based on gtin-dsu-wizard
-* fgt-mah-wallet
-* fgt-pharmacy-wallet
-* fgt-wholesaler-wallet
+        * csc-sponsor-wallet/wallet-patch;
+        * csc-cmo-wallet/wallet-patch;
+        * csc-courier-wallet/wallet-patch;
+        * csc-site-wallet/wallet-patch;
+* csc-dsu-wizard: based on gtin-dsu-wizard
+* csc-sponsor-wallet
+* csc-cmo-wallet
+* csc-courier-wallet
+* csc-site-wallet
     * Wallets for each one of the actors
 * trust-loader-config: custom config to override the wallet loader default ones for each case:
-    * fgt-mah-fabric-wallet/loader;
-    * fgt-pharmacy-fabric-wallet/loader;
-    * fgt-wholesaler-fabric-wallet/loader;
+    * csc-sponsor-fabric-wallet/loader;
+    * csc-cmo-fabric-wallet/loader;
+    * csc-courier-fabric-wallet/loader;
+    * csc-site-wallet/loader;
 
 ### post install (after running npm install)
 
@@ -148,12 +155,15 @@ mobile/scan-app/android/app/build/outputs/apk/release
 * Use case related:
     * Apihub-root: Folder changes:
         * wallet loaders: clones the loader into each of the wallets:
-            * fgt-mah-wallet/loader;
-            * fgt-pharmacy-wallet/loader;
-            * fgt-wholesaler wallet/loader;
-    * fgt-mah-ssapp: The application for the Mah;
-    * fgt-pharmacy-ssapp: The application for the pharmacy;
-    * fgt-wholesaler-ssapp: The application for the wholesaler;
+            * csc-sponsor-fabric-wallet/loader;
+            * csc-cmo-fabric-wallet/loader;
+            * csc-courier-fabric-wallet/loader;
+            * csc-site-wallet/loader;
+
+    * fgt-sponsor-ssapp: The application for the sponsor;
+    * fgt-cmo-ssapp: The application for the CMO;
+    * fgt-courier-ssapp: The application for the courier;
+    * fgt-site-ssapp: The application for the clinical site;
     * gtin-dsu-wizard: the ssapp the creates GTIN based DSUs. *Cloned from epi*;
     * gtin-resolver: the 'library' to resolve gtin+batchs to dsus. *Cloned from epi*;
 
