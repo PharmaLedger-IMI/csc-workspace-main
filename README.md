@@ -161,7 +161,7 @@ mobile/scan-app/android/app/build/outputs/apk/release
             * csc-site-wallet/loader;
 
     * fgt-sponsor-ssapp: The application for the sponsor;
-    * fgt-cmo-ssapp: The application for the CMO;
+    * fgt-cmo-ssapp: The application for the contract manufacturing organization;
     * fgt-courier-ssapp: The application for the courier;
     * fgt-site-ssapp: The application for the clinical site;
     * gtin-dsu-wizard: the ssapp the creates GTIN based DSUs. *Cloned from epi*;
