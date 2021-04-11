@@ -1,4 +1,4 @@
-# UC2 csc-workspace-main
+# UC2 - Clinical Supply Chain - csc-workspace-main
 
 *csc-workspace-main*  bundles all the necessary dependencies for building and running Clinical Supply Chain SSApps in a single package.
 
