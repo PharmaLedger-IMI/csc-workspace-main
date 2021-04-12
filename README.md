@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # UC3 Finished Goods Traceability fgt-workspace
 
 [![GitHub license](https://img.shields.io/github/license/PharmaLedger-IMI/fgt-workspace?style=plastic)](https://github.com/PharmaLedger-IMI/fgt-workspace/blob/master/LICENSE.md)
@@ -12,6 +13,11 @@
 ![](https://img.shields.io/endpoint?url=https://api.keyvalue.xyz/9f895049/coverage&style=plastic)
 
 *fgt-workspace*  bundles all the necessary dependencies for building and running Finished Goods Traceability SSApps in a single package.
+=======
+# UC2 - Clinical Supply Chain - csc-workspace-main
+
+*csc-workspace-main*  bundles all the necessary dependencies for building and running Clinical Supply Chain SSApps in a single package.
+>>>>>>> 92893eb1ec6734300e9f61e2efe77e39a0d440e3
 
 ( This workspace was originally forked from the https://github.com/PharmaLedger-IMI/epi-workspace )
 
@@ -57,14 +63,14 @@ In order to use the workspace, we need to follow a list of steps presented below
 #### Step 1: Clone the workspace
 
 ```sh
-$ git clone https://github.com/PharmaLedger-IMI/fgt-workspace.git
+$ git clone https://github.com/PharmaLedger-IMI/csc-workspace-main.git
 ```
 
 After the repository was cloned, you must install all the dependencies.
 
 For the latest versions do:
 ```sh
-$ cd fgt-workspace
+$ cd csc-workspace-main
 #Important: If you plan to contribute to the project and/or dependecies please set DEV:true
 #in the file env.json before you run the installation!
 $ npm run dev-install
@@ -80,7 +86,7 @@ instead.
 
 #### Step 2: Launch the "server"
 
-While in the *fgt-workspace* folder run:
+While in the *csc-workspace-main* folder run:
 
 ```sh
 $ npm run server
@@ -92,10 +98,10 @@ At the end of this command you get something similar to:
 
 #### Step 3: Build all DSUs and anchor them to the 'blockchain'.
 
-Open a new console inside *fgt-workspace* folder and run:
+Open a new console inside *csc-workspace-main* folder and run:
 
 ```sh
-# Note: Run this in a new console inside "fgt-workspace" folder
+# Note: Run this in a new console inside "csc-workspace-main" folder
 $ npm run build-all
 ```
 
@@ -115,21 +121,37 @@ $ snap install drawio
 
 in linux
 
+<<<<<<< HEAD
 after instalation if not present, add drawio to path
 
 ```shell
 $ which drawio
 ```
+=======
+### Sponsor wallet
+>>>>>>> 92893eb1ec6734300e9f61e2efe77e39a0d440e3
 
 add a file under ```docs/bin``` called ```drawio_exec_command.os``` containing the command/path to execute drawio
 
+<<<<<<< HEAD
  - Linux:
     ```echo "drawio"```
  - Windows:
     ```echo "${PATH_TO_DRAW_IO}\drawio.exe"```
+=======
+### Contract Manufacturing Operations wallet
+>>>>>>> 92893eb1ec6734300e9f61e2efe77e39a0d440e3
 
 
+<<<<<<< HEAD
 ### Build Mobile
+=======
+### Courier wallet
+
+TODO
+
+### Clinical Site wallet
+>>>>>>> 92893eb1ec6734300e9f61e2efe77e39a0d440e3
 
 Currently Not Supported
 
@@ -191,18 +213,21 @@ Currently not supported
     * external-volume: configs directory;
     * internal-volume: volume folder (brick storage). contains the several configured domains
     * wallet patch folders: the folders contain, in the wallet-patch folder and for each case, the custom 'behaviour' that is added to the template folder:
-        * fgt-mah-wallet/wallet-patch;
-        * fgt-pharmacy-wallet/wallet-patch;
-        * fgt-wholesaler-wallet/wallet-patch;
-* fgt-dsu-wizard: based on gtin-dsu-wizard
-* fgt-mah-wallet
-* fgt-pharmacy-wallet
-* fgt-wholesaler-wallet
+        * csc-sponsor-wallet/wallet-patch;
+        * csc-cmo-wallet/wallet-patch;
+        * csc-courier-wallet/wallet-patch;
+        * csc-site-wallet/wallet-patch;
+* csc-dsu-wizard: based on gtin-dsu-wizard
+* csc-sponsor-wallet
+* csc-cmo-wallet
+* csc-courier-wallet
+* csc-site-wallet
     * Wallets for each one of the actors
 * trust-loader-config: custom config to override the wallet loader default ones for each case:
-    * fgt-mah-fabric-wallet/loader;
-    * fgt-pharmacy-fabric-wallet/loader;
-    * fgt-wholesaler-fabric-wallet/loader;
+    * csc-sponsor-fabric-wallet/loader;
+    * csc-cmo-fabric-wallet/loader;
+    * csc-courier-fabric-wallet/loader;
+    * csc-site-wallet/loader;
 
 #### post install (after running npm install)
 
@@ -218,12 +243,15 @@ Currently not supported
 * Use case related:
     * Apihub-root: Folder changes:
         * wallet loaders: clones the loader into each of the wallets:
-            * fgt-mah-wallet/loader;
-            * fgt-pharmacy-wallet/loader;
-            * fgt-wholesaler wallet/loader;
-    * fgt-mah-ssapp: The application for the Mah;
-    * fgt-pharmacy-ssapp: The application for the pharmacy;
-    * fgt-wholesaler-ssapp: The application for the wholesaler;
+            * csc-sponsor-fabric-wallet/loader;
+            * csc-cmo-fabric-wallet/loader;
+            * csc-courier-fabric-wallet/loader;
+            * csc-site-wallet/loader;
+
+    * fgt-sponsor-ssapp: The application for the sponsor;
+    * fgt-cmo-ssapp: The application for the contract manufacturing organization;
+    * fgt-courier-ssapp: The application for the courier;
+    * fgt-site-ssapp: The application for the clinical site;
     * gtin-dsu-wizard: the ssapp the creates GTIN based DSUs. *Cloned from epi*;
     * gtin-resolver: the 'library' to resolve gtin+batchs to dsus. *Cloned from epi*;
 
