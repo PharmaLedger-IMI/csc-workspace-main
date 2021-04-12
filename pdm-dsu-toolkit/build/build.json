@@ -1,0 +1,14 @@
+{
+  "toolkit": {
+    "deps": "../../../pdm-dsu-toolkit:toolkit",
+    "autoLoad":  true,
+    "bundleExternal": false,
+    "exclude": "fs"
+  },
+  "opendsuDT": {
+    "deps": "../../../pdm-dsu-toolkit/services/dt:opendsuDT",
+    "autoLoad":  true,
+    "bundleExternal": false,
+    "exclude": "fs"
+  }
+}

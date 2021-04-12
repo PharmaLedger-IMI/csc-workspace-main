@@ -1,0 +1,16 @@
+{
+  "theme": "pdm-theme",
+  "enableTranslations": true,
+  "pagesFallback": {
+    "name": "Home"
+  },
+  "pages": [
+    {
+      "name": "Home",
+      "path": "./",
+      "src": "home.html",
+      "indexed": false,
+      "tag": "home"
+    }
+  ]
+}

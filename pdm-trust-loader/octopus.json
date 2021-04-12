@@ -1,0 +1,137 @@
+{
+  "workDir": ".",
+  "dependencies": [
+    {
+      "name": "Documentation Theme Install (globally)",
+      "src": "",
+      "description": "This hack is only used because the better-docs theme has a security vulnerability that would be assumed as a security risk for the repo, when its only used to generate documentation",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "sh -c \"theme=`npm ls -g better-docs | grep better-docs` && [ -z \\\"$theme\\\" ] && npm install -g better-docs taffydb || echo \\\"Documentation Theme already Installed\\\"\""
+        }
+      ]
+    },
+    {
+      "name": "Workbox Install (globally)",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "sh -c \"app=`npm ls -g workbox | grep workbox-cli` && [ -z \\\"$app\\\" ] && npm install -g workbox || echo \\\"WorkBox already installed\\\"\""
+        }
+      ]
+    },
+    {
+      "name": "PSK bundles",
+      "src": "",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "../privatesky/psknode/bundles/swBoot.js",
+          "target": "./src//swBoot.js",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "../privatesky/psknode/bundles/webshims.js",
+          "target": "./src/bundles/webshims.js",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "../privatesky/psknode/bundles/loaderBoot.js",
+          "target": "./src/bundles/loaderBoot.js",
+          "options": {
+            "overwrite": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Copy Ionic Dependencies",
+      "src": "",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "./node_modules/@ionic/core/dist/ionic",
+          "target": "./src/assets/ionic-core",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "./node_modules/@ionic/core/css",
+          "target": "./src/assets/ionic-core/css",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "./node_modules/ionicons/dist/ionicons",
+          "target": "./src/assets/ionic-core/ionicons"
+        },
+        {
+          "type": "copy",
+          "src": "./node_modules/@ionic/pwa-elements/dist/ionicpwaelements",
+          "target": "./src/assets/ionic-core/pwa-elements",
+          "options": {
+            "overwrite": true
+          }
+        }
+      ]
+    }
+  ],
+  "build": [
+    {
+      "name": "Copy pdm-toolkit-bundle",
+      "src": "",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "../pdm-dsu-toolkit/build/bundles/toolkit.js",
+          "target": "./src/bundles/toolkit.js",
+          "options": {
+            "overwrite": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Copy opendsuDT-bundle",
+      "src": "",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "../pdm-dsu-toolkit/build/bundles/opendsuDT.js",
+          "target": "./src/bundles/opendsuDT.js",
+          "options": {
+            "overwrite": true
+          }
+        }
+      ]
+    }
+  ],
+  "docs": [
+    {
+      "name": "Documentation",
+      "src": ".",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "node ./node_modules/markdown-include/bin/cli.js ./mdCompile.json"
+        },
+        {
+          "type": "execute",
+          "cmd": "jsdoc -c jsdocs.json -t \"$(npm root -g)/better-docs\""
+        }
+      ]
+    }
+  ]
+}

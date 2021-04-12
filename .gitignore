@@ -1,5 +1,10 @@
+apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed
+apihub-root/dsu-explorer/wallet-patch/seed
+apihub-root/dsu-explorer/loader
 apihub-root/fgt-mah-wallet/wallet-patch/seed
 apihub-root/fgt-mah-wallet/loader
+apihub-root/csc-sponsor-wallet/wallet-patch/seed
+apihub-root/csc-sponsor-wallet/loader
 apihub-root/fgt-pharmacy-wallet/wallet-patch/seed
 apihub-root/fgt-pharmacy-wallet/loader
 apihub-root/fgt-wholesaler-wallet/wallet-patch/seed
@@ -7,27 +12,75 @@ apihub-root/fgt-wholesaler-wallet/loader
 apihub-root/internal-volume/domains
 apihub-root/external-volume/domains
 apihub-root/fgt-mah-wallet/apps-patch
+apihub-root/csc-sponsor-wallet/apps-patch
 apihub-root/fgt-pharmacy-wallet/apps-patch
 apihub-root/fgt-wholesaler-wallet/apps-patch
+apihub-root/web-ion-wallet/**
+apihub-root/pdm-trust-loader/**
+apihub-root/dossier-explorer/**
 apihub-root/seedsBackup
 cardinal
+dossier-explorer-ssapp
+dossier-explorer-wallet-prototype
 env.json.devel
+
+pdm-trust-loader/src/webcardinal
+pdm-trust-loader/src/bundles
+pdm-trust-loader/src/capacitor.js
+pdm-trust-loader/src/assets/ionic-core
+pdm-trust-loader/src/swPwa*
+pdm-trust-loader/src/swBoot.js
+pdm-trust-loader/src/workbox*
+
+!pdm-trust-loader/workbox-config.js
+
 fgt-mah-ssapp/code/constitution
+fgt-mah-ssapp/docs
 fgt-mah-ssapp/code/scripts/bundles
 fgt-mah-ssapp/seed
+
+
+csc-sponsor-ssapp/code/constitution
+csc-sponsor-ssapp/docs
+csc-sponsor-ssapp/code/scripts/bundles
+csc-sponsor-ssapp/seed
+
+/webcardinal
+!/.github
+
+web-cardinal-ion
+
+fgt-dsu-wizard/version.js
+fgt-dsu-wizard/build/bundles
+fgt-dsu-wizard/docs
+
+pdm-dsu-toolkit/build/bundles
+pdm-dsu-toolkit/docs
+
+
+documentation/bin/draw.io.path
+!ddocumentation/bin/resources/drawings/*.md
+documentation/drawings/*.xml
+documentation/resources/drawings/
+
 fgt-pharmacy-ssapp/code/constitution
 fgt-pharmacy-ssapp/code/scripts/bundles
 fgt-pharmacy-ssapp/seed
+fgt-pharmacy-ssapp/docs
 fgt-wholesaler-ssapp/code/constitution
 fgt-wholesaler-ssapp/code/scripts/bundles
+fgt-wholesaler-ssapp/code/assets/ionic-core
+fgt-wholesaler-ssapp/docs
 fgt-wholesaler-ssapp/seed
 gtin-resolver
 gtin-dsu-wizard
 node_modules
 package-lock.json
-pharmaledger-wallet**
+pharmaledger-wallet
 privatesky
 themes
+
+!ionic-core/dist
 
 tests/*/testWorkspace
 
@@ -288,7 +341,7 @@ modules.xml
 **/nbproject/Makefile-*.mk
 **/nbproject/Package-*.bash
 nbbuild/
-dist/
+
 nbdist/
 .nb-gradle/
 
@@ -379,7 +432,7 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+
 
 # Gatsby files
 .cache/
@@ -477,3 +530,5 @@ iOSInjectionProject/
 
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains+all,vscode,netbeans,eclipse,node,objective-c,android
 
+
+!ionic-core/dist
