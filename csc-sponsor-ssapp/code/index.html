@@ -3,10 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>PSK App Core</title>
+    <title>TEST PSK App Core</title>
     PLACEHOLDER_THAT_WILL_BE_REPLACED_BY_SW_OR_SERVER_WITH_BASE_TAG
     <link href="resources/css/main.css" rel="stylesheet" type="text/css">
-<!--    <link rel="stylesheet" href="resources/css/fonts/fontawesome/font-awesome.min.css">-->
+    <!-- Custom Theme -->
+    <link href="assets.css" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="webcardinal/webcardinal.css">
+    <link rel="stylesheet" href="main.css">
+
+    <!--    <link rel="stylesheet" href="resources/css/fonts/fontawesome/font-awesome.min.css">-->
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,7 +21,8 @@
     <script src="scripts/bundles/pskruntime.js"></script>
     <script src="resources/locale/locale.js"></script>
     <script src="scripts/bundles/wizard.js"></script>
-    <script type="module" src="cardinal/cardinal.esm.js"></script>
+    <!-- <script type="module" src="cardinal/cardinal.esm.js"></script>-->
+
     <script>
         if (window.frameElement) {
             const iframeIdentity = window.frameElement.getAttribute('identity');
@@ -33,25 +40,37 @@
 </head>
 
 <body>
-<psk-app-root>
-    <psk-container controller-name="ParticipantController">
-        <psk-condition condition="@identified">
-            <div slot="condition-true">
-                <div class="global_container">
-                    <psk-app-menu hamburger-max-width="0" class="demo">
-                        <psk-label slot="before" class="title" label="@locale.home.title"></psk-label>
-                    </psk-app-menu>
-                    <section>
-                        <psk-app-router failRedirectTo="/Dashboard"></psk-app-router>
-                    </section>
-                </div>
-            </div>
-            <div slot="condition-false">
-                <psk-label class="page-title" label="@locale.home.title"></psk-label>
-            </div>
-        </psk-condition>
-    </psk-container>
-</psk-app-root>
-</body>
 
+<webc-app-root>
+    <webc-app-container>
+        <webc-app-router></webc-app-router>
+    </webc-app-container>
+</webc-app-root>
+
+<!--<webc-app-root></webc-app-root>-->
+
+<!--<psk-app-root>-->
+<!--    <psk-container controller-name="ParticipantController">-->
+<!--        <psk-condition condition="@identified">-->
+<!--            <div slot="condition-true">-->
+<!--                <div class="global_container">-->
+<!--                    <psk-app-menu hamburger-max-width="0" class="demo">-->
+<!--                        <psk-label slot="before" class="title" label="@locale.home.title"></psk-label>-->
+<!--                    </psk-app-menu>-->
+<!--                    <section>-->
+<!--                        <psk-app-router failRedirectTo="/Dashboard"></psk-app-router>-->
+<!--                    </section>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div slot="condition-false">-->
+<!--                <psk-label class="page-title" label="@locale.home.title"></psk-label>-->
+<!--            </div>-->
+<!--        </psk-condition>-->
+<!--    </psk-container>-->
+<!--</psk-app-root>-->
+
+
+    <!-- WebCardinal dist -->
+    <script type="module" src="webcardinal/webcardinal.js"></script>
+</body>
 </html>

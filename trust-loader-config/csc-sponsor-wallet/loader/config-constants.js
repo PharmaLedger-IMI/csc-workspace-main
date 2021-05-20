@@ -1,7 +1,7 @@
 let LOADER_GLOBALS = {
 	THEME: "app",
 	LABELS_DICTIONARY: {
-		APP_NAME: "Traceability MAH App",
+		APP_NAME: "Sponsor App",
 		APP_DESCRIPTION: "The traceability application for Marketing Authorization Holders",
 		NEW_WALLET: "New Account",
 		ACCESS_WALLET: "Access Account",

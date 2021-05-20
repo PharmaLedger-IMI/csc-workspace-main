@@ -29,7 +29,8 @@
     "build-web-ion": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run pre-build-web-cardinal-ion\"",
     "freeze": "node ./node_modules/octopus/scripts/freeze dependencies install-mobile",
     "docs": "node ./node_modules/octopus/scripts/run docs devmode",
-    "incversion": "npm --no-git-tag-version version patch"
+    "incversion": "npm --no-git-tag-version version patch",
+    "debug": "nodemon -e html,js,css,json --watch csc-sponsor-ssapp/code --ignore csc-sponsor-ssapp/code/constitution --ignore csc-sponsor-ssapp/code/scripts/bundles --exec \"npm run build csc-sponsor-ssapp\""
   },
   "repository": {
     "type": "git",

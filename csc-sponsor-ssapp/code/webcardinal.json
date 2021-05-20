@@ -1,0 +1,30 @@
+{
+  "theme": "pdm-theme",
+  "enableTranslations": true,
+  "pagesFallback": {
+    "name": "Test"
+  },
+  "pages": [
+    {
+      "name": "Dashboard",
+      "path": "./",
+      "src": "dashboard.html",
+      "indexed": false,
+      "tag": "dashboard"
+    },
+    {
+      "name": "Initiate Order",
+      "path": "./initiate-order",
+      "src": "initiateOrder.html",
+      "indexed": false,
+      "tag": "initiate_order"
+    },
+    {
+      "name": "Pending Actions",
+      "path": "./pending-actions",
+      "src": "pendingActions.html",
+      "indexed": false,
+      "tag": "pending_actions"
+    }
+  ]
+}

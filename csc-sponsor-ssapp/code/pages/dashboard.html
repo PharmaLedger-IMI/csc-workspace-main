@@ -1,5 +1,25 @@
-c<psk-page>
-    <psk-container controller-name="DashboardController">
-        <psk-label class="title" label="@title"></psk-label>
-    </psk-container>
-</psk-page>
+<webc-container controller="DashboardController">
+    <psk-layout columns="1">
+
+        <div style="width:100%; text-align:center;margin-top:50px;">
+
+            <div class="search-bar-holder">
+                <!-- Search Bar -->
+                <input type="search" class="search-bar" name="search" placeholder="Search..." data-view-model="@search">
+            </div>
+
+            <webc-link tag="initiate_order" class="rectangle-cardbox-menu-item">
+                Initiate Order
+            </webc-link>
+
+            <webc-link tag="dashboard" class="rectangle-cardbox-menu-item">
+                Dashboard
+            </webc-link>
+
+            <webc-link tag="pending_actions" class="rectangle-cardbox-menu-item">
+                Pending Actions
+            </webc-link>
+        </div>
+
+    </psk-layout>
+</webc-container>
