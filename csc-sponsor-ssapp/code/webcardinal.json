@@ -25,6 +25,20 @@
       "src": "pendingActions.html",
       "indexed": false,
       "tag": "pending_actions"
+    },
+    {
+      "name": "Notifications",
+      "path": "./notifications",
+      "src": "notifications.html",
+      "indexed": false,
+      "tag": "notifications"
+    },
+    {
+      "name": "New Order",
+      "path": "./new-order",
+      "src": "newOrder.html",
+      "indexed": false,
+      "tag": "new_order"
     }
   ]
 }
