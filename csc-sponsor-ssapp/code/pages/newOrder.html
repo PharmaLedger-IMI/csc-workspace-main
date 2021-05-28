@@ -1,7 +1,6 @@
 <webc-container controller="newOrderController">
     <psk-layout columns="1">
 
-
         <div class="header">
             <div class="header-left">
                 <img src="../resources/images/pl_logo.png">
@@ -16,8 +15,143 @@
 
         <webc-template template="dashboard-menu"></webc-template>
 
+        <div class="new-order-wizard-form">
+            <!--First Step -->
+            <div data-tag="wizard_form_step_1" id="wizard_form_step_1" class="new-order-wizard-form-element new-order-wizard-active">
+                1 - Order Details
+            </div>
+
+            <!-- Break -->
+            <div class="new-order-wizard-form-break">
+                <!-- Line -->
+                <div class="new-order-wizard-form-break-line"></div>
+            </div>
+
+            <!--Second Step -->
+            <div data-tag="wizard_form_step_2" id="wizard_form_step_2" class="new-order-wizard-form-element">
+                2 - Attach Documents
+            </div>
+
+            <!-- Break -->
+            <div class="new-order-wizard-form-break">
+                <!-- Line -->
+                <div class="new-order-wizard-form-break-line"></div>
+            </div>
+
+            <!-- Comments -->
+            <div data-tag="wizard_form_step_3" id="wizard_form_step_3" class="new-order-wizard-form-element">
+                3 - Comments
+            </div>
+
+            <!-- Break -->
+            <div class="new-order-wizard-form-break">
+                <!-- Line -->
+                <div class="new-order-wizard-form-break-line"></div>
+            </div>
+
+            <!-- Confirmation -->
+            <div data-tag="wizard_form_step_4" id="wizard_form_step_4" class="new-order-wizard-form-element">
+                4 - Confirmation
+            </div>
+        </div>
         <div class="new-order-main-holder">
-            NEW ORDER
+
+            <div id="wizard_form_step_1_holder" class="new-order-wizard-form-step-holder show-step">
+                <div class="row">
+                   <div class="col-6">
+
+                       <!-- Sponsor ID -->
+                       <div class="form-group">
+                           <!--Label -->
+                           <label>{{@form.inputs.sponsor_id.label}}</label>
+                           <!-- Input -->
+                           <input class="form-control" type="text" name="@form.inputs.sponsor_id.name" placeholder="@form.inputs.sponsor_id.placeholder" value="@form.inputs.sponsor_id.value" required="@form.inputs.sponsor_id.required">
+                       </div>
+
+                       <!-- Delivery Date/Time -->
+                       <div class="form-group">
+                           <!--Label -->
+                           <label>{{@form.inputs.delivery_date.label}}</label>
+                           <div class="row">
+                               <div class="col-8">
+                                   <!-- Input -->
+                                   <input class="form-control" type="date" id="@form.inputs.delivery_date.date.name" name="@form.inputs.delivery_date.date.name" value="@form.inputs..delivery_date.date.value" required="@form.inputs..delivery_date.date.required">
+                               </div>
+                               <div class="col-4">
+                                   <!-- Input -->
+                                   <input class="form-control" type="time" id="@form.inputs.delivery_date.time.name" name="@form.inputs.delivery_date.time.name" value="@form.inputs..delivery_date.time.value" required="@form.inputs..delivery_date.time.required">
+                               </div>
+                           </div>
+                       </div>
+
+                       <!-- Target CMO ID -->
+                       <div class="form-group">
+                           <!--Label -->
+                           <label>{{@form.inputs.target_cmo_id.label}}</label>
+                           <!-- Select -->
+                           <select class="form-control" name="@form.inputs.target_cmo_id.name" id="@form.inputs.target_cmo_id.name" data-for="@form.inputs.target_cmo_id.options">
+                               <option  value="@value">{{@label}}</option>
+                           </select>
+                       </div>
+
+                       <!-- Study ID -->
+                       <div class="form-group">
+                           <!--Label -->
+                           <label>{{@form.inputs.study_id.label}}</label>
+                           <!-- Input -->
+                           <input class="form-control" type="text" name="@form.inputs.study_id.name" placeholder="@form.inputs.study_id.placeholder" value="@form.inputs.study_id.value" required="@form.inputs.study_id.required">
+                       </div>
+
+
+                       <!-- Order ID -->
+                       <div class="form-group">
+                           <!--Label -->
+                           <label>{{@form.inputs.order_id.label}}</label>
+                           <!-- Input -->
+                           <input class="form-control" type="text" name="@form.inputs.order_id.name" placeholder="@form.inputs.order_id.placeholder" value="@form.inputs.order_id.value" required="@form.inputs.order_id.required">
+                       </div>
+
+                       <!-- Kit ID List -->
+                       <div class="form-group">
+                           <!-- Label -->
+                           <label>{{@form.inputs.order_id.label}}</label>
+
+                           <div class="input-group">
+                               <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                               <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Upload File</button>
+                           </div>
+                       </div>
+
+
+
+
+
+                   </div>
+                    <div class="col-6">
+                        <!-- Site Id -->
+                        <div class="form-group">
+                            <!--Label -->
+                            <label>{{@form.inputs.site_id.label}}</label>
+                            <!-- Select -->
+                            <select class="form-control" name="@form.inputs.site_id.name" id="@form.inputs.site_id.name" data-for="@form.inputs.site_id.options">
+                                <option  value="@value">{{@label}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="wizard_form_step_2_holder" class="new-order-wizard-form-step-holder hide-step">
+                Step 2
+            </div>
+
+            <div id="wizard_form_step_3_holder" class="new-order-wizard-form-step-holder hide-step">
+                Step 3
+            </div>
+
+            <div id="wizard_form_step_4_holder" class="new-order-wizard-form-step-holder hide-step">
+                Step 4
+            </div>
         </div>
 
 

@@ -27,7 +27,6 @@ export default class DashboardMenuController extends WebcController {
             })
         }
 
-
         //Add active menu class to element
         function makeMenuActive( element ){
             document.getElementById(element).classList.add("dashboard-tab-active");

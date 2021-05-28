@@ -171,10 +171,11 @@
 
 .new-order-main-holder{
     width:1000px;
-    height:calc(100vh - 230px);
+    height:calc(100vh - 330px);
     margin: 0 auto;
     position:absolute;
     left: calc( (100% - 1000px) / 2);
+    top: 300px;
     padding: 20px;
     background:white;
     border-radius:25px;
@@ -182,4 +183,58 @@
     -webkit-box-shadow: 0px 0px 48px -19px rgba(0,0,0,0.75);
     -moz-box-shadow: 0px 0px 48px -19px rgba(0,0,0,0.75);
     box-shadow: 0px 0px 48px -19px rgba(0,0,0,0.75);
+}
+.new-order-wizard-form{
+    width: 1000px;
+    height: 65px;
+    margin: 0 auto;
+    top: 174px;
+    position: absolute;
+    left: calc( (100% - 1000px) / 2);
+}
+
+.new-order-wizard-form-element{
+    width: 220.5px;
+    height: 40px;
+    border: 3px solid #00345c;
+    border-radius: 10px;
+    display: inline-block;
+    background: #f7f7f7;
+    cursor: pointer;
+    text-align: center;
+    padding-top: 5px;
+    font-weight: bold;
+}
+
+.new-order-wizard-active{
+    background:#4dfdf3!important;
+}
+
+.new-order-wizard-form-break{
+    width: 26px;
+    height: 65px;
+    display: inline-block;
+    position: relative;
+    top: 60px;
+    left: -4px;
+}
+
+.new-order-wizard-form-break-line{
+    width: 34px;
+    height:3px;
+    background: #00345c;
+}
+
+
+.new-order-wizard-form-step-holder{
+    width: 100%;
+}
+
+
+.show-step{
+    display: inline-block;
+}
+
+.hide-step{
+    display: none;
 }
