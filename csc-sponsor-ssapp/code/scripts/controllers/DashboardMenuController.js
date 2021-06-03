@@ -19,8 +19,10 @@ export default class DashboardMenuController extends WebcController {
         if(this.model.menu_items){
             this.model.menu_items.forEach( (item) => {
                 if(this.history.location.pathname === item.url){
+                    console.log("ITEM::", item.id);
                     makeMenuActive(item.id);
-                }else{
+                }
+                else{
                     makeMenuInActive(item.id);
                 }
             })

@@ -1,5 +1,6 @@
 import getSharedStorage from './SharedDBStorageService.js';
 import DSUService from './DSUService.js';
+import { demoData } from '../constants/order.js';
 
 export default class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
@@ -11,7 +12,8 @@ export default class OrdersService extends DSUService {
   }
 
   async getOrders() {
-    const result = await this.storageService.filter(this.ORDERS_TABLE);
+    // const result = await this.storageService.filter(this.ORDERS_TABLE);
+    return demoData;
     if (result) {
       return result.filter((x) => !x.deleted);
     } else return [];
