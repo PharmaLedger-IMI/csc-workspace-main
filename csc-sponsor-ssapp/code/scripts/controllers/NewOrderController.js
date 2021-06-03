@@ -13,6 +13,13 @@ export default class NewOrderController extends WebcController {
                 { id: "wizard_form_step_3" , holder_id: "wizard_form_step_3_holder", name : "Comments" , visible: false, validated: false},
                 { id: "wizard_form_step_4" , holder_id: "wizard_form_step_4_holder", name : "Confirmation" , visible: false, validated: false}
             ],
+            wizard_form_navigation:[
+                { id: "from_step_1_to_2", name: "Next", visible: true , validated: false },
+                { id: "from_step_2_to_1", name: "Previous", visible: true , validated: false },
+                { id: "from_step_2_to_3", name: "Next", visible: true , validated: false },
+                { id: "from_step_3_to_2", name: "Previous", visible: true , validated: false },
+                { id: "from_step_3_to_4", name: "Next", visible: true , validated: false },
+            ],
             form: {
                 inputs: {
                     sponsor_id: {
@@ -78,9 +85,66 @@ export default class NewOrderController extends WebcController {
                             { label: "Site ID 3",  value: "3"}
                         ]
                     },
-                }
+                    site_region_id: {
+                        label: "Site Region ID (Autofilled)",
+                        name: "site_region_id",
+                        required: true,
+                        placeholder: "",
+                        value: ''
+                    },
+                    site_country: {
+                        label: "Site Country (Autofilled)",
+                        name: "site_country",
+                        required: true,
+                        placeholder: "",
+                        value: ''
+                    },
+                    temperature_comments: {
+                        label: "Temperature Comments",
+                        name: "temperature_comments",
+                        required: true,
+                        placeholder: "e.g Do not freeze",
+                        value: ''
+                    },
+                    keep_between_temperature: {
+                        label: "Keep Between (°C)",
+                        name: "keep_between_temperature",
+                        required: true,
+                        placeholder: "",
+                        value: ''
+                    },
+                    add_comment: {
+                        label: "Add a Comment",
+                        name: "add_comment",
+                        required: true,
+                        placeholder: "Add a comment....",
+                        value: ''
+                    }
+                },
+                documents:[
+                    { name: "Document Name 1.pdf" , attached_by : "Novartis" , date: "03-06-2021, 00:00" , link : ""},
+                    { name: "Document Name 2.pdf" , attached_by : "Novartis" , date: "03-06-2021, 00:25" , link : ""},
+                ],
+                comments:[
+                    { content: "This is the comment that sponsor user wrote." , date: "03-06-2021, 01:00" }
+                ]
             }
         };
+        this.model.addExpression(
+            "hasComments",
+            () => {
+                return this.model.form.comments.length >=1;
+            },
+            "form.comments.length"
+        );
+
+
+        setTimeout( () => {
+            const readableContainer = this.element.querySelector('#target_cmo_id');
+
+            readableContainer.addEventListener("change", (event)=>{this.onChange(event)});
+
+        },1000);
 
 
         //When you click step 1
@@ -102,6 +166,35 @@ export default class NewOrderController extends WebcController {
         this.onTagEvent('wizard_form_step_4', 'click', (e) => {
             makeStepActive("wizard_form_step_4", "wizard_form_step_4_holder" , e);
         });
+
+
+        //STEP BUTTONS LOGIC
+
+        //When you want to navigate from step 1 to step 2
+        this.onTagEvent('from_step_1_to_2', 'click', (e) => {
+            makeStepActive("wizard_form_step_2", "wizard_form_step_2_holder" , e);
+        });
+
+        //When you want to navigate from step 2 to step 1
+        this.onTagEvent('from_step_2_to_1', 'click', (e) => {
+            makeStepActive("wizard_form_step_1", "wizard_form_step_1_holder" , e);
+        });
+
+        //When you want to navigate from step 2 to step 3
+        this.onTagEvent('from_step_2_to_3', 'click', (e) => {
+            makeStepActive("wizard_form_step_3", "wizard_form_step_3_holder" , e);
+        });
+
+        //When you want to navigate from step 3 to step 2
+        this.onTagEvent('from_step_3_to_2', 'click', (e) => {
+            makeStepActive("wizard_form_step_2", "wizard_form_step_2_holder" , e);
+        });
+
+        //When you want to navigate from step 3 to step 2
+        this.onTagEvent('from_step_3_to_4', 'click', (e) => {
+            makeStepActive("wizard_form_step_4", "wizard_form_step_4_holder" , e);
+        });
+
 
 
         //Add active menu class to element
@@ -137,9 +230,13 @@ export default class NewOrderController extends WebcController {
             el.classList.add("show-step");
         }
 
+
+
     }
 
-
+     onChange(event){
+        this.model.form.inputs.target_cmo_id.value = event.target.value;
+    }
 
 
 

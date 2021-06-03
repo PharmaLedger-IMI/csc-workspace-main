@@ -11,7 +11,6 @@ export default class DashboardMenuController extends WebcController {
             menu_items : [
                 { name: "Dashboard" , url : "/" , id: "menu-dashboard"},
                 { name: "New Order" , url : "/new-order", id: "menu-new-order"},
-                { name: "Pending Actions" , url : "/pending-actions", id: "menu-pending-actions"},
                 { name: "Notifications" , url : "/notifications", id: "menu-notifications"},
             ]
         }
