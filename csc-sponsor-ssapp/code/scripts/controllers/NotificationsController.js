@@ -2,9 +2,9 @@ const { WebcController } = WebCardinal.controllers;
 
 export default class NotificationsController extends WebcController {
 
-    constructor(element, history) {
+    constructor(...props) {
 
-        super(element, history);
+        super(...props);
 
         this.model = {
             name: "hi"

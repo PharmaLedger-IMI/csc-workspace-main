@@ -532,3 +532,5 @@ iOSInjectionProject/
 
 
 !ionic-core/dist
+.prettierignore
+menu-wallet-prototype

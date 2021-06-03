@@ -1,54 +1,99 @@
 <webc-container controller="DashboardController">
-    <psk-layout columns="1">
+  <psk-layout columns="1">
+    <div class="header">
+      <div class="header-left">
+        <img src="../resources/images/pl_logo.png" />
+        <div class="header-role-title">SPONSOR</div>
+      </div>
+      <div class="header-right">
+        <div class="header-username">CMOName1</div>
+      </div>
+    </div>
 
+    <webc-template template="dashboard-menu"></webc-template>
 
-        <div class="header">
-            <div class="header-left">
-                <img src="../resources/images/pl_logo.png">
-                <div class="header-role-title">SPONSOR</div>
-            </div>
-            <div class="header-right">
-                <div class="header-username">
-                    CMOName1
-                </div>
-            </div>
-        </div>
+    <!-- <div class="dashboard-main-holder">
+              <div class="dashboard-filter-holder">
+                  FILTERS HERE
+              </div>
+  
+              <div class="dashboard-content-holder">
+                  hi
+              </div>
+          </div> -->
 
-        <webc-template template="dashboard-menu"></webc-template>
+    <div>
+      <psk-input view-model="consent.name"></psk-input>
+      <psk-input label="@consent.name.label"></psk-input>
+    </div>
 
+    <psk-tab-navigator default="0">
+      <!-- *************** ORDERS ******************** -->
+      <psk-tab title="Orders">Orders2</psk-tab>
 
-        <div class="dashboard-main-holder">
-            <div class="dashboard-filter-holder">
-                DASHBOARD
-            </div>
+      <!-- *************** SHIPMENTS ******************** -->
+      <psk-tab title="Shipments">Shipments</psk-tab>
 
-            <div class="dashboard-content-holder">
-                hi
-            </div>
-        </div>
+      <!-- *************** KITS ******************** -->
+      <psk-tab title="Kits">Kits</psk-tab>
 
+      <!-- <psk-tab title="Participants">
+                <webc-container controller="TrialParticipantsController">
+                  <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 mb-3" style="margin-bottom: 20px">
+                    <div class="d-flex flex-column">
+                      <psk-input id="search-field-participants" view-model="search" event-name="filters-changed"></psk-input>
+                    </div>
+                  </div>
+          
+                  <psk-condition condition="@participantsArrayNotEmpty">
+                    <div slot="condition-true">
+                      <webc-template template="table-template" data-view-model="@"></webc-template>
+                    </div>
+                    <div slot="condition-false">
+                      <div>No participants available.</div>
+                    </div>
+                  </psk-condition>
+                </webc-container>
+              </psk-tab>
+          
+              <psk-tab title="Inform Consents">
+                <webc-container controller="TrialConsentsController">
+                  <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 mb-3" style="margin-bottom: 20px">
+                    <div class="d-flex flex-column">
+                      <psk-input id="search-field-consents" view-model="search" event-name="filters-changed"></psk-input>
+                    </div>
+                    <button class="btn btn-primary" data-tag="add-consent">Add consent</button>
+                  </div>
+                  <psk-condition condition="@consentsArrayNotEmpty">
+                    <div slot="condition-true">
+                      <webc-template template="table-template" data-view-model="@"></webc-template>
+                    </div>
+                    <div slot="condition-false">
+                      <div>No consents available.</div>
+                    </div>
+                  </psk-condition>
+                </webc-container>
+              </psk-tab> -->
+    </psk-tab-navigator>
 
+    <!--        <div style="width:100%; text-align:center;margin-top:50px;">-->
 
+    <!--            <div class="search-bar-holder">-->
+    <!--                &lt;!&ndash; Search Bar &ndash;&gt;-->
+    <!--                <input type="search" class="search-bar" name="search" placeholder="Search..." data-view-model="@search">-->
+    <!--            </div>-->
 
-<!--        <div style="width:100%; text-align:center;margin-top:50px;">-->
+    <!--            <webc-link tag="initiate_order" class="rectangle-cardbox-menu-item">-->
+    <!--                Initiate Order-->
+    <!--            </webc-link>-->
 
-<!--            <div class="search-bar-holder">-->
-<!--                &lt;!&ndash; Search Bar &ndash;&gt;-->
-<!--                <input type="search" class="search-bar" name="search" placeholder="Search..." data-view-model="@search">-->
-<!--            </div>-->
+    <!--            <webc-link tag="dashboard" class="rectangle-cardbox-menu-item">-->
+    <!--                Dashboard-->
+    <!--            </webc-link>-->
 
-<!--            <webc-link tag="initiate_order" class="rectangle-cardbox-menu-item">-->
-<!--                Initiate Order-->
-<!--            </webc-link>-->
-
-<!--            <webc-link tag="dashboard" class="rectangle-cardbox-menu-item">-->
-<!--                Dashboard-->
-<!--            </webc-link>-->
-
-<!--            <webc-link tag="pending_actions" class="rectangle-cardbox-menu-item">-->
-<!--                Pending Actions-->
-<!--            </webc-link>-->
-<!--        </div>-->
-
-    </psk-layout>
+    <!--            <webc-link tag="pending_actions" class="rectangle-cardbox-menu-item">-->
+    <!--                Pending Actions-->
+    <!--            </webc-link>-->
+    <!--        </div>-->
+  </psk-layout>
 </webc-container>

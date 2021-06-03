@@ -2,9 +2,9 @@ const { WebcController } = WebCardinal.controllers;
 
 export default class DashboardMenuController extends WebcController {
 
-    constructor(element, history) {
+    constructor(...props) {
 
-        super(element, history);
+        super(...props);
 
 
         this.model = {
@@ -18,8 +18,8 @@ export default class DashboardMenuController extends WebcController {
 
         //For every menu item check which one is the active and add the class
         if(this.model.menu_items){
-            this.model.menu_items.forEach ( (item) => {
-                if(history.location.pathname === item.url){
+            this.model.menu_items.forEach( (item) => {
+                if(this.history.location.pathname === item.url){
                     makeMenuActive(item.id);
                 }else{
                     makeMenuInActive(item.id);
