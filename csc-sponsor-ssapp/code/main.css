@@ -299,6 +299,12 @@
     height: 552px;
 }
 
+#new-order-confirmation-holder label{
+    font-size: 12px;
+    color: #00345b;
+    font-weight: bold!important;
+}
+
 #new-order-comments-holder label{
     color: #00345b;
     font-weight: bold!important;

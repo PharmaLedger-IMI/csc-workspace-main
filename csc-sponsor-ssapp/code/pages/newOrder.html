@@ -115,7 +115,7 @@
                        <!-- Kit ID List -->
                        <div class="form-group">
                            <!-- Label -->
-                           <label>{{@form.inputs.order_id.label}}</label>
+                           <label>{{@form.inputs.kit_id_list.label}}</label>
 
                            <div class="input-group">
                                <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
@@ -273,7 +273,6 @@
                                 <div data-for="@form.comments">{{@content}}</div>
                             </div>
                         </div>
-
                     </div>
                     <!-- Comments Submission -->
                     <div class="col-6">
@@ -284,7 +283,6 @@
                             <!-- Input -->
                             <input class="form-control" type="text" name="@form.inputs.add_comment.name" placeholder="@form.inputs.add_comment.placeholder" value="@form.inputs.add_comment.value" required="@form.inputs.add_comment.required">
                         </div>
-
                     </div>
                 </div>
                 <!-- Navigation Between Steps-->
@@ -304,39 +302,177 @@
                 <div id="new-order-confirmation-holder"  class="row">
 
                     <div class="col-6">
+
                         <!-- Sponsor ID -->
-                        <div class="form-inline">
+                        <div class="row">
                             <!--Label -->
-                            <label class="my-1 mr-2">{{@form.inputs.sponsor_id.label}}</label>
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.sponsor_id.label}}</label>
+                            </div>
                             <!-- Input -->
-                            <input class="form-control form-control-sm" type="text" name="@form.inputs.sponsor_id.name" placeholder="@form.inputs.sponsor_id.placeholder" value="@form.inputs.sponsor_id.value" disabled>
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.sponsor_id.name" placeholder="@form.inputs.sponsor_id.placeholder" value="@form.inputs.sponsor_id.value" disabled>
+                            </div>
                         </div>
 
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
 
                         <!-- Request Delivery Date/Time -->
-                        <div class="form-inline">
+                        <div class="row">
                             <!--Label -->
-                            <label class="my-1 mr-2">Request Delivery Date/Time</label>
-
-                            <div class="row">
-                                <div class="col-6">
-                                    <!-- Input -->
-                                    <input class="form-control form-control-sm" type="text"  value="@form.inputs.delivery_date.date.value" disabled>
-                                </div>
-                                <div class="col-6">
-                                    <!-- Input -->
-                                    <input class="form-control form-control-sm" type="text"  value="@form.inputs.delivery_date.time.value" disabled>
+                            <div class="col-5">
+                                <label class="my-1 mr-2">Request Delivery Date/Time</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <div class="row">
+                                    <div class="col-7">
+                                        <!-- Input -->
+                                        <input class="form-control form-control-sm" type="text"  value="@form.inputs.delivery_date.date.value" disabled>
+                                    </div>
+                                    <div class="col-5">
+                                        <!-- Input -->
+                                        <input class="form-control form-control-sm" type="text"  value="@form.inputs.delivery_date.time.value" disabled>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
                         <!-- Target CMO ID -->
-                        <div class="form-inline">
+                        <div class="row">
                             <!--Label -->
-                            <label class="my-1 mr-2">{{@form.inputs.target_cmo_id.label}}</label>
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.target_cmo_id.label}}</label>
+                            </div>
                             <!-- Input -->
-                            <input class="form-control form-control-sm" type="text" name="@form.inputs.target_cmo_id.name" placeholder="@form.inputs.target_cmo_id.placeholder" value="@form.inputs.target_cmo_id.value" disabled>
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.target_cmo_id.name" placeholder="@form.inputs.target_cmo_id.placeholder" value="@form.inputs.target_cmo_id.value" disabled>
+                            </div>
                         </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Study ID -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.study_id.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.study_id.name" value="@form.inputs.study_id.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Order ID -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.order_id.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.order_id.name" value="@form.inputs.order_id.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Kit ID List -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.kit_id_list.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.kit_id_list.name" value="@form.inputs.kit_id_list.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Site ID -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.site_id.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.site_id.name" value="@form.inputs.site_id.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Site Region ID -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.site_region_id.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.site_region_id.name" value="@form.inputs.site_region_id.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Site Country -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.site_country.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.site_country.name" value="@form.inputs.site_country.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Site Country -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.temperature_comments.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.temperature_comments.name" value="@form.inputs.temperature_comments.value" disabled>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="col-6">
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <button>Clear Form</button>
+                    </div>
+                    <div class="col-6 text-center">
+                        <button>Submit</button>
                     </div>
                 </div>
             </div>
