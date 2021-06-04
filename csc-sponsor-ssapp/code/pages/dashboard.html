@@ -1,4 +1,5 @@
 <webc-container controller="DashboardController">
+  <link rel="stylesheet" href="assets/css/orders.css" />
   <psk-layout columns="1">
     <div class="header">
       <div class="header-left">
@@ -12,88 +13,75 @@
 
     <webc-template template="dashboard-menu"></webc-template>
 
-    <!-- <div class="dashboard-main-holder">
-              <div class="dashboard-filter-holder">
-                  FILTERS HERE
-              </div>
-  
-              <div class="dashboard-content-holder">
-                  hi
-              </div>
-          </div> -->
+    <div class="card p-2">
+      <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-9">
+          <div class="tabs">
+            <div class="tab-navigator">
+              <button id="tab-0" class="btn active" data-tag="change-tab" data-custom="0">
+                <i class="far fa-list-alt mr-2"></i>Orders
+              </button>
+              <button id="tab-1" class="btn" data-tag="change-tab" data-custom="1">
+                <i class="fas fa-truck mr-2"></i>Shipments
+              </button>
+              <button id="tab-2" class="btn" data-tag="change-tab" data-custom="2">
+                <i class="fas fa-medkit mr-2"></i>Kits
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <div>
-      <psk-input view-model="consent.name"></psk-input>
-      <psk-input label="@consent.name.label"></psk-input>
+      <div data-if="@isOrdersSelected">
+        <webc-container controller="OrdersController">
+          <div class="row mt-2">
+            <div class="col-md-3">
+              <div class="card p-3">Order Filters</div>
+            </div>
+            <div class="col-md-9">
+              <div class="card p-3">
+                <psk-input
+                  id="search-field"
+                  view-model="search"
+                  event-name="filters-changed"
+                  event-data="text"
+                ></psk-input>
+                <psk-condition condition="@ordersArrayNotEmpty">
+                  <div slot="condition-true">
+                    <webc-template template="table-template" data-view-model="@"></webc-template>
+                  </div>
+                  <div slot="condition-false">
+                    <div>No orders available.</div>
+                  </div>
+                </psk-condition>
+              </div>
+            </div>
+          </div>
+        </webc-container>
+      </div>
+
+      <div data-if="@isShipmentsSelected">
+        <div class="row mt-2">
+          <div class="col-md-3">
+            <div class="card p-3">Shipments Filters</div>
+          </div>
+          <div class="col-md-9">
+            <div class="card p-3">Shipments</div>
+          </div>
+        </div>
+      </div>
+
+      <div data-if="@isKitsSelected">
+        <div class="row mt-2">
+          <div class="col-md-3">
+            <div class="card p-3">Kits Filters</div>
+          </div>
+          <div class="col-md-9">
+            <div class="card p-3">Kits</div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <psk-tab-navigator default="0">
-      <!-- *************** ORDERS ******************** -->
-      <psk-tab title="Orders">Orders2</psk-tab>
-
-      <!-- *************** SHIPMENTS ******************** -->
-      <psk-tab title="Shipments">Shipments</psk-tab>
-
-      <!-- *************** KITS ******************** -->
-      <psk-tab title="Kits">Kits</psk-tab>
-
-      <!-- <psk-tab title="Participants">
-                <webc-container controller="TrialParticipantsController">
-                  <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 mb-3" style="margin-bottom: 20px">
-                    <div class="d-flex flex-column">
-                      <psk-input id="search-field-participants" view-model="search" event-name="filters-changed"></psk-input>
-                    </div>
-                  </div>
-          
-                  <psk-condition condition="@participantsArrayNotEmpty">
-                    <div slot="condition-true">
-                      <webc-template template="table-template" data-view-model="@"></webc-template>
-                    </div>
-                    <div slot="condition-false">
-                      <div>No participants available.</div>
-                    </div>
-                  </psk-condition>
-                </webc-container>
-              </psk-tab>
-          
-              <psk-tab title="Inform Consents">
-                <webc-container controller="TrialConsentsController">
-                  <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 mb-3" style="margin-bottom: 20px">
-                    <div class="d-flex flex-column">
-                      <psk-input id="search-field-consents" view-model="search" event-name="filters-changed"></psk-input>
-                    </div>
-                    <button class="btn btn-primary" data-tag="add-consent">Add consent</button>
-                  </div>
-                  <psk-condition condition="@consentsArrayNotEmpty">
-                    <div slot="condition-true">
-                      <webc-template template="table-template" data-view-model="@"></webc-template>
-                    </div>
-                    <div slot="condition-false">
-                      <div>No consents available.</div>
-                    </div>
-                  </psk-condition>
-                </webc-container>
-              </psk-tab> -->
-    </psk-tab-navigator>
-
-    <!--        <div style="width:100%; text-align:center;margin-top:50px;">-->
-
-    <!--            <div class="search-bar-holder">-->
-    <!--                &lt;!&ndash; Search Bar &ndash;&gt;-->
-    <!--                <input type="search" class="search-bar" name="search" placeholder="Search..." data-view-model="@search">-->
-    <!--            </div>-->
-
-    <!--            <webc-link tag="initiate_order" class="rectangle-cardbox-menu-item">-->
-    <!--                Initiate Order-->
-    <!--            </webc-link>-->
-
-    <!--            <webc-link tag="dashboard" class="rectangle-cardbox-menu-item">-->
-    <!--                Dashboard-->
-    <!--            </webc-link>-->
-
-    <!--            <webc-link tag="pending_actions" class="rectangle-cardbox-menu-item">-->
-    <!--                Pending Actions-->
-    <!--            </webc-link>-->
-    <!--        </div>-->
   </psk-layout>
 </webc-container>

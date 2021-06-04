@@ -1,5 +1,5 @@
 {
-  "theme": "pdm-theme",
+  "theme": "blue-fluorite-theme",
   "enableTranslations": true,
   "pagesFallback": {
     "name": "Test"

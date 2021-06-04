@@ -2,33 +2,41 @@ const { WebcController } = WebCardinal.controllers;
 import OrdersService from '../services/OrdersService.js';
 
 export default class DashboardController extends WebcController {
-    name = {
-        label: 'Name',
-        name: 'name',
-        required: true,
-        placeholder: 'Please insert a name...',
-        value: '',
-      };
+  constructor(...props) {
+    super(...props);
 
-    constructor(...props) {
+    this.ordersService = new OrdersService(this.DSUStorage);
 
-        super(...props);
+    this.model = {
+      tabNavigator: {
+        selected: '0',
+      },
+    };
 
-        this.ordersService = new OrdersService(this.DSUStorage);
+    this.init();
 
-        this.model = {
-            name: "hi",
-            search: "",
-            dashboard_menu : [
-                { name: "Initiate Order" , icon: "" , url : "/initiate-order" , tag: "initiate_order" },
-                { name: "Dashboard" , icon: "" , url : "/dashboard", tag: "dashboard" },
-                { name: "Pending Actions" , icon: "" , url : "/pending-actions", tag: "pending_actions" }
-            ],
-            consent: {
-                name: this.name,
-              },
-        };
-    }
+    this.attachAll();
+  }
 
+  init() {}
 
+  attachAll() {
+    this.model.addExpression(
+      'isOrdersSelected',
+      () => this.model.tabNavigator.selected === '0',
+      'tabNavigator.selected'
+    );
+    this.model.addExpression(
+      'isShipmentsSelected',
+      () => this.model.tabNavigator.selected === '1',
+      'tabNavigator.selected'
+    );
+    this.model.addExpression('isKitsSelected', () => this.model.tabNavigator.selected === '2', 'tabNavigator.selected');
+
+    this.onTagClick('change-tab', async (model, target, event) => {
+      document.getElementById(`tab-${this.model.tabNavigator.selected}`).classList.remove('active');
+      this.model.tabNavigator.selected = target.getAttribute('data-custom');
+      document.getElementById(`tab-${this.model.tabNavigator.selected}`).classList.add('active');
+    });
+  }
 }
