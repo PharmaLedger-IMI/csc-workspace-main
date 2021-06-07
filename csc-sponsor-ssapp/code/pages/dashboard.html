@@ -37,7 +37,36 @@
         <webc-container controller="OrdersController">
           <div class="row mt-2">
             <div class="col-md-3">
-              <div class="card p-3">Order Filters</div>
+              <div class="card p-3">
+                <button id="filter-" class="btn-side-bare selected" data-tag="filters-cleared" data-custom="">
+                  All Orders
+                </button>
+                <button id="filter-Initiated" class="btn-side-bare" data-tag="filters-changed" data-custom="Initiated">
+                  Initiated
+                </button>
+                <button
+                  id="filter-ReviewedByCMO"
+                  class="btn-side-bare"
+                  data-tag="filters-changed"
+                  data-custom="ReviewedByCMO"
+                >
+                  Reviewed by CMO
+                </button>
+                <button
+                  id="filter-ReviewedBySponsor"
+                  class="btn-side-bare"
+                  data-tag="filters-changed"
+                  data-custom="ReviewedBySponsor"
+                >
+                  Reviewed by Sponsor
+                </button>
+                <button id="filter-Approved" class="btn-side-bare" data-tag="filters-changed" data-custom="Approved">
+                  Approved
+                </button>
+                <button id="filter-Canceled" class="btn-side-bare" data-tag="filters-changed" data-custom="Canceled">
+                  Canceled
+                </button>
+              </div>
             </div>
             <div class="col-md-9">
               <div class="card p-3">

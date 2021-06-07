@@ -44,11 +44,13 @@ export default class OrdersController extends WebcController {
 
     this.model = {
       statuses: this.statuses,
+      filter: '',
       search: this.search,
       orders: [],
       pagination: this.pagination,
       headers: this.headers,
       type: 'orders',
+      clearButtonDisabled: true,
       tableLength: this.headers.length,
     };
 
@@ -80,14 +82,11 @@ export default class OrdersController extends WebcController {
   filterData() {
     let result = this.orders;
 
-    // if (this.model.countries.value) {
-    //   result = result.filter((x) => x.countries.includes(this.model.countries.value));
-    // }
-    // if (this.model.statuses.value) {
-    //   result = result.filter((x) => x.status === this.model.statuses.value);
-    // }
+    if (this.model.filter) {
+      result = result.filter((x) => x.status === orderStatusesEnum[this.model.filter]);
+    }
     if (this.model.search.value && this.model.search.value !== '') {
-      result = result.filter((x) => x.name.toUpperCase().search(this.model.search.value.toUpperCase()) !== -1);
+      result = result.filter((x) => x.orderId.toUpperCase().search(this.model.search.value.toUpperCase()) !== -1);
     }
 
     this.setOrdersModel(result);
@@ -122,12 +121,22 @@ export default class OrdersController extends WebcController {
       });
     });
 
-    this.on('filters-changed', async (event) => {
-      this.model.clearButtonDisabled = false;
-      this.filterData();
+    this.onTagClick('filters-changed', async (model, target, event) => {
+      const selectedFilter = target.getAttribute('data-custom') || null;
+      if (selectedFilter) {
+        console.log(`filter-${this.model.filter}`);
+        document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
+        this.model.filter = selectedFilter;
+        document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
+        this.model.clearButtonDisabled = false;
+        this.filterData();
+      }
     });
 
     this.onTagClick('filters-cleared', async (event) => {
+      document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
+      this.model.filter = '';
+      document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
       this.model.clearButtonDisabled = true;
       this.model.search.value = null;
       this.filterData();
