@@ -40,7 +40,7 @@
       "actions": [
         {
           "type": "execute",
-          "cmd": "cd privatesky && npm run build && npm run prepare-release"
+          "cmd": "cd privatesky && npm run build"
         }
       ]
     },
