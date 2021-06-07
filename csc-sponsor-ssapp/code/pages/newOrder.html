@@ -155,13 +155,29 @@
                             <input class="form-control" type="text" name="@form.inputs.site_country.name" placeholder="@form.inputs.site_country.placeholder" value="@form.inputs.site_country.value" required="@form.inputs.site_country.required">
                         </div>
 
-                        <!-- Keep Between -->
-                        <div class="form-group">
-                            <!-- Label -->
-                            <label for="@form.inputs.keep_between_temperature.name">{{@form.inputs.keep_between_temperature.label}}</label>
-                            <!--Input -->
-                            <input type="range" class="form-control-range" name="@form.inputs.keep_between_temperature.name" id="@form.inputs.keep_between_temperature.name" value="@form.inputs.keep_between_temperature.value">
+
+                        <!-- Temperature -->
+                        <div class="row">
+                            <div class="col-6">
+                                <!-- Keep Between -->
+                                <div class="form-group">
+                                    <!-- Label -->
+                                    <label for="@form.inputs.keep_between_temperature.min.name">{{@form.inputs.keep_between_temperature.min.label}}</label>
+                                    <!--Input -->
+                                    <input type="text" class="form-control" name="@form.inputs.keep_between_temperature.min.name" id="@form.inputs.keep_between_temperature.min.name" value="@form.inputs.keep_between_temperature.min.value">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <!-- Keep Between -->
+                                <div class="form-group">
+                                    <!-- Label -->
+                                    <label for="@form.inputs.keep_between_temperature.max.name">{{@form.inputs.keep_between_temperature.max.label}}</label>
+                                    <!--Input -->
+                                    <input type="text" class="form-control" name="@form.inputs.keep_between_temperature.max.name" id="@form.inputs.keep_between_temperature.max.name" value="@form.inputs.keep_between_temperature.max.value">
+                                </div>
+                            </div>
                         </div>
+
 
                         <!-- Temperature Comments -->
                         <div class="form-group">
@@ -191,10 +207,13 @@
                 <!-- Attach Documents-->
                 <div class="row" style="padding: 50px 0px;">
                     <div class="col-12 text-right">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="customFile">
-                            <label class="custom-file-label" for="customFile" style="text-align: left">Choose file</label>
-                        </div>
+<!--                        <div class="custom-file">-->
+<!--                            <input type="file" class="custom-file-input" id="customFile">-->
+<!--                            <label class="custom-file-label" for="customFile" style="text-align: left">Choose file</label>-->
+<!--                        </div>-->
+                        <psk-files-chooser style="margin: 10px" view-model="form.attachment" event-name="add-file"> </psk-files-chooser>
+
+
                         <p>Maximum upload file size: 64MB</p>
                     </div>
                 </div>
@@ -447,6 +466,31 @@
                         <!-- Break -->
                         <div class="row"><div class="col-12"><br></div></div>
 
+
+                        <div class="row" style="margin-top: -15px; margin-bottom: -15px;">
+                            <div class="col-6">
+                                <!-- Keep Between -->
+                                <div class="form-group">
+                                    <!-- Label -->
+                                    <label for="@form.inputs.keep_between_temperature.min.name">{{@form.inputs.keep_between_temperature.min.label}}</label>
+                                    <!--Input -->
+                                    <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature.min.name"  value="@form.inputs.keep_between_temperature.min.value" disabled>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <!-- Keep Between -->
+                                <div class="form-group">
+                                    <!-- Label -->
+                                    <label for="@form.inputs.keep_between_temperature.max.name">{{@form.inputs.keep_between_temperature.max.label}}</label>
+                                    <!--Input -->
+                                    <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature.max.name"  value="@form.inputs.keep_between_temperature.max.value" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
                         <!-- Site Country -->
                         <div class="row">
                             <!--Label -->
@@ -469,10 +513,10 @@
 
                 <div class="row">
                     <div class="col-6 text-center">
-                        <button>Clear Form</button>
+                        <button class="reset-button" data-tag="form_reset" >Clear Form</button>
                     </div>
                     <div class="col-6 text-center">
-                        <button>Submit</button>
+                        <button class="submit-button" data-tag="form_submit" >Submit</button>
                     </div>
                 </div>
             </div>

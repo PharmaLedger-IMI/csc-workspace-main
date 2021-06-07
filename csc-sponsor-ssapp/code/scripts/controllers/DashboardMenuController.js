@@ -6,37 +6,60 @@ export default class DashboardMenuController extends WebcController {
 
         super(...props);
 
+        console.log(this.history);
 
         this.model = {
             menu_items : [
-                { name: "Dashboard" , url : "/" , id: "menu-dashboard"},
-                { name: "New Order" , url : "/new-order", id: "menu-new-order"},
+                { name: "Dashboard" ,     url : "/" , id: "menu-dashboard"},
+                { name: "New Order" ,     url : "/new-order", id: "menu-new-order"},
                 { name: "Notifications" , url : "/notifications", id: "menu-notifications"},
             ]
         }
-
-        //For every menu item check which one is the active and add the class
-        if(this.model.menu_items){
-            this.model.menu_items.forEach( (item) => {
-                if(this.history.location.pathname === item.url){
-                    console.log("ITEM::", item.id);
-                    makeMenuActive(item.id);
-                }
-                else{
-                    makeMenuInActive(item.id);
-                }
-            })
+        if(this.history.location.pathname === '/'){
+            makeMenuActive('menu-dashboard');
+            makeMenuInActive('menu-new-order');
+            makeMenuInActive('menu-notifications');
         }
+
+        if(this.history.location.pathname === '/new-order'){
+            makeMenuInActive('menu-dashboard');
+            makeMenuActive('menu-new-order');
+            makeMenuInActive('menu-notifications');
+        }
+
+        if(this.history.location.pathname === '/notifications'){
+            makeMenuInActive('menu-dashboard');
+            makeMenuInActive('menu-new-order');
+            makeMenuActive('menu-notifications');
+        }
+
+        // //For every menu item check which one is the active and add the class
+        // if(this.model.menu_items){
+        //     this.model.menu_items.forEach( (item) => {
+        //         // if(this.history.location.pathname === item.url){
+        //         //     console.log("URL" , this.history.location.pathname);
+        //         //     makeMenuActive(item.id);
+        //         // }
+        //         // else{
+        //         //     makeMenuInActive(item.id);
+        //         // }
+        //
+        //
+        //     })
+        // }
 
         //Add active menu class to element
         function makeMenuActive( element ){
+            console.log("Making ACTIVE:" , element);
             document.getElementById(element).classList.add("dashboard-tab-active");
         }
 
         //Remove active menu class to element
         function makeMenuInActive( element ){
+            console.log("Making INACTIVE:" , element);
             document.getElementById(element).classList.remove("dashboard-tab-active");
         }
+
     }
 
 

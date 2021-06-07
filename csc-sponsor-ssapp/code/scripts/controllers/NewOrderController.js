@@ -107,11 +107,20 @@ export default class NewOrderController extends WebcController {
                         value: ''
                     },
                     keep_between_temperature: {
-                        label: "Keep Between (°C)",
-                        name: "keep_between_temperature",
-                        required: true,
-                        placeholder: "",
-                        value: ''
+                        min: {
+                            label: "Min Temperature (°C)",
+                            name: "keep_between_temperature_min",
+                            required: true,
+                            placeholder: "",
+                            value: ''
+                        },
+                        max: {
+                            label : "Max Temperature (°C)",
+                            name: "keep_between_temperature_max",
+                            required: true,
+                            placeholder: "",
+                            value: ''
+                        }
                     },
                     add_comment: {
                         label: "Add a Comment",
@@ -120,6 +129,14 @@ export default class NewOrderController extends WebcController {
                         placeholder: "Add a comment....",
                         value: ''
                     }
+                },
+                docs: {},
+                attachment: {
+                    label: 'Select files',
+
+                    listFiles: true,
+                    filesAppend: false,
+                    files: [],
                 },
                 documents:[
                     { name: "Document Name 1.pdf" , attached_by : "Novartis" , date: "03-06-2021, 00:00" , link : ""},
@@ -138,13 +155,31 @@ export default class NewOrderController extends WebcController {
             "form.comments.length"
         );
 
+        this.on('add-file', (event) => {
+            if (event.data) this.docs = event.data;
+        });
 
         setTimeout( () => {
-            const readableContainer = this.element.querySelector('#target_cmo_id');
 
-            readableContainer.addEventListener("change", (event)=>{this.onChange(event)});
+            // Data Bind Event
+            const targetCmoId = this.element.querySelector('#target_cmo_id');
+            targetCmoId.addEventListener("change", (event)=>{this.onChange(event, 'target_cmo_id')});
 
-        },1000);
+            // Data Bind Event
+            const siteId = this.element.querySelector('#site_id');
+            siteId.addEventListener("change", (event)=>{this.onChange(event , 'site_id')});
+
+            // Data Bind Event
+            const deliveryDate = this.element.querySelector('#delivery_date');
+            deliveryDate.addEventListener("change", (event)=>{this.updateDate(event);});
+
+            // Data Bind Event
+            const deliveryTime = this.element.querySelector('#delivery_time');
+            deliveryTime.addEventListener("change", (event)=>{this.updateTime(event);});
+
+
+
+        },500);
 
 
         //When you click step 1
@@ -196,6 +231,92 @@ export default class NewOrderController extends WebcController {
         });
 
 
+        //When you submit form
+        this.onTagEvent('form_submit', 'click', (e) => {
+
+            this.showErrorModal(
+                new Error(`Are you sure you want to submit the order?`), // An error or a string, it's your choice
+                'Submit Order',
+                onSubmitYesResponse,
+                onNoResponse,
+                {
+                    disableExpanding: true,
+                    cancelButtonText: 'No',
+                    confirmButtonText: 'Yes',
+                    id: 'error-modal'
+                }
+            );
+
+
+        });
+
+        const onSubmitYesResponse = () => {
+            const payload = {};
+
+            if(this.model.form){
+                if(this.model.form.inputs){
+                    let keys = Object.keys(this.model.form.inputs);
+                    if(keys){
+                        keys.forEach( (key) => {
+
+                            if(key === 'delivery_date'){
+                                payload['delivery_date'] = this.getDateTime();
+                            }else if(key === 'keep_between_temperature'){
+                                payload['keep_between_temperature'] = this.getTemperature();
+                            }else{
+                                payload[key] = this.model.form.inputs[key].value;
+                            }
+                        })
+                    }
+                }
+            }
+
+            console.log("SUBMIT : Payload: " , payload);
+
+            this.createWebcModal({
+                template: "orderCreatedModal",
+                controller: "OrderCreatedModalController",
+                disableBackdropClosing: false,
+                disableFooter: true,
+                disableHeader: true,
+                disableExpanding: true,
+                disableClosing: true,
+                disableCancelButton: true,
+                expanded: false,
+                centered: true
+            });
+
+        };
+
+
+        const onNoResponse = () => console.log('Why not?');
+
+        //When you submit form
+        this.onTagEvent('form_reset', 'click', (e) => {
+
+            const payload = {};
+
+            if(this.model.form){
+                if(this.model.form.inputs){
+                    let keys = Object.keys(this.model.form.inputs);
+                    if(keys){
+                        keys.forEach( (key) => {
+
+                            if(key === 'delivery_date'){
+                                payload['delivery_date'] = this.getDateTime();
+                            }else if(key === 'keep_between_temperature'){
+                                payload['keep_between_temperature'] = this.getTemperature();
+                            }else{
+                                this.model.form.inputs[key].value = "";
+                            }
+                        })
+                    }
+                }
+            }
+            console.log("SUBMIT : Payload: " , payload);
+
+        });
+
 
         //Add active menu class to element
         function makeStepActive( step_id, step_holder_id , e ) {
@@ -234,10 +355,30 @@ export default class NewOrderController extends WebcController {
 
     }
 
-     onChange(event){
-        this.model.form.inputs.target_cmo_id.value = event.target.value;
+     onChange(event, id ){
+         this.model.form.inputs[id].value = event.target.value;
     }
 
 
+    updateDate(event){
+        const value = event.target.value;
+        this.model.form.inputs.delivery_date.date.value = value;
+    }
+
+    updateTime(event){
+        const value = event.target.value;
+        this.model.form.inputs.delivery_date.time.value = value;
+    }
+
+    getDateTime(){
+        return this.model.form.inputs.delivery_date.date.value + ' ' + this.model.form.inputs.delivery_date.time.value;
+    }
+
+    getTemperature(){
+        return {
+            min: this.model.form.inputs.keep_between_temperature.min.value,
+            max: this.model.form.inputs.keep_between_temperature.max.value
+        };
+    }
 
 }
