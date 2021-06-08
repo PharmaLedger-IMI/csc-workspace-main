@@ -157,14 +157,17 @@ export default class SingleOrderController extends WebcController {
 
         this.onTagEvent('order_details_accordion', 'click', (e) => {
             this.toggleAccordionItem("order_details_accordion");
+            this.model.accordion.order_details.isOpened = !this.model.accordion.order_details.isOpened;
         });
 
         this.onTagEvent('attached_documents_accordion', 'click', (e) => {
             this.toggleAccordionItem("attached_documents_accordion");
+            this.model.accordion.attached_documents.isOpened = !this.model.accordion.attached_documents.isOpened;
         });
 
         this.onTagEvent('order_comments_accordion', 'click', (e) => {
             this.toggleAccordionItem("order_comments_accordion");
+            this.model.accordion.order_comments.isOpened = !this.model.accordion.order_comments.isOpened;
         });
 
 
@@ -188,7 +191,6 @@ export default class SingleOrderController extends WebcController {
             panel.style.maxHeight = "1000px";
         }
 
-        this.closeAllExcept(el);
 
     }
 
@@ -199,12 +201,11 @@ export default class SingleOrderController extends WebcController {
 
         element.classList.add('accordion-item-active');
         icon.classList.add('rotate-icon');
+
         const panel = element.nextElementSibling;
-        if (panel.style.maxHeight) {
-            panel.style.maxHeight = "0px";
-        } else {
-            panel.style.maxHeight = "1000px";
-        }
+        panel.style.maxHeight = "1000px";
+
+        this.closeAllExcept(el);
     }
 
     closeAccordionItem( el ) {
@@ -213,12 +214,9 @@ export default class SingleOrderController extends WebcController {
 
         element.classList.remove('accordion-item-active');
         icon.classList.remove('rotate-icon');
+
         const panel = element.nextElementSibling;
-        if (panel.style.maxHeight === '1000px') {
-            panel.style.maxHeight = "0px";
-        } else {
-            panel.style.maxHeight = "1000px";
-        }
+        panel.style.maxHeight = "0px"
     }
 
     closeAllExcept(el){

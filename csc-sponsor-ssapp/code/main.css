@@ -192,6 +192,18 @@
     box-shadow: 0px 0px 48px -19px rgba(0,0,0,0.75);
 }
 
+.single-order-navigation-holder{
+    width: 1000px;
+    height: 20px;
+    margin: 0 auto;
+    position: absolute;
+    left: calc( (100% - 1000px) / 2);
+    top: 95px;
+    display: inline-block;
+    text-align: left;
+    font-size: 13px;
+    color: #00345b;
+}
 
 .single-order-main-holder{
     width: 1000px;
@@ -465,7 +477,6 @@
 }
 
 .accordion-item-holder{
-    padding: 0 18px;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
@@ -473,4 +484,12 @@
     width: 100%;
     border: 1px solid #f3f3f3;
     border-top: 0;
+}
+
+.comment-text{
+    font-size:14px;
+}
+.comment-date-text{
+    font-size: 12px;
+    color: #c5c5c5;
 }
