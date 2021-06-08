@@ -114,17 +114,15 @@ export default class OrdersController extends WebcController {
     });
 
     this.on('view-order', async (event) => {
-      console.log(this.orders.find((x) => x.id === event.data));
       this.navigateToPageTag('order', {
         id: event.data,
-        keySSI: this.orders.find((x) => x.id === event.data).keySSI,
+        keySSI: this.orders.find((x) => x.orderId === event.data).orderSSI,
       });
     });
 
     this.onTagClick('filters-changed', async (model, target, event) => {
       const selectedFilter = target.getAttribute('data-custom') || null;
       if (selectedFilter) {
-        console.log(`filter-${this.model.filter}`);
         document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
         this.model.filter = selectedFilter;
         document.getElementById(`filter-${this.model.filter}`).classList.add('selected');

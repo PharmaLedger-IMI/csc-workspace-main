@@ -20,9 +20,14 @@ export default class OrdersService extends DSUService {
   }
 
   async getOrder(keySSI) {
-    const result = await this.getEntityAsync(keySSI);
-    console.log(result);
-    return result;
+    const order = await this.getEntityAsync(keySSI);
+    const status = await this.getStatuses(keySSI);
+    return { ...order, status: status.status };
+  }
+
+  async getStatuses(orderSSI) {
+    const result = await this.getEntitiesAsync('/' + this.ORDERS_TABLE + '/' + orderSSI + '/status');
+    return result[0];
   }
 
   async createOrder(data) {
@@ -54,7 +59,6 @@ export default class OrdersService extends DSUService {
     const order = await this.saveEntityAsync(model);
 
     const path = '/' + this.ORDERS_TABLE + '/' + order.uid + '/' + 'status';
-    debugger;
     await this.mountEntityAsync(statusDsu.uid, path);
 
     const result = await this.addOrderToDB({
