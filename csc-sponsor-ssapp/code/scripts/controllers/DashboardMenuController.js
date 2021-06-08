@@ -22,15 +22,15 @@ export default class DashboardMenuController extends WebcController {
         }
 
         if(this.history.location.pathname === '/new-order'){
-            makeMenuInActive('menu-dashboard');
             makeMenuActive('menu-new-order');
+            makeMenuInActive('menu-dashboard');
             makeMenuInActive('menu-notifications');
         }
 
         if(this.history.location.pathname === '/notifications'){
+            makeMenuActive('menu-notifications');
             makeMenuInActive('menu-dashboard');
             makeMenuInActive('menu-new-order');
-            makeMenuActive('menu-notifications');
         }
 
         // //For every menu item check which one is the active and add the class

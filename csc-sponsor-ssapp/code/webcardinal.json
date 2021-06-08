@@ -4,6 +4,7 @@
   "pagesFallback": {
     "name": "Test"
   },
+  "translations" : false,
   "pages": [
     {
       "name": "Dashboard",
@@ -39,6 +40,13 @@
       "src": "newOrder.html",
       "indexed": false,
       "tag": "new_order"
+    },
+    {
+      "name": "Single Order",
+      "path": "./order",
+      "src": "singleOrder.html",
+      "indexed": false,
+      "tag": "single_order"
     }
   ]
 }
