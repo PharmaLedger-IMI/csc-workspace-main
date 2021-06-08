@@ -1,10 +1,13 @@
 const { WebcController } = WebCardinal.controllers;
+import OrdersService from '../services/OrdersService.js';
 
 export default class NewOrderController extends WebcController {
 
     constructor(...props) {
 
         super(...props);
+
+        this.ordersService = new OrdersService(this.DSUStorage);
 
         this.model = {
             wizard_form: [
@@ -250,7 +253,7 @@ export default class NewOrderController extends WebcController {
 
         });
 
-        const onSubmitYesResponse = () => {
+        const onSubmitYesResponse = async () => {
             const payload = {};
 
             if(this.model.form){
@@ -269,9 +272,14 @@ export default class NewOrderController extends WebcController {
                         })
                     }
                 }
+
+                console.log("SUBMIT : Payload: " , payload);
+    
+                const result = await this.ordersService.createOrder(payload);
+    
+                console.log(result);
             }
 
-            console.log("SUBMIT : Payload: " , payload);
 
             this.createWebcModal({
                 template: "orderCreatedModal",

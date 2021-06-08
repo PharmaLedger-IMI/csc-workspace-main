@@ -91,12 +91,16 @@ export default class DSUService {
   mountEntity(keySSI, path, callback) {
     [path, callback] = this.swapParamsIfPathIsMissing(path, callback);
     this.DSUStorage.call('mount', path, keySSI, (err) => {
-      this.getEntity(keySSI, (err, entity) => {
-        if (err) {
-          return callback(err, undefined);
-        }
-        callback(undefined, entity);
-      });
+      if (err) {
+        return callback(err);
+      }
+      callback(undefined);
+      // this.getEntity(keySSI, (err, entity) => {
+      //   if (err) {
+      //     return callback(err, undefined);
+      //   }
+      //   callback(undefined, entity);
+      // });
     });
   }
 
