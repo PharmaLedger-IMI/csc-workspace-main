@@ -1,6 +1,6 @@
 import getSharedStorage from './SharedDBStorageService.js';
 import DSUService from './DSUService.js';
-import { demoData } from '../constants/order.js';
+import { demoData, orderStatusesEnum } from '../constants/order.js';
 
 export default class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
@@ -12,8 +12,8 @@ export default class OrdersService extends DSUService {
   }
 
   async getOrders() {
-    // const result = await this.storageService.filter(this.ORDERS_TABLE);
-    return demoData;
+    const result = await this.storageService.filter(this.ORDERS_TABLE);
+    // return demoData;
     if (result) {
       return result.filter((x) => !x.deleted);
     } else return [];
@@ -21,19 +21,56 @@ export default class OrdersService extends DSUService {
 
   async getOrder(keySSI) {
     const result = await this.getEntityAsync(keySSI);
+    console.log(result);
     return result;
   }
 
   async createOrder(data) {
-    const order = await this.saveEntityAsync(data);
-    await this.addOrderToDB({
-      id: order.id,
-      keySSI: order.uid,
-      name: order.name,
-      status: order.status,
-      countries: order.countries,
+    const statusDsu = await this.saveEntityAsync(
+      {
+        status: orderStatusesEnum.Initiated,
+      },
+      '/statuses'
+    );
+
+    const model = {
+      sponsorId: data.sponsor_id,
+      targetCmoId: data.target_cmo_id,
+      studyId: data.study_id,
+      orderId: data.order_id,
+      siteId: data.site_id,
+      siteRegionId: data.site_region_id,
+      siteCountry: data.site_country,
+      temperatures: data.keep_between_temperature,
+      comments: data.add_comment,
+      kitIdList: data.kit_id_list,
+      temperature_comments: data.temperature_comments,
+      requestDate: new Date().toISOString(),
+      deliveryDate: data.delivery_date,
+      lastModified: new Date().toISOString(),
+      statusSSI: statusDsu.uid,
+    };
+
+    const order = await this.saveEntityAsync(model);
+
+    const path = '/' + this.ORDERS_TABLE + '/' + order.uid + '/' + 'status';
+    debugger;
+    await this.mountEntityAsync(statusDsu.uid, path);
+
+    const result = await this.addOrderToDB({
+      sponsorId: model.sponsorId,
+      studyId: model.studyId,
+      orderId: model.orderId,
+      siteId: model.siteId,
+      requestDate: model.requestDate,
+      deliveryDate: model.deliveryDate,
+      status: statusDsu.status,
+      statusSSI: statusDsu.uid,
+      orderSSI: order.uid,
+      lastModified: model.lastModified,
     });
-    return order;
+
+    return { ...order, status: statusDsu.status };
   }
 
   async deleteOrder(id) {
@@ -43,10 +80,12 @@ export default class OrdersService extends DSUService {
       ...selectedTrial,
       deleted: true,
     });
+
+    return;
   }
 
-  async addTrialToDB(data) {
-    const newRecord = await this.storageService.insertRecord(this.TRIALS_TABLE, data.id, data);
+  async addOrderToDB(data) {
+    const newRecord = await this.storageService.insertRecord(this.ORDERS_TABLE, data.orderId, data);
     return newRecord;
   }
 }
