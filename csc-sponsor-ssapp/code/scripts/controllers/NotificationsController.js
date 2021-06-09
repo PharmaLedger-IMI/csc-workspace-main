@@ -1,5 +1,7 @@
 const { WebcController } = WebCardinal.controllers;
 import NotificationsService from '../services/NotificationService.js';
+import eventBusService from '../services/EventBusService.js';
+import { Topics } from '../constants/topics.js';
 
 export default class NotificationsController extends WebcController {
   constructor(...props) {
@@ -42,7 +44,7 @@ export default class NotificationsController extends WebcController {
         const pk = this.model.notifications.find((x) => x.orderId === orderId).pk;
         await this.notificationsService.changeNotificationStatus(pk);
         this.getNotifications();
-        this.send('update-notifications-count', {});
+        eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
       }
     });
   }

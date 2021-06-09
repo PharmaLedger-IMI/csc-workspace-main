@@ -1,5 +1,7 @@
 const { WebcController } = WebCardinal.controllers;
 import NotificationsService from '../services/NotificationService.js';
+import eventBusService from '../services/EventBusService.js';
+import { Topics } from '../constants/topics.js';
 
 export default class DashboardMenuController extends WebcController {
 
@@ -80,11 +82,11 @@ export default class DashboardMenuController extends WebcController {
               return !!this.model.unread;
             },
             'unread'
-          );
+        );
 
-          this.on('update-notifications-count', (e) => {
+        eventBusService.addEventListener(Topics.RefreshNotifications, async (data) => {
             this.getNotificationsUnread();
-          });
+        });
     }
 
 
