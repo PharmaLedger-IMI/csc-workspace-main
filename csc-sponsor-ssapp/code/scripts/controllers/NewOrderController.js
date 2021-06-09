@@ -164,7 +164,7 @@ export default class NewOrderController extends WebcController {
 
             if(files){
                 files.forEach( (file) => {
-                    this.model.form.documents.push({ name: file.name , attached_by : "Novartis" , date: new Date().toDateString() , link : "" , file: file});
+                    this.model.form.documents.push({ name: file.name , attached_by : "Novartis" , date: new Date().toLocaleString() , link : "" , file: file});
                 })
             }
 
