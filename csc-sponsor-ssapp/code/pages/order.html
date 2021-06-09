@@ -24,7 +24,7 @@
           <div class="order-status-box order-status-blue">
             <div>Order Status:</div>
             <div><b>Initiated</b></div>
-            <div>06-May-2021, 00:00</div>
+            <div>{{@order.deliveryDate}}</div>
           </div>
         </div>
         <div class="col-4 text-center">
@@ -306,7 +306,7 @@
           </div>
           <div class="accordion-item-holder">
             <div class="row" style="    padding: 40px;">
-              <div data-for="@form.comments">
+              <div>
                 <div>
                   <div class="comment-date-text">{{@order.deliveryDate}}</div>
                   <div class="comment-text">{{@order.comments}}</div>
