@@ -493,3 +493,56 @@
     font-size: 12px;
     color: #c5c5c5;
 }
+
+.history-orders{
+    width: 100%;
+    font-size: 15px;
+    height: 40px;
+    padding: 0 20px;
+    background: #00345b;
+    padding-top: 5px;
+    text-align: center;
+    color: white;
+}
+
+.history-connector{
+    width: 3px;
+    height: 22px;
+    background: #00345b;
+    margin: 0 auto;
+}
+
+.history-status-element{
+    width: 100%;
+    font-size: 15px;
+    height: 64px;
+    padding: 0 20px;
+    padding-top: 13px;
+    text-align: center;
+    color: white;
+    border-radius: 25px;
+}
+
+.history-normal{
+    background:#4171b1;
+}
+
+.history-success{
+    background:#34a86b;
+}
+.history-orders svg{
+    width: 27px;
+    height: 27px;
+}
+.history-orders path {
+     fill: white;
+ }
+
+:host(.webc-modal-dialog) {
+
+}
+
+/* styling */
+#history-modal {
+    max-width: 100vh!important;
+}

@@ -89,14 +89,14 @@ export default class NewOrderController extends WebcController {
                         ]
                     },
                     site_region_id: {
-                        label: "Site Region ID (Autofilled)",
+                        label: "Site Region ID",
                         name: "site_region_id",
                         required: true,
                         placeholder: "",
                         value: ''
                     },
                     site_country: {
-                        label: "Site Country (Autofilled)",
+                        label: "Site Country",
                         name: "site_country",
                         required: true,
                         placeholder: "",
@@ -159,6 +159,10 @@ export default class NewOrderController extends WebcController {
         );
 
         this.on('add-file', (event) => {
+
+            console.log(event.data);
+
+            // { name: "Document Name 1.pdf" , attached_by : "Novartis" , date: "03-06-2021, 00:00" , link : ""}
             if (event.data) this.docs = event.data;
         });
 

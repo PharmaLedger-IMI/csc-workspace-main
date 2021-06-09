@@ -4,7 +4,7 @@
   "pagesFallback": {
     "name": "Test"
   },
-  "translations": false,
+  "translations": true,
   "pages": [
     {
       "name": "Dashboard",
@@ -47,6 +47,11 @@
       "src": "order.html",
       "tag": "order",
       "indexed": false
+    }
+  ],
+  "skins" : [
+    {
+      "name" : "en", "translations": true
     }
   ]
 }

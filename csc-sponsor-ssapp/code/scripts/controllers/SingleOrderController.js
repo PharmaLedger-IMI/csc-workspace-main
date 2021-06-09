@@ -1,4 +1,5 @@
 const { WebcController } = WebCardinal.controllers;
+import OrdersService from '../services/OrdersService.js';
 
 export default class SingleOrderController extends WebcController {
 
@@ -141,6 +142,16 @@ export default class SingleOrderController extends WebcController {
         };
 
 
+        let { id, keySSI } = this.history.location.state;
+        this.ordersService = new OrdersService(this.DSUStorage);
+
+        this.model.id = id;
+        this.model.keySSI = keySSI;
+
+        this.attachEvents();
+
+        this.init();
+
 
         //Init Check on Accordion Items
         if(this.model.accordion){
@@ -170,7 +181,9 @@ export default class SingleOrderController extends WebcController {
             this.model.accordion.order_comments.isOpened = !this.model.accordion.order_comments.isOpened;
         });
 
-
+        this.onTagEvent('history-button', 'click', (e) => {
+           this.onShowHistoryClick();
+        });
 
     }
 
@@ -240,8 +253,60 @@ export default class SingleOrderController extends WebcController {
     }
 
     onShowHistoryClick(){
+
+        this.createWebcModal({
+            template: "historyModal",
+            controller: "HistoryModalController",
+            model: { order: this.model.order},
+            disableBackdropClosing: false,
+            disableFooter: true,
+            disableHeader: true,
+            disableExpanding: true,
+            disableClosing: false,
+            disableCancelButton: true,
+            expanded: false,
+            centered: true,
+        });
+
         console.log("Show History Clicked");
     }
 
+
+
+    async init() {
+
+        const order = await this.ordersService.getOrder(this.model.keySSI);
+        this.model.order = order;
+        this.model.order.delivery_date = { date: this.getDate(this.model.order.deliveryDate) , time: this.getTime(this.model.order.deliveryDate)};
+        console.log('MODEL:', JSON.stringify(this.model.order, null, 2));
+
+        this.loadDataToInputs(order);
+
+        return;
+    }
+
+
+    loadDataToInputs( order ){
+        const el = document.getElementById("sponsorId");
+        console.log("Order" , order);
+        console.log("Element" , el);
+
+        if(order && el){
+            el.value = order.sponsorId;
+        }
+    }
+
+    attachEvents() {
+        return;
+    }
+
+
+    getDate( str){
+        return str.split(" ")[0];
+    }
+
+    getTime( str){
+        return str.split(" ")[1];
+    }
 
 }

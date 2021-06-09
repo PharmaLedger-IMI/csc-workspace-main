@@ -1,6 +1,5 @@
 // eslint-disable-next-line no-undef
 const { WebcController } = WebCardinal.controllers;
-import OrdersService from '../services/OrdersService.js';
 
 export default class OrderController extends WebcController {
   constructor(...props) {
