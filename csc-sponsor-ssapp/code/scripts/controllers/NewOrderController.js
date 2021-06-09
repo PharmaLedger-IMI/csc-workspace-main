@@ -1,5 +1,7 @@
 const { WebcController } = WebCardinal.controllers;
 import OrdersService from '../services/OrdersService.js';
+import eventBusService from '../services/EventBusService.js';
+import { Topics } from '../constants/topics.js';
 
 export default class NewOrderController extends WebcController {
 
@@ -282,6 +284,8 @@ export default class NewOrderController extends WebcController {
                 const result = await this.ordersService.createOrder(payload);
     
                 console.log(result);
+
+                eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
             }
 
 

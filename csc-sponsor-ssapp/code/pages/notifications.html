@@ -1,22 +1,53 @@
 <webc-container controller="NotificationsController">
-    <psk-layout columns="1">
+  <psk-layout columns="1">
+    <div class="header">
+      <div class="header-left">
+        <img src="../resources/images/pl_logo.png" />
+        <div class="header-role-title">SPONSOR</div>
+      </div>
+      <div class="header-right">
+        <div class="header-username">CMOName1</div>
+      </div>
+    </div>
 
+    <webc-template template="dashboard-menu"></webc-template>
 
-        <div class="header">
-            <div class="header-left">
-                <img src="../resources/images/pl_logo.png">
-                <div class="header-role-title">SPONSOR</div>
-            </div>
-            <div class="header-right">
-                <div class="header-username">
-                    CMOName1
-                </div>
-            </div>
+    <div class="row ml-5 mr-5">
+      <div class="col-md-12 mb-2">
+        <psk-layout class="" columns="6">
+          <div></div>
+          <div>Notification</div>
+          <div>By</div>
+          <div>Role</div>
+          <div>Date/Time</div>
+          <div>View</div>
+        </psk-layout>
+      </div>
+    </div>
+    <div data-if="@test">
+      <div slot="true" class="">
+        <div data-for="@notifications" class="row ml-5 mr-5">
+          <div class="col-md-12 card mb-2">
+            <psk-layout class="align-items-center" columns="6">
+              <div data-if="@read" class="align-items-center">
+                <button class="btn btn-bare" slot="true" data-tag="mark-order" data-custom="@orderId">
+                  <i class="fas fa-check"></i>
+                </button>
+                <button class="btn btn-bare" slot="false" data-tag="mark-order" data-custom="@orderId">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+              <div>Order [{{@orderId}}]: {{@status}}</div>
+              <div>{{ @did}}</div>
+              <div>{{ @role }}</div>
+              <div>{{ @date }}</div>
+              <button data-tag="view-order" data-custom="@orderId" class="btn btn-bare">
+                <i class="fas fa-search"></i>
+              </button>
+            </psk-layout>
+          </div>
         </div>
-
-        <webc-template template="dashboard-menu"></webc-template>
-        <webc-link tag="single_order">Single Order</webc-link>
-
-        NOTIFICATIONS
-    </psk-layout>
+      </div>
+    </div>
+  </psk-layout>
 </webc-container>
