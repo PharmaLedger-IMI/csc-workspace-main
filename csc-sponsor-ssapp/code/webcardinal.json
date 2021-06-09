@@ -49,9 +49,6 @@
       "indexed": false
     }
   ],
-  "skins" : [
-    {
-      "name" : "en", "translations": true
-    }
-  ]
+  "skin" : "default"
+
 }

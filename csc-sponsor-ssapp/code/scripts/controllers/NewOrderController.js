@@ -144,8 +144,6 @@ export default class NewOrderController extends WebcController {
                     files: [],
                 },
                 documents:[
-                    { name: "Document Name 1.pdf" , attached_by : "Novartis" , date: "03-06-2021, 00:00" , link : ""},
-                    { name: "Document Name 2.pdf" , attached_by : "Novartis" , date: "03-06-2021, 00:25" , link : ""},
                 ],
                 comments:[
                     { content: "This is the comment that sponsor user wrote." , date: "03-06-2021, 01:00" }
@@ -162,9 +160,14 @@ export default class NewOrderController extends WebcController {
 
         this.on('add-file', (event) => {
 
-            console.log(event.data);
+            const files = event.data;
 
-            // { name: "Document Name 1.pdf" , attached_by : "Novartis" , date: "03-06-2021, 00:00" , link : ""}
+            if(files){
+                files.forEach( (file) => {
+                    this.model.form.documents.push({ name: file.name , attached_by : "Novartis" , date: new Date().toDateString() , link : "" , file: file});
+                })
+            }
+
             if (event.data) this.docs = event.data;
         });
 
@@ -278,6 +281,15 @@ export default class NewOrderController extends WebcController {
                         })
                     }
                 }
+
+                if(this.model.form.documents){
+                    payload["files"] = [];
+                    this.model.form.documents.forEach ((doc) => {
+                        payload["files"].push(doc.file);
+                    })
+                }
+
+
 
                 console.log("SUBMIT : Payload: " , payload);
     
