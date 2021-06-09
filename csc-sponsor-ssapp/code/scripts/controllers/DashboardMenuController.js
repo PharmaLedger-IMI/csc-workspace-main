@@ -1,4 +1,5 @@
 const { WebcController } = WebCardinal.controllers;
+import NotificationsService from '../services/NotificationService.js';
 
 export default class DashboardMenuController extends WebcController {
 
@@ -8,12 +9,15 @@ export default class DashboardMenuController extends WebcController {
 
         console.log(this.history);
 
+        this.notificationsService = new NotificationsService(this.DSUStorage);
+
         this.model = {
             menu_items : [
                 { name: "Dashboard" ,     url : "/" , id: "menu-dashboard"},
                 { name: "New Order" ,     url : "/new-order", id: "menu-new-order"},
                 { name: "Notifications" , url : "/notifications", id: "menu-notifications"},
-            ]
+            ],
+            unread: 0
         }
         if(this.history.location.pathname === '/'){
             makeMenuActive('menu-dashboard');
@@ -60,9 +64,28 @@ export default class DashboardMenuController extends WebcController {
             document.getElementById(element).classList.remove("dashboard-tab-active");
         }
 
+        this.getNotificationsUnread();
+        this.attachAll();
     }
 
+    async getNotificationsUnread() {
+        const unread = await this.notificationsService.getNumberOfUnreadNotifications();
+        this.model.unread = unread || 0;
+    }
 
+    attachAll() {
+        this.model.addExpression(
+            'isUnreadZero',
+            () => {
+              return !!this.model.unread;
+            },
+            'unread'
+          );
+
+          this.on('update-notifications-count', (e) => {
+            this.getNotificationsUnread();
+          });
+    }
 
 
 }

@@ -1,13 +1,16 @@
 import getSharedStorage from './SharedDBStorageService.js';
 import DSUService from './DSUService.js';
-import { demoData, orderStatusesEnum } from '../constants/order.js';
-
+import { orderStatusesEnum } from '../constants/order.js';
+import { Roles } from '../constants/roles.js';
+import NotificationsService from './NotificationService.js';
+import { NotificationTypes } from '../constants/notifications.js';
 export default class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
 
   constructor(DSUStorage) {
     super(DSUStorage, '/orders');
     this.storageService = getSharedStorage(DSUStorage);
+    this.notificationsService = new NotificationsService(DSUStorage);
     this.DSUStorage = DSUStorage;
   }
 
@@ -73,6 +76,20 @@ export default class OrdersService extends DSUService {
       orderSSI: order.uid,
       lastModified: model.lastModified,
     });
+
+    let notification = {
+      operation: NotificationTypes.UpdateOrderStatus,
+      orderId: model.orderId,
+      read: false,
+      status: orderStatusesEnum.Initiated,
+      keySSI: order.uid,
+      role: Roles.Sponsor,
+      did: '123-56',
+      date: new Date().toISOString(),
+    };
+
+    const resultNotification = await this.notificationsService.insertNotification(notification);
+    console.log('notification:', resultNotification, this.notificationsService);
 
     return { ...order, status: statusDsu.status };
   }
