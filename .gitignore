@@ -45,6 +45,16 @@ csc-sponsor-ssapp/docs
 csc-sponsor-ssapp/code/scripts/bundles
 csc-sponsor-ssapp/seed
 
+csc-site-ssapp/code/constitution
+csc-site-ssapp/docs
+csc-site-ssapp/code/scripts/bundles
+csc-site-ssapp/seed
+
+csc-cmo-ssapp/code/constitution
+csc-cmo-ssapp/docs
+csc-cmo-ssapp/code/scripts/bundles
+csc-cmo-ssapp/seed
+
 /webcardinal
 !/.github
 
