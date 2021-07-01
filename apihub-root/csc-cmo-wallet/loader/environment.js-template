@@ -1,0 +1,23 @@
+export default{
+  "appName": "unnamed",
+  "vault": "server",
+  "agent": "browser",
+  "system":   "any",
+  "browser":  "any",
+  "mode":  "dev-autologin",
+  "domain":  "default",
+  "stage":  "release",
+  "sw": true
+}
+
+/*
+*  Legenda for properties
+*
+*  mode:(dev-autologin, autologin, external-autologin, mobile-autologin, secure, dev-secure)
+*  vault:(server, browser)
+*  agent:(mobile, browser)
+*  system:(iOS, Android, any)
+*  browser:(Chrome, Firefox, any)
+*  stage:(development, release)
+*  sw:(true, false)
+*/

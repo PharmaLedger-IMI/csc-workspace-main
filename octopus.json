@@ -152,6 +152,44 @@
       ]
     },
     {
+      "name": "apihub-root/csc-cmo-wallet/loader",
+      "src": "https://github.com/PrivateSky/trust-loader.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/csc-cmo-wallet/loader && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/csc-cmo-wallet/loader && npm run build"
+        }
+      ]
+    },
+    {
+      "name": "apihub-root/csc-site-wallet/loader",
+      "src": "https://github.com/PrivateSky/trust-loader.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/csc-site-wallet/loader && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/csc-site-wallet/loader && npm run build"
+        }
+      ]
+    },
+    {
       "name": "Build and deploy PDM Trust Loader to Wholesaler and Pharmacy",
       "src": ".",
       "actions": [
@@ -332,6 +370,24 @@
       ]
     },
     {
+      "name": "csc-cmo-ssapp",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd csc-cmo-ssapp && npm install"
+        }
+      ]
+    },
+    {
+      "name": "csc-site-ssapp",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd csc-site-ssapp && npm install"
+        }
+      ]
+    },
+    {
       "name": "fgt-pharmacy-ssapp",
       "actions": [
         {
@@ -494,6 +550,66 @@
       ]
     },
     {
+      "name": "bind_csc_cmo_ssapp_to_wallet",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd csc-cmo-ssapp && npm run build"
+        },
+        {
+          "type": "copy",
+          "src": "./csc-cmo-ssapp/seed",
+          "target": "./apihub-root/csc-cmo-wallet/wallet-patch/seed",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "./csc-cmo-ssapp/seed",
+          "target": "./apihub-root/csc-sponsor-wallet/apps-patch/csc-cmo-ssapp/seed",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "execute",
+          "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-cmo-wallet/apps-patch/csc-cmo-ssapp/readme"
+        }
+      ]
+    },
+    {
+      "name": "bind_csc_site_ssapp_to_wallet",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd csc-site-ssapp && npm run build"
+        },
+        {
+          "type": "copy",
+          "src": "./csc-site-ssapp/seed",
+          "target": "./apihub-root/csc-site-wallet/wallet-patch/seed",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "./csc-site-ssapp/seed",
+          "target": "./apihub-root/csc-sponsor-wallet/apps-patch/csc-site-ssapp/seed",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "execute",
+          "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-site-wallet/apps-patch/csc-site-ssapp/readme"
+        }
+      ]
+    },
+    {
       "name": "bind_fgt_pharmacy_ssapp_to_wallet",
       "src": "",
       "actions": [
@@ -572,6 +688,14 @@
         {
           "type": "execute",
           "cmd": "cd apihub-root/csc-sponsor-wallet/loader && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/csc-cmo-wallet/loader && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/csc-site-wallet/loader && npm install"
         }
       ]
     }
@@ -747,6 +871,22 @@
           "type": "copy",
           "src": "csc-sponsor-ssapp/docs",
           "target": "docs/csc-sponsor-ssapp",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "csc-cmo-ssapp/docs",
+          "target": "docs/csc-cmo-ssapp",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "csc-site-ssapp/docs",
+          "target": "docs/csc-site-ssapp",
           "options": {
             "overwrite": true
           }
