@@ -1,4 +1,4 @@
-webshimsRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\builds\\tmp\\webshims.js":[function(require,module,exports){
+webshimsRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\builds\\tmp\\webshims.js":[function(require,module,exports){
 (function (global){(function (){
 if (typeof(window) !== "undefined") {
     if (typeof(global) !== "undefined") {
@@ -32,7 +32,7 @@ if (typeof($$.__runtimeModules) == "undefined") {
 require("./webshims_intermediar");
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./webshims_intermediar":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\builds\\tmp\\webshims_intermediar.js","overwrite-require":"overwrite-require"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\builds\\tmp\\webshims_intermediar.js":[function(require,module,exports){
+},{"./webshims_intermediar":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\builds\\tmp\\webshims_intermediar.js","overwrite-require":"overwrite-require"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\builds\\tmp\\webshims_intermediar.js":[function(require,module,exports){
 (function (global){(function (){
 global.webshimsLoadModules = function(){ 
 
@@ -66,7 +66,7 @@ if (typeof $$ !== "undefined") {
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"buffer":"buffer","crypto":"crypto","overwrite-require":"overwrite-require","pskcrypto":"pskcrypto","util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\overwrite-require\\moduleConstants.js":[function(require,module,exports){
+},{"buffer":"buffer","crypto":"crypto","overwrite-require":"overwrite-require","pskcrypto":"pskcrypto","util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\overwrite-require\\moduleConstants.js":[function(require,module,exports){
 module.exports = {
   BROWSER_ENVIRONMENT_TYPE: 'browser',
   MOBILE_BROWSER_ENVIRONMENT_TYPE: 'mobile-browser',
@@ -77,7 +77,7 @@ module.exports = {
   NODEJS_ENVIRONMENT_TYPE: 'nodejs'
 };
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\overwrite-require\\standardGlobalSymbols.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\overwrite-require\\standardGlobalSymbols.js":[function(require,module,exports){
 (function (process,global){(function (){
 let logger = console;
 
@@ -400,7 +400,1117 @@ $$.registerGlobalSymbol("throttlingEvent", function (...args) {
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","buffer":"buffer","psklogger":false,"swarmutils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\ECKeyGenerator.js":[function(require,module,exports){
+},{"_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","buffer":"buffer","psklogger":false,"swarmutils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js":[function(require,module,exports){
+'use strict';
+
+const mycrypto = require('../crypto')
+const config = require('../config')
+const crypto = require('crypto');
+
+// Prevent benign malleability
+function computeKDFInput(ephemeralPublicKey, sharedSecret) {
+    return $$.Buffer.concat([ephemeralPublicKey, sharedSecret],
+        ephemeralPublicKey.length + sharedSecret.length)
+}
+
+function computeSymmetricEncAndMACKeys(kdfInput, options) {
+    let kdfKey = mycrypto.KDF(kdfInput, options.symmetricCipherKeySize + options.macKeySize, options.hashFunctionName, options.hashSize)
+    const symmetricEncryptionKey = kdfKey.slice(0, options.symmetricCipherKeySize);
+    const macKey = kdfKey.slice(options.symmetricCipherKeySize)
+    return {
+        symmetricEncryptionKey,
+        macKey
+    };
+}
+
+function getDecodedECDHPublicKeyFromEncEnvelope(encEnvelope) {
+    if (encEnvelope.to_ecdh === undefined) {
+        throw new Error("Receiver ECDH public key property not found in input encrypted envelope")
+    }
+    return mycrypto.PublicKeyDeserializer.deserializeECDHPublicKey(encEnvelope.to_ecdh)
+}
+
+function checkEncryptedEnvelopeMandatoryProperties(encryptedEnvelope) {
+    const mandatoryProperties = ["to_ecdh", "r", "ct", "iv", "tag"];
+    mandatoryProperties.forEach((property) => {
+        if (typeof encryptedEnvelope[property] === 'undefined') {
+            throw new Error("Mandatory property " + property + " is missing from input encrypted envelope");
+        }
+    })
+}
+
+function createEncryptedEnvelopeObject(receiverECDHPublicKey, ephemeralECDHPublicKey, ciphertext, iv, tag, options) {
+    return {
+        to_ecdh: mycrypto.PublicKeySerializer.serializeECDHPublicKey(receiverECDHPublicKey, options),
+        r: mycrypto.PublicKeySerializer.serializeECDHPublicKey(ephemeralECDHPublicKey, options),
+        ct: ciphertext.toString(options.encodingFormat),
+        iv: iv.toString(options.encodingFormat),
+        tag: tag.toString(options.encodingFormat)
+    }
+}
+
+function checkKeyPairMandatoryProperties(keyPairObject) {
+    const mandatoryProperties = ["publicKey", "privateKey"];
+    mandatoryProperties.forEach((property) => {
+        if (typeof keyPairObject[property] === 'undefined') {
+            throw new Error("Mandatory property " + property + " is missing from input key pair object");
+        }
+    })
+}
+
+function convertKeysToKeyObjects(keysArray, type) {
+    let createKey;
+    if (!type) {
+        type = "public";
+    }
+
+    if (type === "private") {
+        createKey = crypto.createPrivateKey;
+    }
+
+    if (type === "public") {
+        createKey = crypto.createPublicKey;
+    }
+
+    if (typeof createKey !== "function") {
+        throw Error(`The specified type is invalid.`);
+    }
+
+    if (!Array.isArray(keysArray)) {
+        keysArray = [keysArray];
+    }
+
+    const keyObjectsArr = keysArray.map(key => {
+        if (typeof key === "string") {
+            return createKey(key)
+        } else {
+            return key;
+        }
+    });
+
+    if (keyObjectsArr.length === 1) {
+        return keyObjectsArr[0];
+    }
+
+    return keyObjectsArr;
+}
+
+module.exports = {
+    computeKDFInput,
+    computeSymmetricEncAndMACKeys,
+    getDecodedECDHPublicKeyFromEncEnvelope,
+    checkEncryptedEnvelopeMandatoryProperties,
+    createEncryptedEnvelopeObject,
+    checkKeyPairMandatoryProperties,
+    convertKeysToKeyObjects
+}
+
+},{"../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","../crypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js":[function(require,module,exports){
+module.exports = {
+    curveName: 'secp256k1',
+    encodingFormat: 'base64',
+    macAlgorithmName: 'sha256',
+    macKeySize: 16,
+    hashFunctionName: 'sha256',
+    hashSize: 32,
+    signAlgorithmName: 'sha256',
+    symmetricCipherName: 'aes-128-cbc',
+    symmetricCipherKeySize: 16,
+    ivSize: 16,
+    publicKeyFormat: 'pem',
+    publicKeyType: 'spki'
+};
+
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\cipher.js":[function(require,module,exports){
+'use strict';
+
+const crypto = require('crypto');
+const config = require('../config')
+
+
+function symmetricEncrypt(key, plaintext, iv, options) {
+    if (key.length !== options.symmetricCipherKeySize) {
+        throw new Error('Invalid length of input symmetric encryption key')
+    }
+    if (iv === undefined) {
+        iv = null
+    }
+    let cipher = crypto.createCipheriv(options.symmetricCipherName, key, iv);
+    const firstChunk = cipher.update(plaintext);
+    const secondChunk = cipher.final();
+    return $$.Buffer.concat([firstChunk, secondChunk]);
+}
+
+function symmetricDecrypt(key, ciphertext, iv, options) {
+    if (key.length !== options.symmetricCipherKeySize) {
+        throw new Error('Invalid length of input symmetric decryption key')
+    }
+    if (iv === undefined) {
+        iv = null
+    }
+    let cipher = crypto.createDecipheriv(options.symmetricCipherName, key, iv);
+    const firstChunk = cipher.update(ciphertext);
+    const secondChunk = cipher.final();
+    return $$.Buffer.concat([firstChunk, secondChunk]);
+}
+
+module.exports = {
+    symmetricEncrypt,
+    symmetricDecrypt
+}
+
+},{"../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\digitalsig.js":[function(require,module,exports){
+'use strict';
+
+const crypto = require('crypto');
+const config = require('../config');
+
+function computeDigitalSignature(privateECSigningKey, buffer, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    let encodingFormat = options.encodingFormat;
+    let signObject = crypto.createSign(config.signAlgorithmName)
+    signObject.update(buffer)
+    signObject.end();
+    return signObject.sign(privateECSigningKey, encodingFormat)
+
+}
+
+function verifyDigitalSignature(publicECVerificationKey, signature, buffer, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    let verifyObject = crypto.createVerify(options.signAlgorithmName)
+    verifyObject.update(buffer)
+    verifyObject.end()
+    return verifyObject.verify(publicECVerificationKey, signature)
+}
+
+module.exports = {
+    computeDigitalSignature,
+    verifyDigitalSignature
+}
+
+},{"../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\ecephka.js":[function(require,module,exports){
+'use strict';
+
+const crypto = require('crypto');
+const config = require('../config');
+
+class ECEphemeralKeyAgreement {
+
+    constructor(options) {
+        options = options || {};
+        const defaultOpts = config;
+        Object.assign(defaultOpts, options);
+        options = defaultOpts;
+
+        this.ecdh = crypto.createECDH(options.curveName);
+    }
+
+    generateEphemeralPublicKey = () => {
+        return this.ecdh.generateKeys();
+    }
+
+    generateSharedSecretForPublicKey = (theirECDHPublicKey) => {
+        try {
+            this.ecdh.getPublicKey()
+        } catch(error) {
+            throw new Error('You cannot generate a shared secret for another public key without calling generateEphemeralPublicKey() first')
+        }
+        return this.ecdh.computeSecret(theirECDHPublicKey);
+    }
+
+    computeSharedSecretFromKeyPair = (myECDHPrivateKey, theirECDHPublicKey) => {
+        this.ecdh.setPrivateKey(myECDHPrivateKey);
+        return this.ecdh.computeSecret(theirECDHPublicKey);
+    }
+}
+
+module.exports = ECEphemeralKeyAgreement
+
+},{"../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js":[function(require,module,exports){
+'use strict';
+
+const cipher = require('./cipher')
+const kdf = require('./kdf')
+const kmac = require('./kmac')
+const sig = require('./digitalsig')
+const crypto = require('crypto')
+
+module.exports = {
+    timingSafeEqual: crypto.timingSafeEqual,
+    getRandomBytes: crypto.randomBytes,
+    computeDigitalSignature: sig.computeDigitalSignature,
+    verifyDigitalSignature: sig.verifyDigitalSignature,
+    symmetricEncrypt: cipher.symmetricEncrypt,
+    symmetricDecrypt: cipher.symmetricDecrypt,
+    KMAC: kmac,
+    ECEphemeralKeyAgreement: require('./ecephka'),
+    KDF: kdf.KDF2,
+    PublicKeySerializer: require('./pkserializer'),
+    PublicKeyDeserializer: require('./pkdeserializer')
+}
+
+},{"./cipher":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\cipher.js","./digitalsig":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\digitalsig.js","./ecephka":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\ecephka.js","./kdf":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\kdf.js","./kmac":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\kmac.js","./pkdeserializer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\pkdeserializer.js","./pkserializer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\pkserializer.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\kdf.js":[function(require,module,exports){
+'use strict';
+
+const crypto = require('crypto');
+const config = require('../config')
+
+// Implementation of KDF2 as defined in ISO/IEC 18033-2
+function KDF2(x, outputByteSize, hashFunction = config.hashFunctionName, hashSize = config.hashSize) {
+    if (outputByteSize < 0) {
+        throw new Error("KDF output key byte size needs to be >= 0, not " + outputByteSize)
+    } //silly optimization here
+    else if (outputByteSize === 0) {
+        return $$.Buffer.alloc(0)
+    }
+    let k = Math.ceil(outputByteSize / hashSize)
+    k++;
+    let derivedKeyBuffer = $$.Buffer.alloc(outputByteSize)
+    let iBuffer = $$.Buffer.alloc(4)
+    for (let i = 1; i < k; i++) {
+        iBuffer.writeInt32BE(i)
+        let roundInput = $$.Buffer.concat([x, iBuffer], x.length + iBuffer.length)
+        let roundHash = crypto.createHash(hashFunction).update(roundInput).digest()
+        roundHash.copy(derivedKeyBuffer, (i - 1) * hashSize)
+    }
+    return derivedKeyBuffer
+}
+
+module.exports = {
+    KDF2
+}
+
+},{"../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\kmac.js":[function(require,module,exports){
+'use strict';
+
+const crypto = require('crypto');
+const config = require('../config');
+
+function computeKMAC(key, data, options) {
+    if (key.length !== options.macKeySize) {
+        throw new Error('Invalid length of input MAC key')
+    }
+    return crypto.createHmac(options.hashFunctionName, key).update(data).digest();
+}
+
+function verifyKMAC(tag, key, data, options) {
+    if (key.length !== options.macKeySize) {
+        throw new Error('Invalid length of input MAC key')
+    }
+    const timingSafeEqual = require('./index').timingSafeEqual;
+    const computedTag = computeKMAC(key, data, options)
+    return timingSafeEqual(computedTag, tag)
+}
+
+module.exports = {
+    computeKMAC,
+    verifyKMAC
+}
+
+},{"../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","./index":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\pkdeserializer.js":[function(require,module,exports){
+'use strict';
+
+const crypto = require('crypto')
+const config = require('../config');
+
+function PublicKeyDeserializer() {
+    this.deserializeECDHPublicKey = (ecdhPublicKeySerialized, options) => {
+        options = options || {};
+        const defaultOpts = config;
+        Object.assign(defaultOpts, options);
+        options = defaultOpts;
+
+        let encodingFormat = options.encodingFormat;
+        return $$.Buffer.from(ecdhPublicKeySerialized, encodingFormat)
+    }
+
+    this.deserializeECSigVerPublicKey = (ecSigVerPublicKeySerialized, options) => {
+        options = options || {};
+        const defaultOpts = config;
+        Object.assign(defaultOpts, options);
+        options = defaultOpts;
+
+        let encodingFormat = options.encodingFormat;
+        // let publicKey = $$.Buffer.from(ecSigVerPublicKeySerialized, encodingFormat);
+        const ecKeyGenerator = require("../../lib/ECKeyGenerator").createECKeyGenerator();
+        const publicKey = ecKeyGenerator.convertPublicKey(ecSigVerPublicKeySerialized, {originalFormat: "der", outputFormat: "pem", encodingFormat});
+        return publicKey;
+    }
+
+}
+
+module.exports = new PublicKeyDeserializer()
+
+},{"../../lib/ECKeyGenerator":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\ECKeyGenerator.js","../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\pkserializer.js":[function(require,module,exports){
+const config = require('../config');
+
+function PublicKeySerializer() {
+    this.serializeECDHPublicKey = (ecdhPublicKey, options) => {
+        options = options || {};
+        const defaultOpts =  config;
+        Object.assign(defaultOpts, options);
+        options = defaultOpts;
+
+        let encodingFormat = options.encodingFormat;
+        return ecdhPublicKey.toString(encodingFormat);
+    }
+
+    this.serializeECSigVerPublicKey = (ecSigVerPublicKey, options) => {
+        options = options || {};
+        const defaultOpts = config;
+        Object.assign(defaultOpts, options);
+        options = defaultOpts;
+
+        let encodingFormat = options.encodingFormat;
+        const ecKeyGenerator = require("../../lib/ECKeyGenerator").createECKeyGenerator();
+        const derPublicKey = ecKeyGenerator.convertPublicKey(ecSigVerPublicKey, {originalFormat: "pem", outputFormat: "der", encodingFormat});
+        return derPublicKey.toString(encodingFormat)
+    }
+}
+
+module.exports = new PublicKeySerializer()
+
+},{"../../lib/ECKeyGenerator":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\ECKeyGenerator.js","../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-ds\\decrypt.js":[function(require,module,exports){
+'use strict';
+
+const mycrypto = require('../crypto')
+const common = require('../common')
+const config = require('../config')
+
+function checkWrappedMessageMandatoryProperties(wrappedMessage) {
+    const mandatoryProperties = ["from_ecsig", "msg", "sig"];
+    mandatoryProperties.forEach((property) => {
+        if (typeof wrappedMessage[property] === 'undefined') {
+            throw new Error("Mandatory property " + property + " is missing from wrapped message");
+        }
+    })
+}
+
+module.exports.decrypt = function (receiverECDHPrivateKey, encEnvelope, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+    if (typeof encEnvelope === "string") {
+        try{
+            encEnvelope = JSON.parse(encEnvelope);
+        }   catch (e) {
+            throw Error(`Could not parse encEnvelope ${encEnvelope}`);
+        }
+    }
+
+    if (typeof encEnvelope !== "object") {
+        throw Error(`encEnvelope should be an object. Received ${typeof encEnvelope}`);
+    }
+
+    common.checkEncryptedEnvelopeMandatoryProperties(encEnvelope);
+    const ephemeralPublicKey = $$.Buffer.from(encEnvelope.r, options.encodingFormat)
+
+    const ephemeralKeyAgreement = new mycrypto.ECEphemeralKeyAgreement(options)
+    const sharedSecret = ephemeralKeyAgreement.computeSharedSecretFromKeyPair(receiverECDHPrivateKey, ephemeralPublicKey)
+
+    const kdfInput = common.computeKDFInput(ephemeralPublicKey, sharedSecret)
+    const { symmetricEncryptionKey, macKey } = common.computeSymmetricEncAndMACKeys(kdfInput, options)
+
+    const ciphertext = $$.Buffer.from(encEnvelope.ct, options.encodingFormat)
+    const tag = $$.Buffer.from(encEnvelope.tag, options.encodingFormat)
+    const iv = $$.Buffer.from(encEnvelope.iv, options.encodingFormat)
+
+    if (!mycrypto.KMAC.verifyKMAC(tag,
+        macKey,
+        $$.Buffer.concat([ciphertext, iv],
+            ciphertext.length + iv.length), options)
+    ) {
+        throw new Error("Bad MAC")
+    }
+
+    let wrappedMessageObject = JSON.parse(mycrypto.symmetricDecrypt(symmetricEncryptionKey, ciphertext, iv, options).toString())
+    checkWrappedMessageMandatoryProperties(wrappedMessageObject)
+    const senderECSigVerPublicKey = mycrypto.PublicKeyDeserializer.deserializeECSigVerPublicKey(wrappedMessageObject.from_ecsig)
+
+    if (!mycrypto.verifyDigitalSignature(senderECSigVerPublicKey,
+        $$.Buffer.from(wrappedMessageObject.sig, options.encodingFormat),
+        sharedSecret, options)) {
+        throw new Error("Bad signature")
+    }
+    return {
+        from_ecsig: senderECSigVerPublicKey,
+        message: $$.Buffer.from(wrappedMessageObject.msg, options.encodingFormat)
+    };
+}
+
+},{"../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js","../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","../crypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-ds\\encrypt.js":[function(require,module,exports){
+'use strict';
+
+const mycrypto = require('../crypto')
+const common = require('../common');
+const config = require('../config');
+
+function senderMessageWrapAndSerialization(senderECSigVerPublicKey, message, signature, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    return JSON.stringify({
+        from_ecsig: mycrypto.PublicKeySerializer.serializeECSigVerPublicKey(senderECSigVerPublicKey, options),
+        msg: message.toString(options.encodingFormat),
+        sig: signature.toString(options.encodingFormat)
+    });
+}
+
+module.exports.encrypt = function (senderECSigningKeyPair, receiverECDHPublicKey, message, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    if (typeof message === "object" && !$$.Buffer.isBuffer(message)) {
+        message = JSON.stringify(message);
+    }
+
+    if (typeof message === "string") {
+        message = $$.Buffer.from(message);
+    }
+
+    if (!$$.Buffer.isBuffer(message)) {
+        throw new Error('Input message has to be of type Buffer');
+    }
+
+    common.checkKeyPairMandatoryProperties(senderECSigningKeyPair)
+
+    const ephemeralKeyAgreement = new mycrypto.ECEphemeralKeyAgreement(options)
+    const ephemeralPublicKey = ephemeralKeyAgreement.generateEphemeralPublicKey()
+    const sharedSecret = ephemeralKeyAgreement.generateSharedSecretForPublicKey(receiverECDHPublicKey)
+
+    const signature = mycrypto.computeDigitalSignature(senderECSigningKeyPair.privateKey, sharedSecret, options)
+    const senderAuthMsgEnvelopeSerialized = senderMessageWrapAndSerialization(senderECSigningKeyPair.publicKey, message, signature, options)
+
+    const kdfInput = common.computeKDFInput(ephemeralPublicKey, sharedSecret)
+    const { symmetricEncryptionKey, macKey } = common.computeSymmetricEncAndMACKeys(kdfInput, options)
+
+    const iv = mycrypto.getRandomBytes(options.ivSize)
+    const ciphertext = mycrypto.symmetricEncrypt(symmetricEncryptionKey, senderAuthMsgEnvelopeSerialized, iv, options)
+    const tag = mycrypto.KMAC.computeKMAC(macKey,
+        $$.Buffer.concat([ciphertext, iv],
+            ciphertext.length + iv.length), options
+    )
+
+    return common.createEncryptedEnvelopeObject(receiverECDHPublicKey, ephemeralPublicKey, ciphertext, iv, tag, options)
+};
+
+},{"../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js","../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","../crypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-ds\\index.js":[function(require,module,exports){
+'use strict';
+
+module.exports = {
+  encrypt: require('./encrypt').encrypt,
+  decrypt: require('./decrypt').decrypt,
+  getDecodedECDHPublicKeyFromEncEnvelope: require('../common').getDecodedECDHPublicKeyFromEncEnvelope
+}
+},{"../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js","./decrypt":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-ds\\decrypt.js","./encrypt":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-ds\\encrypt.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-kmac\\decrypt.js":[function(require,module,exports){
+'use strict';
+
+const mycrypto = require('../crypto');
+const common = require('../common')
+const config = require('../config')
+
+function checkWrappedMessageMandatoryProperties(wrappedMessage) {
+    const mandatoryProperties = ["from_ecdh", "msg"];
+    mandatoryProperties.forEach((property) => {
+        if (typeof wrappedMessage[property] === 'undefined') {
+            throw new Error("Mandatory property " + property + " is missing from wrapped message");
+        }
+    })
+}
+
+module.exports.decrypt = function (receiverECDHPrivateKey, encEnvelope, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    if (typeof encEnvelope === "string") {
+        try{
+            encEnvelope = JSON.parse(encEnvelope);
+        }   catch (e) {
+            throw Error(`Could not parse encEnvelope ${encEnvelope}`);
+        }
+    }
+
+    if (typeof encEnvelope !== "object") {
+        throw Error(`encEnvelope should be an object. Received ${typeof encEnvelope}`);
+    }
+
+    common.checkEncryptedEnvelopeMandatoryProperties(encEnvelope)
+    const ephemeralPublicKey = mycrypto.PublicKeyDeserializer.deserializeECDHPublicKey(encEnvelope.r, options)
+
+    const ephemeralKeyAgreement = new mycrypto.ECEphemeralKeyAgreement(options)
+    const sharedSecret = ephemeralKeyAgreement.computeSharedSecretFromKeyPair(receiverECDHPrivateKey, ephemeralPublicKey)
+
+    const kdfInput = common.computeKDFInput(ephemeralPublicKey, sharedSecret)
+    const { symmetricEncryptionKey, macKey } = common.computeSymmetricEncAndMACKeys(kdfInput, options)
+
+    const ciphertext = $$.Buffer.from(encEnvelope.ct, options.encodingFormat)
+    const tag = $$.Buffer.from(encEnvelope.tag, options.encodingFormat)
+    const iv = $$.Buffer.from(encEnvelope.iv, options.encodingFormat)
+
+    const wrappedMessageObject = JSON.parse(mycrypto.symmetricDecrypt(symmetricEncryptionKey, ciphertext, iv, options).toString())
+    checkWrappedMessageMandatoryProperties(wrappedMessageObject)
+    const senderPublicKey = mycrypto.PublicKeyDeserializer.deserializeECDHPublicKey(wrappedMessageObject.from_ecdh, options);
+
+    const senderKeyAgreement = new mycrypto.ECEphemeralKeyAgreement(options)
+    const senderDerivedSharedSecret = senderKeyAgreement.computeSharedSecretFromKeyPair(receiverECDHPrivateKey, senderPublicKey)
+    // **TODO**: This does not seem correct, need to think about it.
+    mycrypto.KMAC.verifyKMAC(tag, macKey,
+        $$.Buffer.concat([ciphertext, iv, senderDerivedSharedSecret],
+            ciphertext.length + iv.length + senderDerivedSharedSecret.length), options
+    )
+
+    return {
+        from_ecdh: senderPublicKey,
+        message: $$.Buffer.from(wrappedMessageObject.msg, options.encodingFormat)
+    };
+}
+
+},{"../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js","../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","../crypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-kmac\\encrypt.js":[function(require,module,exports){
+'use strict';
+
+const mycrypto = require('../crypto');
+const common = require('../common')
+const config = require('../config')
+
+function senderMessageWrapAndSerialization(senderECDHPublicKey, message) {
+    return JSON.stringify({
+        from_ecdh: mycrypto.PublicKeySerializer.serializeECDHPublicKey(senderECDHPublicKey),
+        msg: message
+    });
+}
+
+module.exports.encrypt = function (senderECDHKeyPair, receiverECDHPublicKey, message, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    if (typeof message === "object" && !$$.Buffer.isBuffer(message)) {
+        message = JSON.stringify(message);
+    }
+
+    if (typeof message === "string") {
+        message = $$.Buffer.from(message);
+    }
+
+    if (!$$.Buffer.isBuffer(message)) {
+        throw new Error('Input message has to be of type Buffer');
+    }
+    common.checkKeyPairMandatoryProperties(senderECDHKeyPair)
+    const senderKeyAgreement = new mycrypto.ECEphemeralKeyAgreement(options)
+    const senderDerivedSharedSecret = senderKeyAgreement.computeSharedSecretFromKeyPair(senderECDHKeyPair.privateKey, receiverECDHPublicKey)
+
+    const senderAuthMsgEnvelopeSerialized = senderMessageWrapAndSerialization(senderECDHKeyPair.publicKey, message);
+
+    const ephemeralKeyAgreement = new mycrypto.ECEphemeralKeyAgreement(options)
+    const ephemeralPublicKey = ephemeralKeyAgreement.generateEphemeralPublicKey()
+    const ephemeralSharedSecret = ephemeralKeyAgreement.generateSharedSecretForPublicKey(receiverECDHPublicKey)
+
+    const kdfInput = common.computeKDFInput(ephemeralPublicKey, ephemeralSharedSecret)
+    const {symmetricEncryptionKey, macKey} = common.computeSymmetricEncAndMACKeys(kdfInput, options)
+
+    const iv = mycrypto.getRandomBytes(options.ivSize)
+    const ciphertext = mycrypto.symmetricEncrypt(symmetricEncryptionKey, senderAuthMsgEnvelopeSerialized, iv, options)
+    // **TODO**: This does not seem correct, need to think about it.
+    const tag = mycrypto.KMAC.computeKMAC(macKey,
+        $$.Buffer.concat([ciphertext, iv, senderDerivedSharedSecret],
+            ciphertext.length + iv.length + senderDerivedSharedSecret.length), options
+    )
+
+    return common.createEncryptedEnvelopeObject(receiverECDHPublicKey, ephemeralPublicKey, ciphertext, iv, tag, options)
+};
+
+},{"../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js","../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","../crypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-kmac\\index.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-ds\\index.js"][0].apply(exports,arguments)
+},{"../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js","./decrypt":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-kmac\\decrypt.js","./encrypt":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-kmac\\encrypt.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-anon\\decrypt.js":[function(require,module,exports){
+'use strict';
+
+const mycrypto = require('../../crypto')
+const utils = require('../utils')
+const common = require('../../common')
+const config = require('../../config')
+
+function checkEncryptedEnvelopeMandatoryProperties(encryptedEnvelope) {
+    const mandatoryProperties = ["recvs", "rtag", "ct", "iv", "tag"];
+    mandatoryProperties.forEach((property) => {
+        if (typeof encryptedEnvelope[property] === 'undefined') {
+            throw new Error("Mandatory property " + property + " is missing from input group encrypted envelope");
+        }
+    })
+}
+
+module.exports.decrypt = function (receiverECDHKeyPair, encEnvelope, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    checkEncryptedEnvelopeMandatoryProperties(encEnvelope)
+    common.checkKeyPairMandatoryProperties(receiverECDHKeyPair)
+    const receiverECIESInstancesBuffer = $$.Buffer.from(encEnvelope.recvs, options.encodingFormat)
+
+    const keyBuffer = utils.receiverMultiRecipientECIESDecrypt(receiverECDHKeyPair, receiverECIESInstancesBuffer)
+    const {symmetricCipherKey, ciphertextMacKey, recvsMacKey} = utils.parseKeyBuffer(keyBuffer)
+
+    const ciphertext = $$.Buffer.from(encEnvelope.ct, options.encodingFormat)
+    const tag = $$.Buffer.from(encEnvelope.tag, options.encodingFormat)
+    const iv = $$.Buffer.from(encEnvelope.iv, options.encodingFormat)
+    const recvsTag = $$.Buffer.from(encEnvelope.rtag, options.encodingFormat)
+
+    if (!mycrypto.KMAC.verifyKMAC(tag,
+        ciphertextMacKey,
+        $$.Buffer.concat([ciphertext, iv],
+            ciphertext.length + iv.length), options)
+    ) {
+        throw new Error("Bad ciphertext MAC")
+    }
+    if (!mycrypto.KMAC.verifyKMAC(recvsTag,
+        recvsMacKey,
+        receiverECIESInstancesBuffer, options)
+    ) {
+        throw new Error("Bad recipient ECIES MAC")
+    }
+
+    return mycrypto.symmetricDecrypt(symmetricCipherKey, ciphertext, iv, options)
+}
+
+},{"../../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js","../../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","../../crypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js","../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\utils\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-anon\\encrypt.js":[function(require,module,exports){
+'use strict';
+
+const utils = require('../utils')
+const mycrypto = require('../../crypto')
+const config = require('../../config')
+
+module.exports.encrypt = function (message, ...receiverECDHPublicKeys) {
+    let options;
+    const lastArg = receiverECDHPublicKeys[receiverECDHPublicKeys.length - 1];
+    if (typeof lastArg === "object" && !Array.isArray(lastArg) && !$$.Buffer.isBuffer(lastArg) && !(lastArg instanceof Uint8Array)) {
+        options = receiverECDHPublicKeys.pop();
+    } else {
+        options = {};
+    }
+
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    if (typeof message === "object" && !$$.Buffer.isBuffer(message)) {
+        message = JSON.stringify(message);
+    }
+
+    if (typeof message === "string") {
+        message = $$.Buffer.from(message);
+    }
+
+    if (!$$.Buffer.isBuffer(message)) {
+        throw new Error('Input message has to be of type Buffer');
+    }
+
+    if (receiverECDHPublicKeys.length === 0) {
+        throw new Error('Need to specify at least one receiver public key')
+    }
+
+    receiverECDHPublicKeys.push(options);
+    const { symmetricCipherKey, ciphertextMacKey, recvsMacKey } = utils.generateKeyBufferParams(options)
+    const multiRecipientECIESBuffer = utils.senderMultiRecipientECIESEncrypt(
+        $$.Buffer.concat([symmetricCipherKey, ciphertextMacKey, recvsMacKey],
+            symmetricCipherKey.length + ciphertextMacKey.length + recvsMacKey.length),
+        ...receiverECDHPublicKeys)
+
+    const iv = mycrypto.getRandomBytes(options.ivSize)
+    const ciphertext = mycrypto.symmetricEncrypt(symmetricCipherKey, message, iv, options)
+    const tag = mycrypto.KMAC.computeKMAC(ciphertextMacKey,
+        $$.Buffer.concat(
+            [ciphertext, iv],
+            ciphertext.length + iv.length), options
+    );
+    const recvsTag = mycrypto.KMAC.computeKMAC(recvsMacKey, multiRecipientECIESBuffer, options)
+
+    return {
+        recvs: multiRecipientECIESBuffer.toString(options.encodingFormat),
+        rtag: recvsTag.toString(options.encodingFormat),
+        ct: ciphertext.toString(options.encodingFormat),
+        iv: iv.toString(options.encodingFormat),
+        tag: tag.toString(options.encodingFormat)
+    }
+}
+
+},{"../../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","../../crypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js","../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\utils\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-anon\\index.js":[function(require,module,exports){
+'use strict';
+
+module.exports = {
+  encrypt: require('./encrypt').encrypt,
+  decrypt: require('./decrypt').decrypt,
+  getRecipientECDHPublicKeysFromEncEnvelope: require('../utils').getRecipientECDHPublicKeysFromEncEnvelope
+}
+
+},{"../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\utils\\index.js","./decrypt":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-anon\\decrypt.js","./encrypt":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-anon\\encrypt.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-doa\\decrypt.js":[function(require,module,exports){
+'use strict';
+
+const mycrypto = require('../../crypto')
+const config = require('../../config')
+const common = require('../../common')
+const eciesGEAnon = require('../ecies-ge-anon')
+
+function checkEncryptedEnvelopeMandatoryProperties(encryptedEnvelope) {
+    const mandatoryProperties = ["from_ecsig", "sig"];
+    mandatoryProperties.forEach((property) => {
+        if (typeof encryptedEnvelope[property] === 'undefined') {
+            throw new Error("Mandatory property " + property + " is missing from input encrypted envelope");
+        }
+    })
+}
+
+module.exports.decrypt = function (receiverECDHKeyPair, encEnvelope, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    checkEncryptedEnvelopeMandatoryProperties(encEnvelope)
+    common.checkKeyPairMandatoryProperties(receiverECDHKeyPair)
+
+    let tempGEAnonEnvelope = Object.assign({}, encEnvelope)
+    delete tempGEAnonEnvelope.from_ecsig;
+    delete tempGEAnonEnvelope.sig;
+    const message = eciesGEAnon.decrypt(receiverECDHKeyPair, tempGEAnonEnvelope, options)
+    tempGEAnonEnvelope = null;
+
+    const senderECSigVerPublicKey = mycrypto.PublicKeyDeserializer.deserializeECSigVerPublicKey(encEnvelope.from_ecsig, options)
+
+    const recvsTagBuffer = $$.Buffer.from(encEnvelope.rtag, options.encodingFormat)
+    const tagBuffer = $$.Buffer.from(encEnvelope.tag, options.encodingFormat)
+    const signature = $$.Buffer.from(encEnvelope.sig, options.encodingFormat)
+    if (!mycrypto.verifyDigitalSignature(senderECSigVerPublicKey,
+        signature,
+        $$.Buffer.concat([recvsTagBuffer, tagBuffer],
+            recvsTagBuffer.length + tagBuffer.length), options)
+    ) {
+        throw new Error("Bad signature")
+    }
+
+    return {
+        from: senderECSigVerPublicKey,
+        message: message
+    }
+}
+
+},{"../../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js","../../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","../../crypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js","../ecies-ge-anon":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-anon\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-doa\\encrypt.js":[function(require,module,exports){
+'use strict';
+
+const mycrypto = require('../../crypto')
+const common = require('../../common')
+const config = require('../../config')
+const eciesGEAnon = require('../ecies-ge-anon')
+
+module.exports.encrypt = function (senderECSigningKeyPair, message, ...receiverECDHPublicKeys) {
+    let options;
+    const lastArg = receiverECDHPublicKeys[receiverECDHPublicKeys.length - 1];
+    if (typeof lastArg === "object" && !Array.isArray(lastArg) && !$$.Buffer.isBuffer(lastArg) && !(lastArg instanceof Uint8Array)) {
+        options = receiverECDHPublicKeys.pop();
+    } else {
+        options = {};
+    }
+
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    if (typeof message === "object" && !$$.Buffer.isBuffer(message)) {
+        message = JSON.stringify(message);
+    }
+
+    if (typeof message === "string") {
+        message = $$.Buffer.from(message);
+    }
+
+    if (!$$.Buffer.isBuffer(message)) {
+        throw new Error('Input message has to be of type Buffer');
+    }
+
+    common.checkKeyPairMandatoryProperties(senderECSigningKeyPair);
+    receiverECDHPublicKeys.push(options);
+    let eciesGEEnvelope = eciesGEAnon.encrypt(message, ...receiverECDHPublicKeys)
+
+    const recvsTagBuffer = $$.Buffer.from(eciesGEEnvelope.rtag, options.encodingFormat)
+    const tagBuffer = $$.Buffer.from(eciesGEEnvelope.tag, options.encodingFormat)
+    const signature = mycrypto.computeDigitalSignature(senderECSigningKeyPair.privateKey,
+        $$.Buffer.concat([recvsTagBuffer, tagBuffer],
+            recvsTagBuffer.length + tagBuffer.length), options)
+
+    eciesGEEnvelope.sig = signature.toString(options.encodingFormat)
+    eciesGEEnvelope.from_ecsig = mycrypto.PublicKeySerializer.serializeECSigVerPublicKey(senderECSigningKeyPair.publicKey, options)
+
+    return eciesGEEnvelope;
+}
+
+},{"../../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js","../../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","../../crypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js","../ecies-ge-anon":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-anon\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-doa\\index.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-anon\\index.js"][0].apply(exports,arguments)
+},{"../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\utils\\index.js","./decrypt":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-doa\\decrypt.js","./encrypt":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-doa\\encrypt.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\utils\\index.js":[function(require,module,exports){
+'use strict';
+
+const sender = require('./sender')
+const recipient = require('./recipient')
+
+module.exports = {
+    generateKeyBufferParams: sender.generateKeyBufferParams,
+    senderMultiRecipientECIESEncrypt: sender.senderMultiRecipientECIESEncrypt,
+    getRecipientECDHPublicKeysFromEncEnvelope: recipient.getRecipientECDHPublicKeysFromEncEnvelope,
+    receiverMultiRecipientECIESDecrypt: recipient.receiverMultiRecipientECIESDecrypt,
+    parseKeyBuffer: recipient.parseKeyBuffer
+}
+
+
+
+},{"./recipient":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\utils\\recipient.js","./sender":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\utils\\sender.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\utils\\recipient.js":[function(require,module,exports){
+'use strict';
+
+const mycrypto = require('../../crypto')
+const common = require('../../common')
+const ecies = require('../../ecies')
+const config = require('../../config')
+
+module.exports.getRecipientECDHPublicKeysFromEncEnvelope = function (encEnvelope, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    if (encEnvelope.recvs === undefined) {
+        throw new Error('Mandatory property recvs not found in encrypted envelope')
+    }
+    let multiRecipientECIESEnvelopeArray = JSON.parse($$.Buffer.from(encEnvelope.recvs, options.encodingFormat))
+    if (multiRecipientECIESEnvelopeArray.length === 0) {
+        throw new Error('Invalid receiver array in encrypted envelope')
+    }
+    let recipientECDHPublicKeyArray = [];
+    multiRecipientECIESEnvelopeArray.forEach(function (curRecipientECIESEnvelope) {
+        common.checkEncryptedEnvelopeMandatoryProperties(curRecipientECIESEnvelope)
+        let curRecipientECDHPublicKey = common.getDecodedECDHPublicKeyFromEncEnvelope(curRecipientECIESEnvelope, options)
+        recipientECDHPublicKeyArray.push(curRecipientECDHPublicKey)
+    })
+    if (recipientECDHPublicKeyArray.length === 0) {
+        throw new Error('Unable to parse any of the receivers\' ECIES instances')
+    }
+    return recipientECDHPublicKeyArray;
+}
+
+function isECIESEnvelopeForInputECDHPublicKey(eciesEnvelope, ecdhPublicKey, options) {
+    const ecdhPublicKeyBuffer = $$.Buffer.from(mycrypto.PublicKeySerializer.serializeECDHPublicKey(ecdhPublicKey, options))
+    const envelopeECDHPublicKey = $$.Buffer.from(eciesEnvelope.to_ecdh)
+    return mycrypto.timingSafeEqual(envelopeECDHPublicKey, ecdhPublicKeyBuffer);
+}
+
+module.exports.receiverMultiRecipientECIESDecrypt = function(receiverECDHKeyPair, multiRecipientECIESBuffer, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    let multiRecipientECIESEnvelopeArray = JSON.parse(multiRecipientECIESBuffer)
+    if (multiRecipientECIESEnvelopeArray.length === 0) {
+        throw new Error("Parsed an empty receivers ECIES instances array")
+    }
+    let myECIESInstanceFound = false;
+    let message;
+    multiRecipientECIESEnvelopeArray.forEach(function (curRecipientECIESEnvelope) {
+        common.checkEncryptedEnvelopeMandatoryProperties(curRecipientECIESEnvelope)
+        if (isECIESEnvelopeForInputECDHPublicKey(curRecipientECIESEnvelope, receiverECDHKeyPair.publicKey, options)) {
+            message = ecies.decrypt(receiverECDHKeyPair.privateKey, curRecipientECIESEnvelope, options)
+            myECIESInstanceFound = true;
+            return;
+        }
+    })
+    if (!myECIESInstanceFound) {
+        throw new Error("Unable to decrypt input envelope with input EC key pair")
+    }
+    return message;
+}
+
+module.exports.parseKeyBuffer = function (keyBuffer, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+
+    options = defaultOpts;
+    if (keyBuffer.length !== (options.symmetricCipherKeySize + (2*options.macKeySize))) {
+        throw new Error("Invalid length of decrypted key buffer")
+    }
+    const symmetricCipherKey = keyBuffer.slice(0, options.symmetricCipherKeySize)
+    const ciphertextMacKey = keyBuffer.slice(options.symmetricCipherKeySize, options.symmetricCipherKeySize + options.macKeySize)
+    const recvsMacKey = keyBuffer.slice(options.symmetricCipherKeySize + options.macKeySize)
+    return {
+        symmetricCipherKey,
+        ciphertextMacKey,
+        recvsMacKey
+    }
+}
+
+},{"../../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js","../../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","../../crypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js","../../ecies":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\utils\\sender.js":[function(require,module,exports){
+'use strict';
+
+const mycrypto = require('../../crypto')
+const ecies = require('../../ecies')
+const config = require('../../config')
+
+module.exports.generateKeyBufferParams = function (options) {
+    const symmetricCipherKey = mycrypto.getRandomBytes(options.symmetricCipherKeySize)
+    const ciphertextMacKey = mycrypto.getRandomBytes(options.macKeySize)
+    const recvsMacKey = mycrypto.getRandomBytes(options.macKeySize)
+    return {
+        symmetricCipherKey,
+        ciphertextMacKey,
+        recvsMacKey
+    }
+}
+
+module.exports.senderMultiRecipientECIESEncrypt = function(message, ...receiverECDHPublicKeyArray) {
+    let options;
+    const lastArg = receiverECDHPublicKeyArray[receiverECDHPublicKeyArray.length - 1];
+    if (typeof lastArg === "object" && !Array.isArray(lastArg) && !$$.Buffer.isBuffer(lastArg) && !(lastArg instanceof Uint8Array)) {
+        options = receiverECDHPublicKeyArray.pop();
+    } else {
+        options = {};
+    }
+
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    let eciesInstancesArray = []
+    receiverECDHPublicKeyArray.forEach(function (curReceiverECDHPublicKey) {
+        eciesInstancesArray.push(ecies.encrypt(curReceiverECDHPublicKey, message, options))
+    })
+    return $$.Buffer.from(JSON.stringify(eciesInstancesArray))
+}
+
+},{"../../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","../../crypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js","../../ecies":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies\\decrypt.js":[function(require,module,exports){
+'use strict';
+
+const mycrypto = require('../crypto')
+const common = require('../common')
+const config = require('../config')
+
+
+module.exports.decrypt = function (receiverECDHPrivateKey, encEnvelope, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    if (typeof encEnvelope === "string") {
+        try{
+            encEnvelope = JSON.parse(encEnvelope);
+        }   catch (e) {
+            throw Error(`Could not parse encEnvelope ${encEnvelope}`);
+        }
+    }
+
+    if (typeof encEnvelope !== "object") {
+        throw Error(`encEnvelope should be an object. Received ${typeof encEnvelope}`);
+    }
+
+    common.checkEncryptedEnvelopeMandatoryProperties(encEnvelope)
+
+    const ephemeralPublicKey = mycrypto.PublicKeyDeserializer.deserializeECDHPublicKey(encEnvelope.r, options)
+
+    const ephemeralKeyAgreement = new mycrypto.ECEphemeralKeyAgreement(options)
+    const sharedSecret = ephemeralKeyAgreement.computeSharedSecretFromKeyPair(receiverECDHPrivateKey, ephemeralPublicKey)
+
+    const kdfInput = common.computeKDFInput(ephemeralPublicKey, sharedSecret)
+    const { symmetricEncryptionKey, macKey } = common.computeSymmetricEncAndMACKeys(kdfInput, options)
+
+    const ciphertext = $$.Buffer.from(encEnvelope.ct, options.encodingFormat)
+    const tag = $$.Buffer.from(encEnvelope.tag, options.encodingFormat)
+    const iv = $$.Buffer.from(encEnvelope.iv, options.encodingFormat)
+
+    if (!mycrypto.KMAC.verifyKMAC(tag,
+        macKey,
+        $$.Buffer.concat([ciphertext, iv],
+            ciphertext.length + iv.length), options)
+    ) {
+        throw new Error("Bad MAC")
+    }
+
+    return mycrypto.symmetricDecrypt(symmetricEncryptionKey, ciphertext, iv, options)
+}
+
+},{"../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js","../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","../crypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies\\encrypt.js":[function(require,module,exports){
+'use strict';
+
+const mycrypto = require('../crypto')
+const common = require('../common')
+const config = require('../config');
+
+module.exports.encrypt = function (receiverECDHPublicKey, message, options) {
+    options = options || {};
+    const defaultOpts = config;
+    Object.assign(defaultOpts, options);
+    options = defaultOpts;
+
+    if (typeof message === "object" && !$$.Buffer.isBuffer(message)) {
+        message = JSON.stringify(message);
+    }
+
+    if (typeof message === "string") {
+        message = $$.Buffer.from(message);
+    }
+
+    if (!$$.Buffer.isBuffer(message)) {
+        throw new Error('Input message has to be of type Buffer');
+    }
+
+    const ephemeralKeyAgreement = new mycrypto.ECEphemeralKeyAgreement(options)
+    const ephemeralPublicKey = ephemeralKeyAgreement.generateEphemeralPublicKey()
+    const sharedSecret = ephemeralKeyAgreement.generateSharedSecretForPublicKey(receiverECDHPublicKey)
+
+    const kdfInput = common.computeKDFInput(ephemeralPublicKey, sharedSecret)
+    const { symmetricEncryptionKey, macKey } = common.computeSymmetricEncAndMACKeys(kdfInput, options)
+
+    const iv = mycrypto.getRandomBytes(options.ivSize)
+    const ciphertext = mycrypto.symmetricEncrypt(symmetricEncryptionKey, message, iv, options)
+    const tag = mycrypto.KMAC.computeKMAC(macKey,
+        $$.Buffer.concat([ciphertext, iv],
+            ciphertext.length + iv.length), options
+    )
+
+    return common.createEncryptedEnvelopeObject(receiverECDHPublicKey, ephemeralPublicKey, ciphertext, iv, tag, options)
+}
+
+},{"../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js","../config":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\config.js","../crypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\crypto\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies\\index.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-ds\\index.js"][0].apply(exports,arguments)
+},{"../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\common\\index.js","./decrypt":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies\\decrypt.js","./encrypt":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies\\encrypt.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\index.js":[function(require,module,exports){
+module.exports = {
+    ecies_encrypt: require("./ecies").encrypt,
+    ecies_decrypt: require("./ecies").decrypt,
+    ecies_encrypt_ds: require("./ecies-doa-ds").encrypt,
+    ecies_decrypt_ds: require("./ecies-doa-ds").decrypt,
+    ecies_encrypt_kmac: require("./ecies-doa-kmac").encrypt,
+    ecies_decrypt_kmac: require("./ecies-doa-kmac").decrypt,
+    ecies_getDecodedECDHPublicKeyFromEncEnvelope: require("./ecies/index").getDecodedECDHPublicKeyFromEncEnvelope,
+    ecies_group_encrypt: require("./ecies-group-encryption/ecies-ge-anon").encrypt,
+    ecies_group_decrypt: require("./ecies-group-encryption/ecies-ge-anon").decrypt,
+    ecies_group_encrypt_ds: require("./ecies-group-encryption/ecies-ge-doa").encrypt,
+    ecies_group_decrypt_ds: require("./ecies-group-encryption/ecies-ge-doa").decrypt,
+    ecies_group_getRecipientECDHPublicKeysFromEncEnvelope: require("./ecies-group-encryption/ecies-ge-doa").getRecipientECDHPublicKeysFromEncEnvelope
+}
+
+},{"./ecies":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies\\index.js","./ecies-doa-ds":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-ds\\index.js","./ecies-doa-kmac":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-doa-kmac\\index.js","./ecies-group-encryption/ecies-ge-anon":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-anon\\index.js","./ecies-group-encryption/ecies-ge-doa":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies-group-encryption\\ecies-ge-doa\\index.js","./ecies/index":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\ecies\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\ECKeyGenerator.js":[function(require,module,exports){
 function ECKeyGenerator() {
     const crypto = require('crypto');
     const KeyEncoder = require('./keyEncoder');
@@ -451,27 +1561,44 @@ function ECKeyGenerator() {
         return ecdh.getPublicKey();
     };
 
-    this.convertPublicKey = (rawPublicKey, options) => {
-        const defaultOpts = {format: 'pem', namedCurve: 'secp256k1'};
+    this.convertPublicKey = (publicKey, options) => {
+        options = options || {};
+        options = removeUndefinedPropsInOpt(options)
+        const defaultOpts = {originalFormat: 'raw', outputFormat: 'pem', encodingFormat:"hex", namedCurve: 'secp256k1'};
         Object.assign(defaultOpts, options);
         options = defaultOpts;
         const keyEncoder = new KeyEncoder(options.namedCurve);
-        return keyEncoder.encodePublic(rawPublicKey, 'raw', options.format)
+        return keyEncoder.encodePublic(publicKey, options.originalFormat, options.outputFormat, options.encodingFormat)
     };
 
     this.convertPrivateKey = (rawPrivateKey, options) => {
-        const defaultOpts = {format: 'pem', namedCurve: 'secp256k1'};
+        options = options || {};
+        options = removeUndefinedPropsInOpt(options)
+        const defaultOpts = {originalFormat: 'raw', outputFormat: 'pem', namedCurve: 'secp256k1'};
         Object.assign(defaultOpts, options);
         options = defaultOpts;
         const keyEncoder = new KeyEncoder(options.namedCurve);
-        return keyEncoder.encodePrivate(rawPrivateKey, 'raw', options.format)
+        return keyEncoder.encodePrivate(rawPrivateKey, options.originalFormat, options.outputFormat)
+    };
+
+    const removeUndefinedPropsInOpt = (options) => {
+        if (options) {
+            for (let prop in options) {
+                if (typeof options[prop] === "undefined") {
+                    delete options[prop];
+                }
+            }
+        }
+
+        return options;
     };
 }
 
 exports.createECKeyGenerator = () => {
     return new ECKeyGenerator();
 };
-},{"./keyEncoder":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\keyEncoder.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\PskCrypto.js":[function(require,module,exports){
+
+},{"./keyEncoder":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\keyEncoder.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\PskCrypto.js":[function(require,module,exports){
 function PskCrypto() {
     const crypto = require('crypto');
     const utils = require("./utils/cryptoUtils");
@@ -670,13 +1797,21 @@ function PskCrypto() {
     };
     this.decodeDerToASN1ETH = (derSignatureBuffer) => derAsn1Decoder.decodeDERIntoASN1ETH(derSignatureBuffer);
     this.PskHash = utils.PskHash;
+
+    const ecies = require("../js-mutual-auth-ecies/index");
+    this.ecies_encrypt = ecies.ecies_encrypt;
+    this.ecies_decrypt = ecies.ecies_decrypt;
+    this.ecies_encrypt_kmac = ecies.ecies_encrypt_kmac;
+    this.ecies_decrypt_kmac = ecies.ecies_decrypt_kmac;
+    this.ecies_encrypt_ds = ecies.ecies_encrypt_ds;
+    this.ecies_decrypt_ds = ecies.ecies_decrypt_ds;
 }
 
 module.exports = new PskCrypto();
 
 
 
-},{"../signsensusDS/ssutil":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\signsensusDS\\ssutil.js","./ECKeyGenerator":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\ECKeyGenerator.js","./PskEncryption":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\PskEncryption.js","./utils/DerASN1Decoder":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\DerASN1Decoder.js","./utils/cryptoUtils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\cryptoUtils.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\PskEncryption.js":[function(require,module,exports){
+},{"../js-mutual-auth-ecies/index":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\js-mutual-auth-ecies\\index.js","../signsensusDS/ssutil":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\signsensusDS\\ssutil.js","./ECKeyGenerator":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\ECKeyGenerator.js","./PskEncryption":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\PskEncryption.js","./utils/DerASN1Decoder":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\DerASN1Decoder.js","./utils/cryptoUtils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\cryptoUtils.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\PskEncryption.js":[function(require,module,exports){
 function PskEncryption(algorithm) {
     const crypto = require("crypto");
     const utils = require("./utils/cryptoUtils");
@@ -776,7 +1911,7 @@ function PskEncryption(algorithm) {
 
 module.exports = PskEncryption;
 
-},{"./utils/cryptoUtils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\cryptoUtils.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\api.js":[function(require,module,exports){
+},{"./utils/cryptoUtils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\cryptoUtils.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\api.js":[function(require,module,exports){
 var asn1 = require('./asn1');
 var inherits = require('util').inherits;
 
@@ -837,7 +1972,7 @@ Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
   return this._getEncoder(enc).encode(data, reporter);
 };
 
-},{"./asn1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","util":"util","vm":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\vm-browserify\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js":[function(require,module,exports){
+},{"./asn1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","util":"util","vm":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\vm-browserify\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js":[function(require,module,exports){
 var asn1 = exports;
 
 asn1.bignum = require('./bignum/bn');
@@ -848,7 +1983,7 @@ asn1.constants = require('./constants/index');
 asn1.decoders = require('./decoders/index');
 asn1.encoders = require('./encoders/index');
 
-},{"./api":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\api.js","./base/index":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\index.js","./bignum/bn":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\bignum\\bn.js","./constants/index":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\constants\\index.js","./decoders/index":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\index.js","./encoders/index":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\buffer.js":[function(require,module,exports){
+},{"./api":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\api.js","./base/index":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\index.js","./bignum/bn":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\bignum\\bn.js","./constants/index":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\constants\\index.js","./decoders/index":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\index.js","./encoders/index":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\buffer.js":[function(require,module,exports){
 const inherits = require('util').inherits;
 const Reporter = require('../base').Reporter;
 
@@ -967,7 +2102,7 @@ EncoderBuffer.prototype.join = function join(out, offset) {
     return out;
 };
 
-},{"../base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\index.js","util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\index.js":[function(require,module,exports){
+},{"../base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\index.js","util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\index.js":[function(require,module,exports){
 var base = exports;
 
 base.Reporter = require('./reporter').Reporter;
@@ -975,7 +2110,7 @@ base.DecoderBuffer = require('./buffer').DecoderBuffer;
 base.EncoderBuffer = require('./buffer').EncoderBuffer;
 base.Node = require('./node');
 
-},{"./buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\buffer.js","./node":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\node.js","./reporter":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\reporter.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\node.js":[function(require,module,exports){
+},{"./buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\buffer.js","./node":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\node.js","./reporter":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\reporter.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\node.js":[function(require,module,exports){
 var Reporter = require('../base').Reporter;
 var EncoderBuffer = require('../base').EncoderBuffer;
 //var assert = require('double-check').assert;
@@ -1579,7 +2714,7 @@ Node.prototype._encodePrimitive = function encodePrimitive(tag, data) {
     throw new Error('Unsupported tag: ' + tag);
 };
 
-},{"../base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\reporter.js":[function(require,module,exports){
+},{"../base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\base\\reporter.js":[function(require,module,exports){
 var inherits = require('util').inherits;
 
 function Reporter(options) {
@@ -1683,7 +2818,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
   return this;
 };
 
-},{"util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\bignum\\bn.js":[function(require,module,exports){
+},{"util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\bignum\\bn.js":[function(require,module,exports){
 (function (module, exports) {
 
 'use strict';
@@ -4126,7 +5261,7 @@ Mont.prototype.invm = function invm(a) {
 
 })(typeof module === 'undefined' || module, this);
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\constants\\der.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\constants\\der.js":[function(require,module,exports){
 var constants = require('../constants');
 
 exports.tagClass = {
@@ -4170,7 +5305,7 @@ exports.tag = {
 };
 exports.tagByName = constants._reverse(exports.tag);
 
-},{"../constants":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\constants\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\constants\\index.js":[function(require,module,exports){
+},{"../constants":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\constants\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\constants\\index.js":[function(require,module,exports){
 var constants = exports;
 
 // Helper
@@ -4191,7 +5326,7 @@ constants._reverse = function reverse(map) {
 
 constants.der = require('./der');
 
-},{"./der":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\constants\\der.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\der.js":[function(require,module,exports){
+},{"./der":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\constants\\der.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\der.js":[function(require,module,exports){
 var inherits = require('util').inherits;
 
 var asn1 = require('../asn1');
@@ -4484,13 +5619,13 @@ function derDecodeLen(buf, primitive, fail) {
   return len;
 }
 
-},{"../asn1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\index.js":[function(require,module,exports){
+},{"../asn1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\index.js":[function(require,module,exports){
 var decoders = exports;
 
 decoders.der = require('./der');
 decoders.pem = require('./pem');
 
-},{"./der":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\der.js","./pem":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\pem.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\pem.js":[function(require,module,exports){
+},{"./der":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\der.js","./pem":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\pem.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\pem.js":[function(require,module,exports){
 const inherits = require('util').inherits;
 
 const asn1 = require('../asn1');
@@ -4540,7 +5675,7 @@ PEMDecoder.prototype.decode = function decode(data, options) {
     return DERDecoder.prototype.decode.call(this, input, options);
 };
 
-},{"../asn1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","./der":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\der.js","util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\der.js":[function(require,module,exports){
+},{"../asn1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","./der":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\decoders\\der.js","util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\der.js":[function(require,module,exports){
 const inherits = require('util').inherits;
 const asn1 = require('../asn1');
 const base = asn1.base;
@@ -4810,13 +5945,13 @@ function encodeTag(tag, primitive, cls, reporter) {
     return res;
 }
 
-},{"../asn1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\index.js":[function(require,module,exports){
+},{"../asn1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\index.js":[function(require,module,exports){
 var encoders = exports;
 
 encoders.der = require('./der');
 encoders.pem = require('./pem');
 
-},{"./der":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\der.js","./pem":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\pem.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\pem.js":[function(require,module,exports){
+},{"./der":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\der.js","./pem":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\pem.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\pem.js":[function(require,module,exports){
 var inherits = require('util').inherits;
 
 var asn1 = require('../asn1');
@@ -4840,7 +5975,7 @@ PEMEncoder.prototype.encode = function encode(data, options) {
   return out.join('\n');
 };
 
-},{"../asn1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","./der":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\der.js","util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\keyEncoder.js":[function(require,module,exports){
+},{"../asn1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","./der":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\encoders\\der.js","util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\keyEncoder.js":[function(require,module,exports){
 'use strict'
 
 const asn1 = require('./asn1/asn1');
@@ -4891,10 +6026,10 @@ function KeyEncoder(options) {
 KeyEncoder.ECPrivateKeyASN = ECPrivateKeyASN;
 KeyEncoder.SubjectPublicKeyInfoASN = SubjectPublicKeyInfoASN;
 
-KeyEncoder.prototype.privateKeyObject = function (rawPrivateKey, rawPublicKey) {
+KeyEncoder.prototype.privateKeyObject = function (rawPrivateKey, rawPublicKey, encodingFormat = "hex") {
     const privateKeyObject = {
         version: new BN(1),
-        privateKey: $$.Buffer.from(rawPrivateKey, 'hex'),
+        privateKey: $$.Buffer.from(rawPrivateKey, encodingFormat),
         parameters: this.options.curveParameters,
         pemOptions: {label: "EC PRIVATE KEY"}
     };
@@ -4902,14 +6037,14 @@ KeyEncoder.prototype.privateKeyObject = function (rawPrivateKey, rawPublicKey) {
     if (rawPublicKey) {
         privateKeyObject.publicKey = {
             unused: 0,
-            data: $$.Buffer.from(rawPublicKey, 'hex')
+            data: $$.Buffer.from(rawPublicKey, encodingFormat)
         }
     }
 
     return privateKeyObject
 };
 
-KeyEncoder.prototype.publicKeyObject = function (rawPublicKey) {
+KeyEncoder.prototype.publicKeyObject = function (rawPublicKey, encodingFormat = "hex") {
     return {
         algorithm: {
             id: this.algorithmID,
@@ -4917,94 +6052,95 @@ KeyEncoder.prototype.publicKeyObject = function (rawPublicKey) {
         },
         pub: {
             unused: 0,
-            data: $$.Buffer.from(rawPublicKey, 'hex')
+            data: rawPublicKey
         },
         pemOptions: {label: "PUBLIC KEY"}
     }
 }
 
-KeyEncoder.prototype.encodePrivate = function (privateKey, originalFormat, destinationFormat) {
+KeyEncoder.prototype.encodePrivate = function (privateKey, originalFormat, destinationFormat, encodingFormat = "hex") {
     let privateKeyObject;
 
     /* Parse the incoming private key and convert it to a private key object */
     if (originalFormat === 'raw') {
-        if (!typeof privateKey === 'string') {
-            throw 'private key must be a string'
+        if (!$$.Buffer.isBuffer(privateKey)) {
+            throw Error('private key must be a buffer');
         }
-        let privateKeyObject = this.options.curve.keyFromPrivate(privateKey, 'hex'),
-            rawPublicKey = privateKeyObject.getPublic('hex')
+        let privateKeyObject = this.options.curve.keyFromPrivate(privateKey, encodingFormat),
+            rawPublicKey = privateKeyObject.getPublic(encodingFormat)
         privateKeyObject = this.privateKeyObject(privateKey, rawPublicKey)
     } else if (originalFormat === 'der') {
-        if (typeof privateKey === 'buffer') {
+        if ($$.Buffer.isBuffer(privateKey)) {
             // do nothing
         } else if (typeof privateKey === 'string') {
-            privateKey = $$.Buffer.from(privateKey, 'hex')
+            privateKey = $$.Buffer.from(privateKey, encodingFormat);
         } else {
-            throw 'private key must be a buffer or a string'
+            throw Error('private key must be a buffer or a string');
         }
         privateKeyObject = ECPrivateKeyASN.decode(privateKey, 'der')
     } else if (originalFormat === 'pem') {
         if (!typeof privateKey === 'string') {
-            throw 'private key must be a string'
+            throw Error('private key must be a string');
         }
         privateKeyObject = ECPrivateKeyASN.decode(privateKey, 'pem', this.options.privatePEMOptions)
     } else {
-        throw 'invalid private key format'
+        throw Error('invalid private key format');
     }
 
     /* Export the private key object to the desired format */
     if (destinationFormat === 'raw') {
-        return privateKeyObject.privateKey.toString('hex')
+        return privateKeyObject.privateKey;
     } else if (destinationFormat === 'der') {
-        return ECPrivateKeyASN.encode(privateKeyObject, 'der').toString('hex')
+        return ECPrivateKeyASN.encode(privateKeyObject, 'der').toString(encodingFormat)
     } else if (destinationFormat === 'pem') {
         return ECPrivateKeyASN.encode(privateKeyObject, 'pem', this.options.privatePEMOptions)
     } else {
-        throw 'invalid destination format for private key'
+        throw Error('invalid destination format for private key');
     }
 }
 
-KeyEncoder.prototype.encodePublic = function (publicKey, originalFormat, destinationFormat) {
+KeyEncoder.prototype.encodePublic = function (publicKey, originalFormat, destinationFormat, encodingFormat = "hex") {
     let publicKeyObject;
 
     /* Parse the incoming public key and convert it to a public key object */
     if (originalFormat === 'raw') {
-        if (!typeof publicKey === 'string') {
-            throw 'public key must be a string'
+        if (!$$.Buffer.isBuffer(publicKey)) {
+            throw Error('public key must be a buffer');
         }
         publicKeyObject = this.publicKeyObject(publicKey)
     } else if (originalFormat === 'der') {
-        if (typeof publicKey === 'buffer') {
+        if ($$.Buffer.isBuffer(publicKey)) {
             // do nothing
         } else if (typeof publicKey === 'string') {
-            publicKey = $$.Buffer.from(publicKey, 'hex')
+            publicKey = $$.Buffer.from(publicKey, encodingFormat)
         } else {
-            throw 'public key must be a buffer or a string'
+            throw Error('public key must be a buffer or a string');
         }
         publicKeyObject = SubjectPublicKeyInfoASN.decode(publicKey, 'der')
     } else if (originalFormat === 'pem') {
-        if (!typeof publicKey === 'string') {
-            throw 'public key must be a string'
+        if (!(typeof publicKey === 'string')) {
+            throw Error('public key must be a string');
         }
         publicKeyObject = SubjectPublicKeyInfoASN.decode(publicKey, 'pem', this.options.publicPEMOptions)
     } else {
-        throw 'invalid public key format'
+        throw Error('invalid public key format');
     }
 
     /* Export the private key object to the desired format */
     if (destinationFormat === 'raw') {
-        return publicKeyObject.pub.data.toString('hex')
+        return publicKeyObject.pub.data;
     } else if (destinationFormat === 'der') {
-        return SubjectPublicKeyInfoASN.encode(publicKeyObject, 'der').toString('hex')
+        return SubjectPublicKeyInfoASN.encode(publicKeyObject, 'der').toString(encodingFormat)
     } else if (destinationFormat === 'pem') {
         return SubjectPublicKeyInfoASN.encode(publicKeyObject, 'pem', this.options.publicPEMOptions)
     } else {
-        throw 'invalid destination format for public key'
+        throw Error('invalid destination format for public key');
     }
 }
 
 module.exports = KeyEncoder;
-},{"./asn1/asn1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","./asn1/bignum/bn":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\bignum\\bn.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\DerASN1Decoder.js":[function(require,module,exports){
+
+},{"./asn1/asn1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","./asn1/bignum/bn":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\bignum\\bn.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\DerASN1Decoder.js":[function(require,module,exports){
 const asn1 = require('../asn1/asn1');
 const BN = require('../asn1/bignum/bn');
 
@@ -5093,7 +6229,7 @@ function ecdsaVerify(data, signature, key) {
 module.exports = {
     decodeDERIntoASN1ETH
 };
-},{"../asn1/asn1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","../asn1/bignum/bn":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\bignum\\bn.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\DuplexStream.js":[function(require,module,exports){
+},{"../asn1/asn1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\asn1.js","../asn1/bignum/bn":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\asn1\\bignum\\bn.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\DuplexStream.js":[function(require,module,exports){
 const stream = require('stream');
 const util = require('util');
 
@@ -5118,7 +6254,7 @@ DuplexStream.prototype._read = function (n) {
 };
 
 module.exports = DuplexStream;
-},{"stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\stream-browserify\\index.js","util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\base58.js":[function(require,module,exports){
+},{"stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\stream-browserify\\index.js","util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\base58.js":[function(require,module,exports){
 const ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 const BASE = ALPHABET.length;
 const LEADER = ALPHABET.charAt(0);
@@ -5253,7 +6389,7 @@ module.exports = {
     encode,
     decode
 };
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\cryptoUtils.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\cryptoUtils.js":[function(require,module,exports){
 const base58 = require('./base58');
 
 const keySizes = [128, 192, 256];
@@ -5343,7 +6479,7 @@ module.exports = {
 };
 
 
-},{"./base58":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\base58.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\isStream.js":[function(require,module,exports){
+},{"./base58":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\base58.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\isStream.js":[function(require,module,exports){
 const stream = require('stream');
 
 
@@ -5371,7 +6507,7 @@ module.exports            = isStream;
 module.exports.isReadable = isReadable;
 module.exports.isWritable = isWritable;
 module.exports.isDuplex   = isDuplex;
-},{"stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\stream-browserify\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\signsensusDS\\ssutil.js":[function(require,module,exports){
+},{"stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\stream-browserify\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\signsensusDS\\ssutil.js":[function(require,module,exports){
 /*
  SignSens helper functions
  */
@@ -5570,7 +6706,7 @@ exports.createSignature = function (agent,counter, nextPublic, arr, size){
 
     return agent + ":" + counter + ":" + nextPublic + ":" + result;
 }
-},{"crypto":"crypto"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\index.js":[function(require,module,exports){
+},{"crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\index.js":[function(require,module,exports){
 
 let cachedUIDGenerator = undefined;
 let cachedSafeUid = undefined;
@@ -5622,7 +6758,7 @@ module.exports.ensureIsBuffer = function (data) {
     return buffer;
 }
 
-},{"./lib/Combos":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Combos.js","./lib/OwM":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\OwM.js","./lib/Queue":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Queue.js","./lib/SwarmPacker":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\SwarmPacker.js","./lib/TaskCounter":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\TaskCounter.js","./lib/beesHealer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\beesHealer.js","./lib/path":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\path.js","./lib/pingpongFork":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pingpongFork.js","./lib/pskconsole":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pskconsole.js","./lib/safe-uuid":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\safe-uuid.js","./lib/uidGenerator":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\uidGenerator.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Combos.js":[function(require,module,exports){
+},{"./lib/Combos":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Combos.js","./lib/OwM":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\OwM.js","./lib/Queue":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Queue.js","./lib/SwarmPacker":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\SwarmPacker.js","./lib/TaskCounter":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\TaskCounter.js","./lib/beesHealer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\beesHealer.js","./lib/path":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\path.js","./lib/pingpongFork":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pingpongFork.js","./lib/pskconsole":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pskconsole.js","./lib/safe-uuid":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\safe-uuid.js","./lib/uidGenerator":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\uidGenerator.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Combos.js":[function(require,module,exports){
 function product(args) {
     if(!args.length){
         return [ [] ];
@@ -5648,7 +6784,7 @@ function objectProduct(obj) {
 }
 
 module.exports = objectProduct;
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\OwM.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\OwM.js":[function(require,module,exports){
 var meta = "meta";
 
 function OwM(serialized){
@@ -5739,7 +6875,7 @@ OwM.prototype.setMetaFor = function(obj, name, value){
 };
 
 module.exports = OwM;
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Queue.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Queue.js":[function(require,module,exports){
 function QueueElement(content) {
 	this.content = content;
 	this.next = null;
@@ -5840,7 +6976,7 @@ Queue.prototype.inspect = Queue.prototype.toString;
 
 module.exports = Queue;
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\SwarmPacker.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\SwarmPacker.js":[function(require,module,exports){
 const HEADER_SIZE_RESEARVED = 4;
 
 function SwarmPacker(){
@@ -5989,7 +7125,7 @@ SwarmPacker.getHeader = function(pack){
     return header;
 };
 module.exports = SwarmPacker;
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\TaskCounter.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\TaskCounter.js":[function(require,module,exports){
 
 function TaskCounter(finalCallback) {
 	let results = [];
@@ -6039,7 +7175,7 @@ function TaskCounter(finalCallback) {
 }
 
 module.exports = TaskCounter;
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\beesHealer.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\beesHealer.js":[function(require,module,exports){
 const OwM = require("./OwM");
 
 /*
@@ -6095,7 +7231,7 @@ exports.jsonToNative = function(serialisedValues, result){
     };
 
 };
-},{"./OwM":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\OwM.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\path.js":[function(require,module,exports){
+},{"./OwM":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\OwM.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\path.js":[function(require,module,exports){
 (function (process){(function (){
 function replaceAll(str, search, replacement) {
     return str.split(search).join(replacement);
@@ -6285,7 +7421,7 @@ module.exports = {
 
 }).call(this)}).call(this,require('_process'))
 
-},{"_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pingpongFork.js":[function(require,module,exports){
+},{"_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pingpongFork.js":[function(require,module,exports){
 (function (process){(function (){
 const PING = "PING";
 const PONG = "PONG";
@@ -6380,7 +7516,7 @@ module.exports.enableLifeLine = function(timeout){
 };
 }).call(this)}).call(this,require('_process'))
 
-},{"_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","child_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify\\lib\\_empty.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pskconsole.js":[function(require,module,exports){
+},{"_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","child_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify\\lib\\_empty.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pskconsole.js":[function(require,module,exports){
 (function (process){(function (){
 var commands = {};
 var commands_help = {};
@@ -6454,7 +7590,7 @@ module.exports = {
 
 }).call(this)}).call(this,require('_process'))
 
-},{"_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\safe-uuid.js":[function(require,module,exports){
+},{"_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\safe-uuid.js":[function(require,module,exports){
 
 function encode(buffer) {
     return buffer.toString('base64')
@@ -6521,7 +7657,7 @@ exports.short_uuid = function(callback) {
         callback(null, encode(buf));
     });
 };
-},{"crypto":"crypto"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\uidGenerator.js":[function(require,module,exports){
+},{"crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\uidGenerator.js":[function(require,module,exports){
 function UidGenerator(minBuffers, buffersSize) {
     const Queue = require("./Queue");
     var PSKBuffer = typeof $$ !== "undefined" && $$.PSKBuffer ? $$.PSKBuffer : $$.Buffer;
@@ -6623,7 +7759,7 @@ module.exports.createUidGenerator = function (minBuffers, bufferSize) {
     return new UidGenerator(minBuffers, bufferSize);
 };
 
-},{"./Queue":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Queue.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1.js":[function(require,module,exports){
+},{"./Queue":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Queue.js","crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1.js":[function(require,module,exports){
 'use strict';
 
 const asn1 = exports;
@@ -6636,7 +7772,7 @@ asn1.constants = require('./asn1/constants');
 asn1.decoders = require('./asn1/decoders');
 asn1.encoders = require('./asn1/encoders');
 
-},{"./asn1/api":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\api.js","./asn1/base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\index.js","./asn1/constants":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\constants\\index.js","./asn1/decoders":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\index.js","./asn1/encoders":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\index.js","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\api.js":[function(require,module,exports){
+},{"./asn1/api":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\api.js","./asn1/base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\index.js","./asn1/constants":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\constants\\index.js","./asn1/decoders":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\index.js","./asn1/encoders":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\index.js","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\api.js":[function(require,module,exports){
 'use strict';
 
 const encoders = require('./encoders');
@@ -6695,7 +7831,7 @@ Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
   return this._getEncoder(enc).encode(data, reporter);
 };
 
-},{"./decoders":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\index.js","./encoders":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\index.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\buffer.js":[function(require,module,exports){
+},{"./decoders":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\index.js","./encoders":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\index.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\buffer.js":[function(require,module,exports){
 'use strict';
 
 const inherits = require('inherits');
@@ -6850,7 +7986,7 @@ EncoderBuffer.prototype.join = function join(out, offset) {
   return out;
 };
 
-},{"../base/reporter":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\reporter.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safer-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safer-buffer\\safer.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\index.js":[function(require,module,exports){
+},{"../base/reporter":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\reporter.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safer-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safer-buffer\\safer.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\index.js":[function(require,module,exports){
 'use strict';
 
 const base = exports;
@@ -6860,7 +7996,7 @@ base.DecoderBuffer = require('./buffer').DecoderBuffer;
 base.EncoderBuffer = require('./buffer').EncoderBuffer;
 base.Node = require('./node');
 
-},{"./buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\buffer.js","./node":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\node.js","./reporter":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\reporter.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\node.js":[function(require,module,exports){
+},{"./buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\buffer.js","./node":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\node.js","./reporter":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\reporter.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\node.js":[function(require,module,exports){
 'use strict';
 
 const Reporter = require('../base/reporter').Reporter;
@@ -7500,7 +8636,7 @@ Node.prototype._isPrintstr = function isPrintstr(str) {
   return /^[A-Za-z0-9 '()+,-./:=?]*$/.test(str);
 };
 
-},{"../base/buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\buffer.js","../base/reporter":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\reporter.js","minimalistic-assert":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\reporter.js":[function(require,module,exports){
+},{"../base/buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\buffer.js","../base/reporter":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\reporter.js","minimalistic-assert":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\reporter.js":[function(require,module,exports){
 'use strict';
 
 const inherits = require('inherits');
@@ -7625,7 +8761,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
   return this;
 };
 
-},{"inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\constants\\der.js":[function(require,module,exports){
+},{"inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\constants\\der.js":[function(require,module,exports){
 'use strict';
 
 // Helper
@@ -7685,7 +8821,7 @@ exports.tag = {
 };
 exports.tagByName = reverse(exports.tag);
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\constants\\index.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\constants\\index.js":[function(require,module,exports){
 'use strict';
 
 const constants = exports;
@@ -7708,7 +8844,7 @@ constants._reverse = function reverse(map) {
 
 constants.der = require('./der');
 
-},{"./der":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\constants\\der.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\der.js":[function(require,module,exports){
+},{"./der":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\constants\\der.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\der.js":[function(require,module,exports){
 'use strict';
 
 const inherits = require('inherits');
@@ -8045,7 +9181,7 @@ function derDecodeLen(buf, primitive, fail) {
   return len;
 }
 
-},{"../base/buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\buffer.js","../base/node":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\node.js","../constants/der":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\constants\\der.js","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\index.js":[function(require,module,exports){
+},{"../base/buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\buffer.js","../base/node":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\node.js","../constants/der":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\constants\\der.js","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\index.js":[function(require,module,exports){
 'use strict';
 
 const decoders = exports;
@@ -8053,7 +9189,7 @@ const decoders = exports;
 decoders.der = require('./der');
 decoders.pem = require('./pem');
 
-},{"./der":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\der.js","./pem":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\pem.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\pem.js":[function(require,module,exports){
+},{"./der":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\der.js","./pem":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\pem.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\pem.js":[function(require,module,exports){
 'use strict';
 
 const inherits = require('inherits');
@@ -8106,7 +9242,7 @@ PEMDecoder.prototype.decode = function decode(data, options) {
   return DERDecoder.prototype.decode.call(this, input, options);
 };
 
-},{"./der":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\der.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safer-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safer-buffer\\safer.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\der.js":[function(require,module,exports){
+},{"./der":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\decoders\\der.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safer-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safer-buffer\\safer.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\der.js":[function(require,module,exports){
 'use strict';
 
 const inherits = require('inherits');
@@ -8403,7 +9539,7 @@ function encodeTag(tag, primitive, cls, reporter) {
   return res;
 }
 
-},{"../base/node":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\node.js","../constants/der":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\constants\\der.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safer-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safer-buffer\\safer.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\index.js":[function(require,module,exports){
+},{"../base/node":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\base\\node.js","../constants/der":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\constants\\der.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safer-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safer-buffer\\safer.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\index.js":[function(require,module,exports){
 'use strict';
 
 const encoders = exports;
@@ -8411,7 +9547,7 @@ const encoders = exports;
 encoders.der = require('./der');
 encoders.pem = require('./pem');
 
-},{"./der":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\der.js","./pem":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\pem.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\pem.js":[function(require,module,exports){
+},{"./der":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\der.js","./pem":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\pem.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\pem.js":[function(require,module,exports){
 'use strict';
 
 const inherits = require('inherits');
@@ -8436,7 +9572,7 @@ PEMEncoder.prototype.encode = function encode(data, options) {
   return out.join('\n');
 };
 
-},{"./der":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\der.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
+},{"./der":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1\\encoders\\der.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
 (function (module, exports) {
   'use strict';
 
@@ -11884,7 +13020,7 @@ PEMEncoder.prototype.encode = function encode(data, options) {
   };
 })(typeof module === 'undefined' || module, this);
 
-},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\base64-js\\index.js":[function(require,module,exports){
+},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\base64-js\\index.js":[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -12036,7 +13172,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
 (function (module, exports) {
   'use strict';
 
@@ -15585,7 +16721,7 @@ function fromByteArray (uint8) {
   };
 })(typeof module === 'undefined' || module, this);
 
-},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\brorand\\index.js":[function(require,module,exports){
+},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\brorand\\index.js":[function(require,module,exports){
 var r;
 
 module.exports = function rand(len) {
@@ -15652,9 +16788,9 @@ if (typeof self === 'object') {
   }
 }
 
-},{"crypto":"crypto"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browser-resolve\\empty.js":[function(require,module,exports){
+},{"crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browser-resolve\\empty.js":[function(require,module,exports){
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\aes.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\aes.js":[function(require,module,exports){
 // based on the aes implimentation in triple sec
 // https://github.com/keybase/triplesec
 // which is in turn based on the one from crypto-js
@@ -15884,7 +17020,7 @@ AES.prototype.scrub = function () {
 
 module.exports.AES = AES
 
-},{"safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\authCipher.js":[function(require,module,exports){
+},{"safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\authCipher.js":[function(require,module,exports){
 var aes = require('./aes')
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('cipher-base')
@@ -16003,7 +17139,7 @@ StreamCipher.prototype.setAAD = function setAAD (buf) {
 
 module.exports = StreamCipher
 
-},{"./aes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\aes.js","./ghash":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\ghash.js","./incr32":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\incr32.js","buffer-xor":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\buffer-xor\\index.js","cipher-base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\browser.js":[function(require,module,exports){
+},{"./aes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\aes.js","./ghash":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\ghash.js","./incr32":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\incr32.js","buffer-xor":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\buffer-xor\\index.js","cipher-base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\browser.js":[function(require,module,exports){
 var ciphers = require('./encrypter')
 var deciphers = require('./decrypter')
 var modes = require('./modes/list.json')
@@ -16018,7 +17154,7 @@ exports.createDecipher = exports.Decipher = deciphers.createDecipher
 exports.createDecipheriv = exports.Decipheriv = deciphers.createDecipheriv
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"./decrypter":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\decrypter.js","./encrypter":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\encrypter.js","./modes/list.json":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\list.json"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\decrypter.js":[function(require,module,exports){
+},{"./decrypter":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\decrypter.js","./encrypter":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\encrypter.js","./modes/list.json":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\list.json"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\decrypter.js":[function(require,module,exports){
 var AuthCipher = require('./authCipher')
 var Buffer = require('safe-buffer').Buffer
 var MODES = require('./modes')
@@ -16144,7 +17280,7 @@ function createDecipher (suite, password) {
 exports.createDecipher = createDecipher
 exports.createDecipheriv = createDecipheriv
 
-},{"./aes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\aes.js","./authCipher":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\authCipher.js","./modes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\index.js","./streamCipher":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\streamCipher.js","cipher-base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","evp_bytestokey":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\evp_bytestokey\\index.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\encrypter.js":[function(require,module,exports){
+},{"./aes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\aes.js","./authCipher":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\authCipher.js","./modes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\index.js","./streamCipher":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\streamCipher.js","cipher-base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","evp_bytestokey":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\evp_bytestokey\\index.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\encrypter.js":[function(require,module,exports){
 var MODES = require('./modes')
 var AuthCipher = require('./authCipher')
 var Buffer = require('safe-buffer').Buffer
@@ -16260,7 +17396,7 @@ function createCipher (suite, password) {
 exports.createCipheriv = createCipheriv
 exports.createCipher = createCipher
 
-},{"./aes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\aes.js","./authCipher":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\authCipher.js","./modes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\index.js","./streamCipher":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\streamCipher.js","cipher-base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","evp_bytestokey":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\evp_bytestokey\\index.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\ghash.js":[function(require,module,exports){
+},{"./aes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\aes.js","./authCipher":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\authCipher.js","./modes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\index.js","./streamCipher":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\streamCipher.js","cipher-base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","evp_bytestokey":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\evp_bytestokey\\index.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\ghash.js":[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var ZEROES = Buffer.alloc(16, 0)
 
@@ -16351,7 +17487,7 @@ GHASH.prototype.final = function (abl, bl) {
 
 module.exports = GHASH
 
-},{"safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\incr32.js":[function(require,module,exports){
+},{"safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\incr32.js":[function(require,module,exports){
 function incr32 (iv) {
   var len = iv.length
   var item
@@ -16368,7 +17504,7 @@ function incr32 (iv) {
 }
 module.exports = incr32
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cbc.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cbc.js":[function(require,module,exports){
 var xor = require('buffer-xor')
 
 exports.encrypt = function (self, block) {
@@ -16387,7 +17523,7 @@ exports.decrypt = function (self, block) {
   return xor(out, pad)
 }
 
-},{"buffer-xor":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\buffer-xor\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cfb.js":[function(require,module,exports){
+},{"buffer-xor":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\buffer-xor\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cfb.js":[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var xor = require('buffer-xor')
 
@@ -16422,7 +17558,7 @@ exports.encrypt = function (self, data, decrypt) {
   return out
 }
 
-},{"buffer-xor":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\buffer-xor\\index.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cfb1.js":[function(require,module,exports){
+},{"buffer-xor":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\buffer-xor\\index.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cfb1.js":[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 function encryptByte (self, byteParam, decrypt) {
@@ -16466,7 +17602,7 @@ exports.encrypt = function (self, chunk, decrypt) {
   return out
 }
 
-},{"safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cfb8.js":[function(require,module,exports){
+},{"safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cfb8.js":[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 function encryptByte (self, byteParam, decrypt) {
@@ -16493,7 +17629,7 @@ exports.encrypt = function (self, chunk, decrypt) {
   return out
 }
 
-},{"safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\ctr.js":[function(require,module,exports){
+},{"safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\ctr.js":[function(require,module,exports){
 var xor = require('buffer-xor')
 var Buffer = require('safe-buffer').Buffer
 var incr32 = require('../incr32')
@@ -16525,7 +17661,7 @@ exports.encrypt = function (self, chunk) {
   return xor(chunk, pad)
 }
 
-},{"../incr32":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\incr32.js","buffer-xor":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\buffer-xor\\index.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\ecb.js":[function(require,module,exports){
+},{"../incr32":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\incr32.js","buffer-xor":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\buffer-xor\\index.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\ecb.js":[function(require,module,exports){
 exports.encrypt = function (self, block) {
   return self._cipher.encryptBlock(block)
 }
@@ -16534,7 +17670,7 @@ exports.decrypt = function (self, block) {
   return self._cipher.decryptBlock(block)
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\index.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\index.js":[function(require,module,exports){
 var modeModules = {
   ECB: require('./ecb'),
   CBC: require('./cbc'),
@@ -16554,7 +17690,7 @@ for (var key in modes) {
 
 module.exports = modes
 
-},{"./cbc":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cbc.js","./cfb":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cfb.js","./cfb1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cfb1.js","./cfb8":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cfb8.js","./ctr":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\ctr.js","./ecb":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\ecb.js","./list.json":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\list.json","./ofb":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\ofb.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\list.json":[function(require,module,exports){
+},{"./cbc":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cbc.js","./cfb":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cfb.js","./cfb1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cfb1.js","./cfb8":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\cfb8.js","./ctr":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\ctr.js","./ecb":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\ecb.js","./list.json":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\list.json","./ofb":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\ofb.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\list.json":[function(require,module,exports){
 module.exports={
   "aes-128-ecb": {
     "cipher": "AES",
@@ -16747,7 +17883,7 @@ module.exports={
   }
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\ofb.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\ofb.js":[function(require,module,exports){
 (function (Buffer){(function (){
 var xor = require('buffer-xor')
 
@@ -16768,7 +17904,7 @@ exports.encrypt = function (self, chunk) {
 
 }).call(this)}).call(this,require("buffer").Buffer)
 
-},{"buffer":"buffer","buffer-xor":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\buffer-xor\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\streamCipher.js":[function(require,module,exports){
+},{"buffer":"buffer","buffer-xor":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\buffer-xor\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\streamCipher.js":[function(require,module,exports){
 var aes = require('./aes')
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('cipher-base')
@@ -16797,7 +17933,7 @@ StreamCipher.prototype._final = function () {
 
 module.exports = StreamCipher
 
-},{"./aes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\aes.js","cipher-base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-cipher\\browser.js":[function(require,module,exports){
+},{"./aes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\aes.js","cipher-base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-cipher\\browser.js":[function(require,module,exports){
 var DES = require('browserify-des')
 var aes = require('browserify-aes/browser')
 var aesModes = require('browserify-aes/modes')
@@ -16866,7 +18002,7 @@ exports.createDecipher = exports.Decipher = createDecipher
 exports.createDecipheriv = exports.Decipheriv = createDecipheriv
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"browserify-aes/browser":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\browser.js","browserify-aes/modes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\index.js","browserify-des":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-des\\index.js","browserify-des/modes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-des\\modes.js","evp_bytestokey":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\evp_bytestokey\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-des\\index.js":[function(require,module,exports){
+},{"browserify-aes/browser":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\browser.js","browserify-aes/modes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\modes\\index.js","browserify-des":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-des\\index.js","browserify-des/modes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-des\\modes.js","evp_bytestokey":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\evp_bytestokey\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-des\\index.js":[function(require,module,exports){
 var CipherBase = require('cipher-base')
 var des = require('des.js')
 var inherits = require('inherits')
@@ -16918,7 +18054,7 @@ DES.prototype._final = function () {
   return Buffer.from(this._des.final())
 }
 
-},{"cipher-base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","des.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-des\\modes.js":[function(require,module,exports){
+},{"cipher-base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","des.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-des\\modes.js":[function(require,module,exports){
 exports['des-ecb'] = {
   key: 8,
   iv: 0
@@ -16944,7 +18080,7 @@ exports['des-ede'] = {
   iv: 0
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-rsa\\index.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-rsa\\index.js":[function(require,module,exports){
 (function (Buffer){(function (){
 var BN = require('bn.js')
 var randomBytes = require('randombytes')
@@ -16984,10 +18120,10 @@ module.exports = crt
 
 }).call(this)}).call(this,require("buffer").Buffer)
 
-},{"bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\bn.js\\lib\\bn.js","buffer":"buffer","randombytes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\algos.js":[function(require,module,exports){
+},{"bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\bn.js\\lib\\bn.js","buffer":"buffer","randombytes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\algos.js":[function(require,module,exports){
 module.exports = require('./browser/algorithms.json')
 
-},{"./browser/algorithms.json":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\algorithms.json"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\algorithms.json":[function(require,module,exports){
+},{"./browser/algorithms.json":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\algorithms.json"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\algorithms.json":[function(require,module,exports){
 module.exports={
   "sha224WithRSAEncryption": {
     "sign": "rsa",
@@ -17141,7 +18277,7 @@ module.exports={
   }
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\curves.json":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\curves.json":[function(require,module,exports){
 module.exports={
   "1.3.132.0.10": "secp256k1",
   "1.3.132.0.33": "p224",
@@ -17151,7 +18287,7 @@ module.exports={
   "1.3.132.0.35": "p521"
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\index.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\index.js":[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var createHash = require('create-hash')
 var stream = require('readable-stream')
@@ -17245,7 +18381,7 @@ module.exports = {
   createVerify: createVerify
 }
 
-},{"./algorithms.json":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\algorithms.json","./sign":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\sign.js","./verify":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\verify.js","create-hash":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\browser.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","readable-stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\readable-browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\sign.js":[function(require,module,exports){
+},{"./algorithms.json":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\algorithms.json","./sign":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\sign.js","./verify":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\verify.js","create-hash":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\browser.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","readable-stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\readable-browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\sign.js":[function(require,module,exports){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var Buffer = require('safe-buffer').Buffer
 var createHmac = require('create-hmac')
@@ -17390,7 +18526,7 @@ module.exports = sign
 module.exports.getKey = getKey
 module.exports.makeKey = makeKey
 
-},{"./curves.json":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\curves.json","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\bn.js\\lib\\bn.js","browserify-rsa":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-rsa\\index.js","create-hmac":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hmac\\browser.js","elliptic":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic.js","parse-asn1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\index.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\verify.js":[function(require,module,exports){
+},{"./curves.json":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\curves.json","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\bn.js\\lib\\bn.js","browserify-rsa":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-rsa\\index.js","create-hmac":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hmac\\browser.js","elliptic":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic.js","parse-asn1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\index.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\verify.js":[function(require,module,exports){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var Buffer = require('safe-buffer').Buffer
 var BN = require('bn.js')
@@ -17476,7 +18612,7 @@ function checkValue (b, q) {
 
 module.exports = verify
 
-},{"./curves.json":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\curves.json","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\bn.js\\lib\\bn.js","elliptic":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic.js","parse-asn1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\index.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js":[function(require,module,exports){
+},{"./curves.json":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\curves.json","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\bn.js\\lib\\bn.js","elliptic":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic.js","parse-asn1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\index.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js":[function(require,module,exports){
 'use strict';
 
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
@@ -17605,7 +18741,7 @@ createErrorType('ERR_UNKNOWN_ENCODING', function (arg) {
 createErrorType('ERR_STREAM_UNSHIFT_AFTER_END_EVENT', 'stream.unshift() after end event');
 module.exports.codes = codes;
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_duplex.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_duplex.js":[function(require,module,exports){
 (function (process){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -17748,7 +18884,7 @@ Object.defineProperty(Duplex.prototype, 'destroyed', {
 });
 }).call(this)}).call(this,require('_process'))
 
-},{"./_stream_readable":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_readable.js","./_stream_writable":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_writable.js","_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_passthrough.js":[function(require,module,exports){
+},{"./_stream_readable":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_readable.js","./_stream_writable":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_writable.js","_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_passthrough.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -17788,7 +18924,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_transform.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_readable.js":[function(require,module,exports){
+},{"./_stream_transform":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_transform.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_readable.js":[function(require,module,exports){
 (function (process,global){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -18916,7 +20052,7 @@ function indexOf(xs, x) {
 }
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../errors":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js","./_stream_duplex":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./internal/streams/async_iterator":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\async_iterator.js","./internal/streams/buffer_list":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\buffer_list.js","./internal/streams/destroy":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js","./internal/streams/from":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\from-browser.js","./internal/streams/state":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js","./internal/streams/stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js","_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","buffer":"buffer","events":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","string_decoder/":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\string_decoder\\lib\\string_decoder.js","util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_transform.js":[function(require,module,exports){
+},{"../errors":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js","./_stream_duplex":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./internal/streams/async_iterator":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\async_iterator.js","./internal/streams/buffer_list":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\buffer_list.js","./internal/streams/destroy":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js","./internal/streams/from":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\from-browser.js","./internal/streams/state":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js","./internal/streams/stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js","_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","buffer":"buffer","events":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","string_decoder/":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\string_decoder\\lib\\string_decoder.js","util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_transform.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -19118,7 +20254,7 @@ function done(stream, er, data) {
   if (stream._transformState.transforming) throw new ERR_TRANSFORM_ALREADY_TRANSFORMING();
   return stream.push(null);
 }
-},{"../errors":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js","./_stream_duplex":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_duplex.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_writable.js":[function(require,module,exports){
+},{"../errors":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js","./_stream_duplex":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_duplex.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_writable.js":[function(require,module,exports){
 (function (process,global){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -19819,7 +20955,7 @@ Writable.prototype._destroy = function (err, cb) {
 };
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../errors":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js","./_stream_duplex":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./internal/streams/destroy":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js","./internal/streams/state":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js","./internal/streams/stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js","_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","buffer":"buffer","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","util-deprecate":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\util-deprecate\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\async_iterator.js":[function(require,module,exports){
+},{"../errors":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js","./_stream_duplex":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./internal/streams/destroy":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js","./internal/streams/state":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js","./internal/streams/stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js","_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","buffer":"buffer","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","util-deprecate":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\util-deprecate\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\async_iterator.js":[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -20030,7 +21166,7 @@ var createReadableStreamAsyncIterator = function createReadableStreamAsyncIterat
 module.exports = createReadableStreamAsyncIterator;
 }).call(this)}).call(this,require('_process'))
 
-},{"./end-of-stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js","_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\buffer_list.js":[function(require,module,exports){
+},{"./end-of-stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js","_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\buffer_list.js":[function(require,module,exports){
 'use strict';
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -20241,7 +21377,7 @@ function () {
 
   return BufferList;
 }();
-},{"buffer":"buffer","util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js":[function(require,module,exports){
+},{"buffer":"buffer","util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js":[function(require,module,exports){
 (function (process){(function (){
 'use strict'; // undocumented cb() API, needed for core, not for public API
 
@@ -20350,7 +21486,7 @@ module.exports = {
 };
 }).call(this)}).call(this,require('_process'))
 
-},{"_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js":[function(require,module,exports){
+},{"_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js":[function(require,module,exports){
 // Ported from https://github.com/mafintosh/end-of-stream with
 // permission from the author, Mathias Buus (@mafintosh).
 'use strict';
@@ -20455,12 +21591,12 @@ function eos(stream, opts, callback) {
 }
 
 module.exports = eos;
-},{"../../../errors":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\from-browser.js":[function(require,module,exports){
+},{"../../../errors":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\from-browser.js":[function(require,module,exports){
 module.exports = function () {
   throw new Error('Readable.from is not available in the browser')
 };
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\pipeline.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\pipeline.js":[function(require,module,exports){
 // Ported from https://github.com/mafintosh/pump with
 // permission from the author, Mathias Buus (@mafintosh).
 'use strict';
@@ -20558,7 +21694,7 @@ function pipeline() {
 }
 
 module.exports = pipeline;
-},{"../../../errors":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js","./end-of-stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js":[function(require,module,exports){
+},{"../../../errors":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js","./end-of-stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js":[function(require,module,exports){
 'use strict';
 
 var ERR_INVALID_OPT_VALUE = require('../../../errors').codes.ERR_INVALID_OPT_VALUE;
@@ -20586,10 +21722,10 @@ function getHighWaterMark(state, options, duplexKey, isDuplex) {
 module.exports = {
   getHighWaterMark: getHighWaterMark
 };
-},{"../../../errors":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js":[function(require,module,exports){
+},{"../../../errors":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js":[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\readable-browser.js":[function(require,module,exports){
+},{"events":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\readable-browser.js":[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -20600,9 +21736,9 @@ exports.PassThrough = require('./lib/_stream_passthrough.js');
 exports.finished = require('./lib/internal/streams/end-of-stream.js');
 exports.pipeline = require('./lib/internal/streams/pipeline.js');
 
-},{"./lib/_stream_duplex.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./lib/_stream_passthrough.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_passthrough.js","./lib/_stream_readable.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_readable.js","./lib/_stream_transform.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_transform.js","./lib/_stream_writable.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_writable.js","./lib/internal/streams/end-of-stream.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js","./lib/internal/streams/pipeline.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\pipeline.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify\\lib\\_empty.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browser-resolve\\empty.js"][0].apply(exports,arguments)
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\buffer-xor\\index.js":[function(require,module,exports){
+},{"./lib/_stream_duplex.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./lib/_stream_passthrough.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_passthrough.js","./lib/_stream_readable.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_readable.js","./lib/_stream_transform.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_transform.js","./lib/_stream_writable.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_writable.js","./lib/internal/streams/end-of-stream.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js","./lib/internal/streams/pipeline.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\pipeline.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify\\lib\\_empty.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browser-resolve\\empty.js"][0].apply(exports,arguments)
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\buffer-xor\\index.js":[function(require,module,exports){
 (function (Buffer){(function (){
 module.exports = function xor (a, b) {
   var length = Math.min(a.length, b.length)
@@ -20617,7 +21753,7 @@ module.exports = function xor (a, b) {
 
 }).call(this)}).call(this,require("buffer").Buffer)
 
-},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js":[function(require,module,exports){
+},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js":[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('stream').Transform
 var StringDecoder = require('string_decoder').StringDecoder
@@ -20718,7 +21854,7 @@ CipherBase.prototype._toString = function (value, enc, fin) {
 
 module.exports = CipherBase
 
-},{"inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js","stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\stream-browserify\\index.js","string_decoder":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\string_decoder\\lib\\string_decoder.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\core-util-is\\lib\\util.js":[function(require,module,exports){
+},{"inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js","stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\stream-browserify\\index.js","string_decoder":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\string_decoder\\lib\\string_decoder.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\core-util-is\\lib\\util.js":[function(require,module,exports){
 (function (Buffer){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -20830,7 +21966,7 @@ function objectToString(o) {
 
 }).call(this)}).call(this,{"isBuffer":require("../../is-buffer/index.js")})
 
-},{"../../is-buffer/index.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\is-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-ecdh\\browser.js":[function(require,module,exports){
+},{"../../is-buffer/index.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\is-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-ecdh\\browser.js":[function(require,module,exports){
 (function (Buffer){(function (){
 var elliptic = require('elliptic')
 var BN = require('bn.js')
@@ -20959,9 +22095,9 @@ function formatReturnValue (bn, enc, len) {
 
 }).call(this)}).call(this,require("buffer").Buffer)
 
-},{"bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-ecdh\\node_modules\\bn.js\\lib\\bn.js","buffer":"buffer","elliptic":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-ecdh\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js"][0].apply(exports,arguments)
-},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\browser.js":[function(require,module,exports){
+},{"bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-ecdh\\node_modules\\bn.js\\lib\\bn.js","buffer":"buffer","elliptic":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-ecdh\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js"][0].apply(exports,arguments)
+},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\browser.js":[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var MD5 = require('md5.js')
@@ -20993,14 +22129,14 @@ module.exports = function createHash (alg) {
   return new Hash(sha(alg))
 }
 
-},{"cipher-base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","md5.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\md5.js\\index.js","ripemd160":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\ripemd160\\index.js","sha.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\md5.js":[function(require,module,exports){
+},{"cipher-base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","md5.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\md5.js\\index.js","ripemd160":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\ripemd160\\index.js","sha.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\md5.js":[function(require,module,exports){
 var MD5 = require('md5.js')
 
 module.exports = function (buffer) {
   return new MD5().update(buffer).digest()
 }
 
-},{"md5.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\md5.js\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hmac\\browser.js":[function(require,module,exports){
+},{"md5.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\md5.js\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hmac\\browser.js":[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var Legacy = require('./legacy')
@@ -21064,7 +22200,7 @@ module.exports = function createHmac (alg, key) {
   return new Hmac(alg, key)
 }
 
-},{"./legacy":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hmac\\legacy.js","cipher-base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","create-hash/md5":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\md5.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","ripemd160":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\ripemd160\\index.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js","sha.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hmac\\legacy.js":[function(require,module,exports){
+},{"./legacy":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hmac\\legacy.js","cipher-base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","create-hash/md5":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\md5.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","ripemd160":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\ripemd160\\index.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js","sha.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hmac\\legacy.js":[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var Buffer = require('safe-buffer').Buffer
@@ -21112,7 +22248,7 @@ Hmac.prototype._final = function () {
 }
 module.exports = Hmac
 
-},{"cipher-base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des.js":[function(require,module,exports){
+},{"cipher-base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\cipher-base\\index.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des.js":[function(require,module,exports){
 'use strict';
 
 exports.utils = require('./des/utils');
@@ -21121,7 +22257,7 @@ exports.DES = require('./des/des');
 exports.CBC = require('./des/cbc');
 exports.EDE = require('./des/ede');
 
-},{"./des/cbc":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\cbc.js","./des/cipher":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\cipher.js","./des/des":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\des.js","./des/ede":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\ede.js","./des/utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\utils.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\cbc.js":[function(require,module,exports){
+},{"./des/cbc":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\cbc.js","./des/cipher":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\cipher.js","./des/des":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\des.js","./des/ede":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\ede.js","./des/utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\utils.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\cbc.js":[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -21188,7 +22324,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
   }
 };
 
-},{"inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","minimalistic-assert":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\cipher.js":[function(require,module,exports){
+},{"inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","minimalistic-assert":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\cipher.js":[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -21331,7 +22467,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
   return this._unpad(out);
 };
 
-},{"minimalistic-assert":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\des.js":[function(require,module,exports){
+},{"minimalistic-assert":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\des.js":[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -21475,7 +22611,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
   utils.rip(l, r, out, off);
 };
 
-},{"./cipher":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\cipher.js","./utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\utils.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","minimalistic-assert":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\ede.js":[function(require,module,exports){
+},{"./cipher":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\cipher.js","./utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\utils.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","minimalistic-assert":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\ede.js":[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -21531,7 +22667,7 @@ EDE.prototype._update = function _update(inp, inOff, out, outOff) {
 EDE.prototype._pad = DES.prototype._pad;
 EDE.prototype._unpad = DES.prototype._unpad;
 
-},{"./cipher":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\cipher.js","./des":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\des.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","minimalistic-assert":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\utils.js":[function(require,module,exports){
+},{"./cipher":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\cipher.js","./des":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\des.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","minimalistic-assert":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\des.js\\lib\\des\\utils.js":[function(require,module,exports){
 'use strict';
 
 exports.readUInt32BE = function readUInt32BE(bytes, off) {
@@ -21789,7 +22925,7 @@ exports.padSplit = function padSplit(num, size, group) {
   return out.join(' ');
 };
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\browser.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\browser.js":[function(require,module,exports){
 (function (Buffer){(function (){
 var generatePrime = require('./lib/generatePrime')
 var primes = require('./lib/primes.json')
@@ -21836,7 +22972,7 @@ exports.createDiffieHellman = exports.DiffieHellman = createDiffieHellman
 
 }).call(this)}).call(this,require("buffer").Buffer)
 
-},{"./lib/dh":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\dh.js","./lib/generatePrime":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\generatePrime.js","./lib/primes.json":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\primes.json","buffer":"buffer"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\dh.js":[function(require,module,exports){
+},{"./lib/dh":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\dh.js","./lib/generatePrime":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\generatePrime.js","./lib/primes.json":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\primes.json","buffer":"buffer"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\dh.js":[function(require,module,exports){
 (function (Buffer){(function (){
 var BN = require('bn.js');
 var MillerRabin = require('miller-rabin');
@@ -22005,7 +23141,7 @@ function formatReturnValue(bn, enc) {
 
 }).call(this)}).call(this,require("buffer").Buffer)
 
-},{"./generatePrime":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\generatePrime.js","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\node_modules\\bn.js\\lib\\bn.js","buffer":"buffer","miller-rabin":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\miller-rabin\\lib\\mr.js","randombytes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\generatePrime.js":[function(require,module,exports){
+},{"./generatePrime":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\generatePrime.js","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\node_modules\\bn.js\\lib\\bn.js","buffer":"buffer","miller-rabin":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\miller-rabin\\lib\\mr.js","randombytes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\generatePrime.js":[function(require,module,exports){
 var randomBytes = require('randombytes');
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
@@ -22112,7 +23248,7 @@ function findPrime(bits, gen) {
 
 }
 
-},{"bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\node_modules\\bn.js\\lib\\bn.js","miller-rabin":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\miller-rabin\\lib\\mr.js","randombytes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\primes.json":[function(require,module,exports){
+},{"bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\node_modules\\bn.js\\lib\\bn.js","miller-rabin":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\miller-rabin\\lib\\mr.js","randombytes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\lib\\primes.json":[function(require,module,exports){
 module.exports={
     "modp1": {
         "gen": "02",
@@ -22147,9 +23283,9 @@ module.exports={
         "prime": "ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497cea956ae515d2261898fa051015728e5a8aaac42dad33170d04507a33a85521abdf1cba64ecfb850458dbef0a8aea71575d060c7db3970f85a6e1e4c7abf5ae8cdb0933d71e8c94e04a25619dcee3d2261ad2ee6bf12ffa06d98a0864d87602733ec86a64521f2b18177b200cbbe117577a615d6c770988c0bad946e208e24fa074e5ab3143db5bfce0fd108e4b82d120a92108011a723c12a787e6d788719a10bdba5b2699c327186af4e23c1a946834b6150bda2583e9ca2ad44ce8dbbbc2db04de8ef92e8efc141fbecaa6287c59474e6bc05d99b2964fa090c3a2233ba186515be7ed1f612970cee2d7afb81bdd762170481cd0069127d5b05aa993b4ea988d8fddc186ffb7dc90a6c08f4df435c93402849236c3fab4d27c7026c1d4dcb2602646dec9751e763dba37bdf8ff9406ad9e530ee5db382f413001aeb06a53ed9027d831179727b0865a8918da3edbebcf9b14ed44ce6cbaced4bb1bdb7f1447e6cc254b332051512bd7af426fb8f401378cd2bf5983ca01c64b92ecf032ea15d1721d03f482d7ce6e74fef6d55e702f46980c82b5a84031900b1c9e59e7c97fbec7e8f323a97a7e36cc88be0f1d45b7ff585ac54bd407b22b4154aacc8f6d7ebf48e1d814cc5ed20f8037e0a79715eef29be32806a1d58bb7c5da76f550aa3d8a1fbff0eb19ccb1a313d55cda56c9ec2ef29632387fe8d76e3c0468043e8f663f4860ee12bf2d5b0b7474d6e694f91e6dbe115974a3926f12fee5e438777cb6a932df8cd8bec4d073b931ba3bc832b68d9dd300741fa7bf8afc47ed2576f6936ba424663aab639c5ae4f5683423b4742bf1c978238f16cbe39d652de3fdb8befc848ad922222e04a4037c0713eb57a81a23f0c73473fc646cea306b4bcbc8862f8385ddfa9d4b7fa2c087e879683303ed5bdd3a062b3cf5b3a278a66d2a13f83f44f82ddf310ee074ab6a364597e899a0255dc164f31cc50846851df9ab48195ded7ea1b1d510bd7ee74d73faf36bc31ecfa268359046f4eb879f924009438b481c6cd7889a002ed5ee382bc9190da6fc026e479558e4475677e9aa9e3050e2765694dfc81f56e880b96e7160c980dd98edd3dfffffffffffffffff"
     }
 }
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js"][0].apply(exports,arguments)
-},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js"][0].apply(exports,arguments)
+},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic.js":[function(require,module,exports){
 'use strict';
 
 var elliptic = exports;
@@ -22164,7 +23300,7 @@ elliptic.curves = require('./elliptic/curves');
 elliptic.ec = require('./elliptic/ec');
 elliptic.eddsa = require('./elliptic/eddsa');
 
-},{"../package.json":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\package.json","./elliptic/curve":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\index.js","./elliptic/curves":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curves.js","./elliptic/ec":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\ec\\index.js","./elliptic/eddsa":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\eddsa\\index.js","./elliptic/utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","brorand":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\brorand\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\base.js":[function(require,module,exports){
+},{"../package.json":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\package.json","./elliptic/curve":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\index.js","./elliptic/curves":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curves.js","./elliptic/ec":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\ec\\index.js","./elliptic/eddsa":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\eddsa\\index.js","./elliptic/utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","brorand":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\brorand\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\base.js":[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -22547,7 +23683,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\edwards.js":[function(require,module,exports){
+},{"../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\edwards.js":[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -22984,7 +24120,7 @@ Point.prototype.eqXToP = function eqXToP(x) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","./base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\base.js","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\index.js":[function(require,module,exports){
+},{"../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","./base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\base.js","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\index.js":[function(require,module,exports){
 'use strict';
 
 var curve = exports;
@@ -22994,7 +24130,7 @@ curve.short = require('./short');
 curve.mont = require('./mont');
 curve.edwards = require('./edwards');
 
-},{"./base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\base.js","./edwards":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\edwards.js","./mont":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\mont.js","./short":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\short.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\mont.js":[function(require,module,exports){
+},{"./base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\base.js","./edwards":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\edwards.js","./mont":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\mont.js","./short":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\short.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\mont.js":[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -23174,7 +24310,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","./base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\base.js","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\short.js":[function(require,module,exports){
+},{"../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","./base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\base.js","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\short.js":[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -24114,7 +25250,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","./base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\base.js","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curves.js":[function(require,module,exports){
+},{"../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","./base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\base.js","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curves.js":[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -24322,7 +25458,7 @@ defineCurve('secp256k1', {
   ],
 });
 
-},{"./curve":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\index.js","./precomputed/secp256k1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\precomputed\\secp256k1.js","./utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","hash.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\ec\\index.js":[function(require,module,exports){
+},{"./curve":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curve\\index.js","./precomputed/secp256k1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\precomputed\\secp256k1.js","./utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","hash.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\ec\\index.js":[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -24567,7 +25703,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../curves":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curves.js","../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","./key":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\ec\\key.js","./signature":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\ec\\signature.js","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js","brorand":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\brorand\\index.js","hmac-drbg":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hmac-drbg\\lib\\hmac-drbg.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\ec\\key.js":[function(require,module,exports){
+},{"../curves":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curves.js","../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","./key":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\ec\\key.js","./signature":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\ec\\signature.js","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js","brorand":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\brorand\\index.js","hmac-drbg":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hmac-drbg\\lib\\hmac-drbg.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\ec\\key.js":[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -24690,7 +25826,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\ec\\signature.js":[function(require,module,exports){
+},{"../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\ec\\signature.js":[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -24858,7 +25994,7 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\eddsa\\index.js":[function(require,module,exports){
+},{"../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\eddsa\\index.js":[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -24978,7 +26114,7 @@ EDDSA.prototype.isPoint = function isPoint(val) {
   return val instanceof this.pointClass;
 };
 
-},{"../curves":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curves.js","../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","./key":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\eddsa\\key.js","./signature":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\eddsa\\signature.js","hash.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\eddsa\\key.js":[function(require,module,exports){
+},{"../curves":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\curves.js","../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","./key":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\eddsa\\key.js","./signature":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\eddsa\\signature.js","hash.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\eddsa\\key.js":[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -25075,7 +26211,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\eddsa\\signature.js":[function(require,module,exports){
+},{"../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\eddsa\\signature.js":[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -25142,7 +26278,7 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\precomputed\\secp256k1.js":[function(require,module,exports){
+},{"../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\precomputed\\secp256k1.js":[function(require,module,exports){
 module.exports = {
   doubles: {
     step: 4,
@@ -25924,7 +27060,7 @@ module.exports = {
   },
 };
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\lib\\elliptic\\utils.js":[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -26045,9 +27181,9 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js","minimalistic-assert":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js","minimalistic-crypto-utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-crypto-utils\\lib\\utils.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js"][0].apply(exports,arguments)
-},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\package.json":[function(require,module,exports){
+},{"bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js","minimalistic-assert":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js","minimalistic-crypto-utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-crypto-utils\\lib\\utils.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js"][0].apply(exports,arguments)
+},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\elliptic\\package.json":[function(require,module,exports){
 module.exports={
   "_from": "elliptic@^6.5.3",
   "_id": "elliptic@6.5.4",
@@ -26072,7 +27208,7 @@ module.exports={
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.5.4.tgz",
   "_shasum": "da37cebd31e79a1367e941b592ed1fbebd58abbb",
   "_spec": "elliptic@^6.5.3",
-  "_where": "C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign",
+  "_where": "C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -26134,7 +27270,7 @@ module.exports={
   "version": "6.5.4"
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -26659,7 +27795,7 @@ function functionBindPolyfill(context) {
   };
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\evp_bytestokey\\index.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\evp_bytestokey\\index.js":[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var MD5 = require('md5.js')
 
@@ -26706,7 +27842,7 @@ function EVP_BytesToKey (password, salt, keyBits, ivLen) {
 
 module.exports = EVP_BytesToKey
 
-},{"md5.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\md5.js\\index.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\index.js":[function(require,module,exports){
+},{"md5.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\md5.js\\index.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\index.js":[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('readable-stream').Transform
@@ -26803,9 +27939,9 @@ HashBase.prototype._digest = function () {
 
 module.exports = HashBase
 
-},{"inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","readable-stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\readable-browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js"][0].apply(exports,arguments)
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_duplex.js":[function(require,module,exports){
+},{"inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","readable-stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\readable-browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\errors-browser.js"][0].apply(exports,arguments)
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_duplex.js":[function(require,module,exports){
 (function (process){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -26948,9 +28084,9 @@ Object.defineProperty(Duplex.prototype, 'destroyed', {
 });
 }).call(this)}).call(this,require('_process'))
 
-},{"./_stream_readable":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_readable.js","./_stream_writable":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_writable.js","_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_passthrough.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_passthrough.js"][0].apply(exports,arguments)
-},{"./_stream_transform":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_transform.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_readable.js":[function(require,module,exports){
+},{"./_stream_readable":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_readable.js","./_stream_writable":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_writable.js","_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_passthrough.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_passthrough.js"][0].apply(exports,arguments)
+},{"./_stream_transform":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_transform.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_readable.js":[function(require,module,exports){
 (function (process,global){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -28078,9 +29214,9 @@ function indexOf(xs, x) {
 }
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../errors":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js","./_stream_duplex":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./internal/streams/async_iterator":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\async_iterator.js","./internal/streams/buffer_list":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\buffer_list.js","./internal/streams/destroy":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js","./internal/streams/from":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\from-browser.js","./internal/streams/state":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js","./internal/streams/stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js","_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","buffer":"buffer","events":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","string_decoder/":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\string_decoder\\lib\\string_decoder.js","util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_transform.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_transform.js"][0].apply(exports,arguments)
-},{"../errors":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js","./_stream_duplex":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_duplex.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_writable.js":[function(require,module,exports){
+},{"../errors":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js","./_stream_duplex":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./internal/streams/async_iterator":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\async_iterator.js","./internal/streams/buffer_list":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\buffer_list.js","./internal/streams/destroy":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js","./internal/streams/from":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\from-browser.js","./internal/streams/state":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js","./internal/streams/stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js","_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","buffer":"buffer","events":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","string_decoder/":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\string_decoder\\lib\\string_decoder.js","util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_transform.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\_stream_transform.js"][0].apply(exports,arguments)
+},{"../errors":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js","./_stream_duplex":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_duplex.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_writable.js":[function(require,module,exports){
 (function (process,global){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -28781,7 +29917,7 @@ Writable.prototype._destroy = function (err, cb) {
 };
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../errors":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js","./_stream_duplex":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./internal/streams/destroy":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js","./internal/streams/state":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js","./internal/streams/stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js","_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","buffer":"buffer","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","util-deprecate":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\util-deprecate\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\async_iterator.js":[function(require,module,exports){
+},{"../errors":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js","./_stream_duplex":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./internal/streams/destroy":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js","./internal/streams/state":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js","./internal/streams/stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js","_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","buffer":"buffer","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","util-deprecate":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\util-deprecate\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\async_iterator.js":[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -28992,9 +30128,9 @@ var createReadableStreamAsyncIterator = function createReadableStreamAsyncIterat
 module.exports = createReadableStreamAsyncIterator;
 }).call(this)}).call(this,require('_process'))
 
-},{"./end-of-stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js","_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\buffer_list.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\buffer_list.js"][0].apply(exports,arguments)
-},{"buffer":"buffer","util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js":[function(require,module,exports){
+},{"./end-of-stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js","_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\buffer_list.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\buffer_list.js"][0].apply(exports,arguments)
+},{"buffer":"buffer","util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js":[function(require,module,exports){
 (function (process){(function (){
 'use strict'; // undocumented cb() API, needed for core, not for public API
 
@@ -29103,19 +30239,19 @@ module.exports = {
 };
 }).call(this)}).call(this,require('_process'))
 
-},{"_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js"][0].apply(exports,arguments)
-},{"../../../errors":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\from-browser.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\from-browser.js"][0].apply(exports,arguments)
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\pipeline.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\pipeline.js"][0].apply(exports,arguments)
-},{"../../../errors":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js","./end-of-stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js"][0].apply(exports,arguments)
-},{"../../../errors":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js"][0].apply(exports,arguments)
-},{"events":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\readable-browser.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\readable-browser.js"][0].apply(exports,arguments)
-},{"./lib/_stream_duplex.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./lib/_stream_passthrough.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_passthrough.js","./lib/_stream_readable.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_readable.js","./lib/_stream_transform.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_transform.js","./lib/_stream_writable.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_writable.js","./lib/internal/streams/end-of-stream.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js","./lib/internal/streams/pipeline.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\pipeline.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash.js":[function(require,module,exports){
+},{"_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js"][0].apply(exports,arguments)
+},{"../../../errors":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\from-browser.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\from-browser.js"][0].apply(exports,arguments)
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\pipeline.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\pipeline.js"][0].apply(exports,arguments)
+},{"../../../errors":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js","./end-of-stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\state.js"][0].apply(exports,arguments)
+},{"../../../errors":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\errors-browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js"][0].apply(exports,arguments)
+},{"events":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\readable-browser.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\readable-browser.js"][0].apply(exports,arguments)
+},{"./lib/_stream_duplex.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./lib/_stream_passthrough.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_passthrough.js","./lib/_stream_readable.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_readable.js","./lib/_stream_transform.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_transform.js","./lib/_stream_writable.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\_stream_writable.js","./lib/internal/streams/end-of-stream.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\end-of-stream.js","./lib/internal/streams/pipeline.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\node_modules\\readable-stream\\lib\\internal\\streams\\pipeline.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash.js":[function(require,module,exports){
 var hash = exports;
 
 hash.utils = require('./hash/utils');
@@ -29132,7 +30268,7 @@ hash.sha384 = hash.sha.sha384;
 hash.sha512 = hash.sha.sha512;
 hash.ripemd160 = hash.ripemd.ripemd160;
 
-},{"./hash/common":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\common.js","./hash/hmac":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\hmac.js","./hash/ripemd":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\ripemd.js","./hash/sha":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha.js","./hash/utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\common.js":[function(require,module,exports){
+},{"./hash/common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\common.js","./hash/hmac":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\hmac.js","./hash/ripemd":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\ripemd.js","./hash/sha":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha.js","./hash/utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\common.js":[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -29226,7 +30362,7 @@ BlockHash.prototype._pad = function pad() {
   return res;
 };
 
-},{"./utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","minimalistic-assert":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\hmac.js":[function(require,module,exports){
+},{"./utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","minimalistic-assert":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\hmac.js":[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -29275,7 +30411,7 @@ Hmac.prototype.digest = function digest(enc) {
   return this.outer.digest(enc);
 };
 
-},{"./utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","minimalistic-assert":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\ripemd.js":[function(require,module,exports){
+},{"./utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","minimalistic-assert":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\ripemd.js":[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -29423,7 +30559,7 @@ var sh = [
   8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
 ];
 
-},{"./common":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\common.js","./utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha.js":[function(require,module,exports){
+},{"./common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\common.js","./utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha.js":[function(require,module,exports){
 'use strict';
 
 exports.sha1 = require('./sha/1');
@@ -29432,7 +30568,7 @@ exports.sha256 = require('./sha/256');
 exports.sha384 = require('./sha/384');
 exports.sha512 = require('./sha/512');
 
-},{"./sha/1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\1.js","./sha/224":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\224.js","./sha/256":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\256.js","./sha/384":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\384.js","./sha/512":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\512.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\1.js":[function(require,module,exports){
+},{"./sha/1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\1.js","./sha/224":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\224.js","./sha/256":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\256.js","./sha/384":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\384.js","./sha/512":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\512.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\1.js":[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -29508,7 +30644,7 @@ SHA1.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\common.js","../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","./common":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\common.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\224.js":[function(require,module,exports){
+},{"../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\common.js","../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","./common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\common.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\224.js":[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -29540,7 +30676,7 @@ SHA224.prototype._digest = function digest(enc) {
 };
 
 
-},{"../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","./256":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\256.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\256.js":[function(require,module,exports){
+},{"../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","./256":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\256.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\256.js":[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -29647,7 +30783,7 @@ SHA256.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\common.js","../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","./common":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\common.js","minimalistic-assert":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\384.js":[function(require,module,exports){
+},{"../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\common.js","../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","./common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\common.js","minimalistic-assert":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\384.js":[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -29684,7 +30820,7 @@ SHA384.prototype._digest = function digest(enc) {
     return utils.split32(this.h.slice(0, 12), 'big');
 };
 
-},{"../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","./512":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\512.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\512.js":[function(require,module,exports){
+},{"../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","./512":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\512.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\512.js":[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -30016,7 +31152,7 @@ function g1_512_lo(xh, xl) {
   return r;
 }
 
-},{"../common":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\common.js","../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","minimalistic-assert":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\common.js":[function(require,module,exports){
+},{"../common":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\common.js","../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js","minimalistic-assert":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\sha\\common.js":[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -30067,7 +31203,7 @@ function g1_256(x) {
 }
 exports.g1_256 = g1_256;
 
-},{"../utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js":[function(require,module,exports){
+},{"../utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash\\utils.js":[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -30347,7 +31483,7 @@ function shr64_lo(ah, al, num) {
 }
 exports.shr64_lo = shr64_lo;
 
-},{"inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","minimalistic-assert":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hmac-drbg\\lib\\hmac-drbg.js":[function(require,module,exports){
+},{"inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","minimalistic-assert":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hmac-drbg\\lib\\hmac-drbg.js":[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -30462,7 +31598,7 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
   return utils.encode(res, enc);
 };
 
-},{"hash.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash.js","minimalistic-assert":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js","minimalistic-crypto-utils":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-crypto-utils\\lib\\utils.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\ieee754\\index.js":[function(require,module,exports){
+},{"hash.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash.js\\lib\\hash.js","minimalistic-assert":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js","minimalistic-crypto-utils":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-crypto-utils\\lib\\utils.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\ieee754\\index.js":[function(require,module,exports){
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
@@ -30549,7 +31685,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js":[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -30578,7 +31714,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\is-buffer\\index.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\is-buffer\\index.js":[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -30601,14 +31737,14 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\isarray\\index.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\isarray\\index.js":[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\md5.js\\index.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\md5.js\\index.js":[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var HashBase = require('hash-base')
@@ -30756,7 +31892,7 @@ function fnI (a, b, c, d, m, k, s) {
 
 module.exports = MD5
 
-},{"hash-base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\index.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\miller-rabin\\lib\\mr.js":[function(require,module,exports){
+},{"hash-base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\index.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\miller-rabin\\lib\\mr.js":[function(require,module,exports){
 var bn = require('bn.js');
 var brorand = require('brorand');
 
@@ -30873,9 +32009,9 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
   return false;
 };
 
-},{"bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\miller-rabin\\node_modules\\bn.js\\lib\\bn.js","brorand":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\brorand\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\miller-rabin\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js"][0].apply(exports,arguments)
-},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js":[function(require,module,exports){
+},{"bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\miller-rabin\\node_modules\\bn.js\\lib\\bn.js","brorand":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\brorand\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\miller-rabin\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js"][0].apply(exports,arguments)
+},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-assert\\index.js":[function(require,module,exports){
 module.exports = assert;
 
 function assert(val, msg) {
@@ -30888,7 +32024,7 @@ assert.equal = function assertEqual(l, r, msg) {
     throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
 };
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-crypto-utils\\lib\\utils.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\minimalistic-crypto-utils\\lib\\utils.js":[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -30948,7 +32084,7 @@ utils.encode = function encode(arr, enc) {
     return arr;
 };
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\aesid.json":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\aesid.json":[function(require,module,exports){
 module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.2": "aes-128-cbc",
 "2.16.840.1.101.3.4.1.3": "aes-128-ofb",
@@ -30962,7 +32098,7 @@ module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.43": "aes-256-ofb",
 "2.16.840.1.101.3.4.1.44": "aes-256-cfb"
 }
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\asn1.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\asn1.js":[function(require,module,exports){
 // from https://github.com/indutny/self-signed/blob/gh-pages/lib/asn1.js
 // Fedor, you are amazing.
 'use strict'
@@ -31086,7 +32222,7 @@ exports.signature = asn1.define('signature', function () {
   )
 })
 
-},{"./certificate":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\certificate.js","asn1.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\certificate.js":[function(require,module,exports){
+},{"./certificate":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\certificate.js","asn1.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\certificate.js":[function(require,module,exports){
 // from https://github.com/Rantanen/node-dtls/blob/25a7dc861bda38cfeac93a723500eea4f0ac2e86/Certificate.js
 // thanks to @Rantanen
 
@@ -31177,7 +32313,7 @@ var X509Certificate = asn.define('X509Certificate', function () {
 
 module.exports = X509Certificate
 
-},{"asn1.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\fixProc.js":[function(require,module,exports){
+},{"asn1.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\lib\\asn1.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\fixProc.js":[function(require,module,exports){
 // adapted from https://github.com/apatil/pemstrip
 var findProc = /Proc-Type: 4,ENCRYPTED[\n\r]+DEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)[\n\r]+([0-9A-z\n\r+/=]+)[\n\r]+/m
 var startRegex = /^-----BEGIN ((?:.*? KEY)|CERTIFICATE)-----/m
@@ -31210,7 +32346,7 @@ module.exports = function (okey, password) {
   }
 }
 
-},{"browserify-aes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\browser.js","evp_bytestokey":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\evp_bytestokey\\index.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\index.js":[function(require,module,exports){
+},{"browserify-aes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\browser.js","evp_bytestokey":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\evp_bytestokey\\index.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\index.js":[function(require,module,exports){
 var asn1 = require('./asn1')
 var aesid = require('./aesid.json')
 var fixProc = require('./fixProc')
@@ -31319,11 +32455,11 @@ function decrypt (data, password) {
   return Buffer.concat(out)
 }
 
-},{"./aesid.json":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\aesid.json","./asn1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\asn1.js","./fixProc":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\fixProc.js","browserify-aes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\browser.js","pbkdf2":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\browser.js":[function(require,module,exports){
+},{"./aesid.json":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\aesid.json","./asn1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\asn1.js","./fixProc":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\fixProc.js","browserify-aes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-aes\\browser.js","pbkdf2":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\browser.js":[function(require,module,exports){
 exports.pbkdf2 = require('./lib/async')
 exports.pbkdf2Sync = require('./lib/sync')
 
-},{"./lib/async":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\async.js","./lib/sync":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\sync-browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\async.js":[function(require,module,exports){
+},{"./lib/async":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\async.js","./lib/sync":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\sync-browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\async.js":[function(require,module,exports){
 (function (global){(function (){
 var Buffer = require('safe-buffer').Buffer
 
@@ -31446,7 +32582,7 @@ module.exports = function (password, salt, iterations, keylen, digest, callback)
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./default-encoding":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\default-encoding.js","./precondition":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\precondition.js","./sync":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\sync-browser.js","./to-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\to-buffer.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\default-encoding.js":[function(require,module,exports){
+},{"./default-encoding":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\default-encoding.js","./precondition":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\precondition.js","./sync":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\sync-browser.js","./to-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\to-buffer.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\default-encoding.js":[function(require,module,exports){
 (function (process,global){(function (){
 var defaultEncoding
 /* istanbul ignore next */
@@ -31463,7 +32599,7 @@ module.exports = defaultEncoding
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\precondition.js":[function(require,module,exports){
+},{"_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\precondition.js":[function(require,module,exports){
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
 
 module.exports = function (iterations, keylen) {
@@ -31484,7 +32620,7 @@ module.exports = function (iterations, keylen) {
   }
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\sync-browser.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\sync-browser.js":[function(require,module,exports){
 var md5 = require('create-hash/md5')
 var RIPEMD160 = require('ripemd160')
 var sha = require('sha.js')
@@ -31591,7 +32727,7 @@ function pbkdf2 (password, salt, iterations, keylen, digest) {
 
 module.exports = pbkdf2
 
-},{"./default-encoding":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\default-encoding.js","./precondition":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\precondition.js","./to-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\to-buffer.js","create-hash/md5":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\md5.js","ripemd160":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\ripemd160\\index.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js","sha.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\to-buffer.js":[function(require,module,exports){
+},{"./default-encoding":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\default-encoding.js","./precondition":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\precondition.js","./to-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\to-buffer.js","create-hash/md5":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\md5.js","ripemd160":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\ripemd160\\index.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js","sha.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\lib\\to-buffer.js":[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 module.exports = function (thing, encoding, name) {
@@ -31606,7 +32742,7 @@ module.exports = function (thing, encoding, name) {
   }
 }
 
-},{"safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process-nextick-args\\index.js":[function(require,module,exports){
+},{"safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process-nextick-args\\index.js":[function(require,module,exports){
 (function (process){(function (){
 'use strict';
 
@@ -31656,7 +32792,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 
 }).call(this)}).call(this,require('_process'))
 
-},{"_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js":[function(require,module,exports){
+},{"_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js":[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -31842,7 +32978,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\browser.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\browser.js":[function(require,module,exports){
 exports.publicEncrypt = require('./publicEncrypt')
 exports.privateDecrypt = require('./privateDecrypt')
 
@@ -31854,7 +32990,7 @@ exports.publicDecrypt = function publicDecrypt (key, buf) {
   return exports.privateDecrypt(key, buf, true)
 }
 
-},{"./privateDecrypt":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\privateDecrypt.js","./publicEncrypt":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\publicEncrypt.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\mgf.js":[function(require,module,exports){
+},{"./privateDecrypt":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\privateDecrypt.js","./publicEncrypt":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\publicEncrypt.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\mgf.js":[function(require,module,exports){
 var createHash = require('create-hash')
 var Buffer = require('safe-buffer').Buffer
 
@@ -31875,9 +33011,9 @@ function i2ops (c) {
   return out
 }
 
-},{"create-hash":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js"][0].apply(exports,arguments)
-},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\privateDecrypt.js":[function(require,module,exports){
+},{"create-hash":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\node_modules\\bn.js\\lib\\bn.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\asn1.js\\node_modules\\bn.js\\lib\\bn.js"][0].apply(exports,arguments)
+},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\privateDecrypt.js":[function(require,module,exports){
 var parseKeys = require('parse-asn1')
 var mgf = require('./mgf')
 var xor = require('./xor')
@@ -31984,7 +33120,7 @@ function compare (a, b) {
   return dif
 }
 
-},{"./mgf":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\mgf.js","./withPublic":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\withPublic.js","./xor":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\xor.js","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\node_modules\\bn.js\\lib\\bn.js","browserify-rsa":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-rsa\\index.js","create-hash":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\browser.js","parse-asn1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\index.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\publicEncrypt.js":[function(require,module,exports){
+},{"./mgf":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\mgf.js","./withPublic":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\withPublic.js","./xor":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\xor.js","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\node_modules\\bn.js\\lib\\bn.js","browserify-rsa":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-rsa\\index.js","create-hash":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\browser.js","parse-asn1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\index.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\publicEncrypt.js":[function(require,module,exports){
 var parseKeys = require('parse-asn1')
 var randomBytes = require('randombytes')
 var createHash = require('create-hash')
@@ -32074,7 +33210,7 @@ function nonZero (len) {
   return out
 }
 
-},{"./mgf":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\mgf.js","./withPublic":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\withPublic.js","./xor":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\xor.js","bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\node_modules\\bn.js\\lib\\bn.js","browserify-rsa":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-rsa\\index.js","create-hash":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\browser.js","parse-asn1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\index.js","randombytes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\withPublic.js":[function(require,module,exports){
+},{"./mgf":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\mgf.js","./withPublic":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\withPublic.js","./xor":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\xor.js","bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\node_modules\\bn.js\\lib\\bn.js","browserify-rsa":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-rsa\\index.js","create-hash":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\browser.js","parse-asn1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\parse-asn1\\index.js","randombytes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\withPublic.js":[function(require,module,exports){
 var BN = require('bn.js')
 var Buffer = require('safe-buffer').Buffer
 
@@ -32088,7 +33224,7 @@ function withPublic (paddedMsg, key) {
 
 module.exports = withPublic
 
-},{"bn.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\node_modules\\bn.js\\lib\\bn.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\xor.js":[function(require,module,exports){
+},{"bn.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\node_modules\\bn.js\\lib\\bn.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\xor.js":[function(require,module,exports){
 module.exports = function xor (a, b) {
   var len = a.length
   var i = -1
@@ -32098,7 +33234,7 @@ module.exports = function xor (a, b) {
   return a
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js":[function(require,module,exports){
 (function (process,global){(function (){
 'use strict'
 
@@ -32153,7 +33289,7 @@ function randomBytes (size, cb) {
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\randomfill\\browser.js":[function(require,module,exports){
+},{"_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\randomfill\\browser.js":[function(require,module,exports){
 (function (process,global){(function (){
 'use strict'
 
@@ -32266,10 +33402,10 @@ function randomFillSync (buf, offset, size) {
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","randombytes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\duplex-browser.js":[function(require,module,exports){
+},{"_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","randombytes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\duplex-browser.js":[function(require,module,exports){
 module.exports = require('./lib/_stream_duplex.js');
 
-},{"./lib/_stream_duplex.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_duplex.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_duplex.js":[function(require,module,exports){
+},{"./lib/_stream_duplex.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_duplex.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_duplex.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -32401,7 +33537,7 @@ Duplex.prototype._destroy = function (err, cb) {
 
   pna.nextTick(cb, err);
 };
-},{"./_stream_readable":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_readable.js","./_stream_writable":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_writable.js","core-util-is":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\core-util-is\\lib\\util.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","process-nextick-args":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process-nextick-args\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_passthrough.js":[function(require,module,exports){
+},{"./_stream_readable":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_readable.js","./_stream_writable":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_writable.js","core-util-is":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\core-util-is\\lib\\util.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","process-nextick-args":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process-nextick-args\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_passthrough.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -32449,7 +33585,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_transform.js","core-util-is":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\core-util-is\\lib\\util.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_readable.js":[function(require,module,exports){
+},{"./_stream_transform":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_transform.js","core-util-is":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\core-util-is\\lib\\util.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_readable.js":[function(require,module,exports){
 (function (process,global){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -33472,7 +34608,7 @@ function indexOf(xs, x) {
 }
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./_stream_duplex":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./internal/streams/BufferList":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\BufferList.js","./internal/streams/destroy":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js","./internal/streams/stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js","_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","core-util-is":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\core-util-is\\lib\\util.js","events":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","isarray":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\isarray\\index.js","process-nextick-args":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process-nextick-args\\index.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\safe-buffer\\index.js","string_decoder/":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\string_decoder\\lib\\string_decoder.js","util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_transform.js":[function(require,module,exports){
+},{"./_stream_duplex":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./internal/streams/BufferList":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\BufferList.js","./internal/streams/destroy":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js","./internal/streams/stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js","_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","core-util-is":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\core-util-is\\lib\\util.js","events":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","isarray":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\isarray\\index.js","process-nextick-args":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process-nextick-args\\index.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\safe-buffer\\index.js","string_decoder/":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\string_decoder\\lib\\string_decoder.js","util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_transform.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -33687,7 +34823,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_duplex.js","core-util-is":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\core-util-is\\lib\\util.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_writable.js":[function(require,module,exports){
+},{"./_stream_duplex":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_duplex.js","core-util-is":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\core-util-is\\lib\\util.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_writable.js":[function(require,module,exports){
 (function (process,global,setImmediate){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -34378,7 +35514,7 @@ Writable.prototype._destroy = function (err, cb) {
 };
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
 
-},{"./_stream_duplex":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./internal/streams/destroy":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js","./internal/streams/stream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js","_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","core-util-is":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\core-util-is\\lib\\util.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","process-nextick-args":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process-nextick-args\\index.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\safe-buffer\\index.js","timers":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\timers-browserify\\main.js","util-deprecate":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\util-deprecate\\browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\BufferList.js":[function(require,module,exports){
+},{"./_stream_duplex":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./internal/streams/destroy":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js","./internal/streams/stream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js","_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","core-util-is":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\core-util-is\\lib\\util.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","process-nextick-args":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process-nextick-args\\index.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\safe-buffer\\index.js","timers":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\timers-browserify\\main.js","util-deprecate":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\util-deprecate\\browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\BufferList.js":[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34458,7 +35594,7 @@ if (util && util.inspect && util.inspect.custom) {
     return this.constructor.name + ' ' + obj;
   };
 }
-},{"safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\safe-buffer\\index.js","util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js":[function(require,module,exports){
+},{"safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\safe-buffer\\index.js","util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\destroy.js":[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -34533,9 +35669,9 @@ module.exports = {
   destroy: destroy,
   undestroy: undestroy
 };
-},{"process-nextick-args":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process-nextick-args\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js"][0].apply(exports,arguments)
-},{"events":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\safe-buffer\\index.js":[function(require,module,exports){
+},{"process-nextick-args":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process-nextick-args\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\node_modules\\readable-stream\\lib\\internal\\streams\\stream-browser.js"][0].apply(exports,arguments)
+},{"events":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\safe-buffer\\index.js":[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -34599,7 +35735,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\string_decoder\\lib\\string_decoder.js":[function(require,module,exports){
+},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\string_decoder\\lib\\string_decoder.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -34896,10 +36032,10 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\passthrough.js":[function(require,module,exports){
+},{"safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\passthrough.js":[function(require,module,exports){
 module.exports = require('./readable').PassThrough
 
-},{"./readable":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\readable-browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\readable-browser.js":[function(require,module,exports){
+},{"./readable":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\readable-browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\readable-browser.js":[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -34908,13 +36044,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./lib/_stream_passthrough.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_passthrough.js","./lib/_stream_readable.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_readable.js","./lib/_stream_transform.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_transform.js","./lib/_stream_writable.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_writable.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\transform.js":[function(require,module,exports){
+},{"./lib/_stream_duplex.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_duplex.js","./lib/_stream_passthrough.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_passthrough.js","./lib/_stream_readable.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_readable.js","./lib/_stream_transform.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_transform.js","./lib/_stream_writable.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_writable.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\transform.js":[function(require,module,exports){
 module.exports = require('./readable').Transform
 
-},{"./readable":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\readable-browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\writable-browser.js":[function(require,module,exports){
+},{"./readable":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\readable-browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\writable-browser.js":[function(require,module,exports){
 module.exports = require('./lib/_stream_writable.js');
 
-},{"./lib/_stream_writable.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_writable.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\ripemd160\\index.js":[function(require,module,exports){
+},{"./lib/_stream_writable.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\lib\\_stream_writable.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\ripemd160\\index.js":[function(require,module,exports){
 'use strict'
 var Buffer = require('buffer').Buffer
 var inherits = require('inherits')
@@ -35079,7 +36215,7 @@ function fn5 (a, b, c, d, e, m, k, s) {
 
 module.exports = RIPEMD160
 
-},{"buffer":"buffer","hash-base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\index.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js":[function(require,module,exports){
+},{"buffer":"buffer","hash-base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\hash-base\\index.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js":[function(require,module,exports){
 /*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
@@ -35146,7 +36282,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safer-buffer\\safer.js":[function(require,module,exports){
+},{"buffer":"buffer"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safer-buffer\\safer.js":[function(require,module,exports){
 (function (process){(function (){
 /* eslint-disable node/no-deprecated-api */
 
@@ -35228,7 +36364,7 @@ module.exports = safer
 
 }).call(this)}).call(this,require('_process'))
 
-},{"_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","buffer":"buffer"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js":[function(require,module,exports){
+},{"_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","buffer":"buffer"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js":[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 // prototype class for hash functions
@@ -35311,7 +36447,7 @@ Hash.prototype._update = function () {
 
 module.exports = Hash
 
-},{"safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\index.js":[function(require,module,exports){
+},{"safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\index.js":[function(require,module,exports){
 var exports = module.exports = function SHA (algorithm) {
   algorithm = algorithm.toLowerCase()
 
@@ -35328,7 +36464,7 @@ exports.sha256 = require('./sha256')
 exports.sha384 = require('./sha384')
 exports.sha512 = require('./sha512')
 
-},{"./sha":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha.js","./sha1":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha1.js","./sha224":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha224.js","./sha256":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha256.js","./sha384":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha384.js","./sha512":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha512.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha.js":[function(require,module,exports){
+},{"./sha":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha.js","./sha1":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha1.js","./sha224":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha224.js","./sha256":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha256.js","./sha384":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha384.js","./sha512":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha512.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha.js":[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
  * in FIPS PUB 180-1
@@ -35424,7 +36560,7 @@ Sha.prototype._hash = function () {
 
 module.exports = Sha
 
-},{"./hash":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha1.js":[function(require,module,exports){
+},{"./hash":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha1.js":[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
  * in FIPS PUB 180-1
@@ -35525,7 +36661,7 @@ Sha1.prototype._hash = function () {
 
 module.exports = Sha1
 
-},{"./hash":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha224.js":[function(require,module,exports){
+},{"./hash":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha224.js":[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -35580,7 +36716,7 @@ Sha224.prototype._hash = function () {
 
 module.exports = Sha224
 
-},{"./hash":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js","./sha256":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha256.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha256.js":[function(require,module,exports){
+},{"./hash":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js","./sha256":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha256.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha256.js":[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -35717,7 +36853,7 @@ Sha256.prototype._hash = function () {
 
 module.exports = Sha256
 
-},{"./hash":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha384.js":[function(require,module,exports){
+},{"./hash":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha384.js":[function(require,module,exports){
 var inherits = require('inherits')
 var SHA512 = require('./sha512')
 var Hash = require('./hash')
@@ -35776,7 +36912,7 @@ Sha384.prototype._hash = function () {
 
 module.exports = Sha384
 
-},{"./hash":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js","./sha512":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha512.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha512.js":[function(require,module,exports){
+},{"./hash":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js","./sha512":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha512.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\sha512.js":[function(require,module,exports){
 var inherits = require('inherits')
 var Hash = require('./hash')
 var Buffer = require('safe-buffer').Buffer
@@ -36038,7 +37174,7 @@ Sha512.prototype._hash = function () {
 
 module.exports = Sha512
 
-},{"./hash":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\stream-browserify\\index.js":[function(require,module,exports){
+},{"./hash":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\sha.js\\hash.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\stream-browserify\\index.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -36167,9 +37303,9 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","readable-stream/duplex.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\duplex-browser.js","readable-stream/passthrough.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\passthrough.js","readable-stream/readable.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\readable-browser.js","readable-stream/transform.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\transform.js","readable-stream/writable.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\writable-browser.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\string_decoder\\lib\\string_decoder.js":[function(require,module,exports){
-arguments[4]["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\string_decoder\\lib\\string_decoder.js"][0].apply(exports,arguments)
-},{"safe-buffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\timers-browserify\\main.js":[function(require,module,exports){
+},{"events":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\events\\events.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\inherits\\inherits_browser.js","readable-stream/duplex.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\duplex-browser.js","readable-stream/passthrough.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\passthrough.js","readable-stream/readable.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\readable-browser.js","readable-stream/transform.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\transform.js","readable-stream/writable.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\writable-browser.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\string_decoder\\lib\\string_decoder.js":[function(require,module,exports){
+arguments[4]["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\readable-stream\\node_modules\\string_decoder\\lib\\string_decoder.js"][0].apply(exports,arguments)
+},{"safe-buffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\safe-buffer\\index.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\timers-browserify\\main.js":[function(require,module,exports){
 (function (setImmediate,clearImmediate){(function (){
 var nextTick = require('process/browser.js').nextTick;
 var apply = Function.prototype.apply;
@@ -36249,7 +37385,7 @@ exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate :
 };
 }).call(this)}).call(this,require("timers").setImmediate,require("timers").clearImmediate)
 
-},{"process/browser.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","timers":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\timers-browserify\\main.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\util-deprecate\\browser.js":[function(require,module,exports){
+},{"process/browser.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","timers":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\timers-browserify\\main.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\util-deprecate\\browser.js":[function(require,module,exports){
 (function (global){(function (){
 
 /**
@@ -36321,7 +37457,7 @@ function config (name) {
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\util\\node_modules\\inherits\\inherits_browser.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\util\\node_modules\\inherits\\inherits_browser.js":[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -36346,14 +37482,14 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\util\\support\\isBufferBrowser.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\util\\support\\isBufferBrowser.js":[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\vm-browserify\\index.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\vm-browserify\\index.js":[function(require,module,exports){
 var indexOf = function (xs, item) {
     if (xs.indexOf) return xs.indexOf(item);
     else for (var i = 0; i < xs.length; i++) {
@@ -38286,7 +39422,7 @@ function numberIsNaN (obj) {
 
 }).call(this)}).call(this,require("buffer").Buffer)
 
-},{"base64-js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\base64-js\\index.js","buffer":"buffer","ieee754":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\ieee754\\index.js"}],"crypto":[function(require,module,exports){
+},{"base64-js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\base64-js\\index.js","buffer":"buffer","ieee754":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\ieee754\\index.js"}],"crypto":[function(require,module,exports){
 'use strict'
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = require('randombytes')
@@ -38385,7 +39521,7 @@ exports.constants = {
   'POINT_CONVERSION_HYBRID': 6
 }
 
-},{"browserify-cipher":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-cipher\\browser.js","browserify-sign":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\index.js","browserify-sign/algos":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\algos.js","create-ecdh":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-ecdh\\browser.js","create-hash":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\browser.js","create-hmac":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\create-hmac\\browser.js","diffie-hellman":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\browser.js","pbkdf2":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\browser.js","public-encrypt":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\browser.js","randombytes":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js","randomfill":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\randomfill\\browser.js"}],"overwrite-require":[function(require,module,exports){
+},{"browserify-cipher":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-cipher\\browser.js","browserify-sign":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\browser\\index.js","browserify-sign/algos":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\browserify-sign\\algos.js","create-ecdh":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-ecdh\\browser.js","create-hash":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hash\\browser.js","create-hmac":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\create-hmac\\browser.js","diffie-hellman":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\diffie-hellman\\browser.js","pbkdf2":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\pbkdf2\\browser.js","public-encrypt":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\public-encrypt\\browser.js","randombytes":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\randombytes\\browser.js","randomfill":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\randomfill\\browser.js"}],"overwrite-require":[function(require,module,exports){
 (function (process,global){(function (){
 /*
  require and $$.require are overwriting the node.js defaults in loading modules for increasing security, speed and making it work to the privatesky runtime build with browserify.
@@ -38492,6 +39628,10 @@ function enableForEnvironment(envType){
     function requireFromCache(request) {
         const existingModule = $$.__runtimeModules[request];
         return existingModule;
+    }
+
+    $$.__registerModule = function (name, module) {
+        $$.__runtimeModules[name] = module;
     }
 
     function wrapStep(callbackName) {
@@ -38752,12 +39892,20 @@ function enableForEnvironment(envType){
 
     $$.makeSaneCallback = function makeSaneCallback(fn) {
         let alreadyCalled = false;
-        return (...args) => {
+        let prevErr;
+        return (err, res, ...args) => {
             if (alreadyCalled) {
-                throw new Error("Callback called 2 times! Second call was stopped. Function code:\n" + fn.toString());
+                if (err) {
+                    console.log('Sane callback error:', err);
+                }
+
+                throw new Error(`Callback called 2 times! Second call was stopped. Function code:\n${fn.toString()}\n` + (prevErr ? `Previous error stack ${prevErr.toString()}` : ''));
             }
             alreadyCalled = true;
-            return fn(...args);
+            if(err){
+                prevErr = err;
+            }
+            return fn(err, res, ...args);
         };
     };
 }
@@ -38771,7 +39919,7 @@ module.exports = {
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./moduleConstants":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\overwrite-require\\moduleConstants.js","./standardGlobalSymbols.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\overwrite-require\\standardGlobalSymbols.js","_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"pskcrypto":[function(require,module,exports){
+},{"./moduleConstants":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\overwrite-require\\moduleConstants.js","./standardGlobalSymbols.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\overwrite-require\\standardGlobalSymbols.js","_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js"}],"pskcrypto":[function(require,module,exports){
 const PskCrypto = require("./lib/PskCrypto");
 const ssutil = require("./signsensusDS/ssutil");
 
@@ -38782,7 +39930,7 @@ module.exports.hashValues = ssutil.hashValues;
 module.exports.DuplexStream = require("./lib/utils/DuplexStream");
 
 module.exports.isStream = require("./lib/utils/isStream");
-},{"./lib/PskCrypto":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\PskCrypto.js","./lib/utils/DuplexStream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\DuplexStream.js","./lib/utils/isStream":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\isStream.js","./signsensusDS/ssutil":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\signsensusDS\\ssutil.js"}],"util":[function(require,module,exports){
+},{"./lib/PskCrypto":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\PskCrypto.js","./lib/utils/DuplexStream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\DuplexStream.js","./lib/utils/isStream":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\lib\\utils\\isStream.js","./signsensusDS/ssutil":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\pskcrypto\\signsensusDS\\ssutil.js"}],"util":[function(require,module,exports){
 (function (process,global){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -39373,8 +40521,8 @@ function hasOwnProperty(obj, prop) {
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./support/isBuffer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\util\\support\\isBufferBrowser.js","_process":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","inherits":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\node_modules\\util\\node_modules\\inherits\\inherits_browser.js"}]},{},["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\builds\\tmp\\webshims.js"])
+},{"./support/isBuffer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\util\\support\\isBufferBrowser.js","_process":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\process\\browser.js","inherits":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\node_modules\\util\\node_modules\\inherits\\inherits_browser.js"}]},{},["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\builds\\tmp\\webshims.js"])
                     ;(function(global) {
-                        global.bundlePaths = {"webshims":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\webshims.js","pskruntime":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\pskruntime.js","pskWebServer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\pskWebServer.js","consoleTools":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\consoleTools.js","blockchain":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\blockchain.js","openDSU":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\openDSU.js","nodeBoot":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\nodeBoot.js","testsRuntime":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\testsRuntime.js","bindableModel":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\bindableModel.js","loaderBoot":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\loaderBoot.js","swBoot":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\swBoot.js","iframeBoot":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\iframeBoot.js","launcherBoot":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\launcherBoot.js","testRunnerBoot":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\testRunnerBoot.js"};
+                        global.bundlePaths = {"webshims":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\webshims.js","pskruntime":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\pskruntime.js","pskWebServer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\pskWebServer.js","consoleTools":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\consoleTools.js","blockchain":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\blockchain.js","openDSU":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\openDSU.js","nodeBoot":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\nodeBoot.js","testsRuntime":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\testsRuntime.js","bindableModel":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\bindableModel.js","loaderBoot":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\loaderBoot.js","swBoot":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\swBoot.js","iframeBoot":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\iframeBoot.js","launcherBoot":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\launcherBoot.js","testRunnerBoot":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\testRunnerBoot.js"};
                     })(typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
                 

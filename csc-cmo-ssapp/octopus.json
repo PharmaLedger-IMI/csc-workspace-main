@@ -67,21 +67,7 @@
 			  "target": "./builds"
 		  }
 	  ]
-	},
-	  {
-		  "name": "Copy fgt-dsu-wizard-bundle",
-		  "src": "",
-		  "actions": [
-			  {
-				  "type": "copy",
-				  "src": "../fgt-dsu-wizard/build/bundles/wizard.js",
-				  "target": "code/scripts/bundles/wizard.js",
-				  "options": {
-					  "overwrite": true
-				  }
-			  }
-		  ]
-	  }
+	}
   ],
 	"docs": [
 		{
