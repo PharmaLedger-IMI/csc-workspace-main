@@ -1,4 +1,4 @@
-pskruntimeRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\builds\\tmp\\pskruntime_intermediar.js":[function(require,module,exports){
+pskruntimeRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\builds\\tmp\\pskruntime_intermediar.js":[function(require,module,exports){
 (function (global){(function (){
 global.pskruntimeLoadModules = function(){ 
 
@@ -32,7 +32,7 @@ if (typeof $$ !== "undefined") {
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"callflow":"callflow","queue":"queue","soundpubsub":"soundpubsub","swarm-engine":"swarm-engine","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\constants.js":[function(require,module,exports){
+},{"callflow":"callflow","queue":"queue","soundpubsub":"soundpubsub","swarm-engine":"swarm-engine","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\constants.js":[function(require,module,exports){
 $$.CONSTANTS = {
     SWARM_FOR_EXECUTION:"swarm_for_execution",//TODO: remove
     INBOUND:"inbound",//TODO: remove
@@ -54,7 +54,7 @@ $$.CONSTANTS.mixIn = function(otherConstants){
     }
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\InterceptorRegistry.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\InterceptorRegistry.js":[function(require,module,exports){
 (function (global){(function (){
 // related to: SwarmSpace.SwarmDescription.createPhase()
 
@@ -249,7 +249,7 @@ exports.createInterceptorRegistry = function () {
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\loadLibrary.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\loadLibrary.js":[function(require,module,exports){
 /*
 Initial License: (c) Axiologic Research & Alboaie Sînică.
 Contributors: Axiologic Research , PrivateSky project
@@ -353,7 +353,7 @@ exports.loadLibrary = function(prefixName, folder){
 }
 
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\parallelJoinPoint.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\parallelJoinPoint.js":[function(require,module,exports){
 
 var globalJoinCounter = 0;
 
@@ -490,7 +490,7 @@ exports.createJoinPoint = function(swarm, callback, args){
     jp.__setProxyObject(p);
     return p;
 };
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\serialJoinPoint.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\serialJoinPoint.js":[function(require,module,exports){
 
 var joinCounter = 0;
 
@@ -615,7 +615,7 @@ exports.createSerialJoinPoint = function(swarm, callback, args){
     jp.setProxyObject(p);
     return p;
 }
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\swarmDescription.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\swarmDescription.js":[function(require,module,exports){
 const swarmDescriptionsRegistry = {};
 let currentInlineCounter = 0;
 
@@ -980,7 +980,7 @@ exports.createSwarmEngine = function(swarmType, utils){
 };
 
 
-},{"./utilityFunctions/callflow":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\callflow.js","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\SwarmDebug.js":[function(require,module,exports){
+},{"./utilityFunctions/callflow":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\callflow.js","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\SwarmDebug.js":[function(require,module,exports){
 (function (global){(function (){
 /*
  Initial License: (c) Axiologic Research & Alboaie Sînică.
@@ -1179,7 +1179,7 @@ function localLog (logType, message, err) {
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"fs":false,"util":"util"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\base.js":[function(require,module,exports){
+},{"fs":false,"util":"util"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\base.js":[function(require,module,exports){
 exports.createForObject = function(valueObject, thisObject, localId){
 	var swarmDebug = require("./SwarmDebug");
 	let ret = {};
@@ -1308,12 +1308,12 @@ exports.createForObject = function(valueObject, thisObject, localId){
 
 };
 
-},{"../parallelJoinPoint":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\parallelJoinPoint.js","../serialJoinPoint":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\serialJoinPoint.js","./SwarmDebug":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\SwarmDebug.js","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\callflow.js":[function(require,module,exports){
+},{"../parallelJoinPoint":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\parallelJoinPoint.js","../serialJoinPoint":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\serialJoinPoint.js","./SwarmDebug":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\SwarmDebug.js","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\callflow.js":[function(require,module,exports){
 exports.createForObject = function(valueObject, thisObject, localId){
 	var ret = require("./base").createForObject(valueObject, thisObject, localId);
 	return ret;
 };
-},{"./base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\base.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\index.js":[function(require,module,exports){
+},{"./base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\base.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\index.js":[function(require,module,exports){
 //to look nice the requireModule on Node
 require("./lib/psk-abstract-client");
 const or = require('overwrite-require');
@@ -1322,7 +1322,7 @@ if ($$.environmentType === or.constants.BROWSER_ENVIRONMENT_TYPE) {
 } else {
 	require("./lib/psk-node-client");
 }
-},{"./lib/psk-abstract-client":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-abstract-client.js","./lib/psk-browser-client":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-browser-client.js","./lib/psk-node-client":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-node-client.js","overwrite-require":"overwrite-require"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-abstract-client.js":[function(require,module,exports){
+},{"./lib/psk-abstract-client":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-abstract-client.js","./lib/psk-browser-client":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-browser-client.js","./lib/psk-node-client":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-node-client.js","overwrite-require":"overwrite-require"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-abstract-client.js":[function(require,module,exports){
 /**********************  utility class **********************************/
 function RequestManager(pollingTimeOut) {
     if (!pollingTimeOut) {
@@ -1799,7 +1799,7 @@ $$.apihub.createConnection = function(alias, url, ssi){
     return $$.apihub.connections[alias];
 }
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-browser-client.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-browser-client.js":[function(require,module,exports){
 function generateMethodForRequestWithData(httpMethod) {
     return function (url, data, callback) {
         const xhr = new XMLHttpRequest();
@@ -1938,7 +1938,7 @@ $$.remote.base64Decode = function base64Decode(encodedString){
     return window.atob(encodedString);
 };
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-node-client.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-node-client.js":[function(require,module,exports){
 require("./psk-abstract-client");
 
 const http = require("http");
@@ -2123,7 +2123,7 @@ $$.remote.base64Decode = function base64Decode(encodedString){
     return $$.Buffer.from(encodedString, 'base64').toString('ascii');
 };
 
-},{"./psk-abstract-client":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-abstract-client.js","http":false,"https":false,"url":false}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\soundpubsub\\lib\\soundPubSub.js":[function(require,module,exports){
+},{"./psk-abstract-client":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\lib\\psk-abstract-client.js","http":false,"https":false,"url":false}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\soundpubsub\\lib\\soundPubSub.js":[function(require,module,exports){
 /*
 Initial License: (c) Axiologic Research & Alboaie Sînică.
 Contributors: Axiologic Research , PrivateSky project
@@ -2499,7 +2499,7 @@ function SoundPubSub(){
 
 exports.soundPubSub = new SoundPubSub();
 
-},{"queue":"queue"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\SwarmEngine.js":[function(require,module,exports){
+},{"queue":"queue"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\SwarmEngine.js":[function(require,module,exports){
 function SwarmEngine(identity) {
     let myOwnIdentity = identity || SwarmEngine.prototype.ANONYMOUS_IDENTITY;
 
@@ -2772,7 +2772,7 @@ function makePluggable(powerCord) {
 
 module.exports = SwarmEngine;
 
-},{"./interactions":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\interactions\\index.js","./swarms":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\swarms\\index.js","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\BootEngine.js":[function(require,module,exports){
+},{"./interactions":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\interactions\\index.js","./swarms":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\swarms\\index.js","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\BootEngine.js":[function(require,module,exports){
 (function (global){(function (){
 function BootEngine(getKeySSI, initializeSwarmEngine, runtimeBundles, constitutionBundles) {
 
@@ -2879,7 +2879,7 @@ module.exports = BootEngine;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"opendsu":false,"swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\IsolateBootScript.js":[function(require,module,exports){
+},{"opendsu":false,"swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\IsolateBootScript.js":[function(require,module,exports){
 
 async function getIsolatesWorker({workerData: {constitutions}, externalApi}) {
     const swarmUtils = require('swarmutils');
@@ -2974,7 +2974,7 @@ async function getIsolatesWorker({workerData: {constitutions}, externalApi}) {
 
 module.exports = getIsolatesWorker;
 
-},{"events":false,"fs":false,"swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\ThreadWorkerBootScript.js":[function(require,module,exports){
+},{"events":false,"fs":false,"swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\ThreadWorkerBootScript.js":[function(require,module,exports){
 function boot() {
     const worker_threads ='worker_threads';
     const {parentPort, workerData} = require(worker_threads);
@@ -3044,7 +3044,7 @@ function boot() {
 boot();
 //module.exports = boot.toString();
 
-},{"./BootEngine.js":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\BootEngine.js","callflow":"callflow","opendsu":false,"swarm-engine":"swarm-engine"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\domainBootScript.js":[function(require,module,exports){
+},{"./BootEngine.js":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\BootEngine.js","callflow":"callflow","opendsu":false,"swarm-engine":"swarm-engine"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\domainBootScript.js":[function(require,module,exports){
 const path = require('path');
 //enabling life line to parent process
 require(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, "psknode/core/utils/pingpongFork.js")).enableLifeLine();
@@ -3184,7 +3184,7 @@ function plugPowerCords() {
 
 boot();
 
-},{"./BootEngine":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\BootEngine.js","dossier":false,"opendsu":false,"path":false,"soundpubsub":"soundpubsub","swarm-engine":"swarm-engine","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\index.js":[function(require,module,exports){
+},{"./BootEngine":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\BootEngine.js","dossier":false,"opendsu":false,"path":false,"soundpubsub":"soundpubsub","swarm-engine":"swarm-engine","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\index.js":[function(require,module,exports){
 module.exports = {
     getIsolatesBootScript: function() {
         return require('./IsolateBootScript');
@@ -3196,7 +3196,7 @@ module.exports = {
         return require('./domainBootScript');
     }
 };
-},{"./IsolateBootScript":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\IsolateBootScript.js","./ThreadWorkerBootScript":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\ThreadWorkerBootScript.js","./domainBootScript":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\domainBootScript.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\interactions\\InteractionSpace.js":[function(require,module,exports){
+},{"./IsolateBootScript":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\IsolateBootScript.js","./ThreadWorkerBootScript":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\ThreadWorkerBootScript.js","./domainBootScript":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\domainBootScript.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\interactions\\InteractionSpace.js":[function(require,module,exports){
 function InteractionSpace(swarmEngineApi) {
     const listeners = {};
     const interactionTemplate = require('./interaction_template').getTemplateHandler(swarmEngineApi);
@@ -3268,7 +3268,7 @@ function InteractionSpace(swarmEngineApi) {
 
 module.exports = InteractionSpace;
 
-},{"./interaction_template":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\interactions\\interaction_template.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\interactions\\index.js":[function(require,module,exports){
+},{"./interaction_template":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\interactions\\interaction_template.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\interactions\\index.js":[function(require,module,exports){
 module.exports = function (swarmEngineApi) {
     let cm = require("callflow");
     const InteractionSpace = require("./InteractionSpace");
@@ -3312,7 +3312,7 @@ module.exports = function (swarmEngineApi) {
     return is;
 };
 
-},{"./InteractionSpace":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\interactions\\InteractionSpace.js","callflow":"callflow"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\interactions\\interaction_template.js":[function(require,module,exports){
+},{"./InteractionSpace":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\interactions\\InteractionSpace.js","callflow":"callflow"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\interactions\\interaction_template.js":[function(require,module,exports){
 exports.getTemplateHandler = function (swarmEngineApi) {
 
     return {
@@ -3356,7 +3356,7 @@ exports.getTemplateHandler = function (swarmEngineApi) {
     }
 };
 
-},{"callflow":"callflow"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\InnerIsolatePowerCord.js":[function(require,module,exports){
+},{"callflow":"callflow"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\InnerIsolatePowerCord.js":[function(require,module,exports){
 (function (global){(function (){
 function InnerIsolatePowerCord() {
 
@@ -3406,7 +3406,7 @@ module.exports = InnerIsolatePowerCord;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\InnerThreadPowerCord.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\InnerThreadPowerCord.js":[function(require,module,exports){
 function InnerThreadPowerCord() {
     const worker_threads = 'worker_threads';
     const {parentPort} = require(worker_threads);
@@ -3419,7 +3419,7 @@ function InnerThreadPowerCord() {
 
 module.exports = InnerThreadPowerCord;
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\OuterIsolatePowerCord.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\OuterIsolatePowerCord.js":[function(require,module,exports){
 function OuterIsolatePowerCord(energySource, numberOfWires = 1, apis) { // seed or array of constitution bundle paths
     const syndicate = require('syndicate');
     const bootScripts = require('../bootScripts');
@@ -3481,7 +3481,7 @@ function OuterIsolatePowerCord(energySource, numberOfWires = 1, apis) { // seed 
 
 module.exports = OuterIsolatePowerCord;
 
-},{"../bootScripts":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\index.js","syndicate":false}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\OuterThreadPowerCord.js":[function(require,module,exports){
+},{"../bootScripts":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\index.js","syndicate":false}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\OuterThreadPowerCord.js":[function(require,module,exports){
 function OuterThreadPowerCord(threadBootScript, evaluate= false, energySourceSeed, numberOfWires = 1) { // seed or array of constitution bundle paths
     const syndicate = require('syndicate');
     let pool = null;
@@ -3530,7 +3530,7 @@ function OuterThreadPowerCord(threadBootScript, evaluate= false, energySourceSee
 
 module.exports = OuterThreadPowerCord;
 
-},{"syndicate":false}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\RemoteChannelPairPowerCord.js":[function(require,module,exports){
+},{"syndicate":false}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\RemoteChannelPairPowerCord.js":[function(require,module,exports){
 const outbound = "outbound";
 const inbound = "inbound";
 
@@ -3609,7 +3609,7 @@ function RemoteChannelPairPowerCord(host, channelName, receivingHost, receivingC
 }
 
 module.exports = RemoteChannelPairPowerCord;
-},{"../../psk-http-client":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\index.js","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\RemoteChannelPowerCord.js":[function(require,module,exports){
+},{"../../psk-http-client":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\index.js","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\RemoteChannelPowerCord.js":[function(require,module,exports){
 const inbound = "inbound";
 
 function RemoteChannelPowerCord(receivingHost, receivingChannelName){
@@ -3673,7 +3673,7 @@ function RemoteChannelPowerCord(receivingHost, receivingChannelName){
 }
 
 module.exports = RemoteChannelPowerCord;
-},{"../../psk-http-client":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\index.js","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\SmartRemoteChannelPowerCord.js":[function(require,module,exports){
+},{"../../psk-http-client":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\index.js","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\SmartRemoteChannelPowerCord.js":[function(require,module,exports){
 const inbound = "inbound";
 
 function SmartRemoteChannelPowerCord(communicationAddrs, receivingChannelName, zeroMQAddress) {
@@ -3874,7 +3874,7 @@ function SmartRemoteChannelPowerCord(communicationAddrs, receivingChannelName, z
 
 module.exports = SmartRemoteChannelPowerCord;
 
-},{"../../psk-http-client":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\index.js","apihub":false,"swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\browser\\SSAppPowerCord.js":[function(require,module,exports){
+},{"../../psk-http-client":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\psk-http-client\\index.js","apihub":false,"swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\browser\\SSAppPowerCord.js":[function(require,module,exports){
 /*
 	This type of PowerCord can be used from outer and inner SSApp in order to facilitate the SWARM communication
 	@param reference can be the parent (SSApp or wallet environment) or the iframe in which the SSApp gets loaded
@@ -3921,7 +3921,7 @@ function SSAppPowerCord(reference){
 
 module.exports = SSAppPowerCord;
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\swarms\\index.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\swarms\\index.js":[function(require,module,exports){
 module.exports = function(swarmEngineApi){
     const cm = require("callflow");
     const swarmUtils = require("./swarm_template-se");
@@ -3933,7 +3933,7 @@ module.exports = function(swarmEngineApi){
         swarmEngineApi.startSwarmAs(identity, swarmName, ctor, ...params);
     };
 };
-},{"./swarm_template-se":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\swarms\\swarm_template-se.js","callflow":"callflow"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\swarms\\swarm_template-se.js":[function(require,module,exports){
+},{"./swarm_template-se":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\swarms\\swarm_template-se.js","callflow":"callflow"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\swarms\\swarm_template-se.js":[function(require,module,exports){
 exports.getTemplateHandler = function (swarmEngine) {
     let cm = require("callflow");
 
@@ -4019,7 +4019,7 @@ exports.getTemplateHandler = function (swarmEngine) {
         }
     }
 };
-},{"callflow":"callflow","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Combos.js":[function(require,module,exports){
+},{"callflow":"callflow","swarmutils":"swarmutils"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Combos.js":[function(require,module,exports){
 function product(args) {
     if(!args.length){
         return [ [] ];
@@ -4045,7 +4045,7 @@ function objectProduct(obj) {
 }
 
 module.exports = objectProduct;
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\OwM.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\OwM.js":[function(require,module,exports){
 var meta = "meta";
 
 function OwM(serialized){
@@ -4136,7 +4136,7 @@ OwM.prototype.setMetaFor = function(obj, name, value){
 };
 
 module.exports = OwM;
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Queue.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Queue.js":[function(require,module,exports){
 function QueueElement(content) {
 	this.content = content;
 	this.next = null;
@@ -4237,7 +4237,7 @@ Queue.prototype.inspect = Queue.prototype.toString;
 
 module.exports = Queue;
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\SwarmPacker.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\SwarmPacker.js":[function(require,module,exports){
 const HEADER_SIZE_RESEARVED = 4;
 
 function SwarmPacker(){
@@ -4386,7 +4386,7 @@ SwarmPacker.getHeader = function(pack){
     return header;
 };
 module.exports = SwarmPacker;
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\TaskCounter.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\TaskCounter.js":[function(require,module,exports){
 
 function TaskCounter(finalCallback) {
 	let results = [];
@@ -4436,7 +4436,7 @@ function TaskCounter(finalCallback) {
 }
 
 module.exports = TaskCounter;
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\beesHealer.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\beesHealer.js":[function(require,module,exports){
 const OwM = require("./OwM");
 
 /*
@@ -4492,7 +4492,7 @@ exports.jsonToNative = function(serialisedValues, result){
     };
 
 };
-},{"./OwM":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\OwM.js"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\path.js":[function(require,module,exports){
+},{"./OwM":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\OwM.js"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\path.js":[function(require,module,exports){
 function replaceAll(str, search, replacement) {
     return str.split(search).join(replacement);
 }
@@ -4679,7 +4679,7 @@ module.exports = {
     extname
 };
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pingpongFork.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pingpongFork.js":[function(require,module,exports){
 const PING = "PING";
 const PONG = "PONG";
 
@@ -4771,7 +4771,7 @@ module.exports.enableLifeLine = function(timeout){
         }
     }, interval);
 };
-},{"child_process":false}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pskconsole.js":[function(require,module,exports){
+},{"child_process":false}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pskconsole.js":[function(require,module,exports){
 var commands = {};
 var commands_help = {};
 
@@ -4842,7 +4842,7 @@ module.exports = {
 };
 
 
-},{}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\safe-uuid.js":[function(require,module,exports){
+},{}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\safe-uuid.js":[function(require,module,exports){
 
 function encode(buffer) {
     return buffer.toString('base64')
@@ -4909,7 +4909,7 @@ exports.short_uuid = function(callback) {
         callback(null, encode(buf));
     });
 };
-},{"crypto":"crypto"}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\uidGenerator.js":[function(require,module,exports){
+},{"crypto":"crypto"}],"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\uidGenerator.js":[function(require,module,exports){
 function UidGenerator(minBuffers, buffersSize) {
     const Queue = require("./Queue");
     var PSKBuffer = typeof $$ !== "undefined" && $$.PSKBuffer ? $$.PSKBuffer : $$.Buffer;
@@ -5011,7 +5011,7 @@ module.exports.createUidGenerator = function (minBuffers, bufferSize) {
     return new UidGenerator(minBuffers, bufferSize);
 };
 
-},{"./Queue":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Queue.js","crypto":"crypto"}],"callflow":[function(require,module,exports){
+},{"./Queue":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Queue.js","crypto":"crypto"}],"callflow":[function(require,module,exports){
 (function (global){(function (){
 function initialise() {
     if($$.callflow){
@@ -5099,7 +5099,7 @@ module.exports = {
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./constants":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\constants.js","./lib/InterceptorRegistry":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\InterceptorRegistry.js","./lib/loadLibrary":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\loadLibrary.js","./lib/parallelJoinPoint":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\parallelJoinPoint.js","./lib/serialJoinPoint":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\serialJoinPoint.js","./lib/swarmDescription":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\swarmDescription.js","./lib/utilityFunctions/base":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\base.js","crypto":"crypto","path":false,"soundpubsub":"soundpubsub"}],"queue":[function(require,module,exports){
+},{"./constants":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\constants.js","./lib/InterceptorRegistry":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\InterceptorRegistry.js","./lib/loadLibrary":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\loadLibrary.js","./lib/parallelJoinPoint":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\parallelJoinPoint.js","./lib/serialJoinPoint":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\serialJoinPoint.js","./lib/swarmDescription":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\swarmDescription.js","./lib/utilityFunctions/base":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\callflow\\lib\\utilityFunctions\\base.js","crypto":"crypto","path":false,"soundpubsub":"soundpubsub"}],"queue":[function(require,module,exports){
 function QueueElement(content) {
 	this.content = content;
 	this.next = null;
@@ -5172,7 +5172,7 @@ module.exports = Queue;
 module.exports = {
 					soundPubSub: require("./lib/soundPubSub").soundPubSub
 };
-},{"./lib/soundPubSub":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\soundpubsub\\lib\\soundPubSub.js"}],"swarm-engine":[function(require,module,exports){
+},{"./lib/soundPubSub":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\soundpubsub\\lib\\soundPubSub.js"}],"swarm-engine":[function(require,module,exports){
 module.exports = {
     initialise:function(...args){
         if(typeof $$.swarmEngine === "undefined"){
@@ -5201,7 +5201,7 @@ module.exports = {
 };
 
 
-},{"./SwarmEngine":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\SwarmEngine.js","./bootScripts":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\index.js","./powerCords/InnerIsolatePowerCord":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\InnerIsolatePowerCord.js","./powerCords/InnerThreadPowerCord":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\InnerThreadPowerCord.js","./powerCords/OuterIsolatePowerCord":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\OuterIsolatePowerCord.js","./powerCords/OuterThreadPowerCord":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\OuterThreadPowerCord.js","./powerCords/RemoteChannelPairPowerCord":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\RemoteChannelPairPowerCord.js","./powerCords/RemoteChannelPowerCord":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\RemoteChannelPowerCord.js","./powerCords/SmartRemoteChannelPowerCord":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\SmartRemoteChannelPowerCord.js","./powerCords/browser/SSAppPowerCord":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\browser\\SSAppPowerCord.js","overwrite-require":"overwrite-require"}],"swarmutils":[function(require,module,exports){
+},{"./SwarmEngine":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\SwarmEngine.js","./bootScripts":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\bootScripts\\index.js","./powerCords/InnerIsolatePowerCord":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\InnerIsolatePowerCord.js","./powerCords/InnerThreadPowerCord":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\InnerThreadPowerCord.js","./powerCords/OuterIsolatePowerCord":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\OuterIsolatePowerCord.js","./powerCords/OuterThreadPowerCord":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\OuterThreadPowerCord.js","./powerCords/RemoteChannelPairPowerCord":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\RemoteChannelPairPowerCord.js","./powerCords/RemoteChannelPowerCord":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\RemoteChannelPowerCord.js","./powerCords/SmartRemoteChannelPowerCord":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\SmartRemoteChannelPowerCord.js","./powerCords/browser/SSAppPowerCord":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarm-engine\\powerCords\\browser\\SSAppPowerCord.js","overwrite-require":"overwrite-require"}],"swarmutils":[function(require,module,exports){
 
 let cachedUIDGenerator = undefined;
 let cachedSafeUid = undefined;
@@ -5253,8 +5253,8 @@ module.exports.ensureIsBuffer = function (data) {
     return buffer;
 }
 
-},{"./lib/Combos":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Combos.js","./lib/OwM":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\OwM.js","./lib/Queue":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Queue.js","./lib/SwarmPacker":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\SwarmPacker.js","./lib/TaskCounter":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\TaskCounter.js","./lib/beesHealer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\beesHealer.js","./lib/path":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\path.js","./lib/pingpongFork":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pingpongFork.js","./lib/pskconsole":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pskconsole.js","./lib/safe-uuid":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\safe-uuid.js","./lib/uidGenerator":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\uidGenerator.js"}]},{},["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\builds\\tmp\\pskruntime_intermediar.js"])
+},{"./lib/Combos":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Combos.js","./lib/OwM":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\OwM.js","./lib/Queue":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\Queue.js","./lib/SwarmPacker":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\SwarmPacker.js","./lib/TaskCounter":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\TaskCounter.js","./lib/beesHealer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\beesHealer.js","./lib/path":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\path.js","./lib/pingpongFork":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pingpongFork.js","./lib/pskconsole":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\pskconsole.js","./lib/safe-uuid":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\safe-uuid.js","./lib/uidGenerator":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\modules\\swarmutils\\lib\\uidGenerator.js"}]},{},["C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\builds\\tmp\\pskruntime_intermediar.js"])
                     ;(function(global) {
-                        global.bundlePaths = {"webshims":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\webshims.js","pskruntime":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\pskruntime.js","pskWebServer":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\pskWebServer.js","consoleTools":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\consoleTools.js","blockchain":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\blockchain.js","openDSU":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\openDSU.js","nodeBoot":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\nodeBoot.js","testsRuntime":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\testsRuntime.js","bindableModel":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\bindableModel.js","loaderBoot":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\loaderBoot.js","swBoot":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\swBoot.js","iframeBoot":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\iframeBoot.js","launcherBoot":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\launcherBoot.js","testRunnerBoot":"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\privatesky\\psknode\\bundles\\testRunnerBoot.js"};
+                        global.bundlePaths = {"webshims":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\webshims.js","pskruntime":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\pskruntime.js","pskWebServer":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\pskWebServer.js","consoleTools":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\consoleTools.js","blockchain":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\blockchain.js","openDSU":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\openDSU.js","nodeBoot":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\nodeBoot.js","testsRuntime":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\testsRuntime.js","bindableModel":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\bindableModel.js","loaderBoot":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\loaderBoot.js","swBoot":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\swBoot.js","iframeBoot":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\iframeBoot.js","launcherBoot":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\launcherBoot.js","testRunnerBoot":"C:\\xampp\\htdocs\\csc-workspace-main\\privatesky\\psknode\\bundles\\testRunnerBoot.js"};
                     })(typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
                 

@@ -317,7 +317,7 @@
         {
           "type": "copy",
           "src": "./csc-cmo-ssapp/seed",
-          "target": "./apihub-root/csc-sponsor-wallet/apps-patch/csc-cmo-ssapp/seed",
+          "target": "./apihub-root/csc-cmo-wallet/apps-patch/csc-cmo-ssapp/seed",
           "options": {
             "overwrite": true
           }
@@ -347,7 +347,7 @@
         {
           "type": "copy",
           "src": "./csc-site-ssapp/seed",
-          "target": "./apihub-root/csc-sponsor-wallet/apps-patch/csc-site-ssapp/seed",
+          "target": "./apihub-root/csc-site-wallet/apps-patch/csc-site-ssapp/seed",
           "options": {
             "overwrite": true
           }
