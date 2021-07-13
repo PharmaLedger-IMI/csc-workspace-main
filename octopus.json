@@ -483,6 +483,35 @@
           "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/readme"
         }
       ]
+    },
+    {
+      "name": "utilitaries",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "./utilitaries",
+          "target": "./csc-cmo-ssapp/",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "./utilitaries",
+          "target": "./csc-site-ssapp/",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "./utilitaries",
+          "target": "./csc-sponsor-ssapp/",
+          "options": {
+            "overwrite": true
+          }
+        }
+      ]
     }
   ],
   "install-mobile": [],

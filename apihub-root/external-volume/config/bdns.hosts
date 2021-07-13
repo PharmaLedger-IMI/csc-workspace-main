@@ -52,5 +52,16 @@
     "anchoringServices": [
       "$ORIGIN"
     ]
-  }
+  },
+  "csc":{
+      "replicas":[
+
+      ],
+      "brickStorages":[
+         "$ORIGIN"
+      ],
+      "anchoringServices":[
+         "$ORIGIN"
+      ]
+   }
 }

@@ -68,5 +68,5 @@ module.exports = {
   unmount,
   readFile,
   listFiles,
-  listFolders,
+  listFolders
 };
