@@ -1,0 +1,62 @@
+<webc-container controller="DashboardMenuController">
+  <div class="dashboard-tabs-holder">
+    <webc-link id="menu-dashboard" tag="dashboard" class="dashboard-tab dashboard-tab-active">
+      <span class="dashboard-tab-icon">
+        <svg
+          class="dashboard-tab-icon-img"
+          version="1.1"
+          id="Layer_1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          width="200px"
+          height="200px"
+          viewBox="0 0 200 200"
+          enable-background="new 0 0 200 200"
+          xml:space="preserve"
+        >
+          <path
+            fill="#231F20"
+            d="M46.26,46.26v47.767h107.48V46.26H46.26z M141.798,82.087H58.202V58.2h83.596V82.087z M46.26,105.97v47.77
+                h47.768v-47.77H46.26z M82.087,141.797H58.202v-23.884h23.885V141.797z M105.972,105.97v47.77h47.769v-47.77H105.972z
+                 M141.798,141.797h-23.885v-23.884h23.885V141.797z"
+          />
+        </svg>
+      </span>
+      Dashboard
+    </webc-link>
+
+    <webc-link id="menu-notifications" tag="notifications" class="dashboard-tab">
+      <span class="dashboard-tab-icon">
+        <svg
+          class="dashboard-tab-icon-img"
+          version="1.1"
+          id="Layer_1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          width="200px"
+          height="200px"
+          viewBox="0 0 200 200"
+          enable-background="new 0 0 200 200"
+          xml:space="preserve"
+        >
+          <path
+            fill="#231F20"
+            d="M99.998,158.218c6.572,0,11.942-5.376,11.942-11.941H88.057C88.057,152.842,93.44,158.218,99.998,158.218z
+                 M135.825,122.392V92.535c0-18.323-9.731-33.676-26.871-37.729V50.74c0-4.958-3.994-8.958-8.957-8.958c-4.955,0-8.956,4-8.956,8.958
+                v4.066c-17.067,4.053-26.87,19.337-26.87,37.729v29.856L52.23,134.331v5.974h95.539v-5.974L135.825,122.392z M123.884,128.363
+                H76.112V92.535c0-14.812,9.023-26.87,23.885-26.87c14.877,0,23.887,12.059,23.887,26.87V128.363z"
+          />
+        </svg>
+      </span>
+      Notifications
+      <data-if data-if="@isUnreadZero">
+        <div slot="true" class="dashboard-tab-notification">{{@unread}}</div>
+        <div slot="false"></div>
+      </data-if>
+    </webc-link>
+  </div>
+</webc-container>

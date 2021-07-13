@@ -1,0 +1,537 @@
+<webc-container controller="NewOrderController">
+    <psk-layout columns="1">
+
+        <div class="header">
+            <div class="header-left">
+                <img src="../resources/images/pl_logo.png">
+                <div class="header-role-title">SPONSOR</div>
+            </div>
+            <div class="header-right">
+                <div class="header-username">
+                    CMOName1
+                </div>
+            </div>
+        </div>
+
+        <webc-template template="dashboard-menu"></webc-template>
+
+        <div class="new-order-wizard-form">
+            <!--First Step -->
+            <div data-tag="wizard_form_step_1" id="wizard_form_step_1" class="new-order-wizard-form-element new-order-wizard-active">
+                1 - Order Details
+            </div>
+
+            <!-- Break -->
+            <div class="new-order-wizard-form-break">
+                <!-- Line -->
+                <div class="new-order-wizard-form-break-line"></div>
+            </div>
+
+            <!--Second Step -->
+            <div data-tag="wizard_form_step_2" id="wizard_form_step_2" class="new-order-wizard-form-element">
+                2 - Attach Documents
+            </div>
+
+            <!-- Break -->
+            <div class="new-order-wizard-form-break">
+                <!-- Line -->
+                <div class="new-order-wizard-form-break-line"></div>
+            </div>
+
+            <!-- Comments -->
+            <div data-tag="wizard_form_step_3" id="wizard_form_step_3" class="new-order-wizard-form-element">
+                3 - Comments
+            </div>
+
+            <!-- Break -->
+            <div class="new-order-wizard-form-break">
+                <!-- Line -->
+                <div class="new-order-wizard-form-break-line"></div>
+            </div>
+
+            <!-- Confirmation -->
+            <div data-tag="wizard_form_step_4" id="wizard_form_step_4" class="new-order-wizard-form-element">
+                4 - Confirmation
+            </div>
+        </div>
+        <div class="new-order-main-holder">
+
+            <!-- 1 - Order Details -->
+            <div id="wizard_form_step_1_holder" class="new-order-wizard-form-step-holder show-step">
+                <div id="new-order-details-holder" class="row">
+                   <div class="col-6">
+
+                       <!-- Sponsor ID -->
+                       <div class="form-group">
+                           <!--Label -->
+                           <label>{{@form.inputs.sponsor_id.label}}</label>
+                           <!-- Input -->
+                           <input class="form-control" type="text" name="@form.inputs.sponsor_id.name" placeholder="@form.inputs.sponsor_id.placeholder" value="@form.inputs.sponsor_id.value" required="@form.inputs.sponsor_id.required">
+                       </div>
+
+                       <!-- Delivery Date/Time -->
+                       <div class="form-group">
+                           <!--Label -->
+                           <label>{{@form.inputs.delivery_date.label}}</label>
+                           <div class="row">
+                               <div class="col-8">
+                                   <!-- Input -->
+                                   <input class="form-control" type="date" id="@form.inputs.delivery_date.date.name" name="@form.inputs.delivery_date.date.name" value="@form.inputs..delivery_date.date.value" required="@form.inputs..delivery_date.date.required">
+                               </div>
+                               <div class="col-4">
+                                   <!-- Input -->
+                                   <input class="form-control" type="time" id="@form.inputs.delivery_date.time.name" name="@form.inputs.delivery_date.time.name" value="@form.inputs..delivery_date.time.value" required="@form.inputs..delivery_date.time.required">
+                               </div>
+                           </div>
+                       </div>
+
+                       <!-- Target CMO ID -->
+                       <div class="form-group">
+                           <!--Label -->
+                           <label>{{@form.inputs.target_cmo_id.label}}</label>
+                           <!-- Select -->
+                           <select  class="form-control" name="@form.inputs.target_cmo_id.name" id="@form.inputs.target_cmo_id.name" data-for="@form.inputs.target_cmo_id.options">
+                               <option  value="@value">{{@label}}</option>
+                           </select>
+                       </div>
+
+                       <!-- Study ID -->
+                       <div class="form-group">
+                           <!--Label -->
+                           <label>{{@form.inputs.study_id.label}}</label>
+                           <!-- Input -->
+                           <input class="form-control" type="text" name="@form.inputs.study_id.name" placeholder="@form.inputs.study_id.placeholder" value="@form.inputs.study_id.value" required="@form.inputs.study_id.required">
+                       </div>
+
+
+                       <!-- Order ID -->
+                       <div class="form-group">
+                           <!--Label -->
+                           <label>{{@form.inputs.order_id.label}}</label>
+                           <!-- Input -->
+                           <input class="form-control" type="text" name="@form.inputs.order_id.name" placeholder="@form.inputs.order_id.placeholder" value="@form.inputs.order_id.value" required="@form.inputs.order_id.required">
+                       </div>
+
+                       <!-- Kit ID List -->
+                       <div class="form-group">
+                           <!-- Label -->
+                           <label>{{@form.inputs.kit_id_list.label}}</label>
+
+                           <div class="input-group">
+                               <input type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                               <button class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Upload File</button>
+                           </div>
+                       </div>
+
+
+
+
+
+                   </div>
+                    <div class="col-6">
+                        <!-- Site Id -->
+                        <div class="form-group">
+                            <!--Label -->
+                            <label>{{@form.inputs.site_id.label}}</label>
+                            <!-- Select -->
+                            <select class="form-control" name="@form.inputs.site_id.name" id="@form.inputs.site_id.name" data-for="@form.inputs.site_id.options">
+                                <option  value="@value">{{@label}}</option>
+                            </select>
+                        </div>
+
+                        <!-- Site Region ID -->
+                        <div class="form-group">
+                            <!--Label -->
+                            <label>{{@form.inputs.site_region_id.label}}</label>
+                            <!-- Input -->
+                            <input class="form-control" type="text" name="@form.inputs.site_region_id.name" placeholder="@form.inputs.site_region_id.placeholder" value="@form.inputs.site_region_id.value" required="@form.inputs.site_region_id.required">
+                        </div>
+
+                        <!-- Site Country -->
+                        <div class="form-group">
+                            <!--Label -->
+                            <label>{{@form.inputs.site_country.label}}</label>
+                            <!-- Input -->
+                            <input class="form-control" type="text" name="@form.inputs.site_country.name" placeholder="@form.inputs.site_country.placeholder" value="@form.inputs.site_country.value" required="@form.inputs.site_country.required">
+                        </div>
+
+
+                        <!-- Temperature -->
+                        <div class="row">
+                            <div class="col-6">
+                                <!-- Keep Between -->
+                                <div class="form-group">
+                                    <!-- Label -->
+                                    <label for="@form.inputs.keep_between_temperature.min.name">{{@form.inputs.keep_between_temperature.min.label}}</label>
+                                    <!--Input -->
+                                    <input type="text" class="form-control" name="@form.inputs.keep_between_temperature.min.name" id="@form.inputs.keep_between_temperature.min.name" value="@form.inputs.keep_between_temperature.min.value">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <!-- Keep Between -->
+                                <div class="form-group">
+                                    <!-- Label -->
+                                    <label for="@form.inputs.keep_between_temperature.max.name">{{@form.inputs.keep_between_temperature.max.label}}</label>
+                                    <!--Input -->
+                                    <input type="text" class="form-control" name="@form.inputs.keep_between_temperature.max.name" id="@form.inputs.keep_between_temperature.max.name" value="@form.inputs.keep_between_temperature.max.value">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Temperature Comments -->
+                        <div class="form-group">
+                            <!--Label -->
+                            <label>{{@form.inputs.temperature_comments.label}}</label>
+                            <!-- Input -->
+                            <input class="form-control" type="text" name="@form.inputs.temperature_comments.name" placeholder="@form.inputs.temperature_comments.placeholder" value="@form.inputs.temperature_comments.value" required="@form.inputs.temperature_comments.required">
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Navigation Between Steps-->
+                <div class="row">
+                    <!-- Previous Button -->
+                    <div class="col-6 text-center"></div>
+                    <!-- Next Button -->
+                    <div class="col-6 text-center">
+                        <button id="from_step_1_to_2" data-tag="from_step_1_to_2" class="next-button">Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2 - Attach Documents -->
+            <div id="wizard_form_step_2_holder" class="new-order-wizard-form-step-holder hide-step">
+
+                <!-- Attach Documents-->
+                <div class="row" style="padding: 50px 0px;">
+                    <div class="col-12 text-right">
+<!--                        <div class="custom-file">-->
+<!--                            <input type="file" class="custom-file-input" id="customFile">-->
+<!--                            <label class="custom-file-label" for="customFile" style="text-align: left">Choose file</label>-->
+<!--                        </div>-->
+                        <psk-files-chooser style="margin: 10px" view-model="form.attachment" event-name="add-file"> </psk-files-chooser>
+
+
+                        <p>Maximum upload file size: 64MB</p>
+                    </div>
+                </div>
+
+                <!-- Attach Documents Table-->
+                <div class="row" id="attach-documents-holder">
+                    <div class="col-12">
+                        <table class="table table-borderless attach-documents-table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Document Name</th>
+                                <th scope="col">Attached By</th>
+                                <th scope="col">Date/Time Attached</th>
+                                <th scope="col">Open/Download</th>
+                                <th scope="col">Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody data-for="@form.documents">
+                            <tr>
+                                <th>{{@name}}</th>
+                                <td>{{@attached_by}}</td>
+                                <td>{{@date}}</td>
+                                <td>
+                                    <svg class="attach-documents-table-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                         width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
+                                    <path fill="#231F20" d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
+                                        c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
+                                        c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
+                                        c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"/>
+                                    </svg>
+                                </td>
+                                <td>
+                                    <svg class="attach-documents-table-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                         width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
+                                    <path fill="#231F20" d="M111.732,79.544L99.998,91.271L88.277,79.544c-2.417-2.419-6.314-2.419-8.735,0
+                                        c-2.419,2.42-2.419,6.327,0,8.735L91.267,100l-11.726,11.727c-2.419,2.402-2.419,6.316,0,8.729c2.421,2.422,6.318,2.422,8.735,0
+                                        l11.721-11.726l11.734,11.726c2.403,2.422,6.308,2.422,8.73,0c2.41-2.412,2.41-6.326,0-8.729L108.744,100l11.719-11.721
+                                        c2.41-2.408,2.41-6.315,0-8.735C118.04,77.184,114.071,77.184,111.732,79.544z M99.998,38.014C65.721,38.014,38.01,65.73,38.01,100
+                                        c0,34.281,27.711,61.986,61.987,61.986c34.279,0,61.992-27.705,61.992-61.986C161.99,65.73,134.277,38.014,99.998,38.014z
+                                         M99.998,149.582c-27.33,0-49.585-22.24-49.585-49.582s22.255-49.583,49.585-49.583c27.348,0,49.586,22.241,49.586,49.583
+                                        S127.345,149.582,99.998,149.582z"/>
+                                    </svg>
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Navigation Between Steps-->
+                <div class="row">
+                    <!-- Previous Button -->
+                    <div class="col-6 text-center">
+                        <button id="from_step_2_to_1" data-tag="from_step_2_to_1" class="next-button">Previous</button>
+                    </div>
+                    <!-- Next Button -->
+                    <div class="col-6 text-center">
+                        <button id="from_step_2_to_3" data-tag="from_step_2_to_3" class="next-button">Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            <div id="wizard_form_step_3_holder" class="new-order-wizard-form-step-holder hide-step">
+
+                <div class="row" id="new-order-comments-holder">
+                    <!-- Comments Preview -->
+                    <div class="col-6">
+                        <label>Comments:</label>
+                        <div data-if="@hasComments">
+                            <div slot="false">
+                                There is no comment added.
+                            </div>
+                            <div slot="true">
+                                <div data-for="@form.comments">{{@content}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Comments Submission -->
+                    <div class="col-6">
+                        <!-- Add Comment -->
+                        <div class="form-group">
+                            <!--Label -->
+                            <label>{{@form.inputs.add_comment.label}}</label>
+                            <!-- Input -->
+                            <input class="form-control" type="text" name="@form.inputs.add_comment.name" placeholder="@form.inputs.add_comment.placeholder" value="@form.inputs.add_comment.value" required="@form.inputs.add_comment.required">
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation Between Steps-->
+                <div class="row">
+                    <!-- Previous Button -->
+                    <div class="col-6 text-center">
+                        <button id="from_step_3_to_2" data-tag="from_step_3_to_2" class="next-button">Previous</button>
+                    </div>
+                    <!-- Next Button -->
+                    <div class="col-6 text-center">
+                        <button id="from_step_3_to_4" data-tag="from_step_3_to_4" class="next-button">Next</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Confirmation -->
+            <div id="wizard_form_step_4_holder" class="new-order-wizard-form-step-holder hide-step">
+                <div id="new-order-confirmation-holder"  class="row">
+
+                    <div class="col-6">
+
+                        <!-- Sponsor ID -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.sponsor_id.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.sponsor_id.name" placeholder="@form.inputs.sponsor_id.placeholder" value="@form.inputs.sponsor_id.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Request Delivery Date/Time -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">Request Delivery Date/Time</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <div class="row">
+                                    <div class="col-7">
+                                        <!-- Input -->
+                                        <input class="form-control form-control-sm" type="text"  value="@form.inputs.delivery_date.date.value" disabled>
+                                    </div>
+                                    <div class="col-5">
+                                        <!-- Input -->
+                                        <input class="form-control form-control-sm" type="text"  value="@form.inputs.delivery_date.time.value" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Target CMO ID -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.target_cmo_id.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.target_cmo_id.name" placeholder="@form.inputs.target_cmo_id.placeholder" value="@form.inputs.target_cmo_id.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Study ID -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.study_id.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.study_id.name" value="@form.inputs.study_id.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Order ID -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.order_id.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.order_id.name" value="@form.inputs.order_id.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Kit ID List -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.kit_id_list.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.kit_id_list.name" value="@form.inputs.kit_id_list.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Site ID -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.site_id.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.site_id.name" value="@form.inputs.site_id.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Site Region ID -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.site_region_id.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.site_region_id.name" value="@form.inputs.site_region_id.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Site Country -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.site_country.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.site_country.name" value="@form.inputs.site_country.value" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+
+                        <div class="row" style="margin-top: -15px; margin-bottom: -15px;">
+                            <div class="col-6">
+                                <!-- Keep Between -->
+                                <div class="form-group">
+                                    <!-- Label -->
+                                    <label for="@form.inputs.keep_between_temperature.min.name">{{@form.inputs.keep_between_temperature.min.label}}</label>
+                                    <!--Input -->
+                                    <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature.min.name"  value="@form.inputs.keep_between_temperature.min.value" disabled>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <!-- Keep Between -->
+                                <div class="form-group">
+                                    <!-- Label -->
+                                    <label for="@form.inputs.keep_between_temperature.max.name">{{@form.inputs.keep_between_temperature.max.label}}</label>
+                                    <!--Input -->
+                                    <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature.max.name"  value="@form.inputs.keep_between_temperature.max.value" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="row"><div class="col-12"><br></div></div>
+
+                        <!-- Site Country -->
+                        <div class="row">
+                            <!--Label -->
+                            <div class="col-5">
+                                <label class="my-1 mr-2">{{@form.inputs.temperature_comments.label}}</label>
+                            </div>
+                            <!-- Input -->
+                            <div class="col-7">
+                                <input class="form-control form-control-sm" type="text" name="@form.inputs.temperature_comments.name" value="@form.inputs.temperature_comments.value" disabled>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label>Comments</label>
+                            <textarea class="form-control form-control-sm" type="text" disabled>
+                                {{@form.inputs.add_comment.value}}
+                            </textarea>
+                        </div>
+
+                            <div data-for="@form.documents" class="form-group">
+                                <label>Attached Document</label>
+                                <input class="form-control form-control-sm" type="text" value="@name" disabled>
+                            </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <button class="reset-button" data-tag="form_reset" >Clear Form</button>
+                    </div>
+                    <div class="col-6 text-center">
+                        <button class="submit-button" data-tag="form_submit" >Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </psk-layout>
+</webc-container>

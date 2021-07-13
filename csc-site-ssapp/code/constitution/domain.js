@@ -147,7 +147,7 @@ $$.swarms.describe('toDoSwarm', {
         }
     }
 });
-},{"gtin-resolver":false,"opendsu":false,"pskcrypto":false}],"C:\\xampp\\htdocs\\csc-workspace-main\\csc-site-ssapp\\builds\\tmp\\domain_intermediar.js":[function(require,module,exports){
+},{"gtin-resolver":false,"opendsu":false,"pskcrypto":false}],"C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\csc-site-ssapp\\builds\\tmp\\domain_intermediar.js":[function(require,module,exports){
 (function (global){(function (){
 global.domainLoadModules = function(){ 
 
@@ -165,7 +165,7 @@ if (typeof $$ !== "undefined") {
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./../../domain":"./../../domain"}]},{},["C:\\xampp\\htdocs\\csc-workspace-main\\csc-site-ssapp\\builds\\tmp\\domain_intermediar.js"])
+},{"./../../domain":"./../../domain"}]},{},["C:\\xampp\\htdocs\\Pharmaledger\\csc-workspace-main\\csc-site-ssapp\\builds\\tmp\\domain_intermediar.js"])
                     ;(function(global) {
                         global.bundlePaths = {"domain":"code\\constitution\\domain.js"};
                     })(typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
