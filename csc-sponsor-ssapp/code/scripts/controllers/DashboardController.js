@@ -1,11 +1,13 @@
 const { WebcController } = WebCardinal.controllers;
 import OrdersService from '../services/OrdersService.js';
+import CommunicationService from '../services/CommunicationService.js';
 
 export default class DashboardController extends WebcController {
   constructor(...props) {
     super(...props);
 
     this.ordersService = new OrdersService(this.DSUStorage);
+    this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
 
     this.model = {
       tabNavigator: {
@@ -16,9 +18,26 @@ export default class DashboardController extends WebcController {
     this.init();
 
     this.attachAll();
+
+    this.handleMessages();
   }
 
   init() {}
+
+  handleMessages() {
+    this.communicationService.listenForMessages((err, data) => {
+      if (err) {
+        return console.error(err);
+      }
+      data = JSON.parse(data);
+      switch (data.message.operation) {
+        case 'add-test': {
+          console.log('test run');
+          break;
+        }
+      }
+    });
+  }
 
   attachAll() {
     this.model.addExpression(

@@ -1,17 +1,17 @@
 const convertStringToLocaleDate = (dateAsString = new Date().toString(), locale = 'sw') => {
-    return new Date(dateAsString).toLocaleDateString(locale);
-}
+  return new Date(dateAsString).toLocaleDateString(locale);
+};
 
 const getCurrentDate = () => {
-    return new Date();
-}
+  return new Date();
+};
 
 const getCurrentDateAsISOString = () => {
-    return getCurrentDate().toISOString();
-}
+  return getCurrentDate().toISOString();
+};
 
 export default {
-    convertStringToLocaleDate,
-    getCurrentDate,
-    getCurrentDateAsISOString
+  convertStringToLocaleDate,
+  getCurrentDate,
+  getCurrentDateAsISOString,
 };

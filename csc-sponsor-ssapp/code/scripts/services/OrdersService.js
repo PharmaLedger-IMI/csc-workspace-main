@@ -62,6 +62,7 @@ export default class OrdersService extends DSUService {
     const order = await this.saveEntityAsync(model);
 
     const path = '/' + this.ORDERS_TABLE + '/' + order.uid + '/' + 'status';
+    await this.unmountEntityAsync(statusDsu.uid, '/statuses');
     await this.mountEntityAsync(statusDsu.uid, path);
 
     const result = await this.addOrderToDB({
