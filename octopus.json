@@ -132,6 +132,25 @@
       ]
     },
     {
+      "name": "apihub-root/csc-courier-wallet/loader",
+      "src": "https://github.com/PrivateSky/trust-loader.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/csc-courier-wallet/loader && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/csc-courier-wallet/loader && npm run build"
+        }
+      ]
+    },
+    {
       "name": "themes/pdm-theme",
       "src": "http://github.com/PharmaLedger-IMI/pdm-theme.git",
       "actions": [
@@ -255,6 +274,15 @@
           "cmd": "cd csc-site-ssapp && npm install"
         }
       ]
+    },
+    {
+      "name": "csc-courier-ssapp",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd csc-courier-ssapp && npm install"
+        }
+      ]
     }
   ],
   "build-use-case": [
@@ -359,6 +387,36 @@
       ]
     },
     {
+      "name": "bind_csc_courier_ssapp_to_wallet",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd csc-courier-ssapp && npm run build"
+        },
+        {
+          "type": "copy",
+          "src": "./csc-courier-ssapp/seed",
+          "target": "./apihub-root/csc-courier-wallet/wallet-patch/seed",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copy",
+          "src": "./csc-site-ssapp/seed",
+          "target": "./apihub-root/csc-courier-wallet/apps-patch/csc-courier-ssapp/seed",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "execute",
+          "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-courier-wallet/apps-patch/csc-courier-ssapp/readme"
+        }
+      ]
+    },
+    {
       "name": "trust-loader-config",
       "actions": [
         {
@@ -389,6 +447,10 @@
         {
           "type": "execute",
           "cmd": "cd apihub-root/csc-site-wallet/loader && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/csc-courier-wallet/loader && npm install"
         }
       ]
     }

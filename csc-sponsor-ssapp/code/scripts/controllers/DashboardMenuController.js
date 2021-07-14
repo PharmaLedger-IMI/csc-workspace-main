@@ -56,13 +56,13 @@ export default class DashboardMenuController extends WebcController {
 
         //Add active menu class to element
         function makeMenuActive( element ){
-            console.log("Making ACTIVE:" , element);
+            // console.log("Making ACTIVE:" , element);
             document.getElementById(element).classList.add("dashboard-tab-active");
         }
 
         //Remove active menu class to element
         function makeMenuInActive( element ){
-            console.log("Making INACTIVE:" , element);
+            // console.log("Making INACTIVE:" , element);
             document.getElementById(element).classList.remove("dashboard-tab-active");
         }
 
