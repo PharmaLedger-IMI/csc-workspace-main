@@ -502,6 +502,14 @@
           "options": {
             "overwrite": true
           }
+        },
+        {
+          "type": "copy",
+          "src": "./utilitaries",
+          "target": "./csc-courier-ssapp/",
+          "options": {
+            "overwrite": true
+          }
         }
       ]
     },
