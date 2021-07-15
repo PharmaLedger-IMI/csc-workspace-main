@@ -1,5 +1,6 @@
 let LOADER_GLOBALS = {
   THEME: 'app',
+  SHOW_ACTION_BUTTON: false,
   LABELS_DICTIONARY: {
     APP_NAME: 'Site App',
     APP_DESCRIPTION: 'The traceability application for Marketing Authorization Holders',

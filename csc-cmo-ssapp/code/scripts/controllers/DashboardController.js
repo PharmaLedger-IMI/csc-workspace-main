@@ -36,7 +36,7 @@ export default class DashboardController extends WebcController {
           console.log('message received');
           console.log(data);
           if (data.message.data.orderSSI && data.message.data.documentsSSI) {
-            this.ordersService.mountOrder(data.message.data.orderSSI);
+            this.ordersService.mountOrder(data.message.data.orderSSI, data.message.data.documentsSSI);
             console.log('order added');
           }
           break;

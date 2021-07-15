@@ -71,6 +71,7 @@ export default class OrdersController extends WebcController {
   async getOrders() {
     try {
       this.orders = await this.ordersService.getOrders();
+      console.log(JSON.stringify(this.orders, null, 2));
       this.setOrdersModel(this.orders);
     } catch (error) {
       console.log(error);
@@ -122,6 +123,7 @@ export default class OrdersController extends WebcController {
       this.navigateToPageTag('order', {
         id: event.data,
         keySSI: this.orders.find((x) => x.orderId === event.data).orderSSI,
+        documentsKeySSI: this.orders.find((x) => x.orderId === event.data).documentsKeySSI,
       });
     });
 

@@ -25,10 +25,11 @@ export default class OrdersService extends DSUService {
     } else return [];
   }
 
-  async getOrder(keySSI) {
+  async getOrder(keySSI, documentsKeySSI) {
     const order = await this.getEntityAsync(keySSI);
     const status = await this.getStatuses(keySSI);
-    return { ...order, status: status.status };
+    const documents = await this.getEntityAsync(documentsKeySSI, '/documents');
+    return { ...order, status: status.status, documents: documents.documents };
   }
 
   async getStatuses(orderSSI) {
