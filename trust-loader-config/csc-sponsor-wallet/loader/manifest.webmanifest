@@ -10,51 +10,51 @@
       "src": "assets/images-pwa/icons-72.png",
       "type": "image/png",
       "sizes": "72x72",
-	  "purpose": "maskable any"
+      "purpose": "maskable any"
     },
-	{
+    {
       "src": "assets/images-pwa/icons-96.png",
       "type": "image/png",
       "sizes": "96x96",
-	  "purpose": "maskable any"
+      "purpose": "maskable any"
     },
     {
       "src": "assets/images-pwa/icons-128.png",
       "type": "image/png",
       "sizes": "128x128",
-	  "purpose": "maskable any"
+      "purpose": "maskable any"
     },
     {
       "src": "assets/images-pwa/icons-144.png",
       "type": "image/png",
       "sizes": "144x144",
-	  "purpose": "maskable any"
+      "purpose": "maskable any"
     },
     {
       "src": "assets/images-pwa/icons-152.png",
       "type": "image/png",
       "sizes": "152x152",
-	  "purpose": "maskable any"
+      "purpose": "maskable any"
     },
     {
       "src": "assets/images-pwa/icons-192.png",
       "type": "image/png",
       "sizes": "192x192",
-	  "purpose": "maskable any"
+      "purpose": "maskable any"
     },
     {
       "src": "assets/images-pwa/icons-384.png",
       "type": "image/png",
       "sizes": "384x384",
-	  "purpose": "maskable any"
+      "purpose": "maskable any"
     },
     {
       "src": "assets/images-pwa/icons-512.png",
       "type": "image/png",
       "sizes": "512x512",
-	  "purpose": "maskable any"
+      "purpose": "maskable any"
     }
   ],
-  "start_url": "/fgt-mah-wallet/loader/",
-  "scope": "/fgt-mah-wallet/loader/"
+  "start_url": "/csc-sponsor-wallet/loader/",
+  "scope": "/csc-sponsor-wallet/loader/"
 }

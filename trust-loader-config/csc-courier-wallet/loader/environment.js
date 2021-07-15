@@ -1,11 +1,11 @@
 export default {
-  appName: 'MAH Traceability App',
+  appName: 'Courier App',
   appVersion: '0.1.1',
   vault: 'server',
   agent: 'browser',
   system: 'any',
   browser: 'any',
-  mode: 'autologin',
+  mode: 'dev-secure',
   domain: 'vault',
   sw: true,
   pwa: true,
