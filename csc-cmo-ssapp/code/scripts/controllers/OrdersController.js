@@ -1,5 +1,7 @@
 import OrdersService from '../services/OrdersService.js';
 import { orderStatusesEnum, orderTableHeaders } from '../constants/order.js';
+import eventBusService from '../services/EventBusService.js';
+import { Topics } from '../constants/topics.js';
 
 // eslint-disable-next-line no-undef
 const { WebcController } = WebCardinal.controllers;
@@ -61,6 +63,9 @@ export default class OrdersController extends WebcController {
 
   async init() {
     await this.getOrders();
+    eventBusService.addEventListener(Topics.RefreshOrders, async (data) => {
+      this.getOrders();
+    });
   }
 
   async getOrders() {

@@ -4,6 +4,8 @@ import { orderStatusesEnum } from '../constants/order.js';
 import { Roles } from '../constants/roles.js';
 import NotificationsService from './NotificationService.js';
 import { NotificationTypes } from '../constants/notifications.js';
+import eventBusService from './EventBusService.js';
+import { Topics } from '../constants/topics.js';
 export default class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
 
@@ -103,6 +105,13 @@ export default class OrdersService extends DSUService {
     });
 
     return;
+  }
+
+  async mountOrder(keySSI) {
+    const order = await this.mountEntityAsync(keySSI);
+    await this.addOrderToDB(order);
+    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+    return order;
   }
 
   async addOrderToDB(data) {

@@ -4,6 +4,8 @@ import { orderStatusesEnum } from '../constants/order.js';
 import { Roles } from '../constants/roles.js';
 import NotificationsService from './NotificationService.js';
 import { NotificationTypes } from '../constants/notifications.js';
+import CommunicationService from './CommunicationService.js';
+import { messagesEnum } from '../constants/messages.js';
 export default class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
 
@@ -12,6 +14,7 @@ export default class OrdersService extends DSUService {
     this.storageService = getSharedStorage(DSUStorage);
     this.notificationsService = new NotificationsService(DSUStorage);
     this.DSUStorage = DSUStorage;
+    this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
   }
 
   async getOrders() {
@@ -57,9 +60,23 @@ export default class OrdersService extends DSUService {
       deliveryDate: data.delivery_date,
       lastModified: new Date().toISOString(),
       statusSSI: statusDsu.uid,
+      status: statusDsu.status,
     };
 
     const order = await this.saveEntityAsync(model);
+
+    const documentsDSU = await this.saveEntityAsync(
+      { documents: data.files.map((x) => ({ name: x.name })) },
+      '/documents'
+    );
+    console.log(documentsDSU);
+    for (const file of data.files) {
+      const attachmentKeySSI = await this.uploadFile('/documents' + '/' + documentsDSU.uid + '/' + 'files', file);
+      documentsDSU.documents.find((x) => x.name === file.name).attachmentKeySSI = attachmentKeySSI;
+    }
+    const updatedDocumentsDSU = await this.updateEntityAsync(documentsDSU);
+
+    console.log(updatedDocumentsDSU);
 
     const path = '/' + this.ORDERS_TABLE + '/' + order.uid + '/' + 'status';
     await this.unmountEntityAsync(statusDsu.uid, '/statuses');
@@ -76,6 +93,7 @@ export default class OrdersService extends DSUService {
       statusSSI: statusDsu.uid,
       orderSSI: order.uid,
       lastModified: model.lastModified,
+      documentsKeySSI: updatedDocumentsDSU.uid,
     });
 
     let notification = {
@@ -91,6 +109,15 @@ export default class OrdersService extends DSUService {
 
     const resultNotification = await this.notificationsService.insertNotification(notification);
     console.log('notification:', resultNotification, this.notificationsService);
+
+    this.communicationService.sendMessage(CommunicationService.identities.CSC.CMO_IDENTITY, {
+      operation: messagesEnum.StatusInitiated,
+      data: {
+        orderSSI: order.uid,
+        documentsSSI: updatedDocumentsDSU.uid,
+      },
+      shortDescription: 'Order Initiated',
+    });
 
     return { ...order, status: statusDsu.status };
   }
@@ -109,5 +136,17 @@ export default class OrdersService extends DSUService {
   async addOrderToDB(data) {
     const newRecord = await this.storageService.insertRecord(this.ORDERS_TABLE, data.orderId, data);
     return newRecord;
+  }
+
+  uploadFile(path, file) {
+    return new Promise((resolve, reject) => {
+      this.DSUStorage.uploadFile(path, file, undefined, (err, keySSI) => {
+        if (err) {
+          reject(new Error(err));
+          return;
+        }
+        resolve(keySSI);
+      });
+    });
   }
 }
