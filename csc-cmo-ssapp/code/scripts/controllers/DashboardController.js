@@ -2,6 +2,12 @@ const { WebcController } = WebCardinal.controllers;
 import OrdersService from '../services/OrdersService.js';
 import CommunicationService from '../services/CommunicationService.js';
 import { messagesEnum } from '../constants/messages.js';
+import { orderStatusesEnum } from '../constants/order.js';
+import { NotificationTypes } from '../constants/notifications.js';
+import NotificationsService from '../services/NotificationService.js';
+import { Roles } from '../constants/roles.js';
+import eventBusService from '../services/EventBusService.js';
+import { Topics } from '../constants/topics.js';
 
 export default class DashboardController extends WebcController {
   constructor(...props) {
@@ -9,6 +15,7 @@ export default class DashboardController extends WebcController {
 
     this.ordersService = new OrdersService(this.DSUStorage);
     this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
+    this.notificationsService = new NotificationsService(this.DSUStorage);
 
     this.model = {
       tabNavigator: {
@@ -26,7 +33,7 @@ export default class DashboardController extends WebcController {
   init() {}
 
   handleMessages() {
-    this.communicationService.listenForMessages((err, data) => {
+    this.communicationService.listenForMessages(async (err, data) => {
       if (err) {
         return console.error(err);
       }
@@ -36,7 +43,25 @@ export default class DashboardController extends WebcController {
           console.log('message received');
           console.log(data);
           if (data.message.data.orderSSI && data.message.data.documentsSSI) {
-            this.ordersService.mountOrder(data.message.data.orderSSI, data.message.data.documentsSSI);
+            const order = await this.ordersService.mountOrder(
+              data.message.data.orderSSI,
+              data.message.data.documentsSSI
+            );
+
+            const notification = {
+              operation: NotificationTypes.UpdateOrderStatus,
+              orderId: order.orderId,
+              read: false,
+              status: orderStatusesEnum.Initiated,
+              keySSI: data.message.data.orderSSI,
+              role: Roles.Sponsor,
+              did: order.sponsorId,
+              date: new Date().toISOString(),
+              documentsKeySSI: order.documentsKeySSI,
+            };
+
+            const resultNotification = await this.notificationsService.insertNotification(notification);
+            eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
             console.log('order added');
           }
           break;

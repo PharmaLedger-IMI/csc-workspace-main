@@ -31,9 +31,12 @@ export default class NotificationsController extends WebcController {
     this.onTagClick('view-order', async (model, target, event) => {
       const orderId = target.getAttribute('data-custom') || null;
       if (orderId) {
+        console.log(JSON.stringify(this.model, null, 2));
+        const selectedNotification = this.model.notifications.find((x) => x.orderId === orderId);
         this.navigateToPageTag('order', {
           id: orderId,
-          keySSI: this.model.notifications.find((x) => x.orderId === orderId).keySSI,
+          keySSI: selectedNotification.keySSI,
+          documentsKeySSI: selectedNotification.documentsKeySSI,
         });
       }
     });

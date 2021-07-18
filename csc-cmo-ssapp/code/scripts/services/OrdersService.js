@@ -6,6 +6,7 @@ import NotificationsService from './NotificationService.js';
 import { NotificationTypes } from '../constants/notifications.js';
 import eventBusService from './EventBusService.js';
 import { Topics } from '../constants/topics.js';
+
 export default class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
 
@@ -87,7 +88,7 @@ export default class OrdersService extends DSUService {
       status: orderStatusesEnum.Initiated,
       keySSI: order.uid,
       role: Roles.Sponsor,
-      did: '123-56',
+      did: data.site_id,
       date: new Date().toISOString(),
     };
 
@@ -110,10 +111,12 @@ export default class OrdersService extends DSUService {
 
   async mountOrder(keySSI, documentsSSI) {
     const order = await this.mountEntityAsync(keySSI);
+    console.log('ORDER:', JSON.stringify(order, null, 2));
     const documents = await this.mountEntityAsync(documentsSSI, '/documents');
-    await this.addOrderToDB({ ...order, orderSSI: keySSI, documentsKeySSI: documentsSSI });
+    const result = await this.addOrderToDB({ ...order, orderSSI: keySSI, documentsKeySSI: documentsSSI });
+    console.log('RESULT:', JSON.stringify(result, null, 2));
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-    return order;
+    return result;
   }
 
   async addOrderToDB(data) {

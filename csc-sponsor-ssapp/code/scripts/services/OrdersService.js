@@ -120,6 +120,15 @@ export default class OrdersService extends DSUService {
       shortDescription: 'Order Initiated',
     });
 
+    this.communicationService.sendMessage(CommunicationService.identities.CSC.SITE_IDENTITY, {
+      operation: messagesEnum.StatusInitiated,
+      data: {
+        orderSSI: order.uid,
+        documentsSSI: updatedDocumentsDSU.uid,
+      },
+      shortDescription: 'Order Initiated',
+    });
+
     return { ...order, status: statusDsu.status };
   }
 

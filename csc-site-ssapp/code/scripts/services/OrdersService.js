@@ -4,6 +4,9 @@ import { orderStatusesEnum } from '../constants/order.js';
 import { Roles } from '../constants/roles.js';
 import NotificationsService from './NotificationService.js';
 import { NotificationTypes } from '../constants/notifications.js';
+import eventBusService from './EventBusService.js';
+import { Topics } from '../constants/topics.js';
+
 export default class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
 
@@ -84,7 +87,7 @@ export default class OrdersService extends DSUService {
       status: orderStatusesEnum.Initiated,
       keySSI: order.uid,
       role: Roles.Sponsor,
-      did: '123-56',
+      did: data.site_id,
       date: new Date().toISOString(),
     };
 
@@ -108,5 +111,15 @@ export default class OrdersService extends DSUService {
   async addOrderToDB(data) {
     const newRecord = await this.storageService.insertRecord(this.ORDERS_TABLE, data.orderId, data);
     return newRecord;
+  }
+
+  async mountOrder(keySSI, documentsSSI) {
+    const order = await this.mountEntityAsync(keySSI);
+    console.log('ORDER:', JSON.stringify(order, null, 2));
+    const documents = await this.mountEntityAsync(documentsSSI, '/documents');
+    const result = await this.addOrderToDB({ ...order, orderSSI: keySSI, documentsKeySSI: documentsSSI });
+    console.log('RESULT:', JSON.stringify(result, null, 2));
+    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+    return result;
   }
 }
