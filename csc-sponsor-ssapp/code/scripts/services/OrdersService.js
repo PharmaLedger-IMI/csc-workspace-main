@@ -54,7 +54,7 @@ export default class OrdersService extends DSUService {
       siteRegionId: data.site_region_id,
       siteCountry: data.site_country,
       temperatures: data.keep_between_temperature,
-      comments: data.add_comment,
+      comments: [{ entity: Roles.Sponsor, comment: data.add_comment, date: new Date().toISOString() }],
       kitIdList: data.kit_id_list,
       temperature_comments: data.temperature_comments,
       requestDate: new Date().toISOString(),
@@ -67,7 +67,13 @@ export default class OrdersService extends DSUService {
     const order = await this.saveEntityAsync(model);
 
     const documentsDSU = await this.saveEntityAsync(
-      { documents: data.files.map((x) => ({ name: x.name })) },
+      {
+        documents: data.files.map((x) => ({
+          name: x.name,
+          attached_by: Roles.Sponsor,
+          date: new Date().toISOString(),
+        })),
+      },
       '/documents'
     );
     console.log(documentsDSU);

@@ -2,7 +2,7 @@ let LOADER_GLOBALS = {
   THEME: 'app',
   SHOW_ACTION_BUTTON: false,
   LABELS_DICTIONARY: {
-    APP_NAME: 'Sponsor App',
+    APP_NAME: 'Cmo App',
     APP_DESCRIPTION: 'The traceability application for Marketing Authorization Holders',
     NEW_WALLET: 'New Account',
     ACCESS_WALLET: 'Access Account',

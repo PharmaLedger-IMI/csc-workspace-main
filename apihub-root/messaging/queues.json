@@ -1,7 +1,7 @@
 {
     "queues": [
         "did:demo:siteIdentity",
-        "did:demo:cmoIdentity",
-        "did:demo:sponsorIdentity"
+        "did:demo:sponsorIdentity",
+        "did:demo:cmoIdentity"
     ]
 }

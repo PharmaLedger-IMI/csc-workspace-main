@@ -147,6 +147,7 @@ export default class SingleOrderController extends WebcController {
 
         this.model.id = id;
         this.model.keySSI = keySSI;
+        this.model.documentsKeySSI = documentsKeySSI;
 
         this.attachEvents();
 
@@ -275,7 +276,7 @@ export default class SingleOrderController extends WebcController {
 
     async init() {
 
-        const order = await this.ordersService.getOrder(this.model.keySSI);
+        const order = await this.ordersService.getOrder(this.model.keySSI, this.model.documentsKeySSI);
         this.model.order = order;
         this.model.order.delivery_date = { date: this.getDate(this.model.order.deliveryDate) , time: this.getTime(this.model.order.deliveryDate)};
         console.log('MODEL:', JSON.stringify(this.model.order, null, 2));

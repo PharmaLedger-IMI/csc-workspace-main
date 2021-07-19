@@ -241,7 +241,7 @@
                         </svg>
             <span>Attached Documents</span>
           </div>
-          <div class="accordion-item-holder">
+          <div class="accordion-item-holder" data-if="@order.documents">
             <table class="table table-borderless attach-documents-table">
               <thead>
               <tr>
@@ -252,7 +252,7 @@
                 <th scope="col">Delete</th>
               </tr>
               </thead>
-              <tbody data-for="@form.documents">
+              <tbody data-for="@order.documents">
               <tr>
                 <th>{{@name}}</th>
                 <td>{{@attached_by}}</td>
@@ -295,13 +295,23 @@
             <span>Order Comments</span>
           </div>
           <div class="accordion-item-holder">
-            <div class="row" style="    padding: 40px;">
-              <div>
-                <div>
-                  <div class="comment-date-text">{{@order.deliveryDate}}</div>
-                  <div class="comment-text">{{@order.comments}}</div>
-                </div>
-              </div>
+            <div data-if="@order.comments" class="row" style="padding: 40px;">
+              <table class="table table-borderless attach-documents-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Comment</th>
+                    <th scope="col">Entity</th>
+                    <th scope="col">Date/Time</th>
+                  </tr>
+                </thead>
+                <tbody data-for="@order.comments">
+                  <tr>
+                    <th>{{@comment}}</th>
+                    <td>{{@entity}}</td>
+                    <td>{{@date}}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
