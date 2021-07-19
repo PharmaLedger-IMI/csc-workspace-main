@@ -193,6 +193,12 @@ export default class SingleOrderController extends WebcController {
     this.onTagEvent('history-button', 'click', (e) => {
       this.onShowHistoryClick();
     });
+
+    this.onTagEvent('review-order','click',(e)=>{
+        this.navigateToPageTag("review-order",{
+            order: JSON.parse(JSON.stringify(this.model.order))
+        })
+    })
   }
 
   toggleAccordionItem(el) {
