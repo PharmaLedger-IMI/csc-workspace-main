@@ -124,7 +124,7 @@ export default class OrdersService extends DSUService {
     return result;
   }
 
-  async mountOrderReviewedByCMO(keySSI) {
+  async mountOrderReviewed(keySSI) {
     await this.unmountEntityAsync(keySSI);
     await this.mountEntityAsync(keySSI);
     const order = await this.getEntityAsync(keySSI);

@@ -147,6 +147,21 @@ export default class OrdersService extends DSUService {
     return updatedOrder;
   }
 
+  async mountOrderReviewedBySponsor(keySSI) {
+    await this.unmountEntityAsync(keySSI);
+    await this.mountEntityAsync(keySSI);
+    const order = await this.getEntityAsync(keySSI);
+    console.log('ORDER:', JSON.stringify(order, null, 2));
+    const selectedOrder = await this.storageService.getRecord(this.ORDERS_TABLE, order.orderId);
+    const updatedOrder = await this.storageService.updateRecord(this.ORDERS_TABLE, order.orderId, {
+      ...selectedOrder,
+      status: order.status,
+      comments: order.comments,
+    });
+    console.log('RESULT:', JSON.stringify(updatedOrder, null, 2));
+    return updatedOrder;
+  }
+
   async addOrderToDB(data) {
     const newRecord = await this.storageService.insertRecord(this.ORDERS_TABLE, data.orderId, data);
     return newRecord;

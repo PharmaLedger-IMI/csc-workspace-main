@@ -71,7 +71,7 @@ export default class DashboardController extends WebcController {
           console.log(data);
 
           if (data.message.data.orderSSI) {
-            const order = await this.ordersService.mountOrderReviewedByCMO(data.message.data.orderSSI);
+            const order = await this.ordersService.mountOrderReviewed(data.message.data.orderSSI);
 
             const notification = {
               operation: NotificationTypes.UpdateOrderStatus,
@@ -82,7 +82,32 @@ export default class DashboardController extends WebcController {
               role: Roles.CMO,
               did: order.sponsorId,
               date: new Date().toISOString(),
-              documentsKeySSI: order.cmoDocumentsSSI,
+            };
+
+            const resultNotification = await this.notificationsService.insertNotification(notification);
+            eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+            eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+            console.log('order added');
+          }
+          break;
+        }
+
+        case messagesEnum.StatusReviewedBySponsor: {
+          console.log('message received');
+          console.log(data);
+
+          if (data.message.data.orderSSI) {
+            const order = await this.ordersService.mountOrderReviewed(data.message.data.orderSSI);
+
+            const notification = {
+              operation: NotificationTypes.UpdateOrderStatus,
+              orderId: order.orderId,
+              read: false,
+              status: orderStatusesEnum.ReviewedBySponsor,
+              keySSI: data.message.data.orderSSI,
+              role: Roles.Sponsor,
+              did: order.sponsorId,
+              date: new Date().toISOString(),
             };
 
             const resultNotification = await this.notificationsService.insertNotification(notification);

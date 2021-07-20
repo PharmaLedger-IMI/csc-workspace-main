@@ -150,6 +150,13 @@ export default class OrdersController extends WebcController {
       this.filterData();
     });
 
+    this.onTagClick('initiate-review-testing', async (model, target, event) => {
+      this.ordersService.finishReview(
+        ['this is a comment'],
+        'BBudGH6ySHG6GUHN8ogNrTWbzKF5EA7pcv5UxUjro5MSbV1STbubTZYAa5JZLcnZx7wzoiPUFUUkv33o4EdQZhgt7'
+      );
+    });
+
     const searchField = this.element.querySelector('#search-field');
     searchField.addEventListener('keydown', () => {
       setTimeout(() => {

@@ -231,4 +231,48 @@ export default class OrdersService extends DSUService {
       shortDescription,
     });
   }
+
+  async finishReview(comments, orderSSI) {
+    debugger;
+    const order = await this.getEntityAsync(orderSSI);
+    const updatedComments = [
+      ...order.comments,
+      ...comments.map((x) => ({ entity: Roles.Sponsor, comment: x, date: new Date().toISOString() })),
+    ];
+    const updatedOrder = {
+      ...order,
+      status: orderStatusesEnum.ReviewedBySponsor,
+      comments: updatedComments,
+      history: [...order.history, { status: orderStatusesEnum.ReviewedBySponsor, date: new Date().toISOString() }],
+    };
+    await this.updateEntityAsync(updatedOrder);
+
+    const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, order.orderId);
+    const updatedOrderDB = await this.storageService.updateRecord(this.ORDERS_TABLE, order.orderId, {
+      ...orderDB,
+      status: orderStatusesEnum.ReviewedBySponsor,
+    });
+
+    console.log(updatedOrderDB);
+
+    this.sendMessageToEntity(
+      CommunicationService.identities.CSC.CMO_IDENTITY,
+      messagesEnum.StatusReviewedBySponsor,
+      {
+        orderSSI: order.uid,
+      },
+      'Order Reviewed by Sponsor'
+    );
+
+    this.sendMessageToEntity(
+      CommunicationService.identities.CSC.SITE_IDENTITY,
+      messagesEnum.StatusReviewedBySponsor,
+      {
+        orderSSI: order.uid,
+      },
+      'Order Reviewed by Sponsor'
+    );
+
+    return updatedOrderDB;
+  }
 }

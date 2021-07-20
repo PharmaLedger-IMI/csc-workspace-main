@@ -94,6 +94,32 @@ export default class DashboardController extends WebcController {
           }
           break;
         }
+
+        case messagesEnum.StatusReviewedBySponsor: {
+          console.log('message received');
+          console.log(data);
+
+          if (data.message.data.orderSSI) {
+            const order = await this.ordersService.mountOrderReviewedBySponsor(data.message.data.orderSSI);
+
+            const notification = {
+              operation: NotificationTypes.UpdateOrderStatus,
+              orderId: order.orderId,
+              read: false,
+              status: orderStatusesEnum.ReviewedBySponsor,
+              keySSI: data.message.data.orderSSI,
+              role: Roles.Sponsor,
+              did: order.sponsorId,
+              date: new Date().toISOString(),
+            };
+
+            const resultNotification = await this.notificationsService.insertNotification(notification);
+            eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+            eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+            console.log('order added');
+          }
+          break;
+        }
       }
     });
   }
