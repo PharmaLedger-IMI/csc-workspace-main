@@ -151,51 +151,6 @@
       ]
     },
     {
-      "name": "themes/pdm-theme",
-      "src": "http://github.com/PharmaLedger-IMI/pdm-theme.git",
-      "actions": [
-        {
-          "type": "smartClone",
-          "target": ".",
-          "collectLog": false
-        },
-        {
-          "type": "execute",
-          "cmd": "cd themes/pdm-theme && npm install"
-        }
-      ]
-    },
-    {
-      "name": "themes/blue-fluorite-theme",
-      "src": "https://github.com/PrivateSky/blue-fluorite-theme.git",
-      "actions": [
-        {
-          "type": "smartClone",
-          "target": ".",
-          "collectLog": false
-        },
-        {
-          "type": "execute",
-          "cmd": "cd themes/blue-fluorite-theme && npm install"
-        }
-      ]
-    },
-    {
-      "name": "themes/clear-sky-theme",
-      "src": "https://github.com/PrivateSky/clear-sky-theme.git",
-      "actions": [
-        {
-          "type": "smartClone",
-          "target": ".",
-          "collectLog": false
-        },
-        {
-          "type": "execute",
-          "cmd": "cd themes/clear-sky-theme && npm install"
-        }
-      ]
-    },
-    {
       "name": "dossier-explorer-wallet-prototype",
       "src": "https://github.com/PrivateSky/dossier-explorer-wallet-prototype.git",
       "actions": [
@@ -283,16 +238,46 @@
           "cmd": "cd csc-courier-ssapp && npm install"
         }
       ]
+    },
+    {
+      "name": "themes/blue-csc-theme",
+      "src": "https://github.com/PharmaLedger-IMI/blue-csc-theme.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd themes/blue-csc-theme && npm install"
+        }
+      ]
+    },
+    {
+      "name": "themes/blue-fluorite-theme",
+      "src": "https://github.com/PrivateSky/blue-fluorite-theme.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd themes/blue-fluorite-theme && npm install"
+        }
+      ]
     }
   ],
   "build-use-case": [
     {
-      "name": "pdm-theme-wallet-build",
+      "name": "blue-csc-theme-wallet-build",
       "src": "",
       "actions": [
         {
           "type": "execute",
-          "cmd": "cd themes/pdm-theme && npm run build-dossier"
+          "cmd": "cd themes/blue-csc-theme && npm run build-dossier"
         }
       ]
     },
@@ -514,32 +499,22 @@
       ]
     },
     {
-      "name": "blue-fluorite-theme-wallet-build",
-      "src": "",
-      "actions": [
-        {
-          "type": "execute",
-          "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
-        }
-      ]
-    },
-    {
-      "name": "clear-sky-theme-wallet-build",
-      "src": "",
-      "actions": [
-        {
-          "type": "execute",
-          "cmd": "cd themes/clear-sky-theme && npm run build-dossier"
-        }
-      ]
-    },
-    {
       "name": "build Use Case",
       "src": ".",
       "actions": [
         {
           "type": "execute",
           "cmd": "npm run build-use-case"
+        }
+      ]
+    },
+    {
+      "name": "blue-fluorite-theme-wallet-build",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
         }
       ]
     },
