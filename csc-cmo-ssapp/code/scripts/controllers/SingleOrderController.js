@@ -1,5 +1,6 @@
 const { WebcController } = WebCardinal.controllers;
-import OrdersService from '../services/OrdersService.js';
+const cscServices = require("csc-services");
+const OrdersService  = cscServices.OrderService;
 
 export default class SingleOrderController extends WebcController {
   constructor(...props) {

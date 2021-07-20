@@ -1,7 +1,8 @@
 const { WebcController } = WebCardinal.controllers;
-import NotificationsService from '../services/NotificationService.js';
-import eventBusService from '../services/EventBusService.js';
-import { Topics } from '../constants/topics.js';
+const cscServices = require("csc-services");
+const NotificationsService = cscServices.NotificationsService;
+const eventBusService  = cscServices.EventBusService;
+const { Topics }  = cscServices.constants;
 
 export default class DashboardMenuController extends WebcController {
 

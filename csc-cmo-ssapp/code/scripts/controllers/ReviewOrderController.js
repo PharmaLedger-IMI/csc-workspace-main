@@ -1,10 +1,10 @@
 const { WebcController } = WebCardinal.controllers;
-const OrdersService  = require("csc-services").OrderService;
-console.log(OrdersService);
-import eventBusService from '../services/EventBusService.js';
-import { Topics } from '../constants/topics.js';
+const cscServices = require("csc-services")
+const OrdersService  = cscServices.OrderService;
+const eventBusService = cscServices.EventBusService;
+const Topics  = cscServices.constants.Topics
 
-export default class NewOrderController extends WebcController {
+export default class ReviewOrderController extends WebcController {
 
     constructor(...props) {
 
@@ -262,7 +262,7 @@ export default class NewOrderController extends WebcController {
 
             this.showErrorModal(
                 new Error(`Are you sure you want to submit the review?`), // An error or a string, it's your choice
-                'Submit Order',
+                'Submit Review',
                 onSubmitYesResponse,
                 onNoResponse,
                 {
@@ -311,7 +311,7 @@ export default class NewOrderController extends WebcController {
                 let dbOrder = orders.find(_order=>_order.keySSI === order.keySSI);
                 const dsuOrder = await this.ordersService.getOrder(order.keySSI,dbOrder.documentsKeySSI)
                 console.log(dsuOrder);
-                // const result = await this.ordersService.updateOrder(payload);
+                await this.ordersService.updateOrder(payload);
                 await this.ordersService.finishReview(payload.files.filter(x => x !== undefined), [payload.add_comment], order.keySSI);
                 
                 eventBusService.emitEventListeners(Topics.RefreshNotifications, null);

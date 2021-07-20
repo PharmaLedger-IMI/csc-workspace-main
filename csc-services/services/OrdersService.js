@@ -1,13 +1,10 @@
 const getSharedStorage = require("./lib/SharedDBStorageService.js").getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
-const orderStatusesEnum = require('./constants/order.js').orderStatusesEnum;
-const Roles = require('./constants/roles.js').Roles;
+const {Roles, NotificationTypes, Topics, messagesEnum, order} = require('./constants');
+const orderStatusesEnum = order.orderStatusesEnum;
 const NotificationsService = require('./lib/NotificationService.js');
-const NotificationTypes = require('./constants/notifications.js');
 const eventBusService = require('./lib/EventBusService.js');
-const Topics = require('./constants/topics.js').Topics;
 const CommunicationService = require('./lib/CommunicationService.js');
-const messagesEnum = require('./constants/messages.js').messagesEnum;
 
 class OrdersService extends DSUService {
     ORDERS_TABLE = 'orders';
@@ -52,8 +49,6 @@ class OrdersService extends DSUService {
             },
             '/statuses'
         );
-
-        console.log(statusDsu);
 
         const model = {
             sponsorId: data.sponsor_id,
@@ -164,6 +159,11 @@ class OrdersService extends DSUService {
 
     async addOrderToDB(data) {
         const newRecord = await this.storageService.insertRecord(this.ORDERS_TABLE, data.orderId, data);
+        return newRecord;
+    }
+
+    async updateOrderToDB(data){
+        const newRecord = await this.storageService.updateRecord(this.ORDERS_TABLE, data.orderId, data);
         return newRecord;
     }
 

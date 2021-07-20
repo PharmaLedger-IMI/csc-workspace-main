@@ -1,13 +1,11 @@
 const { WebcController } = WebCardinal.controllers;
-import OrdersService from '../services/OrdersService.js';
-import CommunicationService from '../services/CommunicationService.js';
-import { messagesEnum } from '../constants/messages.js';
-import { orderStatusesEnum } from '../constants/order.js';
-import { NotificationTypes } from '../constants/notifications.js';
-import NotificationsService from '../services/NotificationService.js';
-import { Roles } from '../constants/roles.js';
-import eventBusService from '../services/EventBusService.js';
-import { Topics } from '../constants/topics.js';
+const cscServices = require("csc-services");
+const OrdersService  = cscServices.OrderService;
+const CommunicationService  = cscServices.CommunicationService;
+const { messagesEnum, order, NotificationTypes, Roles, Topics }  = cscServices.constants;
+const {orderStatusesEnum} = order;
+const NotificationsService = cscServices.NotificationsService;
+const eventBusService  = cscServices.EventBusService;
 
 export default class DashboardController extends WebcController {
   constructor(...props) {

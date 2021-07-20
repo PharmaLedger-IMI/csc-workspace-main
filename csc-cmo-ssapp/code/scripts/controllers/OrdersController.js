@@ -1,10 +1,10 @@
-import OrdersService from '../services/OrdersService.js';
-import { orderStatusesEnum, orderTableHeaders } from '../constants/order.js';
-import eventBusService from '../services/EventBusService.js';
-import { Topics } from '../constants/topics.js';
-
 // eslint-disable-next-line no-undef
 const { WebcController } = WebCardinal.controllers;
+const cscServices = require("csc-services");
+const OrdersService  = cscServices.OrderService;
+const {order, Topics }  = cscServices.constants;
+const {orderStatusesEnum, orderTableHeaders} = order;
+const eventBusService  = cscServices.EventBusService
 
 export default class OrdersController extends WebcController {
   statusesArray = Object.entries(orderStatusesEnum).map(([k, v]) => v);
