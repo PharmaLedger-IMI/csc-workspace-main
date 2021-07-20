@@ -292,24 +292,6 @@
     background:#177f8b;
 }
 
-/**
-TODO: remove this after implementing proper dedicated theme for csc-workspace
- */
-psk-files-chooser > button.btn{
-    background: #008898!important;
-    min-width: 200px;
-    padding: 4px 10px;
-    border: 0;
-    color: white;
-    border-radius: 5px;
-    height: 38px;
-    font-size: 15px;
-}
-
-psk-files-chooser .fileDiv{
-    display:none;
-}
-
 .simple-default-button{
     background: #008898;
     min-width: 200px;
