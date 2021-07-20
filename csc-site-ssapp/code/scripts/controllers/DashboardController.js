@@ -71,7 +71,7 @@ export default class DashboardController extends WebcController {
           console.log(data);
           debugger;
 
-          if (data.message.data.orderSSI && data.message.data.cmoDocumentsSSI) {
+          if (data.message.data.orderSSI) {
             const order = await this.ordersService.mountOrderReviewedByCMO(data.message.data.orderSSI);
 
             const notification = {

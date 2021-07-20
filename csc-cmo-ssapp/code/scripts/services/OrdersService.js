@@ -152,11 +152,7 @@ export default class OrdersService extends DSUService {
     return newRecord;
   }
 
-  async finishReview(
-    files,
-    comments,
-    orderKeySSI = 'BBudGH6ySHG6GUHN8ogNrTWbzKF5EA7pcv5UxUjro5MSbV1STbubTZYAa5JZLcnZx7wzoiPUFUUkv33o4EdQZhgt7'
-  ) {
+  async finishReview(files, comments, orderKeySSI) {
     let documentsKeySSI = false;
     if (files) {
       documentsKeySSI = await this.saveDocuments(files);

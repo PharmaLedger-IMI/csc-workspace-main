@@ -16,7 +16,6 @@ export default class DashboardMenuController extends WebcController {
         this.model = {
             menu_items : [
                 { name: "Dashboard" ,     url : "/" , id: "menu-dashboard"},
-                { name: "New Order" ,     url : "/new-order", id: "menu-new-order"},
                 { name: "Notifications" , url : "/notifications", id: "menu-notifications"},
             ],
             unread: 0
@@ -25,13 +24,6 @@ export default class DashboardMenuController extends WebcController {
             makeMenuActive('menu-dashboard');
             makeMenuInActive('menu-notifications');
         }
-
-        if(this.history.location.pathname === '/new-order'){
-            makeMenuActive('menu-new-order');
-            makeMenuInActive('menu-dashboard');
-            makeMenuInActive('menu-notifications');
-        }
-
 
         if(this.history.location.pathname === '/notifications'){
             makeMenuActive('menu-notifications');
