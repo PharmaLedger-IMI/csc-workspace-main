@@ -215,11 +215,9 @@ class SharedStorage {
 }
 
 module.exports.getSharedStorage = function (dsuStorage) {
-  {
     if (typeof sharedStorageSingleton === 'undefined') {
       sharedStorageSingleton = new SharedStorage(dsuStorage);
     }
 
     return sharedStorageSingleton;
-  }
 }

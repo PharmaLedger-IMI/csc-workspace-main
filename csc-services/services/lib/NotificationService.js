@@ -1,4 +1,4 @@
-const getSharedStorage  = require('./SharedDBStorageService.js').getSharedStorage();
+const getSharedStorage  = require('./SharedDBStorageService.js').getSharedStorage;
 
 module.exports = class NotificationsService {
   NOTIFICATIONS_TABLE = 'notifications';

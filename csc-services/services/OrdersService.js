@@ -1,11 +1,13 @@
- const getSharedStorage = require("./lib/SharedDBStorageService.js").getSharedStorage;
- const DSUService = require('./lib/DSUService.js');
- const orderStatusesEnum = require('./constants/order.js').orderStatusesEnum;
- const Roles = require('./constants/roles.js').Roles;
- const NotificationsService = require('./lib/NotificationService.js');
- const NotificationTypes = require('./constants/notifications.js');
- const eventBusService = require('./lib/EventBusService.js');
- const Topics = require('./constants/topics.js').Topics;
+const getSharedStorage = require("./lib/SharedDBStorageService.js").getSharedStorage;
+const DSUService = require('./lib/DSUService.js');
+const orderStatusesEnum = require('./constants/order.js').orderStatusesEnum;
+const Roles = require('./constants/roles.js').Roles;
+const NotificationsService = require('./lib/NotificationService.js');
+const NotificationTypes = require('./constants/notifications.js');
+const eventBusService = require('./lib/EventBusService.js');
+const Topics = require('./constants/topics.js').Topics;
+const CommunicationService = require('./lib/CommunicationService.js');
+const messagesEnum = require('./constants/messages.js').messagesEnum;
 
 class OrdersService extends DSUService {
     ORDERS_TABLE = 'orders';
@@ -15,6 +17,7 @@ class OrdersService extends DSUService {
         this.storageService = getSharedStorage(DSUStorage);
         this.notificationsService = new NotificationsService(DSUStorage);
         this.DSUStorage = DSUStorage;
+        this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
     }
 
     async getOrders() {
@@ -27,8 +30,13 @@ class OrdersService extends DSUService {
 
     async getOrder(keySSI, documentsKeySSI) {
         const order = await this.getEntityAsync(keySSI);
+        const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, order.orderId);
         const status = await this.getStatuses(keySSI);
         const documents = await this.getEntityAsync(documentsKeySSI, '/documents');
+        if (orderDB.cmoDocumentsSSI) {
+            const cmoDocuments = await this.getEntityAsync(orderDB.cmoDocumentsSSI, '/documents');
+            return { ...order, status: status.status, documents: [...documents.documents, ...cmoDocuments.documents] };
+        }
         return { ...order, status: status.status, documents: documents.documents };
     }
 
@@ -121,13 +129,82 @@ class OrdersService extends DSUService {
         return result;
     }
 
+    async mountOrderReviewedByCMO(keySSI, documentsSSI) {
+        await this.unmountEntityAsync(keySSI);
+        await this.mountEntityAsync(keySSI);
+        const order = await this.getEntityAsync(keySSI);
+        console.log('ORDER:', JSON.stringify(order, null, 2));
+        const documents = await this.mountEntityAsync(documentsSSI, '/documents');
+        // const result = await this.addOrderToDB({ ...order, orderSSI: keySSI, cmoDocumentsSSI: documentsSSI });
+        const selectedOrder = await this.storageService.getRecord(this.ORDERS_TABLE, order.orderId);
+        const updatedOrder = await this.storageService.updateRecord(this.ORDERS_TABLE, order.orderId, {
+            ...selectedOrder,
+            cmoDocumentsSSI: documentsSSI,
+            status: order.status,
+            comments: order.comments,
+        });
+        console.log('RESULT:', JSON.stringify(updatedOrder, null, 2));
+        return updatedOrder;
+    }
+
+    async mountOrderReviewedBySponsor(keySSI) {
+        await this.unmountEntityAsync(keySSI);
+        await this.mountEntityAsync(keySSI);
+        const order = await this.getEntityAsync(keySSI);
+        console.log('ORDER:', JSON.stringify(order, null, 2));
+        const selectedOrder = await this.storageService.getRecord(this.ORDERS_TABLE, order.orderId);
+        const updatedOrder = await this.storageService.updateRecord(this.ORDERS_TABLE, order.orderId, {
+            ...selectedOrder,
+            status: order.status,
+            comments: order.comments,
+        });
+        console.log('RESULT:', JSON.stringify(updatedOrder, null, 2));
+        return updatedOrder;
+    }
+
     async addOrderToDB(data) {
         const newRecord = await this.storageService.insertRecord(this.ORDERS_TABLE, data.orderId, data);
         return newRecord;
     }
-    async updateOrderToDB(data){
-        const newRecord = await this.storageService.updateRecord(this.ORDERS_TABLE, data.orderId, data);
-        return newRecord;
+
+    async finishReview(files, comments, orderKeySSI) {
+        let documentsKeySSI = false;
+        if (files) {
+            documentsKeySSI = await this.saveDocuments(files);
+        }
+
+        this.communicationService.sendMessage(CommunicationService.identities.CSC.SPONSOR_IDENTITY, {
+            operation: messagesEnum.StatusReviewedByCMO,
+            data: {
+                orderSSI: orderKeySSI,
+                cmoDocumentsSSI: documentsKeySSI,
+                comments,
+            },
+            shortDescription: 'Order Review by CMO',
+        });
+
+        return;
+    }
+
+    async saveDocuments(files) {
+        const documentsDSU = await this.saveEntityAsync(
+            {
+                documents: files.map((x) => ({
+                    name: x.name,
+                    attached_by: Roles.CMO,
+                    date: new Date().toISOString(),
+                })),
+            },
+            '/documents'
+        );
+        console.log(documentsDSU);
+        for (const file of files) {
+            const attachmentKeySSI = await this.uploadFile('/documents' + '/' + documentsDSU.uid + '/' + 'files', file);
+            documentsDSU.documents.find((x) => x.name === file.name).attachmentKeySSI = attachmentKeySSI;
+        }
+        const updatedDocumentsDSU = await this.updateEntityAsync(documentsDSU);
+
+        return documentsDSU.uid;
     }
 
     uploadFile(path, file) {

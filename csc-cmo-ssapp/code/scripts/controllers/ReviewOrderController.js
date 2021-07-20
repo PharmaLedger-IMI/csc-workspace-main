@@ -1,5 +1,6 @@
 const { WebcController } = WebCardinal.controllers;
-import OrdersService from '../services/OrdersService.js';
+const OrdersService  = require("csc-services").OrderService;
+console.log(OrdersService);
 import eventBusService from '../services/EventBusService.js';
 import { Topics } from '../constants/topics.js';
 
@@ -313,9 +314,6 @@ export default class NewOrderController extends WebcController {
                 // const result = await this.ordersService.updateOrder(payload);
                 await this.ordersService.finishReview(payload.files.filter(x => x !== undefined), [payload.add_comment], order.keySSI);
                 
-    
-                console.log(result);
-
                 eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
             }
 

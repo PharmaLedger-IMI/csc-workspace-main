@@ -1,4 +1,4 @@
-module.exports.orderStatusesEnum = {
+const orderStatusesEnum = {
   Initiated: 'Initiated',
   ReviewedByCMO: 'Reviewed by CMO',
   ReviewedBySponsor: 'Reviewed by Sponsor',
@@ -6,7 +6,7 @@ module.exports.orderStatusesEnum = {
   Canceled: 'Canceled',
 };
 
-module.exports.orderTableHeaders = [
+const orderTableHeaders = [
   {
     column: 'sponsorId',
     label: 'Sponsor ID',
@@ -79,7 +79,7 @@ module.exports.orderTableHeaders = [
   },
 ];
 
-module.exports.demoData = [
+const demoData = [
   {
     sponsorId: 'A1A323',
     studyId: 'B2223',
@@ -281,3 +281,5 @@ module.exports.demoData = [
     lastModified: '2021-06-03T20:29:19.207Z',
   },
 ];
+
+module.exports = {orderStatusesEnum, orderTableHeaders, demoData}
