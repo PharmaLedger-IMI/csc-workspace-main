@@ -45,13 +45,15 @@ export default class OrdersService extends DSUService {
     return result[0];
   }
 
-  async createOrder(data) {
-    const statusDsu = await this.saveEntityAsync(
+  async updateOrder(data) {
+    const statusDsu = await this.updateEntityAsync(
       {
-        status: orderStatusesEnum.Initiated,
+        status: orderStatusesEnum.ReviewedByCMO,
       },
       '/statuses'
     );
+
+    console.log(statusDsu);
 
     const model = {
       sponsorId: data.sponsor_id,
@@ -71,12 +73,12 @@ export default class OrdersService extends DSUService {
       statusSSI: statusDsu.uid,
     };
 
-    const order = await this.saveEntityAsync(model);
+    const order = await this.updateEntityAsync(model);
 
     const path = '/' + this.ORDERS_TABLE + '/' + order.uid + '/' + 'status';
-    await this.mountEntityAsync(statusDsu.uid, path);
+    //await this.mountEntityAsync(statusDsu.uid, path);
 
-    const result = await this.addOrderToDB({
+    const result = await this.updateOrderToDB({
       sponsorId: model.sponsorId,
       studyId: model.studyId,
       orderId: model.orderId,

@@ -33,6 +33,13 @@
       "src": "order.html",
       "tag": "order",
       "indexed": false
+    },
+    {
+      "name": "revieworder",
+      "path": "/review-order",
+      "src": "review-order.html",
+      "tag": "review-order",
+      "indexed": false
     }
   ],
   "skin" : "default"
