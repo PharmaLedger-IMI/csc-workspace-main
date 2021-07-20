@@ -69,7 +69,6 @@ export default class DashboardController extends WebcController {
         case messagesEnum.StatusReviewedByCMO: {
           console.log('message received');
           console.log(data);
-          debugger;
 
           if (data.message.data.orderSSI) {
             const order = await this.ordersService.mountOrderReviewedByCMO(data.message.data.orderSSI);

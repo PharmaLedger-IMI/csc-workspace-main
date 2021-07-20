@@ -310,7 +310,9 @@ export default class NewOrderController extends WebcController {
                 let dbOrder = orders.find(_order=>_order.keySSI === order.keySSI);
                 const dsuOrder = await this.ordersService.getOrder(order.keySSI,dbOrder.documentsKeySSI)
                 console.log(dsuOrder);
-                const result = await this.ordersService.updateOrder(payload);
+                // const result = await this.ordersService.updateOrder(payload);
+                await this.ordersService.finishReview(payload.files.filter(x => x !== undefined), [payload.add_comment], order.keySSI);
+                
     
                 console.log(result);
 

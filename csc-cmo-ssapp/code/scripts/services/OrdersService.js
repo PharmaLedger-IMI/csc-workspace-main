@@ -167,6 +167,8 @@ export default class OrdersService extends DSUService {
       },
       shortDescription: 'Order Review by CMO',
     });
+
+    return;
   }
 
   async saveDocuments(files) {
