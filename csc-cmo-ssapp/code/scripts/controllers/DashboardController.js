@@ -12,7 +12,6 @@ import { Topics } from '../constants/topics.js';
 export default class DashboardController extends WebcController {
   constructor(...props) {
     super(...props);
-
     this.ordersService = new OrdersService(this.DSUStorage);
     this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
     this.notificationsService = new NotificationsService(this.DSUStorage);
@@ -62,6 +61,35 @@ export default class DashboardController extends WebcController {
 
             const resultNotification = await this.notificationsService.insertNotification(notification);
             eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+            console.log('order added');
+          }
+          break;
+        }
+        case messagesEnum.StatusReviewedByCMO: {
+          console.log('message received');
+          console.log(data);
+
+          if (data.message.data.orderSSI && data.message.data.cmoDocumentsSSI) {
+            const order = await this.ordersService.mountOrderReviewedByCMO(
+              data.message.data.orderSSI,
+              data.message.data.cmoDocumentsSSI
+            );
+
+            const notification = {
+              operation: NotificationTypes.UpdateOrderStatus,
+              orderId: order.orderId,
+              read: false,
+              status: orderStatusesEnum.ReviewedByCMO,
+              keySSI: data.message.data.orderSSI,
+              role: Roles.CMO,
+              did: order.sponsorId,
+              date: new Date().toISOString(),
+              documentsKeySSI: order.cmoDocumentsSSI,
+            };
+
+            const resultNotification = await this.notificationsService.insertNotification(notification);
+            eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+            eventBusService.emitEventListeners(Topics.RefreshOrders, null);
             console.log('order added');
           }
           break;

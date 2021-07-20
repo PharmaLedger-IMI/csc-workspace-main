@@ -6,6 +6,8 @@ import NotificationsService from './NotificationService.js';
 import { NotificationTypes } from '../constants/notifications.js';
 import eventBusService from './EventBusService.js';
 import { Topics } from '../constants/topics.js';
+import CommunicationService from './CommunicationService.js';
+import { messagesEnum } from '../constants/messages.js';
 
 export default class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
@@ -15,6 +17,7 @@ export default class OrdersService extends DSUService {
     this.storageService = getSharedStorage(DSUStorage);
     this.notificationsService = new NotificationsService(DSUStorage);
     this.DSUStorage = DSUStorage;
+    this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
   }
 
   async getOrders() {
@@ -27,8 +30,13 @@ export default class OrdersService extends DSUService {
 
   async getOrder(keySSI, documentsKeySSI) {
     const order = await this.getEntityAsync(keySSI);
+    const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, order.orderId);
     const status = await this.getStatuses(keySSI);
     const documents = await this.getEntityAsync(documentsKeySSI, '/documents');
+    if (orderDB.cmoDocumentsSSI) {
+      const cmoDocuments = await this.getEntityAsync(orderDB.cmoDocumentsSSI, '/documents');
+      return { ...order, status: status.status, documents: [...documents.documents, ...cmoDocuments.documents] };
+    }
     return { ...order, status: status.status, documents: documents.documents };
   }
 
@@ -119,8 +127,80 @@ export default class OrdersService extends DSUService {
     return result;
   }
 
+  async mountOrderReviewedByCMO(keySSI, documentsSSI) {
+    await this.unmountEntityAsync(keySSI);
+    await this.mountEntityAsync(keySSI);
+    const order = await this.getEntityAsync(keySSI);
+    console.log('ORDER:', JSON.stringify(order, null, 2));
+    const documents = await this.mountEntityAsync(documentsSSI, '/documents');
+    // const result = await this.addOrderToDB({ ...order, orderSSI: keySSI, cmoDocumentsSSI: documentsSSI });
+    const selectedOrder = await this.storageService.getRecord(this.ORDERS_TABLE, order.orderId);
+    const updatedOrder = await this.storageService.updateRecord(this.ORDERS_TABLE, order.orderId, {
+      ...selectedOrder,
+      cmoDocumentsSSI: documentsSSI,
+      status: order.status,
+      comments: order.comments,
+    });
+    console.log('RESULT:', JSON.stringify(updatedOrder, null, 2));
+    return updatedOrder;
+  }
+
   async addOrderToDB(data) {
     const newRecord = await this.storageService.insertRecord(this.ORDERS_TABLE, data.orderId, data);
     return newRecord;
+  }
+
+  async finishReview(
+    files,
+    comments,
+    orderKeySSI = 'BBudGH6ySHG6GUHN8ogNrTWbzKF5EA7pcv5UxUjro5MSbV1STbubTZYAa5JZLcnZx7wzoiPUFUUkv33o4EdQZhgt7'
+  ) {
+    let documentsKeySSI = false;
+    if (files) {
+      documentsKeySSI = await this.saveDocuments(files);
+    }
+
+    this.communicationService.sendMessage(CommunicationService.identities.CSC.SPONSOR_IDENTITY, {
+      operation: messagesEnum.StatusReviewedByCMO,
+      data: {
+        orderSSI: orderKeySSI,
+        cmoDocumentsSSI: documentsKeySSI,
+        comments,
+      },
+      shortDescription: 'Order Review by CMO',
+    });
+  }
+
+  async saveDocuments(files) {
+    const documentsDSU = await this.saveEntityAsync(
+      {
+        documents: files.map((x) => ({
+          name: x.name,
+          attached_by: Roles.CMO,
+          date: new Date().toISOString(),
+        })),
+      },
+      '/documents'
+    );
+    console.log(documentsDSU);
+    for (const file of files) {
+      const attachmentKeySSI = await this.uploadFile('/documents' + '/' + documentsDSU.uid + '/' + 'files', file);
+      documentsDSU.documents.find((x) => x.name === file.name).attachmentKeySSI = attachmentKeySSI;
+    }
+    const updatedDocumentsDSU = await this.updateEntityAsync(documentsDSU);
+
+    return documentsDSU.uid;
+  }
+
+  uploadFile(path, file) {
+    return new Promise((resolve, reject) => {
+      this.DSUStorage.uploadFile(path, file, undefined, (err, keySSI) => {
+        if (err) {
+          reject(new Error(err));
+          return;
+        }
+        resolve(keySSI);
+      });
+    });
   }
 }

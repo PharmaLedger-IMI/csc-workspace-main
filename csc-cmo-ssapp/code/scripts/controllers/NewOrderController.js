@@ -293,7 +293,7 @@ export default class NewOrderController extends WebcController {
 
                 console.log("SUBMIT : Payload: " , payload);
     
-                const result = await this.ordersService.createOrder(payload);
+                const result = await this.ordersService.finishReview(payload.files, [payload.add_comment]);
     
                 console.log(result);
 

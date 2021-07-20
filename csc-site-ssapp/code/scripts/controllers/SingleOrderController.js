@@ -142,9 +142,8 @@ export default class SingleOrderController extends WebcController {
         };
 
 
-        let { id, keySSI } = this.history.location.state;
+        let { id, keySSI, documentsKeySSI } = this.history.location.state;
         this.ordersService = new OrdersService(this.DSUStorage);
-
         this.model.id = id;
         this.model.keySSI = keySSI;
         this.model.documentsKeySSI = documentsKeySSI;

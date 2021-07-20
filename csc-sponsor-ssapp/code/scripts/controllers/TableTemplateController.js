@@ -71,6 +71,7 @@ export default class TableTemplateController extends WebcController {
   }
 
   paginateData(data, page = 1) {
+    console.log(data);
     data = _.clone(data);
     if (data && data.length > 0) {
       const itemsPerPage = this.model.pagination.itemsPerPage;

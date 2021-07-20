@@ -25,10 +25,11 @@ export default class OrdersService extends DSUService {
     } else return [];
   }
 
-  async getOrder(keySSI) {
+  async getOrder(keySSI, documentsKeySSI) {
     const order = await this.getEntityAsync(keySSI);
     const status = await this.getStatuses(keySSI);
-    return { ...order, status: status.status };
+    const documents = await this.getEntityAsync(documentsKeySSI, '/documents');
+    return { ...order, status: status.status, documents: documents.documents };
   }
 
   async getStatuses(orderSSI) {
@@ -121,5 +122,20 @@ export default class OrdersService extends DSUService {
     console.log('RESULT:', JSON.stringify(result, null, 2));
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     return result;
+  }
+
+  async mountOrderReviewedByCMO(keySSI) {
+    await this.unmountEntityAsync(keySSI);
+    await this.mountEntityAsync(keySSI);
+    const order = await this.getEntityAsync(keySSI);
+    console.log('ORDER:', JSON.stringify(order, null, 2));
+    const selectedOrder = await this.storageService.getRecord(this.ORDERS_TABLE, order.orderId);
+    const updatedOrder = await this.storageService.updateRecord(this.ORDERS_TABLE, order.orderId, {
+      ...selectedOrder,
+      status: order.status,
+      comments: order.comments,
+    });
+    console.log('RESULT:', JSON.stringify(updatedOrder, null, 2));
+    return updatedOrder;
   }
 }

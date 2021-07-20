@@ -36,7 +36,6 @@ export default class DashboardController extends WebcController {
         return console.error(err);
       }
       data = JSON.parse(data);
-      debugger;
 
       switch (data.message.operation) {
         case messagesEnum.StatusInitiated: {
@@ -62,6 +61,34 @@ export default class DashboardController extends WebcController {
 
             const resultNotification = await this.notificationsService.insertNotification(notification);
             eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+            eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+            console.log('order added');
+          }
+          break;
+        }
+        case messagesEnum.StatusReviewedByCMO: {
+          console.log('message received');
+          console.log(data);
+          debugger;
+
+          if (data.message.data.orderSSI && data.message.data.cmoDocumentsSSI) {
+            const order = await this.ordersService.mountOrderReviewedByCMO(data.message.data.orderSSI);
+
+            const notification = {
+              operation: NotificationTypes.UpdateOrderStatus,
+              orderId: order.orderId,
+              read: false,
+              status: orderStatusesEnum.ReviewedByCMO,
+              keySSI: data.message.data.orderSSI,
+              role: Roles.CMO,
+              did: order.sponsorId,
+              date: new Date().toISOString(),
+              documentsKeySSI: order.cmoDocumentsSSI,
+            };
+
+            const resultNotification = await this.notificationsService.insertNotification(notification);
+            eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+            eventBusService.emitEventListeners(Topics.RefreshOrders, null);
             console.log('order added');
           }
           break;

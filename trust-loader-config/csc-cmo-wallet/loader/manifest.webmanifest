@@ -55,6 +55,6 @@
       "purpose": "maskable any"
     }
   ],
-  "start_url": "/csc-cmo-loader/loader/",
-  "scope": "/csc-cmo-loader/loader/"
+  "start_url": "/csc-cmo-wallet/loader/",
+  "scope": "/csc-cmo-wallet/loader/"
 }

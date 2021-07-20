@@ -6,6 +6,9 @@ import NotificationsService from './NotificationService.js';
 import { NotificationTypes } from '../constants/notifications.js';
 import CommunicationService from './CommunicationService.js';
 import { messagesEnum } from '../constants/messages.js';
+import eventBusService from '../services/EventBusService.js';
+import { Topics } from '../constants/topics.js';
+
 export default class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
 
@@ -27,8 +30,13 @@ export default class OrdersService extends DSUService {
 
   async getOrder(keySSI, documentsKeySSI) {
     const order = await this.getEntityAsync(keySSI);
+    const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, order.orderId);
     const status = await this.getStatuses(keySSI);
     const documents = await this.getEntityAsync(documentsKeySSI, '/documents');
+    if (orderDB.cmoDocumentsSSI) {
+      const cmoDocuments = await this.getEntityAsync(orderDB.cmoDocumentsSSI, '/documents');
+      return { ...order, status: status.status, documents: [...documents.documents, ...cmoDocuments.documents] };
+    }
     return { ...order, status: status.status, documents: documents.documents };
   }
 
@@ -62,6 +70,7 @@ export default class OrdersService extends DSUService {
       lastModified: new Date().toISOString(),
       statusSSI: statusDsu.uid,
       status: statusDsu.status,
+      history: [{ status: orderStatusesEnum.Initiated, date: new Date().toISOString() }],
     };
 
     const order = await this.saveEntityAsync(model);
@@ -117,23 +126,25 @@ export default class OrdersService extends DSUService {
     const resultNotification = await this.notificationsService.insertNotification(notification);
     console.log('notification:', resultNotification, this.notificationsService);
 
-    this.communicationService.sendMessage(CommunicationService.identities.CSC.CMO_IDENTITY, {
-      operation: messagesEnum.StatusInitiated,
-      data: {
+    this.sendMessageToEntity(
+      CommunicationService.identities.CSC.CMO_IDENTITY,
+      messagesEnum.StatusInitiated,
+      {
         orderSSI: order.uid,
         documentsSSI: updatedDocumentsDSU.uid,
       },
-      shortDescription: 'Order Initiated',
-    });
+      'Order Initiated'
+    );
 
-    this.communicationService.sendMessage(CommunicationService.identities.CSC.SITE_IDENTITY, {
-      operation: messagesEnum.StatusInitiated,
-      data: {
+    this.sendMessageToEntity(
+      CommunicationService.identities.CSC.SITE_IDENTITY,
+      messagesEnum.StatusInitiated,
+      {
         orderSSI: order.uid,
         documentsSSI: updatedDocumentsDSU.uid,
       },
-      shortDescription: 'Order Initiated',
-    });
+      'Order Initiated'
+    );
 
     return { ...order, status: statusDsu.status };
   }
@@ -163,6 +174,61 @@ export default class OrdersService extends DSUService {
         }
         resolve(keySSI);
       });
+    });
+  }
+
+  async reviewedByCmo(orderSSI, cmoDocumentsSSI, comments) {
+    const order = await this.getEntityAsync(orderSSI);
+    await this.mountEntityAsync(cmoDocumentsSSI, '/documents');
+    const cmoDocuments = await this.getEntityAsync(cmoDocumentsSSI, '/documents');
+    const updatedComments = [
+      ...order.comments,
+      ...comments.map((x) => ({ entity: Roles.CMO, comment: x, date: new Date().toISOString() })),
+    ];
+    const updatedOrder = {
+      ...order,
+      status: orderStatusesEnum.ReviewedByCMO,
+      comments: updatedComments,
+      history: [...order.history, { status: orderStatusesEnum.ReviewedByCMO, date: new Date().toISOString() }],
+    };
+    await this.updateEntityAsync(updatedOrder);
+
+    const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, order.orderId);
+    const updatedOrderDB = await this.storageService.updateRecord(this.ORDERS_TABLE, order.orderId, {
+      ...orderDB,
+      cmoDocumentsSSI: cmoDocumentsSSI,
+      status: orderStatusesEnum.ReviewedByCMO,
+    });
+
+    console.log(updatedOrderDB);
+
+    this.sendMessageToEntity(
+      CommunicationService.identities.CSC.CMO_IDENTITY,
+      messagesEnum.StatusReviewedByCMO,
+      {
+        orderSSI: order.uid,
+        cmoDocumentsSSI,
+      },
+      'Order Reviewed by CMO'
+    );
+
+    this.sendMessageToEntity(
+      CommunicationService.identities.CSC.SITE_IDENTITY,
+      messagesEnum.StatusReviewedByCMO,
+      {
+        orderSSI: order.uid,
+      },
+      'Order Reviewed by CMO'
+    );
+
+    return updatedOrderDB;
+  }
+
+  sendMessageToEntity(entity, operation, data, shortDescription) {
+    this.communicationService.sendMessage(entity, {
+      operation,
+      data,
+      shortDescription,
     });
   }
 }
