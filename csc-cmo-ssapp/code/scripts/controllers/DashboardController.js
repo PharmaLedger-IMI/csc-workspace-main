@@ -18,6 +18,12 @@ export default class DashboardController extends WebcController {
       tabNavigator: {
         selected: '0',
       },
+      // TODO: Refactor this
+      userProfile: {
+        logoURL: "../resources/images/pl_logo.png",
+        appName: "CMO",
+        userName: "CMOName1"
+      }
     };
 
     this.init();

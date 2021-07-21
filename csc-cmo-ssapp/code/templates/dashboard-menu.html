@@ -53,10 +53,9 @@
         </svg>
       </span>
       Notifications
-      <data-if data-if="@isUnreadZero">
-        <div slot="true" class="dashboard-tab-notification">{{@unread}}</div>
-        <div slot="false"></div>
-      </data-if>
+      <div data-if="@isUnreadZero">
+        <div class="dashboard-tab-notification">{{@unread}}</div>
+      </div>
     </webc-link>
   </div>
 </webc-container>
