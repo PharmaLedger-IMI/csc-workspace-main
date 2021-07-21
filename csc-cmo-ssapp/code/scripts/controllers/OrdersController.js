@@ -120,6 +120,9 @@ export default class OrdersController extends WebcController {
     });
 
     this.on('view-order', async (event) => {
+
+      console.log(event.data, this.orders);
+
       this.navigateToPageTag('order', {
         id: event.data,
         keySSI: this.orders.find((x) => x.orderId === event.data).orderSSI,

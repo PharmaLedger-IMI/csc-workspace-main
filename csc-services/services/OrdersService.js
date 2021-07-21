@@ -163,8 +163,10 @@ class OrdersService extends DSUService {
     }
 
     async updateOrderToDB(data){
-        const newRecord = await this.storageService.updateRecord(this.ORDERS_TABLE, data.orderId, data);
-        return newRecord;
+
+        console.log('Updating', data)
+        const updatedRecord = await this.storageService.updateRecord(this.ORDERS_TABLE, data.orderId, data);
+        return updatedRecord;
     }
 
     async finishReview(files, comments, orderKeySSI) {

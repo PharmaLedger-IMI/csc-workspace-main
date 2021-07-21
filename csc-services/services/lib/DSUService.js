@@ -62,8 +62,8 @@ class DSUService {
       if (err) {
         return callback(err, undefined);
       }
-      // TODO: Decide the name of the identifier and remove the others.
-      entity.KeySSI = keySSI;
+      // TODO: No needed KeySSI property
+      //entity.KeySSI = keySSI;
       entity.keySSI = keySSI;
       entity.uid = keySSI;
       this.updateEntity(entity, path, callback);

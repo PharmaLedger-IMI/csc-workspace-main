@@ -2,15 +2,16 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require("csc-services")
 const OrdersService  = cscServices.OrderService;
 const eventBusService = cscServices.EventBusService;
-const Topics  = cscServices.constants.Topics
+const Topics  = cscServices.constants.Topics;
+const viewModelResolver = cscServices.viewModelResolver;
 
 export default class ReviewOrderController extends WebcController {
 
     constructor(...props) {
 
         super(...props);
-        let  order  = this.history.location.state.order
-        console.log(order);
+        let  order  = this.history.location.state.order;
+
         this.ordersService = new OrdersService(this.DSUStorage);
 
         this.model = {
@@ -27,131 +28,15 @@ export default class ReviewOrderController extends WebcController {
                 { id: "from_step_3_to_2", name: "Previous", visible: true , validated: false },
                 { id: "from_step_3_to_4", name: "Next", visible: true , validated: false },
             ],
-            form: {
-                inputs: {
-                    sponsor_id: {
-                        label: "Sponsor ID",
-                        name: "sponsor_id",
-                        required: true,
-                        placeholder: "Sponsor ID...",
-                        disabled:true,
-                        value: order.sponsorId
-                    },
-                    delivery_date: {
-                        label: "Delivery Date/Time",
-                        date: {
-                            name: "delivery_date",
-                            required: true,
-                            value: order.delivery_date.date
-                        },
-                        time: {
-                            name: "delivery_time",
-                            required: true,
-                            value: order.delivery_date.time
-                        }
-                    },
-                    target_cmo_id: {
-                        label: "Target CMO ID",
-                        name: "target_cmo_id",
-                        placeholder: "Select Target CMO ID...",
-                        required: true,
-                        options: [
-                            { label: "ID 1",  value: "1"},
-                            { label: "ID 2",  value: "2"},
-                            { label: "ID 3",  value: "3"}
-                        ]
-                    },
-                    study_id: {
-                        label: "Study ID",
-                        name: "study_id",
-                        required: true,
-                        placeholder: "e.g ABC123X56789",
-                        value: order.studyId
-                    },
-                    order_id: {
-                        label: "Order ID",
-                        name: "order_id",
-                        required: true,
-                        placeholder: "e.g O-000001234",
-                        value: order.orderId
-                    },
-                    kit_id_list: {
-                        label: "Kit ID List (xlsx)",
-                        name: "kit_id_list",
-                        required: true,
-                        placeholder: "No File",
-                        value: order.kit_id_list
-                    },
-                    site_id: {
-                        label: "Site ID",
-                        name: "site_id",
-                        placeholder: "Select Site ID...",
-                        required: true,
-                        options: [
-                            { label: "Site ID 1",  value: "1"},
-                            { label: "Site ID 2",  value: "2"},
-                            { label: "Site ID 3",  value: "3"}
-                        ]
-
-                    },
-                    site_region_id: {
-                        label: "Site Region ID",
-                        name: "site_region_id",
-                        required: true,
-                        placeholder: "",
-                        value: order.siteRegionId
-                    },
-                    site_country: {
-                        label: "Site Country",
-                        name: "site_country",
-                        required: true,
-                        placeholder: "",
-                        value: order.siteCountry
-                    },
-                    temperature_comments: {
-                        label: "Temperature Comments",
-                        name: "temperature_comments",
-                        required: true,
-                        placeholder: "e.g Do not freeze",
-                        value: ''
-                    },
-                    keep_between_temperature: {
-                        min: {
-                            label: "Min Temperature (°C)",
-                            name: "keep_between_temperature_min",
-                            required: true,
-                            placeholder: "",
-                            value: order.temperatures.min
-                        },
-                        max: {
-                            label : "Max Temperature (°C)",
-                            name: "keep_between_temperature_max",
-                            required: true,
-                            placeholder: "",
-                            value: order.temperatures.max
-                        }
-                    },
-                    add_comment: {
-                        label: "Add a Comment",
-                        name: "add_comment",
-                        required: true,
-                        placeholder: "Add a comment....",
-                        value: ''
-                    }
-                },
-                docs: {},
-                attachment: {
-                    label: 'Select files',
-
-                    listFiles: true,
-                    filesAppend: false,
-                    files: [],
-                },
-                documents:order.documents,
-                comments:order.comments
-            },
-            allComments:JSON.parse(JSON.stringify(order.comments))
+            form: viewModelResolver("order").form,
+            allComments:JSON.parse(JSON.stringify(order.comments)),
+            order:order
         };
+
+        this.model.form.inputs.sponsor_id.disabled=true;
+        this.model.form.inputs.site_region_id.disabled=true;
+        this.model.form.inputs.site_country.disabled=true;
+
         this.model.addExpression(
             "hasComments",
             () => {
@@ -185,27 +70,27 @@ export default class ReviewOrderController extends WebcController {
             if (event.data) this.docs = event.data;
         });
 
-        setTimeout( () => {
-
-            // Data Bind Event
-            const targetCmoId = this.element.querySelector('#target_cmo_id');
-            targetCmoId.addEventListener("change", (event)=>{this.onChange(event, 'target_cmo_id')});
-
-            // Data Bind Event
-            const siteId = this.element.querySelector('#site_id');
-            siteId.addEventListener("change", (event)=>{this.onChange(event , 'site_id')});
-
-            // Data Bind Event
-            const deliveryDate = this.element.querySelector('#delivery_date');
-            deliveryDate.addEventListener("change", (event)=>{this.updateDate(event);});
-
-            // Data Bind Event
-            const deliveryTime = this.element.querySelector('#delivery_time');
-            deliveryTime.addEventListener("change", (event)=>{this.updateTime(event);});
-
-
-
-        },500);
+        // setTimeout( () => {
+        //
+        //     // Data Bind Event
+        //     const targetCmoId = this.element.querySelector('#target_cmo_id');
+        //     targetCmoId.addEventListener("change", (event)=>{this.onChange(event, 'target_cmo_id')});
+        //
+        //     // Data Bind Event
+        //     const siteId = this.element.querySelector('#site_id');
+        //     siteId.addEventListener("change", (event)=>{this.onChange(event , 'site_id')});
+        //
+        //     // Data Bind Event
+        //     const deliveryDate = this.element.querySelector('#delivery_date');
+        //     deliveryDate.addEventListener("change", (event)=>{this.updateDate(event);});
+        //
+        //     // Data Bind Event
+        //     const deliveryTime = this.element.querySelector('#delivery_time');
+        //     deliveryTime.addEventListener("change", (event)=>{this.updateTime(event);});
+        //
+        //
+        //
+        // },500);
 
 
         //When you click step 1
