@@ -27,11 +27,11 @@
                 <div class="row">
                     <div class="col-7">
                         <!-- Input -->
-                        <input class="form-control form-control-sm" type="text"  value="@order.delivery_date.date" disabled="@form.inputs.delivery_date.date.disabled">
+                        <input class="form-control form-control-sm" type="text"  value="@order.delivery_date.date" name="@form.inputs.delivery_date.name" disabled="@form.inputs.delivery_date.disabled">
                     </div>
                     <div class="col-5">
                         <!-- Input -->
-                        <input class="form-control form-control-sm" type="text"  value="@order.delivery_date.time" disabled="@form.inputs.delivery_date.time.disabled">
+                        <input class="form-control form-control-sm" type="text"  value="@order.delivery_date.time" name="@form.inputs.delivery_time.name" disabled="@form.inputs.delivery_time.disabled">
                     </div>
                 </div>
             </div>
@@ -154,18 +154,18 @@
                 <!-- Keep Between -->
                 <div class="form-group">
                     <!-- Label -->
-                    <label for="@form.inputs.keep_between_temperature.min.name">{{@form.inputs.keep_between_temperature.min.label}}</label>
+                    <label for="@form.inputs.keep_between_temperature_min.name">{{@form.inputs.keep_between_temperature_min.label}}</label>
                     <!--Input -->
-                    <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature.min.name"  value="@order.temperatures.min" disabled="@form.inputs.keep_between_temperature.min.disabled">
+                    <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature.min.name"  value="@order.temperatures.min" disabled="@form.inputs.keep_between_temperature_min.disabled">
                 </div>
             </div>
             <div class="col-6">
                 <!-- Keep Between -->
                 <div class="form-group">
                     <!-- Label -->
-                    <label for="@form.inputs.keep_between_temperature.max.name">{{@form.inputs.keep_between_temperature.max.label}}</label>
+                    <label for="@form.inputs.keep_between_temperature_max.name">{{@form.inputs.keep_between_temperature_max.label}}</label>
                     <!--Input -->
-                    <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature.max.name"  value="@order.temperatures.max" disabled="@form.inputs.keep_between_temperature.max.disabled">
+                    <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature.max.name"  value="@order.temperatures.max" disabled="@form.inputs.keep_between_temperature_max.disabled">
                 </div>
             </div>
         </div>

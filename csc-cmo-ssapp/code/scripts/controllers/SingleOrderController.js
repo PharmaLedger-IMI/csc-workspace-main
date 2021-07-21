@@ -6,8 +6,12 @@ const viewModelResolver = cscServices.viewModelResolver;
 export default class SingleOrderController extends WebcController {
   constructor(...props) {
     super(...props);
-
-    this.model = viewModelResolver("order");
+    const model = viewModelResolver("order");
+    //all fields are disabled
+    for(let prop in model.form.inputs){
+      model.form.inputs[prop].disabled = true;
+    }
+    this.model = model;
 
     let { id, keySSI, documentsKeySSI } = this.history.location.state;
     this.ordersService = new OrdersService(this.DSUStorage);

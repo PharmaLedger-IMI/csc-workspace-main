@@ -31,18 +31,16 @@ const orderViewModel = {
             },
             delivery_date: {
                 label: 'Delivery Date/Time',
-                date: {
-                    name: 'delivery_date',
-                    required: true,
-                    disabled:false,
-                    value: '',
-                },
-                time: {
-                    name: 'delivery_time',
-                    required: true,
-                    disabled:false,
-                    value: '',
-                },
+                name: 'delivery_date',
+                required: true,
+                disabled: false,
+                value: '',
+            },
+            delivery_time: {
+                name: 'delivery_time',
+                required: true,
+                disabled: false,
+                value: '',
             },
             target_cmo_id: {
                 label: 'Target CMO ID',
@@ -116,23 +114,21 @@ const orderViewModel = {
                 disabled:false,
                 value: '',
             },
-            keep_between_temperature: {
-                min: {
-                    label: 'Min Temperature (°C)',
-                    name: 'keep_between_temperature_min',
-                    required: true,
-                    placeholder: '',
-                    disabled:false,
-                    value: '',
-                },
-                max: {
+            keep_between_temperature_min: {
+                label: 'Min Temperature (°C)',
+                name: 'keep_between_temperature_min',
+                required: true,
+                placeholder: '',
+                disabled:false,
+                value: '',
+            },
+            keep_between_temperature_max: {
                     label: 'Max Temperature (°C)',
                     name: 'keep_between_temperature_max',
                     required: true,
                     placeholder: '',
                     disabled:false,
                     value: '',
-                },
             },
             add_comment: {
                 label: 'Add a Comment',

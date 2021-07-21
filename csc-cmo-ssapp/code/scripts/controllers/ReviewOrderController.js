@@ -33,9 +33,11 @@ export default class ReviewOrderController extends WebcController {
             order:order
         };
 
-        this.model.form.inputs.sponsor_id.disabled=true;
-        this.model.form.inputs.site_region_id.disabled=true;
-        this.model.form.inputs.site_country.disabled=true;
+        const disabledInputs  = ["sponsor_id","site_region_id","site_country"];
+
+        disabledInputs.forEach((input)=>{
+            this.model.form.inputs[input].disabled = true;
+        });
 
         this.model.addExpression(
             "hasComments",

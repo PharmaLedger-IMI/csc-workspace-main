@@ -1,5 +1,5 @@
 module.exports = {
     getOrderViewModel: function () {
-        return require("./order/orderViewModel");
+        return JSON.parse(JSON.stringify(require("./order/orderViewModel")));
     }
 }
