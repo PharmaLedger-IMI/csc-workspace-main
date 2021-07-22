@@ -1,0 +1,8 @@
+{
+	"files.exclude": {
+		"**/bundles": true,
+		"**/constitution": true,
+		"**/domain.js": true,
+		"domain.js": true
+	}
+}
