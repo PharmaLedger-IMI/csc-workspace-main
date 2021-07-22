@@ -51,9 +51,7 @@ documentation/drawings/*.xml
 documentation/resources/drawings/
 node_modules
 package-lock.json
-privatesky
 themes
-
 tests/*/testWorkspace
 
 testReport.html
