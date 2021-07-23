@@ -1,8 +1,15 @@
 {
 	"files.exclude": {
+		"**/build": true,
 		"**/bundles": true,
 		"**/constitution": true,
 		"**/domain.js": true,
+		"build": true,
 		"domain.js": true
-	}
+	},
+	"python.linting.ignorePatterns": [
+		".vscode/*.py",
+		"**/site-packages/**/*.py",
+		"**/build"
+	]
 }
