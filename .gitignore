@@ -57,4 +57,5 @@ tests/*/testWorkspace
 testReport.html
 
 latest-change-set.txt
-build
+builds
+tmp

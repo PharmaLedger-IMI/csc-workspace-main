@@ -188,6 +188,7 @@ export default class ReviewOrderController extends WebcController {
                 const dsuOrder = await this.ordersService.getOrder(order.keySSI, dbOrder.documentsKeySSI);
                 console.log(dsuOrder);
                 // await this.ordersService.updateOrder(payload);
+                debugger;
                 await this.ordersService.finishReview(
                     payload.files.filter((x) => x !== undefined),
                     [payload.add_comment],
