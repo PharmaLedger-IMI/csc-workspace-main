@@ -8,6 +8,8 @@ const viewModelResolver = cscServices.viewModelResolver;
 export default class ReviewOrderController extends WebcController {
     constructor(...props) {
         super(...props);
+        //TODO make sure that order is received here as a simple Object and not as a proxified model
+        //remove all deep copy usages :JSON.parse(JSON.stringify(proxifiedObject))
         let order = this.history.location.state.order;
 
         this.ordersService = new OrdersService(this.DSUStorage);
@@ -31,11 +33,11 @@ export default class ReviewOrderController extends WebcController {
             order: order,
         };
 
-        const disabledInputs = ['sponsor_id', 'site_region_id', 'site_country'];
-
-        disabledInputs.forEach((input) => {
-            this.model.form.inputs[input].disabled = true;
-        });
+        //all fields are disabled
+        for(let prop in this.model.form.inputs){
+            this.model.form.inputs[prop].disabled = true;
+        }
+        this.model.form.documents = JSON.parse(JSON.stringify(order.documents));
 
         this.model.addExpression(
             'hasComments',
@@ -47,7 +49,7 @@ export default class ReviewOrderController extends WebcController {
 
         this.model.onChange('form.inputs.add_comment.value', () => {
             let comment = this.model.form.inputs.add_comment.value;
-            this.model.allComments = [...this.model.form.comments];
+            this.model.allComments = [...this.model.order.comments];
             if (comment) {
                 this.model.allComments.push({
                     entity: 'CMO',
@@ -65,10 +67,11 @@ export default class ReviewOrderController extends WebcController {
                     this.model.form.documents.push({ name: file.name, attached_by: 'Novartis', date: new Date().toLocaleString(), link: '', file: file });
                 });
             }
-
+            //TODO: what is this for?
             if (event.data) this.docs = event.data;
         });
 
+        //TODO: what is this for?
         // setTimeout( () => {
         //
         //     // Data Bind Event

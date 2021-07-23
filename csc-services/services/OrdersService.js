@@ -175,6 +175,13 @@ class OrdersService extends DSUService {
             documentsKeySSI = await this.saveDocuments(files);
         }
 
+       await this.updateEntityAsync(
+            {
+                status: orderStatusesEnum.ReviewedByCMO,
+            },
+            '/statuses'
+        );
+
         this.communicationService.sendMessage(CommunicationService.identities.CSC.SPONSOR_IDENTITY, {
             operation: messagesEnum.StatusReviewedByCMO,
             data: {
