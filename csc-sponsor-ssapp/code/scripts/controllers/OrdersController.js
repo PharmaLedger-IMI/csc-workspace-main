@@ -1,6 +1,8 @@
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
-import { orderStatusesEnum, orderTableHeaders } from '../constants/order.js';
+const {Topics} = cscServices.constants;
+const { orderStatusesEnum, orderTableHeaders }  = cscServices.constants.order;
+const eventBusService = cscServices.EventBusService;
 
 // eslint-disable-next-line no-undef
 const { WebcController } = WebCardinal.controllers;
@@ -62,11 +64,13 @@ export default class OrdersController extends WebcController {
 
     async init() {
         await this.getOrders();
+        eventBusService.addEventListener(Topics.RefreshOrders, async (data) => {
+            this.getOrders();
+        });
     }
 
     async getOrders() {
         try {
-            debugger;
             this.orders = await this.ordersService.getOrders();
             this.setOrdersModel(this.orders);
         } catch (error) {
@@ -85,7 +89,7 @@ export default class OrdersController extends WebcController {
         let result = this.orders;
 
         if (this.model.filter) {
-            result = result.filter((x) => x.status === orderStatusesEnum[this.model.filter]);
+            result = result.filter((x) => x.status_value === orderStatusesEnum[this.model.filter]);
         }
         if (this.model.search.value && this.model.search.value !== '') {
             result = result.filter((x) => x.orderId.toUpperCase().search(this.model.search.value.toUpperCase()) !== -1);
