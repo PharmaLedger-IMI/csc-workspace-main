@@ -1,13 +1,15 @@
-const getSharedStorage = require("./lib/SharedDBStorageService.js").getSharedStorage;
+const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
-const {Roles, NotificationTypes, Topics, messagesEnum, order} = require('./constants');
+const { Roles, NotificationTypes, Topics, messagesEnum, order, FoldersEnum } = require('./constants');
 const orderStatusesEnum = order.orderStatusesEnum;
 const NotificationsService = require('./lib/NotificationService.js');
 const eventBusService = require('./lib/EventBusService.js');
 const CommunicationService = require('./lib/CommunicationService.js');
+const moment = require('./lib/moment.min');
 
 class OrdersService extends DSUService {
     ORDERS_TABLE = 'orders';
+    ORDERS_FOLDER = '/orders';
 
     constructor(DSUStorage) {
         super(DSUStorage, '/orders');
@@ -18,6 +20,8 @@ class OrdersService extends DSUService {
     }
 
     async getOrders() {
+        debugger;
+        this.updateLocalOrder('asd');
         const result = await this.storageService.filter(this.ORDERS_TABLE);
         // return demoData;
         if (result) {
@@ -157,15 +161,14 @@ class OrdersService extends DSUService {
         return updatedOrder;
     }
 
-    async addOrderToDB(data) {
-        const newRecord = await this.storageService.insertRecord(this.ORDERS_TABLE, data.orderId, data);
+    async addOrderToDB(data, key) {
+        const newRecord = await this.storageService.insertRecord(this.ORDERS_TABLE, key ? key : data.orderId, data);
         return newRecord;
     }
 
-    async updateOrderToDB(data){
-
-        console.log('Updating', data)
-        const updatedRecord = await this.storageService.updateRecord(this.ORDERS_TABLE, data.orderId, data);
+    async updateOrderToDB(data, key) {
+        console.log('Updating', data);
+        const updatedRecord = await this.storageService.updateRecord(this.ORDERS_TABLE, key ? key : data.orderId, data);
         return updatedRecord;
     }
 
@@ -175,7 +178,7 @@ class OrdersService extends DSUService {
             documentsKeySSI = await this.saveDocuments(files);
         }
 
-       await this.updateEntityAsync(
+        await this.updateEntityAsync(
             {
                 status: orderStatusesEnum.ReviewedByCMO,
             },
@@ -227,6 +230,387 @@ class OrdersService extends DSUService {
             });
         });
     }
+
+    // *************************************************************************************************
+    // ******************* New functions for new flow/architecture(not tested) *************************
+    // *************************************************************************************************
+
+    // -> Functions for creation of order
+
+    async createOrder(data) {
+        debugger;
+
+        const { statusDsu, sponsorDocumentsDsu, cmoDocumentsDsu, kitIdsDsu, commentsDsu } = await this.createOrderOtherDSUs();
+
+        const status = await this.updateStatusDsu(orderStatusesEnum.Initiated, statusDsu.uid);
+
+        const sponsorDocuments = await this.addDocumentsToDsu(data.files, sponsorDocumentsDsu.uid, Roles.Sponsor);
+
+        const kits = this.addKitsToDsu(data.kit_id_list, kitIdsDsu.uid);
+
+        const comment = { entity: Roles.Sponsor, comment: data.add_comment, date: new Date().toISOString() };
+        const comments = this.addCommentToDsu(comment, commentsDsu.uid);
+
+        const orderModel = {
+            sponsorId: data.sponsor_id,
+            targetCmoId: data.target_cmo_id,
+            studyId: data.study_id,
+            orderId: data.order_id,
+            siteId: data.site_id,
+            siteRegionId: data.site_region_id,
+            siteCountry: data.site_country,
+            temperatures: data.keep_between_temperature,
+            temperature_comments: data.temperature_comments,
+            requestDate: new Date().toISOString(),
+            deliveryDate: data.delivery_date,
+            lastModified: new Date().toISOString(),
+        };
+
+        const order = await this.saveEntityAsync(orderModel);
+
+        const orderDb = await this.addOrderToDB(
+            {
+                ...orderModel,
+                orderSSI: order.uid,
+                status: status.history,
+                statusSSI: status.uid,
+                sponsorDocumentsKeySSI: sponsorDocuments.uid,
+                sponsorDocuments: sponsorDocuments.documents,
+                cmoDocumentsKeySSI: cmoDocumentsDsu.uid,
+                cmoDocuments: cmoDocumentsDsu.documents,
+                kitsSSI: kits.uid,
+                kits: kits.kitIds,
+                commentsKeySSI: comments.uid,
+                comments: comments.comments,
+            },
+            order.uid
+        );
+
+        let notification = {
+            operation: NotificationTypes.UpdateOrderStatus,
+            orderId: orderModel.orderId,
+            read: false,
+            status: orderStatusesEnum.Initiated,
+            keySSI: order.uid,
+            role: Roles.Sponsor,
+            did: '123-56',
+            date: new Date().toISOString(),
+        };
+
+        const resultNotification = await this.notificationsService.insertNotification(notification);
+        console.log('notification:', resultNotification, this.notificationsService);
+
+        // TODO: send correct type of SSIs (sread, keySSI, etc)
+        this.sendMessageToEntity(
+            CommunicationService.identities.CSC.CMO_IDENTITY,
+            messagesEnum.StatusInitiated,
+            {
+                orderSSI: order.uid,
+                sponsorDocumentsKeySSI: sponsorDocumentsDsu.uid,
+                cmoDocumentsKeySSI: cmoDocumentsDsu.uid,
+                kitIdsKeySSI: kitIdsDsu.uid,
+                commentsKeySSI: commentsDsu.uid,
+            },
+            'Order Initiated'
+        );
+
+        this.sendMessageToEntity(
+            CommunicationService.identities.CSC.SITE_IDENTITY,
+            messagesEnum.StatusInitiated,
+            {
+                orderSSI: order.uid,
+                sponsorDocumentsKeySSI: sponsorDocumentsDsu.uid,
+                kitIdsKeySSI: kitIdsDsu.uid,
+                commentsKeySSI: commentsDsu.uid,
+            },
+            'Order Initiated'
+        );
+
+        return orderDb;
+    }
+
+    async createOrderOtherDSUs() {
+        const statusDsu = await this.saveEntityAsync(
+            {
+                history: [],
+            },
+            FoldersEnum.Orders
+        );
+
+        const sponsorDocumentsDsu = await this.saveEntityAsync(
+            {
+                documents: [],
+            },
+            FoldersEnum.Documents
+        );
+
+        const cmoDocumentsDsu = await this.saveEntityAsync(
+            {
+                documents: [],
+            },
+            FoldersEnum.Documents
+        );
+
+        const kitIdsDsu = await this.saveEntityAsync(
+            {
+                kitIds: [],
+            },
+            FoldersEnum.Kits
+        );
+
+        const commentsDsu = await this.saveEntityAsync(
+            {
+                comments: [],
+            },
+            FoldersEnum.Comments
+        );
+
+        return { statusDsu, sponsorDocumentsDsu, cmoDocumentsDsu, kitIdsDsu, commentsDsu };
+    }
+
+    async updateStatusDsu(newStatus, keySSI) {
+        const statusDsu = await this.getEntityAsync(keySSI, FoldersEnum.Statuses);
+        const result = await this.updateEntityAsync(
+            {
+                ...statusDsu,
+                history: [...statusDsu.history, { status: newStatus, date: new Date().toISOString() }],
+            },
+            FoldersEnum.Statuses
+        );
+        return result;
+    }
+
+    async addDocumentsToDsu(files, keySSI, role) {
+        const documentsDsu = await this.getEntityAsync(keySSI, FoldersEnum.Documents);
+
+        const updatedDocumentsDSU = await this.updateEntityAsync(
+            {
+                ...documentsDsu,
+                documents: [
+                    ...documentsDsu.documents,
+                    ...files.map((x) => ({
+                        name: x.name,
+                        attached_by: role,
+                        date: new Date().toISOString(),
+                    })),
+                ],
+            },
+            FoldersEnum.Documents
+        );
+
+        for (const file of files) {
+            const attachmentKeySSI = await this.uploadFile(FoldersEnum.Documents + '/' + updatedDocumentsDSU.uid + '/' + 'files', file);
+            updatedDocumentsDSU.documents.find((x) => x.name === file.name).attachmentKeySSI = attachmentKeySSI;
+        }
+        const result = await this.updateEntityAsync(updatedDocumentsDSU, FoldersEnum.Documents);
+
+        return result;
+    }
+
+    async addKitsToDsu(kitIds, keySSI) {
+        const kitsDsu = await this.getEntityAsync(keySSI, FoldersEnum.Kits);
+        const result = await this.updateEntityAsync(
+            {
+                ...kitsDsu,
+                kitIds,
+            },
+            FoldersEnum.Kits
+        );
+        return result;
+    }
+
+    async addCommentToDsu(comments, keySSI) {
+        const commentsDsu = await this.getEntityAsync(keySSI, FoldersEnum.Comments);
+        const result = await this.updateEntityAsync(
+            {
+                ...commentsDsu,
+                comments: [...commentsDsu, comments],
+            },
+            FoldersEnum.Comments
+        );
+        return result;
+    }
+
+    // -> Functions for mounting newly created order in other actors except sponsor
+
+    async mountAndCreateOrder(orderSSI, role, sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsDsu, commentsKeySSI) {
+        let order, sponsorDocuments, cmoDocuments, kits, comments, orderDb;
+        switch (role) {
+            case Roles.CMO:
+                order = await this.mountEntityAsync(orderSSI, FoldersEnum.Orders);
+                sponsorDocuments = await this.mountEntityAsync(sponsorDocumentsKeySSI, FoldersEnum.Documents);
+                cmoDocuments = await this.mountEntityAsync(cmoDocumentsKeySSI, FoldersEnum.Documents);
+                kits = await this.mountEntityAsync(kitIdsDsu, FoldersEnum.Kits);
+                comments = await this.mountEntityAsync(commentsKeySSI, FoldersEnum.Comments);
+
+                orderDb = await this.addOrderToDB(
+                    {
+                        ...orderModel,
+                        orderSSI: order.uid,
+                        status: status.history,
+                        statusSSI: status.uid,
+                        sponsorDocumentsKeySSI: sponsorDocuments.uid,
+                        sponsorDocuments: sponsorDocuments.documents,
+                        cmoDocumentsKeySSI: cmoDocuments.uid,
+                        cmoDocuments: cmoDocuments.documents,
+                        kitsSSI: kits.uid,
+                        kits: kits.kitIds,
+                        commentsKeySSI: comments.uid,
+                        comments: comments.comments,
+                    },
+                    order.uid
+                );
+
+                return orderDb;
+                break;
+            case Roles.Site:
+                order = await this.mountEntityAsync(orderSSI, FoldersEnum.Orders);
+                sponsorDocuments = await this.mountEntityAsync(sponsorDocumentsKeySSI, FoldersEnum.Documents);
+                kits = await this.mountEntityAsync(kitIdsDsu, FoldersEnum.Kits);
+                comments = await this.mountEntityAsync(commentsKeySSI, FoldersEnum.Comments);
+
+                orderDb = await this.addOrderToDB(
+                    {
+                        ...orderModel,
+                        orderSSI: order.uid,
+                        status: status.history,
+                        statusSSI: status.uid,
+                        sponsorDocumentsKeySSI: sponsorDocuments.uid,
+                        sponsorDocuments: sponsorDocuments.documents,
+                        kitsSSI: kits.uid,
+                        kits: kits.kitIds,
+                        commentsKeySSI: comments.uid,
+                        comments: comments.comments,
+                    },
+                    order.uid
+                );
+
+                return orderDb;
+                break;
+        }
+    }
+
+    // -> Function for reviewing, canceling, approving orders.
+
+    async updateOrderNew(orderKeySSI, files, comment, role, newStatus) {
+        let documents = null;
+        let comments = null;
+
+        const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderKeySSI);
+
+        const status = await this.updateStatusDsu(newStatus, orderDB.statusSSI);
+        orderDB.status = status.history;
+
+        if (files) {
+            documents = await this.addDocumentsToDsu(files, role === Roles.CMO ? orderDB.cmoDocumentsKeySSI : orderDB.sponsorDocumentsKeySSI, role);
+            if (role === Roles.CMO) {
+                orderDB.cmoDocuments = documents.documents;
+            } else {
+                orderDB.sponsorDocuments = documents.documents;
+            }
+        }
+        if (comment) {
+            comments = await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
+            orderDB.comments = comments.comments;
+        }
+
+        const result = await this.updateOrderToDB(orderDB, orderKeySSI);
+
+        let operation;
+        switch (newStatus) {
+            case orderStatusesEnum.ReviewedByCMO:
+                operation = messagesEnum.StatusReviewedByCMO;
+                break;
+            case orderStatusesEnum.ReviewedBySponsor:
+                operation = messagesEnum.StatusReviewedBySponsor;
+                break;
+            case orderStatusesEnum.Approved:
+                operation = messagesEnum.StatusApproved;
+                break;
+            case orderStatusesEnum.Canceled:
+                operation = messagesEnum.StatusCanceled;
+                break;
+        }
+
+        this.communicationService.sendMessage(CommunicationService.identities.CSC.SITE_IDENTITY, {
+            operation,
+            data: {
+                orderSSI: orderKeySSI,
+            },
+            shortDescription: 'Order Updated',
+        });
+
+        if (role === Roles.CMO) {
+            this.communicationService.sendMessage(CommunicationService.identities.CSC.SPONSOR_IDENTITY, {
+                operation,
+                data: {
+                    orderSSI: orderKeySSI,
+                },
+                shortDescription: 'Order Updated',
+            });
+        } else {
+            this.communicationService.sendMessage(CommunicationService.identities.CSC.CMO_IDENTITY, {
+                operation,
+                data: {
+                    orderSSI: orderKeySSI,
+                },
+                shortDescription: 'Order Updated',
+            });
+        }
+
+        return result;
+    }
+
+    // -> Function for updating changed order locally
+
+    async updateLocalOrder(orderKeySSI) {
+        const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderKeySSI);
+        // TODO: change to the new function that bypasses cache
+        const status = await this.getEntityAsync(orderDB.orderDB.statusSSI, FoldersEnum.Statuses);
+        orderDB.status = status.history;
+
+        const lastStatusUpdate = status.history.sort((a, b) => (moment(a.date).isSameOrAfter(moment(b.date)) ? -1 : 1))[0];
+
+        switch (lastStatusUpdate.status) {
+            case orderStatusesEnum.ReviewedByCMO:
+                // TODO: change to the new function that bypasses cache
+                if (orderDB.cmoDocumentsKeySSI) {
+                    const cmoDocuments = await this.getEntityAsync(orderDB.cmoDocumentsKeySSI, FoldersEnum.Documents);
+                    orderDB.cmoDocuments = cmoDocuments;
+                }
+                if (orderDB.commentsKeySSI) {
+                    const comments = await this.getEntityAsync(orderDB.commentsKeySSI, FoldersEnum.Comments);
+                    orderDB.comments = comments;
+                }
+                break;
+            case orderStatusesEnum.ReviewedBySponsor:
+                // TODO: change to the new function that bypasses cache
+                if (orderDB.sponsorDocumentsKeySSI) {
+                    const sponsorDocuments = await this.getEntityAsync(orderDB.sponsorDocumentsKeySSI, FoldersEnum.Documents);
+                    orderDB.sponsorDocuments = sponsorDocuments;
+                }
+                if (orderDB.commentsKeySSI) {
+                    const comments = await this.getEntityAsync(orderDB.commentsKeySSI, FoldersEnum.Comments);
+                    orderDB.comments = comments;
+                }
+                break;
+            case orderStatusesEnum.Approved:
+                // TODO: change to the new function that bypasses cache
+                break;
+            case orderStatusesEnum.Canceled:
+                // TODO: change to the new function that bypasses cache
+                if (orderDB.commentsKeySSI) {
+                    const comments = await this.getEntityAsync(orderDB.commentsKeySSI, FoldersEnum.Comments);
+                    orderDB.comments = comments;
+                }
+                break;
+        }
+
+        const result = await this.updateOrderToDB(orderDB, orderKeySSI);
+        return result;
+    }
+
+    // -> Functions for accessing data
 }
 
 module.exports = OrdersService;
