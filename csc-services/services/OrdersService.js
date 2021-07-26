@@ -27,16 +27,8 @@ class OrdersService extends DSUService {
         } else return [];
     }
 
-    async getOrder(keySSI, documentsKeySSI) {
-        const order = await this.getEntityAsync(keySSI);
-        const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, order.orderId);
-        const status = await this.getStatuses(keySSI);
-        const documents = await this.getEntityAsync(documentsKeySSI, '/documents');
-        if (orderDB.cmoDocumentsSSI) {
-            const cmoDocuments = await this.getEntityAsync(orderDB.cmoDocumentsSSI, '/documents');
-            return { ...order, status: status.status, documents: [...documents.documents, ...cmoDocuments.documents] };
-        }
-        return { ...order, status: status.status, documents: documents.documents };
+    async getOrder(keySSI) {
+        return await this.storageService.getRecord(this.ORDERS_TABLE, keySSI);
     }
 
     async getStatuses(orderSSI) {
@@ -229,6 +221,14 @@ class OrdersService extends DSUService {
         });
     }
 
+    sendMessageToEntity(entity, operation, data, shortDescription) {
+        this.communicationService.sendMessage(entity, {
+            operation,
+            data,
+            shortDescription,
+        });
+    }
+
     // *************************************************************************************************
     // ******************* New functions for new flow/architecture(not tested) *************************
     // *************************************************************************************************
@@ -244,10 +244,10 @@ class OrdersService extends DSUService {
 
         const sponsorDocuments = await this.addDocumentsToDsu(data.files, sponsorDocumentsDsu.uid, Roles.Sponsor);
 
-        const kits = this.addKitsToDsu(data.kit_id_list, kitIdsDsu.uid);
+        const kits = await this.addKitsToDsu(data.kitIds, kitIdsDsu.uid);
 
         const comment = { entity: Roles.Sponsor, comment: data.add_comment, date: new Date().getTime() };
-        const comments = this.addCommentToDsu(comment, commentsDsu.uid);
+        const comments = await this.addCommentToDsu(comment, commentsDsu.uid);
 
         const orderModel = {
             sponsorId: data.sponsor_id,
@@ -332,7 +332,7 @@ class OrdersService extends DSUService {
             {
                 history: [],
             },
-            FoldersEnum.Orders
+            FoldersEnum.Statuses
         );
 
         const sponsorDocumentsDsu = await this.saveEntityAsync(
@@ -422,7 +422,7 @@ class OrdersService extends DSUService {
         const result = await this.updateEntityAsync(
             {
                 ...commentsDsu,
-                comments: [...commentsDsu, comments],
+                comments: [...commentsDsu.comments, comments],
             },
             FoldersEnum.Comments
         );
