@@ -1,19 +1,41 @@
 // eslint-disable-next-line no-undef
 const { WebcController } = WebCardinal.controllers;
+const cscServices = require("csc-services");
+const momentService  = cscServices.momentService;
 
 export default class TableTemplateController extends WebcController {
   localData = null;
   constructor(...props) {
     super(...props);
-
     this.attachEvents();
-
     this.init();
   }
 
   async init() {
+    this.model.data = [...this.transformData(this.model.data)];
     this.paginateData(this.model.data);
     return;
+  }
+
+  transformData(data){
+    if(data){
+      data.forEach( (item) => {
+
+        item.requestDate_value = momentService(item.requestDate).format('MM/DD/YYYY HH:mm:ss');
+
+        item.lastModified_value = momentService(item.lastModified).format('MM/DD/YYYY HH:mm:ss');
+
+        item.status_value = item.status.sort( (function(a,b){
+          return new Date(b.date) - new Date(a.date);
+        }))[0].status
+
+        item.status_date = momentService(item.status.sort( (function(a,b){
+          return new Date(b.date) - new Date(a.date);
+        }))[0].date).format('MM/DD/YYYY HH:mm:ss');
+
+      })
+    }
+    return data;
   }
 
   attachEvents() {
