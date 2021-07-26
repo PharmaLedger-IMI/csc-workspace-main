@@ -123,15 +123,18 @@ class OrdersService extends DSUService {
         await this.mountEntityAsync(keySSI);
         const order = await this.getEntityAsync(keySSI);
         console.log('ORDER:', JSON.stringify(order, null, 2));
-        const documents = await this.mountEntityAsync(documentsSSI, '/documents');
+
         // const result = await this.addOrderToDB({ ...order, orderSSI: keySSI, cmoDocumentsSSI: documentsSSI });
         const selectedOrder = await this.storageService.getRecord(this.ORDERS_TABLE, order.orderId);
-        const updatedOrder = await this.storageService.updateRecord(this.ORDERS_TABLE, order.orderId, {
-            ...selectedOrder,
-            cmoDocumentsSSI: documentsSSI,
-            status: order.status,
-            comments: order.comments,
-        });
+
+        if(documentsSSI){
+            const documents = await this.mountEntityAsync(documentsSSI, '/documents');
+            selectedOrder.cmoDocumentsSSI = documentsSSI;
+        }
+        selectedOrder.status = order.status;
+        selectedOrder.comments = order.comments;
+
+        const updatedOrder = await this.storageService.updateRecord(this.ORDERS_TABLE, order.orderId, selectedOrder);
         console.log('RESULT:', JSON.stringify(updatedOrder, null, 2));
         return updatedOrder;
     }
