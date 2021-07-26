@@ -318,7 +318,6 @@ class OrdersService extends DSUService {
             messagesEnum.StatusInitiated,
             {
                 orderSSI: order.uid,
-                sponsorDocumentsKeySSI: sponsorDocumentsDsu.uid,
                 kitIdsKeySSI: kitIdsDsu.uid,
                 commentsKeySSI: commentsDsu.uid,
                 statusKeySSI: statusDsu.uid,
@@ -465,7 +464,6 @@ class OrdersService extends DSUService {
                 return orderDb;
             case Roles.Site:
                 order = await this.mountEntityAsync(orderSSI, FoldersEnum.Orders);
-                sponsorDocuments = await this.mountEntityAsync(sponsorDocumentsKeySSI, FoldersEnum.Documents);
                 kits = await this.mountEntityAsync(kitIdsDsu, FoldersEnum.Kits);
                 comments = await this.mountEntityAsync(commentsKeySSI, FoldersEnum.Comments);
                 status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.Statuses);
@@ -476,8 +474,6 @@ class OrdersService extends DSUService {
                         orderSSI: order.uid,
                         status: status.history,
                         statusSSI: status.uid,
-                        sponsorDocumentsKeySSI: sponsorDocuments.uid,
-                        sponsorDocuments: sponsorDocuments.documents,
                         kitsSSI: kits.uid,
                         kits: kits.kitIds,
                         commentsKeySSI: comments.uid,
@@ -613,7 +609,6 @@ class OrdersService extends DSUService {
     // -> Functions for accessing data
 
     async getOrderFromDsus(orderKeySSI) {
-        debugger;
         const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderKeySSI);
         const status = await this.getEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
         orderDB.status = status.history;
