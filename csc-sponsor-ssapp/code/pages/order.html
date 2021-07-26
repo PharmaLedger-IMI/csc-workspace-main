@@ -13,7 +13,7 @@
         <div class="col-4 text-left">
           <div class="order-status-box order-status-blue">
             <div>Order Status:</div>
-            <div><b>Initiated</b></div>
+            <div><b>{{@order.status_value}}</b></div>
             <div>{{@order.deliveryDate}}</div>
           </div>
         </div>
@@ -252,7 +252,7 @@
                 <th scope="col">Delete</th>
               </tr>
               </thead>
-              <tbody data-for="@order.documents">
+              <tbody data-for="@order.sponsorDocuments">
               <tr>
                 <th>{{@name}}</th>
                 <td>{{@attached_by}}</td>

@@ -1,6 +1,7 @@
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
+const momentService  = cscServices.momentService;
 
 export default class SingleOrderController extends WebcController {
     constructor(...props) {
@@ -274,9 +275,10 @@ export default class SingleOrderController extends WebcController {
     }
 
     async init() {
-        debugger;
         const order = await this.ordersService.getOrder(this.model.keySSI, this.model.documentsKeySSI);
         this.model.order = order;
+        this.model.order = {...this.transformData(this.model.order)};
+        debugger;
         this.model.order.delivery_date = {
             date: this.getDate(this.model.order.deliveryDate),
             time: this.getTime(this.model.order.deliveryDate),
@@ -288,6 +290,47 @@ export default class SingleOrderController extends WebcController {
         return;
     }
 
+    transformData(data){
+        if(data){
+
+            data.documents = [];
+
+            if(data.sponsorDocuments){
+                data.sponsorDocuments.forEach( (item) => {
+                    item.date = momentService(item.data).format('MM/DD/YYYY HH:mm:ss');
+
+                });
+            }
+            data.status_value = data.status.sort( (function(a,b){
+                return new Date(b.date) - new Date(a.date);
+            }))[0].status
+
+            data.status_date = momentService(data.status.sort( (function(a,b){
+                return new Date(b.date) - new Date(a.date);
+            }))[0].date).format('MM/DD/YYYY HH:mm:ss');
+
+            if(data.comments){
+                data.comments.forEach( (comment) => {
+                    comment.date = momentService(comment.date).format('MM/DD/YYYY HH:mm:ss');
+                })
+            }
+
+            if(data.sponsorDocuments){
+                data.sponsorDocuments.forEach( (doc) => {
+                    doc.date = momentService(doc.date).format('MM/DD/YYYY HH:mm:ss');
+                    data.documents.push(doc);
+                })
+            }
+
+            if(data.cmoDocuments){
+                data.cmoDocuments.forEach( (doc) => {
+                    doc.date = momentService(doc.date).format('MM/DD/YYYY HH:mm:ss');
+                    data.documents.push(doc);
+                })
+            }
+            return data;
+        }
+    }
     loadDataToInputs(order) {
         const el = document.getElementById('sponsorId');
         console.log('Order', order);

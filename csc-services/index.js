@@ -4,6 +4,7 @@ module.exports = {
     NotificationsService:require("./services/lib/NotificationService"),
     CommunicationService:require("./services/lib/CommunicationService"),
     constants:require("./services/constants"),
+    momentService: require("./services/lib/moment.min"),
 
     viewModelResolver:function (viewModel){
         switch (viewModel){
