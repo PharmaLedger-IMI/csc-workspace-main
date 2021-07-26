@@ -1,10 +1,11 @@
+const cscServices = require('csc-services');
+const OrdersService = cscServices.OrderService;
+const {Topics} = cscServices.constants;
+const { orderStatusesEnum, orderTableHeaders }  = cscServices.constants.order;
+const eventBusService = cscServices.EventBusService;
+
 // eslint-disable-next-line no-undef
 const { WebcController } = WebCardinal.controllers;
-const cscServices = require("csc-services");
-const OrdersService  = cscServices.OrderService;
-const {order, Topics }  = cscServices.constants;
-const {orderStatusesEnum, orderTableHeaders} = order;
-const eventBusService  = cscServices.EventBusService
 
 export default class OrdersController extends WebcController {
   statusesArray = Object.entries(orderStatusesEnum).map(([k, v]) => v);
@@ -71,7 +72,6 @@ export default class OrdersController extends WebcController {
   async getOrders() {
     try {
       this.orders = await this.ordersService.getOrders();
-      console.log(JSON.stringify(this.orders, null, 2));
       this.setOrdersModel(this.orders);
     } catch (error) {
       console.log(error);
@@ -89,7 +89,7 @@ export default class OrdersController extends WebcController {
     let result = this.orders;
 
     if (this.model.filter) {
-      result = result.filter((x) => x.status === orderStatusesEnum[this.model.filter]);
+      result = result.filter((x) => x.status_value === orderStatusesEnum[this.model.filter]);
     }
     if (this.model.search.value && this.model.search.value !== '') {
       result = result.filter((x) => x.orderId.toUpperCase().search(this.model.search.value.toUpperCase()) !== -1);
@@ -105,11 +105,7 @@ export default class OrdersController extends WebcController {
   }
 
   attachEvents() {
-    this.model.addExpression(
-      'ordersArrayNotEmpty',
-      () => this.model.orders && Array.isArray(this.model.orders) && this.model.orders.length > 0,
-      'orders'
-    );
+    this.model.addExpression('ordersArrayNotEmpty', () => this.model.orders && Array.isArray(this.model.orders) && this.model.orders.length > 0, 'orders');
 
     this.on('openFeedback', (e) => {
       this.feedbackEmitter = e.detail;
@@ -120,9 +116,15 @@ export default class OrdersController extends WebcController {
     });
 
     this.on('view-order', async (event) => {
-
-      console.log(event.data, this.orders);
-
+      console.log(
+          JSON.stringify(
+              this.orders.find((x) => x.orderId === event.data),
+              null,
+              2
+          )
+      );
+      console.log(JSON.stringify(this.orders, null, 2));
+      console.log(event.data);
       this.navigateToPageTag('order', {
         id: event.data,
         keySSI: this.orders.find((x) => x.orderId === event.data).orderSSI,
