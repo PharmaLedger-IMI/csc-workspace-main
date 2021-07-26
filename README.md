@@ -1,7 +1,6 @@
 \# UC2 - Clinical Supply Chain - csc-workspace-main
 
 *csc-workspace-main*  bundles all the necessary dependencies for building and running Clinical Supply Chain SSApps in a single package.
->>>>>>> 92893eb1ec6734300e9f61e2efe77e39a0d440e3
 
 ( This workspace was originally forked from the https://github.com/PharmaLedger-IMI/epi-workspace )
 
@@ -113,21 +112,17 @@ $ which drawio
 ```
 =======
 ### Sponsor wallet
->>>>>>> 92893eb1ec6734300e9f61e2efe77e39a0d440e3
+
 
 add a file under ```docs/bin``` called ```drawio_exec_command.os``` containing the command/path to execute drawio
 
-<<<<<<< HEAD
  - Linux:
     ```echo "drawio"```
  - Windows:
     ```echo "${PATH_TO_DRAW_IO}\drawio.exe"```
 =======
 ### Contract Manufacturing Operations wallet
->>>>>>> 92893eb1ec6734300e9f61e2efe77e39a0d440e3
 
-
-<<<<<<< HEAD
 ### Build Mobile
 =======
 ### Courier wallet
@@ -135,7 +130,6 @@ add a file under ```docs/bin``` called ```drawio_exec_command.os``` containing t
 TODO
 
 ### Clinical Site wallet
->>>>>>> 92893eb1ec6734300e9f61e2efe77e39a0d440e3
 
 Currently Not Supported
 
