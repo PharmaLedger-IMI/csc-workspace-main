@@ -20,8 +20,6 @@ class OrdersService extends DSUService {
     }
 
     async getOrders() {
-        debugger;
-        this.updateLocalOrder('asd');
         const result = await this.storageService.filter(this.ORDERS_TABLE);
         // return demoData;
         if (result) {
@@ -248,7 +246,7 @@ class OrdersService extends DSUService {
 
         const kits = this.addKitsToDsu(data.kit_id_list, kitIdsDsu.uid);
 
-        const comment = { entity: Roles.Sponsor, comment: data.add_comment, date: new Date().toISOString() };
+        const comment = { entity: Roles.Sponsor, comment: data.add_comment, date: new Date().getTime() };
         const comments = this.addCommentToDsu(comment, commentsDsu.uid);
 
         const orderModel = {
@@ -261,9 +259,9 @@ class OrdersService extends DSUService {
             siteCountry: data.site_country,
             temperatures: data.keep_between_temperature,
             temperature_comments: data.temperature_comments,
-            requestDate: new Date().toISOString(),
+            requestDate: new Date().getTime(),
             deliveryDate: data.delivery_date,
-            lastModified: new Date().toISOString(),
+            lastModified: new Date().getTime(),
         };
 
         const order = await this.saveEntityAsync(orderModel);
@@ -373,7 +371,7 @@ class OrdersService extends DSUService {
         const result = await this.updateEntityAsync(
             {
                 ...statusDsu,
-                history: [...statusDsu.history, { status: newStatus, date: new Date().toISOString() }],
+                history: [...statusDsu.history, { status: newStatus, date: new Date().getTime() }],
             },
             FoldersEnum.Statuses
         );
@@ -391,7 +389,7 @@ class OrdersService extends DSUService {
                     ...files.map((x) => ({
                         name: x.name,
                         attached_by: role,
-                        date: new Date().toISOString(),
+                        date: new Date().getTime(),
                     })),
                 ],
             },
@@ -408,10 +406,10 @@ class OrdersService extends DSUService {
     }
 
     async addKitsToDsu(kitIds, keySSI) {
-        const kitsDsu = await this.getEntityAsync(keySSI, FoldersEnum.Kits);
+        const kitsDataDsu = await this.getEntityAsync(keySSI, FoldersEnum.Kits);
         const result = await this.updateEntityAsync(
             {
-                ...kitsDsu,
+                ...kitsDataDsu,
                 kitIds,
             },
             FoldersEnum.Kits
@@ -433,7 +431,7 @@ class OrdersService extends DSUService {
 
     // -> Functions for mounting newly created order in other actors except sponsor
 
-    async mountAndCreateOrder(orderSSI, role, sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsDsu, commentsKeySSI) {
+    async mountAndReceiveOrder(orderSSI, role, sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsDsu, commentsKeySSI) {
         let order, sponsorDocuments, cmoDocuments, kits, comments, orderDb;
         switch (role) {
             case Roles.CMO:
@@ -462,7 +460,6 @@ class OrdersService extends DSUService {
                 );
 
                 return orderDb;
-                break;
             case Roles.Site:
                 order = await this.mountEntityAsync(orderSSI, FoldersEnum.Orders);
                 sponsorDocuments = await this.mountEntityAsync(sponsorDocumentsKeySSI, FoldersEnum.Documents);
@@ -486,7 +483,6 @@ class OrdersService extends DSUService {
                 );
 
                 return orderDb;
-                break;
         }
     }
 
