@@ -19,9 +19,9 @@
         <!-- Connector -->
         <div class="history-connector"></div>
 
-        <div class="history-status-element history-normal">
-            <div class="history-date">{{@order.deliveryDate}}</div>
-            <div><b>Initiated</b></div>
+        <div class="history-status-element history-normal" data-for="@order.status">
+            <div class="history-date">{{@date}}</div>
+            <div><b>{{@status}}</b></div>
         </div>
     </div>
     <div class="col-4 text-center">
