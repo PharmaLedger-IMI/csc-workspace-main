@@ -1,150 +1,145 @@
 const { WebcController } = WebCardinal.controllers;
-const cscServices = require("csc-services");
-const OrdersService  = cscServices.OrderService;
-const CommunicationService  = cscServices.CommunicationService;
-const { messagesEnum, order, NotificationTypes, Roles, Topics }  = cscServices.constants;
-const {orderStatusesEnum} = order;
+const cscServices = require('csc-services');
+const OrdersService = cscServices.OrderService;
+const CommunicationService = cscServices.CommunicationService;
+const { messagesEnum, order, NotificationTypes, Roles, Topics } = cscServices.constants;
+const { orderStatusesEnum } = order;
 const NotificationsService = cscServices.NotificationsService;
-const eventBusService  = cscServices.EventBusService;
+const eventBusService = cscServices.EventBusService;
 
 export default class DashboardController extends WebcController {
-  constructor(...props) {
-    super(...props);
-    this.ordersService = new OrdersService(this.DSUStorage);
-    this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
-    this.notificationsService = new NotificationsService(this.DSUStorage);
+    constructor(...props) {
+        super(...props);
+        this.ordersService = new OrdersService(this.DSUStorage);
+        this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
+        this.notificationsService = new NotificationsService(this.DSUStorage);
 
-    this.model = {
-      tabNavigator: {
-        selected: '0',
-      },
-      // TODO: Refactor this
-      userProfile: {
-        logoURL: "../resources/images/pl_logo.png",
-        appName: "CMO",
-        userName: "CMOName1"
-      }
-    };
+        this.model = {
+            tabNavigator: {
+                selected: '0',
+            },
+            // TODO: Refactor this
+            userProfile: {
+                logoURL: '../resources/images/pl_logo.png',
+                appName: 'CMO',
+                userName: 'CMOName1',
+            },
+        };
 
-    this.init();
+        this.init();
 
-    this.attachAll();
+        this.attachAll();
 
-    this.handleMessages();
-  }
+        this.handleMessages();
+    }
 
-  init() {}
+    init() {}
 
-  handleMessages() {
-    this.communicationService.listenForMessages(async (err, data) => {
-      if (err) {
-        return console.error(err);
-      }
-      data = JSON.parse(data);
-      switch (data.message.operation) {
-        case messagesEnum.StatusInitiated: {
-          console.log('message received');
-          console.log(data);
-          if (data.message.data.orderSSI && data.message.data.documentsSSI) {
-            const order = await this.ordersService.mountOrder(
-              data.message.data.orderSSI,
-              data.message.data.documentsSSI
-            );
+    handleMessages() {
+        this.communicationService.listenForMessages(async (err, data) => {
+            if (err) {
+                return console.error(err);
+            }
+            data = JSON.parse(data);
+            switch (data.message.operation) {
+                case messagesEnum.StatusInitiated: {
+                    console.log('message received');
+                    console.log(data);
+                    debugger;
+                    if (data.message.data.orderSSI && data.message.data.sponsorDocumentsKeySSI && data.message.data.cmoDocumentsKeySSI && data.message.data.kitIdsKeySSI && data.message.data.commentsKeySSI && data.message.data.statusKeySSI) {
+                        const order = await this.ordersService.mountAndReceiveOrder(
+                            data.message.data.orderSSI,
+                            Roles.CMO,
+                            data.message.data.sponsorDocumentsKeySSI,
+                            data.message.data.cmoDocumentsKeySSI,
+                            data.message.data.kitIdsKeySSI,
+                            data.message.data.commentsKeySSI,
+                            data.message.data.statusKeySSI
+                        );
 
-            const notification = {
-              operation: NotificationTypes.UpdateOrderStatus,
-              orderId: order.orderId,
-              read: false,
-              status: orderStatusesEnum.Initiated,
-              keySSI: data.message.data.orderSSI,
-              role: Roles.Sponsor,
-              did: order.sponsorId,
-              date: new Date().toISOString(),
-              documentsKeySSI: order.documentsKeySSI,
-            };
+                        // const notification = {
+                        //     operation: NotificationTypes.UpdateOrderStatus,
+                        //     orderId: order.orderId,
+                        //     read: false,
+                        //     status: orderStatusesEnum.Initiated,
+                        //     keySSI: data.message.data.orderSSI,
+                        //     role: Roles.Sponsor,
+                        //     did: order.sponsorId,
+                        //     date: new Date().toISOString(),
+                        //     documentsKeySSI: order.documentsKeySSI,
+                        // };
 
-            const resultNotification = await this.notificationsService.insertNotification(notification);
-            eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-            console.log('order added');
-          }
-          break;
-        }
-        case messagesEnum.StatusReviewedByCMO: {
-          console.log('message received');
-          console.log(data);
+                        // const resultNotification = await this.notificationsService.insertNotification(notification);
+                        eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+                        console.log('order added');
+                    }
+                    break;
+                }
+                case messagesEnum.StatusReviewedByCMO: {
+                    console.log('message received');
+                    console.log(data);
 
-          if (data.message.data.orderSSI && data.message.data.cmoDocumentsSSI) {
-            const order = await this.ordersService.mountOrderReviewedByCMO(
-              data.message.data.orderSSI,
-              data.message.data.cmoDocumentsSSI
-            );
+                    if (data.message.data.orderSSI && data.message.data.cmoDocumentsSSI) {
+                        const order = await this.ordersService.mountOrderReviewedByCMO(data.message.data.orderSSI, data.message.data.cmoDocumentsSSI);
 
-            const notification = {
-              operation: NotificationTypes.UpdateOrderStatus,
-              orderId: order.orderId,
-              read: false,
-              status: orderStatusesEnum.ReviewedByCMO,
-              keySSI: data.message.data.orderSSI,
-              role: Roles.CMO,
-              did: order.sponsorId,
-              date: new Date().toISOString(),
-              documentsKeySSI: order.cmoDocumentsSSI,
-            };
+                        const notification = {
+                            operation: NotificationTypes.UpdateOrderStatus,
+                            orderId: order.orderId,
+                            read: false,
+                            status: orderStatusesEnum.ReviewedByCMO,
+                            keySSI: data.message.data.orderSSI,
+                            role: Roles.CMO,
+                            did: order.sponsorId,
+                            date: new Date().toISOString(),
+                            documentsKeySSI: order.cmoDocumentsSSI,
+                        };
 
-            const resultNotification = await this.notificationsService.insertNotification(notification);
-            eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-            eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-            console.log('order added');
-          }
-          break;
-        }
+                        const resultNotification = await this.notificationsService.insertNotification(notification);
+                        eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+                        eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+                        console.log('order added');
+                    }
+                    break;
+                }
 
-        case messagesEnum.StatusReviewedBySponsor: {
-          console.log('message received');
-          console.log(data);
+                case messagesEnum.StatusReviewedBySponsor: {
+                    console.log('message received');
+                    console.log(data);
 
-          if (data.message.data.orderSSI) {
-            const order = await this.ordersService.mountOrderReviewedBySponsor(data.message.data.orderSSI);
+                    if (data.message.data.orderSSI) {
+                        const order = await this.ordersService.mountOrderReviewedBySponsor(data.message.data.orderSSI);
 
-            const notification = {
-              operation: NotificationTypes.UpdateOrderStatus,
-              orderId: order.orderId,
-              read: false,
-              status: orderStatusesEnum.ReviewedBySponsor,
-              keySSI: data.message.data.orderSSI,
-              role: Roles.Sponsor,
-              did: order.sponsorId,
-              date: new Date().toISOString(),
-            };
+                        const notification = {
+                            operation: NotificationTypes.UpdateOrderStatus,
+                            orderId: order.orderId,
+                            read: false,
+                            status: orderStatusesEnum.ReviewedBySponsor,
+                            keySSI: data.message.data.orderSSI,
+                            role: Roles.Sponsor,
+                            did: order.sponsorId,
+                            date: new Date().toISOString(),
+                        };
 
-            const resultNotification = await this.notificationsService.insertNotification(notification);
-            eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-            eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-            console.log('order added');
-          }
-          break;
-        }
-      }
-    });
-  }
+                        const resultNotification = await this.notificationsService.insertNotification(notification);
+                        eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+                        eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+                        console.log('order added');
+                    }
+                    break;
+                }
+            }
+        });
+    }
 
-  attachAll() {
-    this.model.addExpression(
-      'isOrdersSelected',
-      () => this.model.tabNavigator.selected === '0',
-      'tabNavigator.selected'
-    );
-    this.model.addExpression(
-      'isShipmentsSelected',
-      () => this.model.tabNavigator.selected === '1',
-      'tabNavigator.selected'
-    );
-    this.model.addExpression('isKitsSelected', () => this.model.tabNavigator.selected === '2', 'tabNavigator.selected');
+    attachAll() {
+        this.model.addExpression('isOrdersSelected', () => this.model.tabNavigator.selected === '0', 'tabNavigator.selected');
+        this.model.addExpression('isShipmentsSelected', () => this.model.tabNavigator.selected === '1', 'tabNavigator.selected');
+        this.model.addExpression('isKitsSelected', () => this.model.tabNavigator.selected === '2', 'tabNavigator.selected');
 
-    this.onTagClick('change-tab', async (model, target, event) => {
-      document.getElementById(`tab-${this.model.tabNavigator.selected}`).classList.remove('active');
-      this.model.tabNavigator.selected = target.getAttribute('data-custom');
-      document.getElementById(`tab-${this.model.tabNavigator.selected}`).classList.add('active');
-    });
-  }
+        this.onTagClick('change-tab', async (model, target, event) => {
+            document.getElementById(`tab-${this.model.tabNavigator.selected}`).classList.remove('active');
+            this.model.tabNavigator.selected = target.getAttribute('data-custom');
+            document.getElementById(`tab-${this.model.tabNavigator.selected}`).classList.add('active');
+        });
+    }
 }

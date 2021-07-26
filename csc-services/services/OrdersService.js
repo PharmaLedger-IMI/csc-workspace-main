@@ -308,6 +308,7 @@ class OrdersService extends DSUService {
                 cmoDocumentsKeySSI: cmoDocumentsDsu.uid,
                 kitIdsKeySSI: kitIdsDsu.uid,
                 commentsKeySSI: commentsDsu.uid,
+                statusKeySSI: statusDsu.uid,
             },
             'Order Initiated'
         );
@@ -320,6 +321,7 @@ class OrdersService extends DSUService {
                 sponsorDocumentsKeySSI: sponsorDocumentsDsu.uid,
                 kitIdsKeySSI: kitIdsDsu.uid,
                 commentsKeySSI: commentsDsu.uid,
+                statusKeySSI: statusDsu.uid,
             },
             'Order Initiated'
         );
@@ -431,11 +433,12 @@ class OrdersService extends DSUService {
 
     // -> Functions for mounting newly created order in other actors except sponsor
 
-    async mountAndReceiveOrder(orderSSI, role, sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsDsu, commentsKeySSI) {
-        let order, sponsorDocuments, cmoDocuments, kits, comments, orderDb;
+    async mountAndReceiveOrder(orderSSI, role, sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsDsu, commentsKeySSI, statusKeySSI) {
+        let order, sponsorDocuments, cmoDocuments, kits, comments, orderDb, status;
         switch (role) {
             case Roles.CMO:
                 order = await this.mountEntityAsync(orderSSI, FoldersEnum.Orders);
+                status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.Statuses);
                 sponsorDocuments = await this.mountEntityAsync(sponsorDocumentsKeySSI, FoldersEnum.Documents);
                 cmoDocuments = await this.mountEntityAsync(cmoDocumentsKeySSI, FoldersEnum.Documents);
                 kits = await this.mountEntityAsync(kitIdsDsu, FoldersEnum.Kits);
@@ -443,7 +446,7 @@ class OrdersService extends DSUService {
 
                 orderDb = await this.addOrderToDB(
                     {
-                        ...orderModel,
+                        ...order,
                         orderSSI: order.uid,
                         status: status.history,
                         statusSSI: status.uid,
@@ -465,10 +468,11 @@ class OrdersService extends DSUService {
                 sponsorDocuments = await this.mountEntityAsync(sponsorDocumentsKeySSI, FoldersEnum.Documents);
                 kits = await this.mountEntityAsync(kitIdsDsu, FoldersEnum.Kits);
                 comments = await this.mountEntityAsync(commentsKeySSI, FoldersEnum.Comments);
+                status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.Statuses);
 
                 orderDb = await this.addOrderToDB(
                     {
-                        ...orderModel,
+                        ...order,
                         orderSSI: order.uid,
                         status: status.history,
                         statusSSI: status.uid,
@@ -607,6 +611,47 @@ class OrdersService extends DSUService {
     }
 
     // -> Functions for accessing data
+
+    async getOrderFromDsus(orderKeySSI) {
+        debugger;
+        const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderKeySSI);
+        const status = await this.getEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
+        orderDB.status = status.history;
+
+        const lastStatusUpdate = status.history.sort((a, b) => a - b)[0];
+
+        switch (lastStatusUpdate.status) {
+            case orderStatusesEnum.ReviewedByCMO:
+                if (orderDB.cmoDocumentsKeySSI) {
+                    const cmoDocuments = await this.getEntityAsync(orderDB.cmoDocumentsKeySSI, FoldersEnum.Documents);
+                    orderDB.cmoDocuments = cmoDocuments;
+                }
+                if (orderDB.commentsKeySSI) {
+                    const comments = await this.getEntityAsync(orderDB.commentsKeySSI, FoldersEnum.Comments);
+                    orderDB.comments = comments;
+                }
+                break;
+            case orderStatusesEnum.ReviewedBySponsor:
+                if (orderDB.sponsorDocumentsKeySSI) {
+                    const sponsorDocuments = await this.getEntityAsync(orderDB.sponsorDocumentsKeySSI, FoldersEnum.Documents);
+                    orderDB.sponsorDocuments = sponsorDocuments;
+                }
+                if (orderDB.commentsKeySSI) {
+                    const comments = await this.getEntityAsync(orderDB.commentsKeySSI, FoldersEnum.Comments);
+                    orderDB.comments = comments;
+                }
+                break;
+            case orderStatusesEnum.Approved:
+                break;
+            case orderStatusesEnum.Canceled:
+                if (orderDB.commentsKeySSI) {
+                    const comments = await this.getEntityAsync(orderDB.commentsKeySSI, FoldersEnum.Comments);
+                    orderDB.comments = comments;
+                }
+                break;
+        }
+        return orderDB;
+    }
 }
 
 module.exports = OrdersService;
