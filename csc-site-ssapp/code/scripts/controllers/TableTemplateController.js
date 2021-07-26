@@ -2,7 +2,6 @@
 const { WebcController } = WebCardinal.controllers;
 
 export default class TableTemplateController extends WebcController {
-  localData = null;
   constructor(...props) {
     super(...props);
 

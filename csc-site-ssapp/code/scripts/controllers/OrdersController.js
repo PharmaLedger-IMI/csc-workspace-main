@@ -1,5 +1,6 @@
-import OrdersService from '../services/OrdersService.js';
-import { orderStatusesEnum, orderTableHeaders } from '../constants/order.js';
+const cscServices = require("csc-services");
+const OrdersService  = cscServices.OrderService;
+const { orderStatusesEnum, orderTableHeaders }  = cscServices.constants.order;
 
 // eslint-disable-next-line no-undef
 const { WebcController } = WebCardinal.controllers;

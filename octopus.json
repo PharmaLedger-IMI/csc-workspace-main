@@ -486,14 +486,6 @@
         {
           "type": "copy",
           "src": "./utilitaries",
-          "target": "./csc-site-ssapp/",
-          "options": {
-            "overwrite": true
-          }
-        },
-        {
-          "type": "copy",
-          "src": "./utilitaries",
           "target": "./csc-sponsor-ssapp/",
           "options": {
             "overwrite": true
