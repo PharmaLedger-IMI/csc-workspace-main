@@ -1,24 +1,28 @@
 const { WebcController } = WebCardinal.controllers;
-const cscServices = require("csc-services");
-const OrdersService  = cscServices.OrderService;
-const CommunicationService  = cscServices.CommunicationService;
-const { messagesEnum, order, NotificationTypes, Roles, Topics }  = cscServices.constants;
-const {orderStatusesEnum} = order;
+const cscServices = require('csc-services');
+const OrdersService = cscServices.OrderService;
+const CommunicationService = cscServices.CommunicationService;
+const { messagesEnum, order, NotificationTypes, Roles, Topics } = cscServices.constants;
+const { orderStatusesEnum } = order;
 const NotificationsService = cscServices.NotificationsService;
-const eventBusService  = cscServices.EventBusService;
-
+const eventBusService = cscServices.EventBusService;
 
 export default class DashboardController extends WebcController {
   constructor(...props) {
     super(...props);
-
     this.ordersService = new OrdersService(this.DSUStorage);
-    this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SITE_IDENTITY);
+    this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
     this.notificationsService = new NotificationsService(this.DSUStorage);
 
     this.model = {
       tabNavigator: {
         selected: '0',
+      },
+      // TODO: Refactor this
+      userProfile: {
+        logoURL: '../resources/images/pl_logo.png',
+        appName: 'SITE',
+        userName: 'SITEName1',
       },
     };
 
@@ -35,30 +39,32 @@ export default class DashboardController extends WebcController {
         return console.error(err);
       }
       data = JSON.parse(data);
-
       switch (data.message.operation) {
         case messagesEnum.StatusInitiated: {
           console.log('message received');
-          console.log(data);
-          if (data.message.data.orderSSI && data.message.data.documentsSSI) {
-            const order = await this.ordersService.mountOrder(
-              data.message.data.orderSSI,
-              data.message.data.documentsSSI
+          if (data.message.data.orderSSI && data.message.data.kitIdsKeySSI && data.message.data.commentsKeySSI && data.message.data.statusKeySSI) {
+             let orderData = await this.ordersService.mountAndReceiveOrder(
+                data.message.data.orderSSI,
+                Roles.Site,
+                undefined,
+                undefined,
+                data.message.data.kitIdsKeySSI,
+                data.message.data.commentsKeySSI,
+                data.message.data.statusKeySSI
             );
 
             const notification = {
-              operation: NotificationTypes.UpdateOrderStatus,
-              orderId: order.orderId,
-              read: false,
-              status: orderStatusesEnum.Initiated,
-              keySSI: data.message.data.orderSSI,
-              role: Roles.Sponsor,
-              did: order.sponsorId,
-              date: new Date().toISOString(),
-              documentsKeySSI: order.documentsKeySSI,
+                operation: NotificationTypes.UpdateOrderStatus,
+                orderId: orderData.orderId,
+                read: false,
+                status: orderStatusesEnum.Initiated,
+                keySSI: data.message.data.orderSSI,
+                role: Roles.Sponsor,
+                did: orderData.sponsorId,
+                date: new Date().toISOString(),
             };
 
-            const resultNotification = await this.notificationsService.insertNotification(notification);
+            await this.notificationsService.insertNotification(notification);
             eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
             eventBusService.emitEventListeners(Topics.RefreshOrders, null);
             console.log('order added');
@@ -69,8 +75,15 @@ export default class DashboardController extends WebcController {
           console.log('message received');
           console.log(data);
 
+          //TODO are you sure that the order was mounted previously?
+          // if user is offline and an order will pass through many states: Initated, Reviewed by CMO, Accepted,
+          // the communication system will raise 3 different events and
+          //   1. the order of the events may not be the same
+          //   2. the communicationService is not waiting, it will provide the next message ASAP
+
+
           if (data.message.data.orderSSI) {
-            const order = await this.ordersService.mountOrderReviewed(data.message.data.orderSSI);
+            const order = await this.ordersService.mountOrderReviewedByCMO(data.message.data.orderSSI);
 
             const notification = {
               operation: NotificationTypes.UpdateOrderStatus,
@@ -80,10 +93,10 @@ export default class DashboardController extends WebcController {
               keySSI: data.message.data.orderSSI,
               role: Roles.CMO,
               did: order.sponsorId,
-              date: new Date().toISOString(),
+              date: new Date().toISOString()
             };
 
-            const resultNotification = await this.notificationsService.insertNotification(notification);
+            await this.notificationsService.insertNotification(notification);
             eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
             eventBusService.emitEventListeners(Topics.RefreshOrders, null);
             console.log('order added');
@@ -96,7 +109,7 @@ export default class DashboardController extends WebcController {
           console.log(data);
 
           if (data.message.data.orderSSI) {
-            const order = await this.ordersService.mountOrderReviewed(data.message.data.orderSSI);
+            const order = await this.ordersService.mountOrderReviewedBySponsor(data.message.data.orderSSI);
 
             const notification = {
               operation: NotificationTypes.UpdateOrderStatus,
@@ -109,7 +122,7 @@ export default class DashboardController extends WebcController {
               date: new Date().toISOString(),
             };
 
-            const resultNotification = await this.notificationsService.insertNotification(notification);
+            await this.notificationsService.insertNotification(notification);
             eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
             eventBusService.emitEventListeners(Topics.RefreshOrders, null);
             console.log('order added');
@@ -121,16 +134,8 @@ export default class DashboardController extends WebcController {
   }
 
   attachAll() {
-    this.model.addExpression(
-      'isOrdersSelected',
-      () => this.model.tabNavigator.selected === '0',
-      'tabNavigator.selected'
-    );
-    this.model.addExpression(
-      'isShipmentsSelected',
-      () => this.model.tabNavigator.selected === '1',
-      'tabNavigator.selected'
-    );
+    this.model.addExpression('isOrdersSelected', () => this.model.tabNavigator.selected === '0', 'tabNavigator.selected');
+    this.model.addExpression('isShipmentsSelected', () => this.model.tabNavigator.selected === '1', 'tabNavigator.selected');
     this.model.addExpression('isKitsSelected', () => this.model.tabNavigator.selected === '2', 'tabNavigator.selected');
 
     this.onTagClick('change-tab', async (model, target, event) => {

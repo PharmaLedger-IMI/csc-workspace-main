@@ -1,128 +1,142 @@
 const { WebcController } = WebCardinal.controllers;
-const cscServices = require("csc-services");
-const OrdersService  = cscServices.OrderService;
+const cscServices = require('csc-services');
+const OrdersService = cscServices.OrderService;
+const momentService  = cscServices.momentService;
 
 export default class SingleOrderController extends WebcController {
-
     constructor(...props) {
-
         super(...props);
 
         this.model = {
             accordion: {
-                order_details : { name: "Order Details" , tag : "order_details_accordion" , id : "order_details_accordion" , isOpened: true },
-                attached_documents : { name: "Attached Documents" , tag : "attached_documents_accordion", id : "attached_documents_accordion" , isOpened: false },
-                order_comments : { name: "Order Comments" , tag : "order_comments_accordion" , id : "order_comments_accordion" , isOpened: false }
+                order_details: {
+                    name: 'Order Details',
+                    tag: 'order_details_accordion',
+                    id: 'order_details_accordion',
+                    isOpened: true,
+                },
+                attached_documents: {
+                    name: 'Attached Documents',
+                    tag: 'attached_documents_accordion',
+                    id: 'attached_documents_accordion',
+                    isOpened: false,
+                },
+                order_comments: {
+                    name: 'Order Comments',
+                    tag: 'order_comments_accordion',
+                    id: 'order_comments_accordion',
+                    isOpened: false,
+                },
             },
             form: {
                 inputs: {
                     sponsor_id: {
-                        label: "Sponsor ID",
-                        name: "sponsor_id",
+                        label: 'Sponsor ID',
+                        name: 'sponsor_id',
                         required: true,
-                        placeholder: "Sponsor ID...",
-                        value: ''
+                        placeholder: 'Sponsor ID...',
+                        value: '',
                     },
                     delivery_date: {
-                        label: "Delivery Date/Time",
+                        label: 'Delivery Date/Time',
                         date: {
-                            name: "delivery_date",
+                            name: 'delivery_date',
                             required: true,
-                            value: ''
+                            value: '',
                         },
                         time: {
-                            name: "delivery_time",
+                            name: 'delivery_time',
                             required: true,
-                            value: ''
-                        }
+                            value: '',
+                        },
                     },
                     target_cmo_id: {
-                        label: "Target CMO ID",
-                        name: "target_cmo_id",
-                        placeholder: "Select Target CMO ID...",
+                        label: 'Target CMO ID',
+                        name: 'target_cmo_id',
+                        placeholder: 'Select Target CMO ID...',
                         required: true,
                         options: [
-                            { label: "ID 1",  value: "1"},
-                            { label: "ID 2",  value: "2"},
-                            { label: "ID 3",  value: "3"}
-                        ]
+                            { label: 'ID 1', value: '1' },
+                            { label: 'ID 2', value: '2' },
+                            { label: 'ID 3', value: '3' },
+                        ],
                     },
                     study_id: {
-                        label: "Study ID",
-                        name: "study_id",
+                        label: 'Study ID',
+                        name: 'study_id',
                         required: true,
-                        placeholder: "e.g ABC123X56789",
-                        value: ''
+                        placeholder: 'e.g ABC123X56789',
+                        value: '',
                     },
                     order_id: {
-                        label: "Order ID",
-                        name: "order_id",
+                        label: 'Order ID',
+                        name: 'order_id',
                         required: true,
-                        placeholder: "e.g O-000001234",
-                        value: ''
+                        placeholder: 'e.g O-000001234',
+                        value: '',
                     },
                     kit_id_list: {
-                        label: "Kit ID List (xlsx)",
-                        name: "kit_id_list",
+                        label: 'Kit ID List (xlsx)',
+                        name: 'kit_id_list',
                         required: true,
-                        placeholder: "No File",
-                        value: ''
+                        placeholder: 'No File',
+                        value: '',
                     },
                     site_id: {
-                        label: "Site ID",
-                        name: "site_id",
-                        placeholder: "Select Site ID...",
+                        label: 'Site ID',
+                        name: 'site_id',
+                        placeholder: 'Select Site ID...',
                         required: true,
                         options: [
-                            { label: "Site ID 1",  value: "1"},
-                            { label: "Site ID 2",  value: "2"},
-                            { label: "Site ID 3",  value: "3"}
-                        ]
+                            { label: 'Site ID 1', value: '1' },
+                            { label: 'Site ID 2', value: '2' },
+                            { label: 'Site ID 3', value: '3' },
+                        ],
                     },
                     site_region_id: {
-                        label: "Site Region ID (Autofilled)",
-                        name: "site_region_id",
+                        label: 'Site Region ID (Autofilled)',
+                        name: 'site_region_id',
                         required: true,
-                        placeholder: "",
-                        value: ''
+                        placeholder: '',
+                        value: '',
                     },
                     site_country: {
-                        label: "Site Country (Autofilled)",
-                        name: "site_country",
+                        label: 'Site Country (Autofilled)',
+                        name: 'site_country',
                         required: true,
-                        placeholder: "",
-                        value: ''
+                        placeholder: '',
+                        value: '',
                     },
                     temperature_comments: {
-                        label: "Temperature Comments",
-                        name: "temperature_comments",
+                        label: 'Temperature Comments',
+                        name: 'temperature_comments',
                         required: true,
-                        placeholder: "e.g Do not freeze",
-                        value: ''
+                        placeholder: 'e.g Do not freeze',
+                        value: '',
                     },
                     keep_between_temperature: {
                         min: {
-                            label: "Min Temperature (°C)",
-                            name: "keep_between_temperature_min",
+                            label: 'Min Temperature (°C)',
+                            name: 'keep_between_temperature_min',
                             required: true,
-                            placeholder: "",
-                            value: ''
+                            placeholder: '',
+                            value: '',
                         },
                         max: {
-                            label : "Max Temperature (°C)",
-                            name: "keep_between_temperature_max",
+                            label: 'Max Temperature (°C)',
+                            name: 'keep_between_temperature_max',
                             required: true,
-                            placeholder: "",
-                            value: ''
-                        }
+                            placeholder: '',
+                            value: '',
+                        },
                     },
                     add_comment: {
-                        label: "Add a Comment",
-                        name: "add_comment",
+                        label: 'Add a Comment',
+                        name: 'add_comment',
                         required: true,
-                        placeholder: "Add a comment....",
-                        value: ''
-                    }
+                        placeholder: 'Add a comment....',
+                        value: '',
+                    },
                 },
                 docs: {},
                 attachment: {
@@ -132,19 +146,14 @@ export default class SingleOrderController extends WebcController {
                     filesAppend: false,
                     files: [],
                 },
-                documents:[
-                    { name: "Document Name 1.pdf" , attached_by : "Novartis" , date: "03-06-2021, 00:00" , link : ""},
-                    { name: "Document Name 2.pdf" , attached_by : "Novartis" , date: "03-06-2021, 00:25" , link : ""},
-                ],
-                comments:[
-                    { content: "This is the comment that sponsor user wrote." , date: "03-06-2021, 01:00" }
-                ]
-            }
+                documents: [],
+                comments: [],
+            },
         };
-
 
         let { id, keySSI, documentsKeySSI } = this.history.location.state;
         this.ordersService = new OrdersService(this.DSUStorage);
+
         this.model.id = id;
         this.model.keySSI = keySSI;
         this.model.documentsKeySSI = documentsKeySSI;
@@ -153,112 +162,95 @@ export default class SingleOrderController extends WebcController {
 
         this.init();
 
-
         //Init Check on Accordion Items
-        if(this.model.accordion){
+        if (this.model.accordion) {
             let keys = Object.keys(this.model.accordion);
-            if(keys){
-                keys.forEach( (key) => {
-                    if(this.model.accordion[key].isOpened){
+            if (keys) {
+                keys.forEach((key) => {
+                    if (this.model.accordion[key].isOpened) {
                         this.openAccordionItem(this.model.accordion[key].id);
                     }
-                })
+                });
             }
         }
 
-
         this.onTagEvent('order_details_accordion', 'click', (e) => {
-            this.toggleAccordionItem("order_details_accordion");
+            this.toggleAccordionItem('order_details_accordion');
             this.model.accordion.order_details.isOpened = !this.model.accordion.order_details.isOpened;
         });
 
         this.onTagEvent('attached_documents_accordion', 'click', (e) => {
-            this.toggleAccordionItem("attached_documents_accordion");
+            this.toggleAccordionItem('attached_documents_accordion');
             this.model.accordion.attached_documents.isOpened = !this.model.accordion.attached_documents.isOpened;
         });
 
         this.onTagEvent('order_comments_accordion', 'click', (e) => {
-            this.toggleAccordionItem("order_comments_accordion");
+            this.toggleAccordionItem('order_comments_accordion');
             this.model.accordion.order_comments.isOpened = !this.model.accordion.order_comments.isOpened;
         });
 
         this.onTagEvent('history-button', 'click', (e) => {
-           this.onShowHistoryClick();
+            this.onShowHistoryClick();
         });
-
     }
 
-
-
-    toggleAccordionItem( el ){
+    toggleAccordionItem(el) {
         const element = document.getElementById(el);
 
-        const icon = document.getElementById(el +"_icon");
+        const icon = document.getElementById(el + '_icon');
         element.classList.toggle('accordion-item-active');
         icon.classList.toggle('rotate-icon');
 
         const panel = element.nextElementSibling;
 
-        if (panel.style.maxHeight === "1000px") {
-            panel.style.maxHeight = "0px";
+        if (panel.style.maxHeight === '1000px') {
+            panel.style.maxHeight = '0px';
         } else {
-            panel.style.maxHeight = "1000px";
+            panel.style.maxHeight = '1000px';
         }
-
-
     }
 
-
-    openAccordionItem( el ) {
+    openAccordionItem(el) {
         const element = document.getElementById(el);
-        const icon = document.getElementById(el +"_icon");
+        const icon = document.getElementById(el + '_icon');
 
         element.classList.add('accordion-item-active');
         icon.classList.add('rotate-icon');
 
         const panel = element.nextElementSibling;
-        panel.style.maxHeight = "1000px";
+        panel.style.maxHeight = '1000px';
 
         this.closeAllExcept(el);
     }
 
-    closeAccordionItem( el ) {
+    closeAccordionItem(el) {
         const element = document.getElementById(el);
-        const icon = document.getElementById(el +"_icon");
+        const icon = document.getElementById(el + '_icon');
 
         element.classList.remove('accordion-item-active');
         icon.classList.remove('rotate-icon');
 
         const panel = element.nextElementSibling;
-        panel.style.maxHeight = "0px"
+        panel.style.maxHeight = '0px';
     }
 
-    closeAllExcept(el){
+    closeAllExcept(el) {
         const element = document.getElementById(el);
 
-        if(el === 'order_details_accordion'){
-            this.closeAccordionItem('attached_documents_accordion');
+        if (el === 'order_details_accordion') {
             this.closeAccordionItem('order_comments_accordion');
         }
 
-        if(el === 'attached_documents_accordion'){
-            this.closeAccordionItem('order_details_accordion');
-            this.closeAccordionItem('order_comments_accordion');
-        }
-
-        if(el === 'order_comments_accordion'){
-            this.closeAccordionItem('attached_documents_accordion');
+        if (el === 'order_comments_accordion') {
             this.closeAccordionItem('order_details_accordion');
         }
-
     }
 
-    onShowHistoryClick(){
-
+    onShowHistoryClick() {
         this.createWebcModal({
-            template: "historyModal",
-            controller: "HistoryModalController",
-            model: { order: this.model.order},
+            template: 'historyModal',
+            controller: 'HistoryModalController',
+            model: { order: this.model.order },
             disableBackdropClosing: false,
             disableFooter: true,
             disableHeader: true,
@@ -269,30 +261,49 @@ export default class SingleOrderController extends WebcController {
             centered: true,
         });
 
-        console.log("Show History Clicked");
+        console.log('Show History Clicked');
     }
 
-
-
     async init() {
-
         const order = await this.ordersService.getOrder(this.model.keySSI, this.model.documentsKeySSI);
         this.model.order = order;
-        this.model.order.delivery_date = { date: this.getDate(this.model.order.deliveryDate) , time: this.getTime(this.model.order.deliveryDate)};
+        this.model.order = {...this.transformData(this.model.order)};
+        this.model.order.delivery_date = {
+            date: this.getDate(this.model.order.deliveryDate),
+            time: this.getTime(this.model.order.deliveryDate),
+        };
         console.log('MODEL:', JSON.stringify(this.model.order, null, 2));
 
         this.loadDataToInputs(order);
-
         return;
     }
 
+    transformData(data){
+        if(data){
 
-    loadDataToInputs( order ){
-        const el = document.getElementById("sponsorId");
-        console.log("Order" , order);
-        console.log("Element" , el);
+            data.status_value = data.status.sort( (function(a,b){
+                return new Date(b.date) - new Date(a.date);
+            }))[0].status
 
-        if(order && el){
+            data.status_date = momentService(data.status.sort( (function(a,b){
+                return new Date(b.date) - new Date(a.date);
+            }))[0].date).format('MM/DD/YYYY HH:mm:ss');
+
+            if(data.comments){
+                data.comments.forEach( (comment) => {
+                    comment.date = momentService(comment.date).format('MM/DD/YYYY HH:mm:ss');
+                })
+            }
+
+            return data;
+        }
+    }
+    loadDataToInputs(order) {
+        const el = document.getElementById('sponsorId');
+        console.log('Order', order);
+        console.log('Element', el);
+
+        if (order && el) {
             el.value = order.sponsorId;
         }
     }
@@ -301,13 +312,11 @@ export default class SingleOrderController extends WebcController {
         return;
     }
 
-
-    getDate( str){
-        return str.split(" ")[0];
+    getDate(str) {
+        return str.split(' ')[0];
     }
 
-    getTime( str){
-        return str.split(" ")[1];
+    getTime(str) {
+        return str.split(' ')[1];
     }
-
 }
