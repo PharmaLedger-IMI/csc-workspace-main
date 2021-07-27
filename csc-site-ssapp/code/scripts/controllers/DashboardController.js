@@ -11,7 +11,7 @@ export default class DashboardController extends WebcController {
   constructor(...props) {
     super(...props);
     this.ordersService = new OrdersService(this.DSUStorage);
-    this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
+    this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SITE_IDENTITY);
     this.notificationsService = new NotificationsService(this.DSUStorage);
 
     this.model = {

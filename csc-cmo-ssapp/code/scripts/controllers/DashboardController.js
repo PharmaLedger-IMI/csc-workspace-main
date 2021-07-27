@@ -12,7 +12,7 @@ export default class DashboardController extends WebcController {
         super(...props);
         this.ordersService = new OrdersService(this.DSUStorage);
         this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
-        this.notificationsService = new NotificationsService(this.DSUStorage);
+        this.notificationsService = new NotificationsService(this.DSUStorage, this.communicationService);
 
         this.model = {
             tabNavigator: {

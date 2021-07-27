@@ -7,12 +7,13 @@ const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService;
 const {Topics } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
+const CommunicationService  =  cscServices.CommunicationService;
 
 export default class NewOrderController extends WebcController {
     constructor(...props) {
         super(...props);
-
-        this.ordersService = new OrdersService(this.DSUStorage);
+        let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
+        this.ordersService = new OrdersService(this.DSUStorage, communicationService);
 
         this.model = {
             wizard_form: [

@@ -11,12 +11,14 @@ class OrdersService extends DSUService {
     ORDERS_TABLE = 'orders';
     ORDERS_FOLDER = '/orders';
 
-    constructor(DSUStorage) {
+    constructor(DSUStorage, communicationService) {
         super(DSUStorage, '/orders');
+        if(communicationService){
+            this.communicationService = communicationService;
+        }
         this.storageService = getSharedStorage(DSUStorage);
         this.notificationsService = new NotificationsService(DSUStorage);
         this.DSUStorage = DSUStorage;
-        this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
     }
 
     async getOrders() {
@@ -512,7 +514,6 @@ class OrdersService extends DSUService {
             comments = await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
             orderDB.comments = comments.comments;
         }
-
         const result = await this.updateOrderToDB(orderDB, orderKeySSI);
 
         let operation;
@@ -563,9 +564,13 @@ class OrdersService extends DSUService {
     // -> Function for updating changed order locally
 
     async updateLocalOrder(orderKeySSI) {
+        debugger;
         const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderKeySSI);
         // TODO: change to the new function that bypasses cache
-        const status = await this.getEntityAsync(orderDB.orderDB.statusSSI, FoldersEnum.Statuses);
+        await this.unmountEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
+        const entity = await this.mountEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
+        debugger;
+        const status = await this.getEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
         orderDB.status = status.history;
 
         const lastStatusUpdate = status.history.sort((a, b) => (moment(a.date).isSameOrAfter(moment(b.date)) ? -1 : 1))[0];
