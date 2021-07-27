@@ -282,7 +282,6 @@ export default class SingleOrderController extends WebcController {
         const order = await this.ordersService.getOrder(this.model.keySSI, this.model.documentsKeySSI);
         this.model.order = order;
         this.model.order = {...this.transformData(this.model.order)};
-        debugger;
         this.model.order.delivery_date = {
             date: this.getDate(this.model.order.deliveryDate),
             time: this.getTime(this.model.order.deliveryDate),

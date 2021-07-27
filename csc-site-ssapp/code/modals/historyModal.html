@@ -16,13 +16,24 @@
             </svg>
             <span><b>Orders</b></span>
         </div>
-        <!-- Connector -->
-        <div class="history-connector"></div>
 
-        <div class="history-status-element history-normal" data-for="@order.status">
-            <div class="history-date">{{@date}}</div>
-            <div><b>{{@status}}</b></div>
+        <div data-for="@order.status">
+            <div class="history-connector"></div>
+
+            <div data-if="@approved">
+                <div slot="true" class="history-status-element history-success" >
+                    <div class="history-date">{{@date}}</div>
+                    <div><b>{{@status}}</b></div>
+                </div>
+
+                <div slot="false" class="history-status-element history-normal" >
+                    <div class="history-date">{{@date}}</div>
+                    <div><b>{{@status}}</b></div>
+                </div>
+            </div>
+
         </div>
+
     </div>
     <div class="col-4 text-center">
         <div class="history-orders">
