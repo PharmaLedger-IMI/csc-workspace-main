@@ -47,7 +47,7 @@ export default class DashboardController extends WebcController {
                     console.log(data);
                     debugger;
                     if (data.message.data.orderSSI && data.message.data.sponsorDocumentsKeySSI && data.message.data.cmoDocumentsKeySSI && data.message.data.kitIdsKeySSI && data.message.data.commentsKeySSI && data.message.data.statusKeySSI) {
-                        const order = await this.ordersService.mountAndReceiveOrder(
+                        const orderData = await this.ordersService.mountAndReceiveOrder(
                             data.message.data.orderSSI,
                             Roles.CMO,
                             data.message.data.sponsorDocumentsKeySSI,
@@ -57,20 +57,20 @@ export default class DashboardController extends WebcController {
                             data.message.data.statusKeySSI
                         );
 
-                        // const notification = {
-                        //     operation: NotificationTypes.UpdateOrderStatus,
-                        //     orderId: order.orderId,
-                        //     read: false,
-                        //     status: orderStatusesEnum.Initiated,
-                        //     keySSI: data.message.data.orderSSI,
-                        //     role: Roles.Sponsor,
-                        //     did: order.sponsorId,
-                        //     date: new Date().toISOString(),
-                        //     documentsKeySSI: order.documentsKeySSI,
-                        // };
+                        const notification = {
+                            operation: NotificationTypes.UpdateOrderStatus,
+                            orderId: orderData.orderId,
+                            read: false,
+                            status: orderStatusesEnum.Initiated,
+                            keySSI: data.message.data.orderSSI,
+                            role: Roles.Sponsor,
+                            did: orderData.sponsorId,
+                            date: new Date().toISOString(),
+                        };
 
-                        // const resultNotification = await this.notificationsService.insertNotification(notification);
+                        await this.notificationsService.insertNotification(notification);
                         eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+                        eventBusService.emitEventListeners(Topics.RefreshOrders, null);
                         console.log('order added');
                     }
                     break;

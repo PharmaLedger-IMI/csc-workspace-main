@@ -1,8 +1,10 @@
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
+const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
-const Topics = cscServices.constants.Topics;
+const {Topics,Roles, NotificationTypes, order} = cscServices.constants;
+const {orderStatusesEnum}  = order;
 const viewModelResolver = cscServices.viewModelResolver;
 
 export default class ReviewOrderController extends WebcController {
@@ -13,6 +15,7 @@ export default class ReviewOrderController extends WebcController {
         let order = this.history.location.state.order;
 
         this.ordersService = new OrdersService(this.DSUStorage);
+        this.notificationsService = new NotificationsService(this.DSUStorage);
 
         this.model = {
             wizard_form: [
@@ -64,7 +67,7 @@ export default class ReviewOrderController extends WebcController {
 
             if (files) {
                 files.forEach((file) => {
-                    this.model.form.documents.push({ name: file.name, attached_by: 'Novartis', date: new Date().toLocaleString(), link: '', file: file });
+                    this.model.form.documents.push({ name: file.name, attached_by: Roles.CMO, date: new Date().toLocaleString(), link: '', file: file });
                 });
             }
             //TODO: what is this for?
@@ -160,7 +163,6 @@ export default class ReviewOrderController extends WebcController {
         const onSubmitYesResponse = async () => {
             const payload = {};
 
-            debugger;
             if (this.model.form) {
                 if (this.model.form.inputs) {
                     let keys = Object.keys(this.model.form.inputs);
@@ -177,42 +179,47 @@ export default class ReviewOrderController extends WebcController {
                     }
                 }
 
-                if (this.model.form.documents) {
-                    payload['files'] = [];
-                    this.model.form.documents.forEach((doc) => {
-                        payload['files'].push(doc.file);
-                    });
+                const newFiles = this.model.form.documents.filter(doc => typeof doc.file !== "undefined").
+                                map(document => document.file);
+
+                const reviewComment = {
+                    entity:Roles.CMO,
+                    comment:payload.add_comment,
+                    date:new Date().getTime()
                 }
-
                 console.log('SUBMIT : Payload: ', payload);
-                const orders = await this.ordersService.getOrders();
 
-                let dbOrder = orders.find((_order) => _order.keySSI === order.keySSI);
-                const dsuOrder = await this.ordersService.getOrder(order.keySSI, dbOrder.documentsKeySSI);
-                console.log(dsuOrder);
-                // await this.ordersService.updateOrder(payload);
-                debugger;
-                await this.ordersService.finishReview(
-                    payload.files.filter((x) => x !== undefined),
-                    [payload.add_comment],
-                    order.keySSI
-                );
 
+                await this.ordersService.updateOrderNew(order.keySSI,newFiles, reviewComment, Roles.CMO, orderStatusesEnum.ReviewedByCMO);
+                const notification = {
+                    operation: NotificationTypes.UpdateOrderStatus,
+                    orderId: order.orderId,
+                    read: false,
+                    status: orderStatusesEnum.ReviewedByCMO,
+                    keySSI: order.keySSI,
+                    role: Roles.CMO,
+                    did: order.sponsorId,
+                    date: new Date().toISOString(),
+                };
+                await this.notificationsService.insertNotification(notification);
                 eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+                eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+
+                this.createWebcModal({
+                    template: 'orderCreatedModal',
+                    controller: 'OrderCreatedModalController',
+                    disableBackdropClosing: false,
+                    disableFooter: true,
+                    disableHeader: true,
+                    disableExpanding: true,
+                    disableClosing: true,
+                    disableCancelButton: true,
+                    expanded: false,
+                    centered: true,
+                });
+
             }
 
-            this.createWebcModal({
-                template: 'orderCreatedModal',
-                controller: 'OrderCreatedModalController',
-                disableBackdropClosing: false,
-                disableFooter: true,
-                disableHeader: true,
-                disableExpanding: true,
-                disableClosing: true,
-                disableCancelButton: true,
-                expanded: false,
-                centered: true,
-            });
         };
 
         const onNoResponse = () => console.log('Why not?');
@@ -287,7 +294,6 @@ export default class ReviewOrderController extends WebcController {
     }
 
     getDateTime() {
-        debugger;
         return this.model.order.delivery_date.date + ' ' + this.model.order.delivery_date.time;
     }
 
