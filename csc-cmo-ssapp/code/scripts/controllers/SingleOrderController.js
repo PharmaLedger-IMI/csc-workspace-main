@@ -2,6 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const viewModelResolver = cscServices.viewModelResolver;
+const momentService  = cscServices.momentService;
 
 export default class SingleOrderController extends WebcController {
     constructor(...props) {
@@ -13,12 +14,11 @@ export default class SingleOrderController extends WebcController {
         }
         this.model = model;
 
-        let { id, keySSI, documentsKeySSI } = this.history.location.state;
+        let { id, keySSI } = this.history.location.state;
         this.ordersService = new OrdersService(this.DSUStorage);
 
         this.model.id = id;
         this.model.keySSI = keySSI;
-        this.model.documentsKeySSI = documentsKeySSI;
 
         this.attachEvents();
 
@@ -140,33 +140,58 @@ export default class SingleOrderController extends WebcController {
     }
 
     async init() {
-        debugger;
-        const order = await this.ordersService.getOrderFromDsus(this.model.keySSI);
+        const order = await this.ordersService.getOrder(this.model.keySSI);
         this.model.order = order;
-        console.log('MODEL:', JSON.stringify(this.model.order, null, 2));
+        this.model.order = {...this.transformData(this.model.order)};
         this.model.order.delivery_date = {
             date: this.getDate(this.model.order.deliveryDate),
             time: this.getTime(this.model.order.deliveryDate),
         };
         console.log('MODEL:', JSON.stringify(this.model.order, null, 2));
-
-        this.loadDataToInputs(order);
-
-        return;
     }
 
-    loadDataToInputs(order) {
-        const el = document.getElementById('sponsorId');
-        console.log('Order', order);
-        console.log('Element', el);
+    transformData(data){
+        if(data){
+            data.documents = [];
 
-        if (order && el) {
-            el.value = order.sponsorId;
+            if(data.sponsorDocuments){
+                data.sponsorDocuments.forEach( (item) => {
+                    item.date = momentService(item.data).format('MM/DD/YYYY HH:mm:ss');
+
+                });
+            }
+            data.status_value = data.status.sort( (function(a,b){
+                return new Date(b.date) - new Date(a.date);
+            }))[0].status
+
+            data.status_date = momentService(data.status.sort( (function(a,b){
+                return new Date(b.date) - new Date(a.date);
+            }))[0].date).format('MM/DD/YYYY HH:mm:ss');
+
+            if(data.comments){
+                data.comments.forEach( (comment) => {
+                    comment.date = momentService(comment.date).format('MM/DD/YYYY HH:mm:ss');
+                })
+            }
+
+            if(data.sponsorDocuments){
+                data.sponsorDocuments.forEach( (doc) => {
+                    doc.date = momentService(doc.date).format('MM/DD/YYYY HH:mm:ss');
+                    data.documents.push(doc);
+                })
+            }
+
+            if(data.cmoDocuments){
+                data.cmoDocuments.forEach( (doc) => {
+                    doc.date = momentService(doc.date).format('MM/DD/YYYY HH:mm:ss');
+                    data.documents.push(doc);
+                })
+            }
+            return data;
         }
     }
 
     attachEvents() {
-        return;
     }
 
     getDate(str) {

@@ -158,12 +158,10 @@ export default class SingleOrderController extends WebcController {
             },
         };
 
-        let { id, keySSI, documentsKeySSI } = this.history.location.state;
+        let {keySSI } = this.history.location.state;
         this.ordersService = new OrdersService(this.DSUStorage);
 
-        this.model.id = id;
         this.model.keySSI = keySSI;
-        this.model.documentsKeySSI = documentsKeySSI;
 
         this.attachEvents();
 
@@ -279,18 +277,13 @@ export default class SingleOrderController extends WebcController {
     }
 
     async init() {
-        const order = await this.ordersService.getOrder(this.model.keySSI, this.model.documentsKeySSI);
+        const order = await this.ordersService.getOrder(this.model.keySSI);
         this.model.order = order;
         this.model.order = {...this.transformData(this.model.order)};
         this.model.order.delivery_date = {
             date: this.getDate(this.model.order.deliveryDate),
             time: this.getTime(this.model.order.deliveryDate),
         };
-        console.log('MODEL:', JSON.stringify(this.model.order, null, 2));
-
-        this.loadDataToInputs(order);
-
-        return;
     }
 
     transformData(data){
@@ -334,16 +327,6 @@ export default class SingleOrderController extends WebcController {
             return data;
         }
     }
-    loadDataToInputs(order) {
-        const el = document.getElementById('sponsorId');
-        console.log('Order', order);
-        console.log('Element', el);
-
-        if (order && el) {
-            el.value = order.sponsorId;
-        }
-    }
-
     attachEvents() {
         return;
     }
