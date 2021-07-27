@@ -3,27 +3,21 @@ const { WebcController } = WebCardinal.controllers;
 
 class OrderCreatedModalController extends WebcController {
 
-    constructor(element, history) {
-        super(element, history);
-        this.model = {
-            complex: 'more complex',
-            example: 'Form example',
-            input: {
-                fullName: {
-                    type: 'text',
-                    placeholder: 'Full name'
-                },
-                email: {
-                    type: 'email',
-                    placeholder: 'Email'
-                },
-                password: {
-                    type: 'password',
-                    placeholder: 'Password'
-                }
-            }
-        }
+    constructor(...props) {
+        super(...props);
+
+
+        console.log(this.model);
+
+        debugger;
+
+        this.onTagEvent('navigate-to-order', 'click', (e) => {
+            this.navigateToPageTag('order', {
+                keySSI:this.model.keySSI
+            });
+        });
     }
+
 }
 
 export default OrderCreatedModalController;
