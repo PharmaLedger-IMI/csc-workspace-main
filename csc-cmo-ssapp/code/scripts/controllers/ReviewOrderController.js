@@ -1,6 +1,7 @@
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
+const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
 const {Topics,Roles, NotificationTypes, order} = cscServices.constants;
@@ -13,8 +14,8 @@ export default class ReviewOrderController extends WebcController {
         //TODO make sure that order is received here as a simple Object and not as a proxified model
         //remove all deep copy usages :JSON.parse(JSON.stringify(proxifiedObject))
         let order = this.history.location.state.order;
-
-        this.ordersService = new OrdersService(this.DSUStorage);
+        let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
+        this.ordersService = new OrdersService(this.DSUStorage, communicationService);
         this.notificationsService = new NotificationsService(this.DSUStorage);
 
         this.model = {
