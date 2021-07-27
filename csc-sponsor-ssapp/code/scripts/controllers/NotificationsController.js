@@ -1,7 +1,13 @@
 const { WebcController } = WebCardinal.controllers;
-import NotificationsService from '../services/NotificationService.js';
-import eventBusService from '../services/EventBusService.js';
-import { Topics } from '../constants/topics.js';
+
+//Services
+const cscServices = require('csc-services');
+
+//Import
+const eventBusService = cscServices.EventBusService;
+const NotificationsService = cscServices.NotificationsService;
+const {Topics } = cscServices.constants;
+
 
 export default class NotificationsController extends WebcController {
   constructor(...props) {

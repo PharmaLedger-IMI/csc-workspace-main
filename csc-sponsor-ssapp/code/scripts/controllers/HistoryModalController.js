@@ -1,7 +1,13 @@
 // MyModalController.js
 const { WebcController } = WebCardinal.controllers;
+
+//Services
 const cscServices = require('csc-services');
+
+//Import
 const momentService  = cscServices.momentService;
+
+
 class HistoryModalController extends WebcController {
 
     constructor(...props) {
@@ -10,8 +16,6 @@ class HistoryModalController extends WebcController {
         this.controllerElement = props[0];
 
         this.model.order = {...this.transformData(this.model.order)}
-        debugger;
-        console.log(this.model);
     }
 
     onReady() {
