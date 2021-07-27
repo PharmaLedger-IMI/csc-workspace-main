@@ -6,6 +6,7 @@ const cscServices = require('csc-services');
 //Import
 const OrdersService = cscServices.OrderService;
 const momentService  = cscServices.momentService;
+const {orderStatusesEnum} = cscServices.constants.order;
 
 export default class SingleOrderController extends WebcController {
     constructor(...props) {
@@ -197,6 +198,12 @@ export default class SingleOrderController extends WebcController {
         this.onTagEvent('history-button', 'click', (e) => {
             this.onShowHistoryClick();
         });
+
+        this.onTagEvent('review-order', 'click', (e) => {
+            this.navigateToPageTag('review-order', {
+                order: JSON.parse(JSON.stringify(this.model.order)),
+            });
+        });
     }
 
     toggleAccordionItem(el) {
@@ -324,6 +331,9 @@ export default class SingleOrderController extends WebcController {
                     data.documents.push(doc);
                 })
             }
+
+            data.couldNotBeReviewed = orderStatusesEnum.ReviewedByCMO !== data.status_value;
+
             return data;
         }
     }

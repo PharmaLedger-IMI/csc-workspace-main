@@ -5,7 +5,6 @@ const cscServices = require('csc-services');
 //Import
 const OrdersService = cscServices.OrderService;
 const NotificationsService = cscServices.NotificationsService;
-const eventBusService = cscServices.EventBusService;
 const CommunicationService = cscServices.CommunicationService;
 const {Topics, messagesEnum , NotificationTypes , Roles } = cscServices.constants;
 const { orderStatusesEnum } = cscServices.constants.order;

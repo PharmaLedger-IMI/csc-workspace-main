@@ -45,7 +45,6 @@ export default class DashboardController extends WebcController {
                 case messagesEnum.StatusInitiated: {
                     console.log('message received');
                     console.log(data);
-                    debugger;
                     if (data.message.data.orderSSI && data.message.data.sponsorDocumentsKeySSI && data.message.data.cmoDocumentsKeySSI && data.message.data.kitIdsKeySSI && data.message.data.commentsKeySSI && data.message.data.statusKeySSI) {
                         const orderData = await this.ordersService.mountAndReceiveOrder(
                             data.message.data.orderSSI,
@@ -75,39 +74,13 @@ export default class DashboardController extends WebcController {
                     }
                     break;
                 }
-                case messagesEnum.StatusReviewedByCMO: {
-                    console.log('message received');
-                    console.log(data);
-
-                    if (data.message.data.orderSSI && data.message.data.cmoDocumentsSSI) {
-                        const order = await this.ordersService.mountOrderReviewedByCMO(data.message.data.orderSSI, data.message.data.cmoDocumentsSSI);
-
-                        const notification = {
-                            operation: NotificationTypes.UpdateOrderStatus,
-                            orderId: order.orderId,
-                            read: false,
-                            status: orderStatusesEnum.ReviewedByCMO,
-                            keySSI: data.message.data.orderSSI,
-                            role: Roles.CMO,
-                            did: order.sponsorId,
-                            date: new Date().toISOString(),
-                            documentsKeySSI: order.cmoDocumentsSSI,
-                        };
-
-                        const resultNotification = await this.notificationsService.insertNotification(notification);
-                        eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-                        eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-                        console.log('order added');
-                    }
-                    break;
-                }
 
                 case messagesEnum.StatusReviewedBySponsor: {
                     console.log('message received');
                     console.log(data);
 
                     if (data.message.data.orderSSI) {
-                        const order = await this.ordersService.mountOrderReviewedBySponsor(data.message.data.orderSSI);
+                        const order = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
 
                         const notification = {
                             operation: NotificationTypes.UpdateOrderStatus,

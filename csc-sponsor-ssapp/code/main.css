@@ -298,6 +298,12 @@
     height: 38px;
     font-size: 15px;
 }
+.simple-default-button[disabled]:hover{
+    background: #008898;
+}
+.simple-default-button[disabled]{
+    opacity: 0.5;
+}
 
 .simple-default-button > .link-active {
     color: white !important;

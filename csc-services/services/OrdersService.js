@@ -567,9 +567,8 @@ class OrdersService extends DSUService {
         debugger;
         const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderKeySSI);
         // TODO: change to the new function that bypasses cache
-        await this.unmountEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
-        const entity = await this.mountEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
-        debugger;
+        // await this.unmountEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
+        // const entity = await this.mountEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
         const status = await this.getEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
         orderDB.status = status.history;
 
@@ -580,22 +579,22 @@ class OrdersService extends DSUService {
                 // TODO: change to the new function that bypasses cache
                 if (orderDB.cmoDocumentsKeySSI) {
                     const cmoDocuments = await this.getEntityAsync(orderDB.cmoDocumentsKeySSI, FoldersEnum.Documents);
-                    orderDB.cmoDocuments = cmoDocuments;
+                    orderDB.cmoDocuments = cmoDocuments.documents;
                 }
                 if (orderDB.commentsKeySSI) {
                     const comments = await this.getEntityAsync(orderDB.commentsKeySSI, FoldersEnum.Comments);
-                    orderDB.comments = comments;
+                    orderDB.comments = comments.comments;
                 }
                 break;
             case orderStatusesEnum.ReviewedBySponsor:
                 // TODO: change to the new function that bypasses cache
                 if (orderDB.sponsorDocumentsKeySSI) {
                     const sponsorDocuments = await this.getEntityAsync(orderDB.sponsorDocumentsKeySSI, FoldersEnum.Documents);
-                    orderDB.sponsorDocuments = sponsorDocuments;
+                    orderDB.sponsorDocuments = sponsorDocuments.documents;
                 }
                 if (orderDB.commentsKeySSI) {
                     const comments = await this.getEntityAsync(orderDB.commentsKeySSI, FoldersEnum.Comments);
-                    orderDB.comments = comments;
+                    orderDB.comments = comments.comments;
                 }
                 break;
             case orderStatusesEnum.Approved:
@@ -605,7 +604,7 @@ class OrdersService extends DSUService {
                 // TODO: change to the new function that bypasses cache
                 if (orderDB.commentsKeySSI) {
                     const comments = await this.getEntityAsync(orderDB.commentsKeySSI, FoldersEnum.Comments);
-                    orderDB.comments = comments;
+                    orderDB.comments = comments.comments;
                 }
                 break;
         }

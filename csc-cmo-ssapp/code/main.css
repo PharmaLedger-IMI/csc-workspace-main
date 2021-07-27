@@ -289,6 +289,13 @@
     font-size: 15px;
 }
 
+.simple-default-button[disabled]:hover{
+    background: #008898;
+}
+.simple-default-button[disabled]{
+    opacity: 0.5;
+}
+
 .submit-button:focus {
     outline: 0;
 }

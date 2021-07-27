@@ -252,7 +252,7 @@
                 <th scope="col">Delete</th>
               </tr>
               </thead>
-              <tbody data-for="@order.sponsorDocuments">
+              <tbody data-for="@order.documents">
               <tr>
                 <th>{{@name}}</th>
                 <td>{{@attached_by}}</td>
@@ -314,6 +314,9 @@
               </table>
             </div>
           </div>
+
+          <button disabled="@order.couldNotBeReviewed" data-tag="review-order" class="simple-default-button">Review</button>
+
         </div>
       </div>
     </div>

@@ -47,7 +47,6 @@ export default class OrdersService extends DSUService {
 
   async createOrder(data) {
 
-    debugger;
     const statusDsu = await this.saveEntityAsync(
       {
         status: orderStatusesEnum.Initiated,

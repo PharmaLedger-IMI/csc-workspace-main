@@ -3,6 +3,7 @@ const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const viewModelResolver = cscServices.viewModelResolver;
 const momentService  = cscServices.momentService;
+const {orderStatusesEnum} = cscServices.constants.order;
 
 export default class SingleOrderController extends WebcController {
     constructor(...props) {
@@ -187,6 +188,9 @@ export default class SingleOrderController extends WebcController {
                     data.documents.push(doc);
                 })
             }
+
+            data.couldNotBeReviewed = [orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.Approved, orderStatusesEnum.Canceled].indexOf(data.status_value)!==-1;
+
             return data;
         }
     }
