@@ -234,7 +234,6 @@ export default class OrdersService extends DSUService {
   }
 
   async finishReview(comments, orderSSI) {
-    debugger;
     const order = await this.getEntityAsync(orderSSI);
     const updatedComments = [
       ...order.comments,

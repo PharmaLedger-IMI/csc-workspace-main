@@ -169,7 +169,7 @@ export default class ReviewOrderController extends WebcController {
                 console.log('SUBMIT : Payload: ', payload);
 
 
-                await this.ordersService.updateOrderNew(order.keySSI,newFiles, reviewComment, Roles.Sponsor, orderStatusesEnum.ReviewedBySponsor);
+                const result  = await this.ordersService.updateOrderNew(order.keySSI,newFiles, reviewComment, Roles.Sponsor, orderStatusesEnum.ReviewedBySponsor);
                 const notification = {
                     operation: NotificationTypes.UpdateOrderStatus,
                     orderId: order.orderId,
@@ -187,6 +187,7 @@ export default class ReviewOrderController extends WebcController {
                 this.createWebcModal({
                     template: 'orderCreatedModal',
                     controller: 'OrderCreatedModalController',
+                    model: result,
                     disableBackdropClosing: false,
                     disableFooter: true,
                     disableHeader: true,

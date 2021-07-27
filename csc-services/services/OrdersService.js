@@ -241,7 +241,6 @@ class OrdersService extends DSUService {
     // -> Functions for creation of order
 
     async createOrder(data) {
-        debugger;
 
         const { statusDsu, sponsorDocumentsDsu, cmoDocumentsDsu, kitIdsDsu, commentsDsu } = await this.createOrderOtherDSUs();
 
