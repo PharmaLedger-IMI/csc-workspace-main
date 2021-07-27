@@ -16,6 +16,10 @@ class OrderCreatedModalController extends WebcController {
                 keySSI:this.model.keySSI
             });
         });
+
+        this.onTagEvent('navigate-to-dashboard', 'click', (e) => {
+            this.navigateToPageTag('dashboard', {});
+        });
     }
 
 }
