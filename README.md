@@ -4,7 +4,14 @@
 
 ( This workspace was originally forked from the https://github.com/PharmaLedger-IMI/epi-workspace )
 
-[Documentation Page](https://pharmaledger-imi.github.io/fgt-workspace/)
+[Documentation Page](https://pharmaledger-imi.github.io/csc-workspace-main/)
+
+### Disclaimer
+Copyright © 2020-2022, PharmaLedger Consortium
+ 
+This document and its contents remain the property of the beneficiaries of the PharmaLedger Consortium and may not be re-used, distributed or reproduced without the expressed written approval of the PharmaLedger Coordinators, Maria Eugenia Beltran and Daniel Fritz (Universidad Politécnica de Madrid and Novartis respectively; contact@pharmaledger.eu)
+ 
+THIS DOCUMENT AND INFORMAITON IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS DOCUMENT, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
 ### Licence
 
@@ -30,12 +37,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-
 ### Running
 To run the application launch your browser (preferably Chrome) in Incognito mode and access the http://localhost:8080 link.
 
 You will be present with a menu from where you can choose the SSApp you with to launch
-
 
 ### Installation
 
@@ -226,10 +231,10 @@ Currently not supported
             * csc-courier-fabric-wallet/loader;
             * csc-site-wallet/loader;
 
-    * fgt-sponsor-ssapp: The application for the sponsor;
-    * fgt-cmo-ssapp: The application for the contract manufacturing organization;
-    * fgt-courier-ssapp: The application for the courier;
-    * fgt-site-ssapp: The application for the clinical site;
+    * csc-sponsor-ssapp: The application for the sponsor;
+    * csc-cmo-ssapp: The application for the contract manufacturing organization;
+    * csc-courier-ssapp: The application for the courier;
+    * csc-site-ssapp: The application for the clinical site;
     * gtin-dsu-wizard: the ssapp the creates GTIN based DSUs. *Cloned from epi*;
     * gtin-resolver: the 'library' to resolve gtin+batchs to dsus. *Cloned from epi*;
 
