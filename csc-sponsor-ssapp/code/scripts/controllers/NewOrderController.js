@@ -1,7 +1,11 @@
 const { WebcController } = WebCardinal.controllers;
-import eventBusService from '../services/EventBusService.js';
-import { Topics } from '../constants/topics.js';
+
+//Services
 const cscServices = require('csc-services');
+
+//Import
+const eventBusService = cscServices.EventBusService;
+const {Topics } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
 const CommunicationService  =  cscServices.CommunicationService;
 
@@ -57,6 +61,7 @@ export default class NewOrderController extends WebcController {
                             { label: 'ID 2', value: '2' },
                             { label: 'ID 3', value: '3' },
                         ],
+                        value: '1'
                     },
                     study_id: {
                         label: 'Study ID',
@@ -98,6 +103,7 @@ export default class NewOrderController extends WebcController {
                             { label: 'Site ID 2', value: '2' },
                             { label: 'Site ID 3', value: '3' },
                         ],
+                        value: '1'
                     },
                     site_region_id: {
                         label: 'Site Region ID',
@@ -155,6 +161,7 @@ export default class NewOrderController extends WebcController {
                 documents: [],
                 comments: [{ content: 'This is the comment that sponsor user wrote.', date: '03-06-2021, 01:00' }],
             },
+            orderCreatedKeySSI : ''
         };
         this.model.addExpression(
             'hasComments',
@@ -314,24 +321,33 @@ export default class NewOrderController extends WebcController {
 
                 const result = await this.ordersService.createOrder(payload);
 
+                this.model.orderCreatedKeySSI = result.keySSI;
+
                 console.log(result);
 
                 eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+
+
+                this.createWebcModal({
+                    template: 'orderCreatedModal',
+                    controller: 'OrderCreatedModalController',
+                    model: result,
+                    disableBackdropClosing: false,
+                    disableFooter: true,
+                    disableHeader: true,
+                    disableExpanding: true,
+                    disableClosing: true,
+                    disableCancelButton: true,
+                    expanded: false,
+                    centered: true,
+                });
             }
 
-            this.createWebcModal({
-                template: 'orderCreatedModal',
-                controller: 'OrderCreatedModalController',
-                disableBackdropClosing: false,
-                disableFooter: true,
-                disableHeader: true,
-                disableExpanding: true,
-                disableClosing: true,
-                disableCancelButton: true,
-                expanded: false,
-                centered: true,
-            });
+
+
         };
+
+
 
         const onNoResponse = () => console.log('Why not?');
 
@@ -345,9 +361,11 @@ export default class NewOrderController extends WebcController {
                     if (keys) {
                         keys.forEach((key) => {
                             if (key === 'delivery_date') {
-                                payload['delivery_date'] = this.getDateTime();
+                                this.model.form.inputs['delivery_date'].date.value = null;
+                                this.model.form.inputs['delivery_date'].time.value = null;
                             } else if (key === 'keep_between_temperature') {
-                                payload['keep_between_temperature'] = this.getTemperature();
+                                this.model.form.inputs['keep_between_temperature'].min.value = null;
+                                this.model.form.inputs['keep_between_temperature'].max.value = null;
                             } else {
                                 this.model.form.inputs[key].value = '';
                             }
