@@ -1,20 +1,18 @@
 const { WebcController } = WebCardinal.controllers;
-import OrdersService from '../services/OrdersService.js';
-import CommunicationService from '../services/CommunicationService.js';
-import { messagesEnum } from '../constants/messages.js';
-import { orderStatusesEnum } from '../constants/order.js';
-import { NotificationTypes } from '../constants/notifications.js';
-import NotificationsService from '../services/NotificationService.js';
-import { Roles } from '../constants/roles.js';
-import eventBusService from '../services/EventBusService.js';
-import { Topics } from '../constants/topics.js';
+const cscServices = require('csc-services');
+const OrdersService = cscServices.OrderService;
+const CommunicationService = cscServices.CommunicationService;
+const { messagesEnum, order, NotificationTypes, Roles, Topics } = cscServices.constants;
+const { orderStatusesEnum } = order;
+const NotificationsService = cscServices.NotificationsService;
+const eventBusService = cscServices.EventBusService;
 
 export default class DashboardController extends WebcController {
     constructor(...props) {
         super(...props);
 
-        this.ordersService = new OrdersService(this.DSUStorage);
         this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
+        this.ordersService = new OrdersService(this.DSUStorage, this.communicationService);
         this.notificationsService = new NotificationsService(this.DSUStorage);
 
         this.model = {
@@ -42,9 +40,9 @@ export default class DashboardController extends WebcController {
                 case messagesEnum.StatusReviewedByCMO: {
                     console.log('message received');
                     console.log(data);
-                    if (data.message.data.orderSSI && data.message.data.cmoDocumentsSSI && data.message.data.comments) {
-                        const { orderSSI, cmoDocumentsSSI, comments } = data.message.data;
-                        const order = await this.ordersService.reviewedByCmo(orderSSI, cmoDocumentsSSI, comments);
+                    if (data.message.data.orderSSI) {
+                        const { orderSSI} = data.message.data;
+                        const order = await this.ordersService.updateLocalOrder(orderSSI);
 
                         const notification = {
                             operation: NotificationTypes.UpdateOrderStatus,
