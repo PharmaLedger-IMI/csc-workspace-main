@@ -61,7 +61,7 @@ export default class SingleOrderController extends WebcController {
                         value: ''
                     },
                     kit_id_list: {
-                        label: "Kit ID List (xlsx)",
+                        label: "Kit ID List (csv)",
                         name: "kit_id_list",
                         required: true,
                         placeholder: "No File",

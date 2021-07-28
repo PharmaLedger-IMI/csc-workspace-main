@@ -78,7 +78,7 @@ export default class NewOrderController extends WebcController {
                         value: '',
                     },
                     kit_id_list: {
-                        label: 'Kit ID List (xlsx)',
+                        label: 'Kit ID List (csv)',
                         name: 'kit_id_list',
                         required: true,
                         placeholder: 'No File',
