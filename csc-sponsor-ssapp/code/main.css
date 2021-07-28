@@ -439,9 +439,16 @@
     width: 200px;
     font-size: 13px;
 }
-
 .order-status-blue {
     background: #4171b1;
+}
+
+.order-status-green {
+    background: #34a86b;
+}
+
+.order-status-red{
+    background: red;
 }
 
 .single-order-title {

@@ -165,6 +165,21 @@ export default class SingleOrderController extends WebcController {
                 return new Date(b.date) - new Date(a.date);
             }))[0].status
 
+            data.status_approved = data.status_value === orderStatusesEnum.Approved;
+            data.status_cancelled = data.status_value === orderStatusesEnum.Canceled;
+            data.status_normal = data.status_value !== orderStatusesEnum.Canceled && data.status_value !== orderStatusesEnum.Approved;
+
+            data.pending_action = "";
+
+            if( data.status_value === orderStatusesEnum.ReviewedByCMO){
+                data.pending_action = "Sponsor Review or Approve";
+            }
+            else if( data.status_value === orderStatusesEnum.ReviewedBySponsor){
+                data.pending_action = "Cmo Review or Approve";
+            }else{
+                data.pending_action = "There are no any further pending actions.";
+            }
+
             data.status_date = momentService(data.status.sort( (function(a,b){
                 return new Date(b.date) - new Date(a.date);
             }))[0].date).format('MM/DD/YYYY HH:mm:ss');

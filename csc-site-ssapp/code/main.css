@@ -478,6 +478,17 @@
     margin-top: 40px;
 
 }
+.order-status-blue {
+    background: #4171b1;
+}
+
+.order-status-green {
+    background: #34a86b;
+}
+
+.order-status-red{
+    background: red;
+}
 
 .accordion-item-holder {
     max-height: 0;

@@ -396,6 +396,15 @@
     background: #4171b1;
 }
 
+.order-status-green {
+    background: #34a86b;
+}
+
+.order-status-red{
+    background: red;
+}
+
+
 .single-order-title {
     font-size: 18px;
     color: #00345b;
