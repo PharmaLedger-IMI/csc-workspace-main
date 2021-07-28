@@ -73,7 +73,7 @@ export default class NewOrderController extends WebcController {
                         value: ''
                     },
                     kit_id_list: {
-                        label: "Kit ID List (xlsx)",
+                        label: "Kit ID List (csv)",
                         name: "kit_id_list",
                         required: true,
                         placeholder: "No File",
@@ -292,9 +292,9 @@ export default class NewOrderController extends WebcController {
 
 
                 console.log("SUBMIT : Payload: " , payload);
-    
+
                 const result = await this.ordersService.createOrder(payload);
-    
+
                 console.log(result);
 
                 eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
