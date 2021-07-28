@@ -13,7 +13,7 @@ class OrdersService extends DSUService {
 
     constructor(DSUStorage, communicationService) {
         super(DSUStorage, '/orders');
-        if(communicationService){
+        if (communicationService) {
             this.communicationService = communicationService;
         }
         this.storageService = getSharedStorage(DSUStorage);
@@ -129,7 +129,7 @@ class OrdersService extends DSUService {
         // const result = await this.addOrderToDB({ ...order, orderSSI: keySSI, cmoDocumentsSSI: documentsSSI });
         const selectedOrder = await this.storageService.getRecord(this.ORDERS_TABLE, order.orderId);
 
-        if(documentsSSI){
+        if (documentsSSI) {
             const documents = await this.mountEntityAsync(documentsSSI, '/documents');
             selectedOrder.cmoDocumentsSSI = documentsSSI;
         }
@@ -241,7 +241,6 @@ class OrdersService extends DSUService {
     // -> Functions for creation of order
 
     async createOrder(data) {
-
         const { statusDsu, sponsorDocumentsDsu, cmoDocumentsDsu, kitIdsDsu, commentsDsu } = await this.createOrderOtherDSUs();
 
         const status = await this.updateStatusDsu(orderStatusesEnum.Initiated, statusDsu.uid);
@@ -563,11 +562,7 @@ class OrdersService extends DSUService {
     // -> Function for updating changed order locally
 
     async updateLocalOrder(orderKeySSI) {
-        debugger;
         const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderKeySSI);
-        // TODO: change to the new function that bypasses cache
-        // await this.unmountEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
-        // const entity = await this.mountEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
         const status = await this.getEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
         orderDB.status = status.history;
 

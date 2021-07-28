@@ -119,7 +119,6 @@
     position: absolute;
     left: 0;
     text-align: left;
-
 }
 
 .header-right {
@@ -227,7 +226,6 @@
     width: 100%;
 }
 
-
 .show-step {
     display: inline-block;
 }
@@ -289,10 +287,10 @@
     font-size: 15px;
 }
 
-.simple-default-button[disabled]:hover{
+.simple-default-button[disabled]:hover {
     background: #008898;
 }
-.simple-default-button[disabled]{
+.simple-default-button[disabled] {
     opacity: 0.5;
 }
 
@@ -420,7 +418,6 @@
     font-weight: 700;
     color: #00345b;
     transition: 0.4s;
-
 }
 
 .accordion-item-active {
@@ -443,7 +440,6 @@
 
 .single-order-data-holder {
     margin-top: 40px;
-
 }
 
 .accordion-item-holder {
@@ -510,7 +506,6 @@
 }
 
 :host(.webc-modal-dialog) {
-
 }
 
 /* styling */

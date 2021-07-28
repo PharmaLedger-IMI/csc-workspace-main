@@ -52,7 +52,6 @@
     position: absolute;
     left: 20px;
     padding: 20px;
-
 }
 
 .dashboard-content-holder {
@@ -152,7 +151,6 @@
     position: absolute;
     left: 0;
     text-align: left;
-
 }
 
 .header-right {
@@ -260,7 +258,6 @@
     width: 100%;
 }
 
-
 .show-step {
     display: inline-block;
 }
@@ -298,10 +295,27 @@
     height: 38px;
     font-size: 15px;
 }
-.simple-default-button[disabled]:hover{
+
+.simple-default-button.bg-red {
+    background-color: red;
+}
+
+.simple-default-button.bg-green {
+    background-color: green;
+}
+
+.simple-default-button.bg-red[disabled]:hover {
+    background-color: red;
+}
+
+.simple-default-button.bg-green[disabled]:hover {
+    background-color: green;
+}
+
+.simple-default-button[disabled]:hover {
     background: #008898;
 }
-.simple-default-button[disabled]{
+.simple-default-button[disabled] {
     opacity: 0.5;
 }
 
@@ -314,7 +328,7 @@
 }
 
 .simple-default-button:hover {
-    background: #177f8b;
+    filter: brightness(120%);
 }
 
 .submit-button {
@@ -452,7 +466,6 @@
     font-weight: 700;
     color: #00345b;
     transition: 0.4s;
-
 }
 
 .accordion-item-active {
@@ -475,7 +488,6 @@
 
 .single-order-data-holder {
     margin-top: 40px;
-
 }
 
 .accordion-item-holder {
@@ -542,7 +554,6 @@
 }
 
 :host(.webc-modal-dialog) {
-
 }
 
 /* styling */

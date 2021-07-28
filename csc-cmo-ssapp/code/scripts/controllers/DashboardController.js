@@ -100,6 +100,48 @@ export default class DashboardController extends WebcController {
                     }
                     break;
                 }
+                case messagesEnum.StatusCanceled: {
+                    if (data.message.data.orderSSI) {
+                        const order = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
+
+                        const notification = {
+                            operation: NotificationTypes.UpdateOrderStatus,
+                            orderId: order.orderId,
+                            read: false,
+                            status: orderStatusesEnum.Canceled,
+                            keySSI: data.message.data.orderSSI,
+                            role: Roles.Sponsor,
+                            did: order.sponsorId,
+                            date: new Date().toISOString(),
+                        };
+
+                        await this.notificationsService.insertNotification(notification);
+                        eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+                        eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+                    }
+                    break;
+                }
+                case messagesEnum.StatusApproved: {
+                    if (data.message.data.orderSSI) {
+                        const order = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
+
+                        const notification = {
+                            operation: NotificationTypes.UpdateOrderStatus,
+                            orderId: order.orderId,
+                            read: false,
+                            status: orderStatusesEnum.Approved,
+                            keySSI: data.message.data.orderSSI,
+                            role: Roles.Sponsor,
+                            did: order.sponsorId,
+                            date: new Date().toISOString(),
+                        };
+
+                        await this.notificationsService.insertNotification(notification);
+                        eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+                        eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+                    }
+                    break;
+                }
             }
         });
     }

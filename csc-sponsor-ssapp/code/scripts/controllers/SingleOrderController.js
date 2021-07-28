@@ -5,8 +5,12 @@ const cscServices = require('csc-services');
 
 //Import
 const OrdersService = cscServices.OrderService;
-const momentService  = cscServices.momentService;
-const {orderStatusesEnum} = cscServices.constants.order;
+const momentService = cscServices.momentService;
+const { Topics, Roles, NotificationTypes, order } = cscServices.constants;
+const { orderStatusesEnum } = order;
+const NotificationsService = cscServices.NotificationsService;
+const eventBusService = cscServices.EventBusService;
+const CommunicationService = cscServices.CommunicationService;
 
 export default class SingleOrderController extends WebcController {
     constructor(...props) {
@@ -159,8 +163,10 @@ export default class SingleOrderController extends WebcController {
             },
         };
 
-        let {keySSI } = this.history.location.state;
-        this.ordersService = new OrdersService(this.DSUStorage);
+        let { keySSI } = this.history.location.state;
+        this.notificationsService = new NotificationsService(this.DSUStorage);
+        let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
+        this.ordersService = new OrdersService(this.DSUStorage, communicationService);
 
         this.model.keySSI = keySSI;
 
@@ -204,6 +210,60 @@ export default class SingleOrderController extends WebcController {
                 order: JSON.parse(JSON.stringify(this.model.order)),
             });
         });
+
+        this.onTagEvent('cancel-order', 'click', (e) => {
+            this.showErrorModal(new Error(`Are you sure you want to cancel this order?`), 'Cancel Order', cancelOrder, () => {}, {
+                disableExpanding: true,
+                cancelButtonText: 'No',
+                confirmButtonText: 'Yes',
+                id: 'error-modal',
+            });
+        });
+
+        this.onTagEvent('approve-order', 'click', () => {
+            this.showErrorModal(new Error(`Are you sure you want to approve the order?`), 'Approve Order', approveOrder, () => {}, {
+                disableExpanding: true,
+                cancelButtonText: 'No',
+                confirmButtonText: 'Yes',
+                id: 'error-modal',
+            });
+        });
+
+        const cancelOrder = async () => {
+            const result = await this.ordersService.updateOrderNew(this.model.order.keySSI, null, null, Roles.Sponsor, orderStatusesEnum.Canceled);
+            const notification = {
+                operation: NotificationTypes.UpdateOrderStatus,
+                orderId: this.model.order.orderId,
+                read: false,
+                status: orderStatusesEnum.Canceled,
+                keySSI: this.model.order.keySSI,
+                role: Roles.Sponsor,
+                did: order.sponsorId,
+                date: new Date().toISOString(),
+            };
+            await this.notificationsService.insertNotification(notification);
+            eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+            eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+            this.showErrorModalAndRedirect('Order was canceled, redirecting to dashboard...', 'Order Cancelled', '/', 2000);
+        };
+
+        const approveOrder = async () => {
+            const result = await this.ordersService.updateOrderNew(this.model.order.keySSI, null, null, Roles.Sponsor, orderStatusesEnum.Approved);
+            const notification = {
+                operation: NotificationTypes.UpdateOrderStatus,
+                orderId: this.model.order.orderId,
+                read: false,
+                status: orderStatusesEnum.Approved,
+                keySSI: this.model.order.keySSI,
+                role: Roles.Sponsor,
+                did: order.sponsorId,
+                date: new Date().toISOString(),
+            };
+            await this.notificationsService.insertNotification(notification);
+            eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+            eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+            this.showErrorModalAndRedirect('Order was approved, redirecting to dashboard...', 'Order Approved', '/', 2000);
+        };
     }
 
     toggleAccordionItem(el) {
@@ -286,53 +346,55 @@ export default class SingleOrderController extends WebcController {
     async init() {
         const order = await this.ordersService.getOrder(this.model.keySSI);
         this.model.order = order;
-        this.model.order = {...this.transformData(this.model.order)};
+        this.model.order = { ...this.transformData(this.model.order) };
         this.model.order.delivery_date = {
             date: this.getDate(this.model.order.deliveryDate),
             time: this.getTime(this.model.order.deliveryDate),
         };
     }
 
-    transformData(data){
-        if(data){
-
+    transformData(data) {
+        if (data) {
             data.documents = [];
 
-            if(data.sponsorDocuments){
-                data.sponsorDocuments.forEach( (item) => {
+            if (data.sponsorDocuments) {
+                data.sponsorDocuments.forEach((item) => {
                     item.date = momentService(item.data).format('MM/DD/YYYY HH:mm:ss');
-
                 });
             }
-            data.status_value = data.status.sort( (function(a,b){
+            data.status_value = data.status.sort(function (a, b) {
                 return new Date(b.date) - new Date(a.date);
-            }))[0].status
+            })[0].status;
 
-            data.status_date = momentService(data.status.sort( (function(a,b){
-                return new Date(b.date) - new Date(a.date);
-            }))[0].date).format('MM/DD/YYYY HH:mm:ss');
+            data.status_date = momentService(
+                data.status.sort(function (a, b) {
+                    return new Date(b.date) - new Date(a.date);
+                })[0].date
+            ).format('MM/DD/YYYY HH:mm:ss');
 
-            if(data.comments){
-                data.comments.forEach( (comment) => {
+            if (data.comments) {
+                data.comments.forEach((comment) => {
                     comment.date = momentService(comment.date).format('MM/DD/YYYY HH:mm:ss');
-                })
+                });
             }
 
-            if(data.sponsorDocuments){
-                data.sponsorDocuments.forEach( (doc) => {
+            if (data.sponsorDocuments) {
+                data.sponsorDocuments.forEach((doc) => {
                     doc.date = momentService(doc.date).format('MM/DD/YYYY HH:mm:ss');
                     data.documents.push(doc);
-                })
+                });
             }
 
-            if(data.cmoDocuments){
-                data.cmoDocuments.forEach( (doc) => {
+            if (data.cmoDocuments) {
+                data.cmoDocuments.forEach((doc) => {
                     doc.date = momentService(doc.date).format('MM/DD/YYYY HH:mm:ss');
                     data.documents.push(doc);
-                })
+                });
             }
 
             data.couldNotBeReviewed = orderStatusesEnum.ReviewedByCMO !== data.status_value;
+            data.couldNotBeCancelled = orderStatusesEnum.Approved === data.status_value || orderStatusesEnum.Canceled === data.status_value;
+            data.couldNotBeApproved = data.status.indexOf(orderStatusesEnum.ReviewedByCMO) === -1 || orderStatusesEnum.Canceled === data.status_value || orderStatusesEnum.Approved === data.status_value;
 
             return data;
         }

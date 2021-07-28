@@ -1,324 +1,372 @@
 <webc-container controller="SingleOrderController">
-  <psk-layout columns="1">
+    <psk-layout columns="1">
+        <webc-template template="header"></webc-template>
+        <webc-template template="dashboard-menu"></webc-template>
 
-    <webc-template template="header"></webc-template>
-    <webc-template template="dashboard-menu"></webc-template>
+        <div class="single-order-navigation-holder"><webc-link tag="dashboard">Dashboard</webc-link> / <webc-link tag="dashboard">Orders</webc-link> / 0001dkas</div>
 
-    <div class="single-order-navigation-holder">
-      <webc-link tag="dashboard">Dashboard</webc-link> / <webc-link tag="dashboard">Orders</webc-link> / 0001dkas
-    </div>
-
-    <div class="single-order-main-holder">
-      <div class="row">
-        <div class="col-4 text-left">
-          <div class="order-status-box order-status-blue">
-            <div>Order Status:</div>
-            <div><b>{{@order.status_value}}</b></div>
-            <div>{{@order.deliveryDate}}</div>
-          </div>
-        </div>
-        <div class="col-4 text-center">
-          <div class="single-order-title"><b>Order</b></div>
-          <div class="pending-action-text"><b>Pending Action:</b></div>
-          <div class="next-action-text">Pending Review by CMO</div>
-        </div>
-        <div class="col-4 text-right">
-          <button data-tag="history-button" class="simple-default-button">View History</button>
-        </div>
-      </div>
-
-      <div class="row single-order-data-holder" >
-        <div class="col-12">
-          <!-- Order Details -->
-          <div class="accordion-item" data-tag="order_details_accordion" id="order_details_accordion">
-            <svg id="order_details_accordion_icon" version="1.1"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                 width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
-                        <path fill="#231F20" d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
-                            l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
-                            C79.619,74.358,79.684,70.511,81.969,68.167z"/>
-                        </svg>
-            <span>Order Details</span>
-          </div>
-          <div class="accordion-item-holder">
-            <div class="row" style="    padding: 20px;">
-              <div class="col-6">
-
-                <!-- Sponsor ID -->
-                <div class="row">
-                  <!--Label -->
-                  <div class="col-5">
-                    <label class="my-1 mr-2">{{@form.inputs.sponsor_id.label}}</label>
-                  </div>
-                  <!-- Input -->
-                  <div class="col-7">
-                    <input class="form-control form-control-sm" type="text" name="@form.inputs.sponsor_id.name" placeholder="@form.inputs.sponsor_id.placeholder" value="@order.sponsorId" disabled>
-                  </div>
-                </div>
-
-                <!-- Break -->
-                <div class="row"><div class="col-12"><br></div></div>
-
-                <!-- Request Delivery Date/Time -->
-                <div class="row">
-                  <!--Label -->
-                  <div class="col-5">
-                    <label class="my-1 mr-2">Request Delivery Date/Time</label>
-                  </div>
-                  <!-- Input -->
-                  <div class="col-7">
-                    <div class="row">
-                      <div class="col-7">
-                        <!-- Input -->
-                        <input class="form-control form-control-sm" type="text"  value="@order.delivery_date.date" disabled>
-                      </div>
-                      <div class="col-5">
-                        <!-- Input -->
-                        <input class="form-control form-control-sm" type="text"  value="@order.delivery_date.time" disabled>
-                      </div>
+        <div class="single-order-main-holder">
+            <div class="row">
+                <div class="col-4 text-left">
+                    <div class="order-status-box order-status-blue">
+                        <div>Order Status:</div>
+                        <div><b>{{@order.status_value}}</b></div>
+                        <div>{{@order.deliveryDate}}</div>
                     </div>
-                  </div>
                 </div>
-
-                <!-- Break -->
-                <div class="row"><div class="col-12"><br></div></div>
-
-                <!-- Target CMO ID -->
-                <div class="row">
-                  <!--Label -->
-                  <div class="col-5">
-                    <label class="my-1 mr-2">{{@form.inputs.target_cmo_id.label}}</label>
-                  </div>
-                  <!-- Input -->
-                  <div class="col-7">
-                    <input class="form-control form-control-sm" type="text" name="@form.inputs.target_cmo_id.name" placeholder="@form.inputs.target_cmo_id.placeholder" value="@order.targetCmoId" disabled>
-                  </div>
+                <div class="col-4 text-center">
+                    <div class="single-order-title"><b>Order</b></div>
+                    <div class="pending-action-text"><b>Pending Action:</b></div>
+                    <div class="next-action-text">Pending Review by CMO</div>
                 </div>
-
-                <!-- Break -->
-                <div class="row"><div class="col-12"><br></div></div>
-
-                <!-- Study ID -->
-                <div class="row">
-                  <!--Label -->
-                  <div class="col-5">
-                    <label class="my-1 mr-2">{{@form.inputs.study_id.label}}</label>
-                  </div>
-                  <!-- Input -->
-                  <div class="col-7">
-                    <input class="form-control form-control-sm" type="text" name="@form.inputs.study_id.name" value="@order.studyId" disabled>
-                  </div>
+                <div class="col-4 text-right">
+                    <button data-tag="history-button" class="simple-default-button">View History</button>
                 </div>
-
-                <!-- Break -->
-                <div class="row"><div class="col-12"><br></div></div>
-
-                <!-- Order ID -->
-                <div class="row">
-                  <!--Label -->
-                  <div class="col-5">
-                    <label class="my-1 mr-2">{{@form.inputs.order_id.label}}</label>
-                  </div>
-                  <!-- Input -->
-                  <div class="col-7">
-                    <input class="form-control form-control-sm" type="text" name="@form.inputs.order_id.name" value="@order.orderId" disabled>
-                  </div>
-                </div>
-
-                <!-- Break -->
-                <div class="row"><div class="col-12"><br></div></div>
-
-                <!-- Kit ID List -->
-                <div class="row">
-                  <!--Label -->
-                  <div class="col-5">
-                    <label class="my-1 mr-2">{{@form.inputs.kit_id_list.label}}</label>
-                  </div>
-                  <!-- Input -->
-                  <div class="col-7">
-                    <input class="form-control form-control-sm" type="text" name="@form.inputs.kit_id_list.name" value="@order.kitIdList" disabled>
-                  </div>
-                </div>
-
-
-
-
-              </div>
-
-              <div class="col-6">
-                <!-- Site ID -->
-                <div class="row">
-                  <!--Label -->
-                  <div class="col-5">
-                    <label class="my-1 mr-2">{{@form.inputs.site_id.label}}</label>
-                  </div>
-                  <!-- Input -->
-                  <div class="col-7">
-                    <input class="form-control form-control-sm" type="text" name="@form.inputs.site_id.name" value="@order.siteId" disabled>
-                  </div>
-                </div>
-
-                <!-- Break -->
-                <div class="row"><div class="col-12"><br></div></div>
-
-                <!-- Site Region ID -->
-                <div class="row">
-                  <!--Label -->
-                  <div class="col-5">
-                    <label class="my-1 mr-2">{{@form.inputs.site_region_id.label}}</label>
-                  </div>
-                  <!-- Input -->
-                  <div class="col-7">
-                    <input class="form-control form-control-sm" type="text" name="@form.inputs.site_region_id.name" value="@order.siteRegionId" disabled>
-                  </div>
-                </div>
-
-                <!-- Break -->
-                <div class="row"><div class="col-12"><br></div></div>
-
-                <!-- Site Country -->
-                <div class="row">
-                  <!--Label -->
-                  <div class="col-5">
-                    <label class="my-1 mr-2">{{@form.inputs.site_country.label}}</label>
-                  </div>
-                  <!-- Input -->
-                  <div class="col-7">
-                    <input class="form-control form-control-sm" type="text" name="@form.inputs.site_country.name" value="@order.siteCountry" disabled>
-                  </div>
-                </div>
-
-                <!-- Break -->
-                <div class="row"><div class="col-12"><br></div></div>
-
-
-                <div class="row" style="margin-top: -15px; margin-bottom: -15px;">
-                  <div class="col-6">
-                    <!-- Keep Between -->
-                    <div class="form-group">
-                      <!-- Label -->
-                      <label for="@form.inputs.keep_between_temperature.min.name">{{@form.inputs.keep_between_temperature.min.label}}</label>
-                      <!--Input -->
-                      <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature.min.name"  value="@order.temperatures.min" disabled>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <!-- Keep Between -->
-                    <div class="form-group">
-                      <!-- Label -->
-                      <label for="@form.inputs.keep_between_temperature.max.name">{{@form.inputs.keep_between_temperature.max.label}}</label>
-                      <!--Input -->
-                      <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature.max.name"  value="@order.temperatures.max" disabled>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Break -->
-                <div class="row"><div class="col-12"><br></div></div>
-
-                <!-- Site Country -->
-                <div class="row">
-                  <!--Label -->
-                  <div class="col-5">
-                    <label class="my-1 mr-2">{{@form.inputs.temperature_comments.label}}</label>
-                  </div>
-                  <!-- Input -->
-                  <div class="col-7">
-                    <input class="form-control form-control-sm" type="text" name="@form.inputs.temperature_comments.name" value="@order.temperature_comments" disabled>
-                  </div>
-                </div>
-
-              </div>
             </div>
-          </div>
 
-          <!-- Attached Documents -->
-          <div class="accordion-item" data-tag="attached_documents_accordion" id="attached_documents_accordion">
-            <svg id="attached_documents_accordion_icon" version="1.1"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                 width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
-                        <path fill="#231F20" d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
+            <div class="row single-order-data-holder">
+                <div class="col-12">
+                    <!-- Order Details -->
+                    <div class="accordion-item" data-tag="order_details_accordion" id="order_details_accordion">
+                        <svg id="order_details_accordion_icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
+                            <path
+                                fill="#231F20"
+                                d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
                             l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
-                            C79.619,74.358,79.684,70.511,81.969,68.167z"/>
+                            C79.619,74.358,79.684,70.511,81.969,68.167z"
+                            />
                         </svg>
-            <span>Attached Documents</span>
-          </div>
-          <div class="accordion-item-holder" data-if="@order.documents">
-            <table class="table table-borderless attach-documents-table">
-              <thead>
-              <tr>
-                <th scope="col">Document Name</th>
-                <th scope="col">Attached By</th>
-                <th scope="col">Date/Time Attached</th>
-                <th scope="col">Open/Download</th>
-                <th scope="col">Delete</th>
-              </tr>
-              </thead>
-              <tbody data-for="@order.documents">
-              <tr>
-                <th>{{@name}}</th>
-                <td>{{@attached_by}}</td>
-                <td>{{@date}}</td>
-                <td>
-                  <svg class="attach-documents-table-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                       width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
-                                    <path fill="#231F20" d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
+                        <span>Order Details</span>
+                    </div>
+                    <div class="accordion-item-holder">
+                        <div class="row" style="padding: 20px">
+                            <div class="col-6">
+                                <!-- Sponsor ID -->
+                                <div class="row">
+                                    <!--Label -->
+                                    <div class="col-5">
+                                        <label class="my-1 mr-2">{{@form.inputs.sponsor_id.label}}</label>
+                                    </div>
+                                    <!-- Input -->
+                                    <div class="col-7">
+                                        <input class="form-control form-control-sm" type="text" name="@form.inputs.sponsor_id.name" placeholder="@form.inputs.sponsor_id.placeholder" value="@order.sponsorId" disabled />
+                                    </div>
+                                </div>
+
+                                <!-- Break -->
+                                <div class="row">
+                                    <div class="col-12"><br /></div>
+                                </div>
+
+                                <!-- Request Delivery Date/Time -->
+                                <div class="row">
+                                    <!--Label -->
+                                    <div class="col-5">
+                                        <label class="my-1 mr-2">Request Delivery Date/Time</label>
+                                    </div>
+                                    <!-- Input -->
+                                    <div class="col-7">
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <!-- Input -->
+                                                <input class="form-control form-control-sm" type="text" value="@order.delivery_date.date" disabled />
+                                            </div>
+                                            <div class="col-5">
+                                                <!-- Input -->
+                                                <input class="form-control form-control-sm" type="text" value="@order.delivery_date.time" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Break -->
+                                <div class="row">
+                                    <div class="col-12"><br /></div>
+                                </div>
+
+                                <!-- Target CMO ID -->
+                                <div class="row">
+                                    <!--Label -->
+                                    <div class="col-5">
+                                        <label class="my-1 mr-2">{{@form.inputs.target_cmo_id.label}}</label>
+                                    </div>
+                                    <!-- Input -->
+                                    <div class="col-7">
+                                        <input class="form-control form-control-sm" type="text" name="@form.inputs.target_cmo_id.name" placeholder="@form.inputs.target_cmo_id.placeholder" value="@order.targetCmoId" disabled />
+                                    </div>
+                                </div>
+
+                                <!-- Break -->
+                                <div class="row">
+                                    <div class="col-12"><br /></div>
+                                </div>
+
+                                <!-- Study ID -->
+                                <div class="row">
+                                    <!--Label -->
+                                    <div class="col-5">
+                                        <label class="my-1 mr-2">{{@form.inputs.study_id.label}}</label>
+                                    </div>
+                                    <!-- Input -->
+                                    <div class="col-7">
+                                        <input class="form-control form-control-sm" type="text" name="@form.inputs.study_id.name" value="@order.studyId" disabled />
+                                    </div>
+                                </div>
+
+                                <!-- Break -->
+                                <div class="row">
+                                    <div class="col-12"><br /></div>
+                                </div>
+
+                                <!-- Order ID -->
+                                <div class="row">
+                                    <!--Label -->
+                                    <div class="col-5">
+                                        <label class="my-1 mr-2">{{@form.inputs.order_id.label}}</label>
+                                    </div>
+                                    <!-- Input -->
+                                    <div class="col-7">
+                                        <input class="form-control form-control-sm" type="text" name="@form.inputs.order_id.name" value="@order.orderId" disabled />
+                                    </div>
+                                </div>
+
+                                <!-- Break -->
+                                <div class="row">
+                                    <div class="col-12"><br /></div>
+                                </div>
+
+                                <!-- Kit ID List -->
+                                <div class="row">
+                                    <!--Label -->
+                                    <div class="col-5">
+                                        <label class="my-1 mr-2">{{@form.inputs.kit_id_list.label}}</label>
+                                    </div>
+                                    <!-- Input -->
+                                    <div class="col-7">
+                                        <input class="form-control form-control-sm" type="text" name="@form.inputs.kit_id_list.name" value="@order.kitIdList" disabled />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <!-- Site ID -->
+                                <div class="row">
+                                    <!--Label -->
+                                    <div class="col-5">
+                                        <label class="my-1 mr-2">{{@form.inputs.site_id.label}}</label>
+                                    </div>
+                                    <!-- Input -->
+                                    <div class="col-7">
+                                        <input class="form-control form-control-sm" type="text" name="@form.inputs.site_id.name" value="@order.siteId" disabled />
+                                    </div>
+                                </div>
+
+                                <!-- Break -->
+                                <div class="row">
+                                    <div class="col-12"><br /></div>
+                                </div>
+
+                                <!-- Site Region ID -->
+                                <div class="row">
+                                    <!--Label -->
+                                    <div class="col-5">
+                                        <label class="my-1 mr-2">{{@form.inputs.site_region_id.label}}</label>
+                                    </div>
+                                    <!-- Input -->
+                                    <div class="col-7">
+                                        <input class="form-control form-control-sm" type="text" name="@form.inputs.site_region_id.name" value="@order.siteRegionId" disabled />
+                                    </div>
+                                </div>
+
+                                <!-- Break -->
+                                <div class="row">
+                                    <div class="col-12"><br /></div>
+                                </div>
+
+                                <!-- Site Country -->
+                                <div class="row">
+                                    <!--Label -->
+                                    <div class="col-5">
+                                        <label class="my-1 mr-2">{{@form.inputs.site_country.label}}</label>
+                                    </div>
+                                    <!-- Input -->
+                                    <div class="col-7">
+                                        <input class="form-control form-control-sm" type="text" name="@form.inputs.site_country.name" value="@order.siteCountry" disabled />
+                                    </div>
+                                </div>
+
+                                <!-- Break -->
+                                <div class="row">
+                                    <div class="col-12"><br /></div>
+                                </div>
+
+                                <div class="row" style="margin-top: -15px; margin-bottom: -15px">
+                                    <div class="col-6">
+                                        <!-- Keep Between -->
+                                        <div class="form-group">
+                                            <!-- Label -->
+                                            <label for="@form.inputs.keep_between_temperature.min.name">{{@form.inputs.keep_between_temperature.min.label}}</label>
+                                            <!--Input -->
+                                            <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature.min.name" value="@order.temperatures.min" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <!-- Keep Between -->
+                                        <div class="form-group">
+                                            <!-- Label -->
+                                            <label for="@form.inputs.keep_between_temperature.max.name">{{@form.inputs.keep_between_temperature.max.label}}</label>
+                                            <!--Input -->
+                                            <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature.max.name" value="@order.temperatures.max" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Break -->
+                                <div class="row">
+                                    <div class="col-12"><br /></div>
+                                </div>
+
+                                <!-- Site Country -->
+                                <div class="row">
+                                    <!--Label -->
+                                    <div class="col-5">
+                                        <label class="my-1 mr-2">{{@form.inputs.temperature_comments.label}}</label>
+                                    </div>
+                                    <!-- Input -->
+                                    <div class="col-7">
+                                        <input class="form-control form-control-sm" type="text" name="@form.inputs.temperature_comments.name" value="@order.temperature_comments" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attached Documents -->
+                    <div class="accordion-item" data-tag="attached_documents_accordion" id="attached_documents_accordion">
+                        <svg id="attached_documents_accordion_icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
+                            <path
+                                fill="#231F20"
+                                d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
+                            l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
+                            C79.619,74.358,79.684,70.511,81.969,68.167z"
+                            />
+                        </svg>
+                        <span>Attached Documents</span>
+                    </div>
+                    <div class="accordion-item-holder" data-if="@order.documents">
+                        <table class="table table-borderless attach-documents-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Document Name</th>
+                                    <th scope="col">Attached By</th>
+                                    <th scope="col">Date/Time Attached</th>
+                                    <th scope="col">Open/Download</th>
+                                    <th scope="col">Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody data-for="@order.documents">
+                                <tr>
+                                    <th>{{@name}}</th>
+                                    <td>{{@attached_by}}</td>
+                                    <td>{{@date}}</td>
+                                    <td>
+                                        <svg
+                                            class="attach-documents-table-icon"
+                                            version="1.1"
+                                            id="Layer_1"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            x="0px"
+                                            y="0px"
+                                            width="200px"
+                                            height="200px"
+                                            viewBox="0 0 200 200"
+                                            enable-background="new 0 0 200 200"
+                                            xml:space="preserve"
+                                        >
+                                            <path
+                                                fill="#231F20"
+                                                d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
                                         c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
                                         c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
-                                        c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"/>
-                                    </svg>
-                </td>
-                <td>
-                  <svg class="attach-documents-table-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                       width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
-                                    <path fill="#231F20" d="M111.732,79.544L99.998,91.271L88.277,79.544c-2.417-2.419-6.314-2.419-8.735,0
+                                        c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"
+                                            />
+                                        </svg>
+                                    </td>
+                                    <td>
+                                        <svg
+                                            class="attach-documents-table-icon"
+                                            version="1.1"
+                                            id="Layer_1"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            x="0px"
+                                            y="0px"
+                                            width="200px"
+                                            height="200px"
+                                            viewBox="0 0 200 200"
+                                            enable-background="new 0 0 200 200"
+                                            xml:space="preserve"
+                                        >
+                                            <path
+                                                fill="#231F20"
+                                                d="M111.732,79.544L99.998,91.271L88.277,79.544c-2.417-2.419-6.314-2.419-8.735,0
                                         c-2.419,2.42-2.419,6.327,0,8.735L91.267,100l-11.726,11.727c-2.419,2.402-2.419,6.316,0,8.729c2.421,2.422,6.318,2.422,8.735,0
                                         l11.721-11.726l11.734,11.726c2.403,2.422,6.308,2.422,8.73,0c2.41-2.412,2.41-6.326,0-8.729L108.744,100l11.719-11.721
                                         c2.41-2.408,2.41-6.315,0-8.735C118.04,77.184,114.071,77.184,111.732,79.544z M99.998,38.014C65.721,38.014,38.01,65.73,38.01,100
                                         c0,34.281,27.711,61.986,61.987,61.986c34.279,0,61.992-27.705,61.992-61.986C161.99,65.73,134.277,38.014,99.998,38.014z
                                          M99.998,149.582c-27.33,0-49.585-22.24-49.585-49.582s22.255-49.583,49.585-49.583c27.348,0,49.586,22.241,49.586,49.583
-                                        S127.345,149.582,99.998,149.582z"/>
-                                    </svg>
-                </td>
-              </tr>
+                                        S127.345,149.582,99.998,149.582z"
+                                            />
+                                        </svg>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Order Comments -->
-          <div class="accordion-item" data-tag="order_comments_accordion" id="order_comments_accordion">
-            <svg id="order_comments_accordion_icon" version="1.1"  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                 width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
-                        <path fill="#231F20" d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
+                    <!-- Order Comments -->
+                    <div class="accordion-item" data-tag="order_comments_accordion" id="order_comments_accordion">
+                        <svg id="order_comments_accordion_icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
+                            <path
+                                fill="#231F20"
+                                d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
                             l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
-                            C79.619,74.358,79.684,70.511,81.969,68.167z"/>
+                            C79.619,74.358,79.684,70.511,81.969,68.167z"
+                            />
                         </svg>
-            <span>Order Comments</span>
-          </div>
-          <div class="accordion-item-holder">
-            <div data-if="@order.comments" class="row" style="padding: 40px;">
-              <table class="table table-borderless attach-documents-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Comment</th>
-                    <th scope="col">Entity</th>
-                    <th scope="col">Date/Time</th>
-                  </tr>
-                </thead>
-                <tbody data-for="@order.comments">
-                  <tr>
-                    <th>{{@comment}}</th>
-                    <td>{{@entity}}</td>
-                    <td>{{@date}}</td>
-                  </tr>
-                </tbody>
-              </table>
+                        <span>Order Comments</span>
+                    </div>
+                    <div class="accordion-item-holder">
+                        <div data-if="@order.comments" class="row" style="padding: 40px">
+                            <table class="table table-borderless attach-documents-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Comment</th>
+                                        <th scope="col">Entity</th>
+                                        <th scope="col">Date/Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-for="@order.comments">
+                                    <tr>
+                                        <th>{{@comment}}</th>
+                                        <td>{{@entity}}</td>
+                                        <td>{{@date}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <button disabled="@order.couldNotBeReviewed" data-tag="review-order" class="col-md-2 simple-default-button">Review</button>
+                        <div class="col-md-2"></div>
+                        <button disabled="@order.couldNotBeCancelled" data-tag="cancel-order" class="col-md-2 simple-default-button bg-red">Cancel Order</button>
+                        <div class="col-md-2"></div>
+                        <button disabled="@order.couldNotBeApproved" data-tag="approve-order" class="col-md-2 simple-default-button bg-green">Approve</button>
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <button disabled="@order.couldNotBeReviewed" data-tag="review-order" class="simple-default-button">Review</button>
-
         </div>
-      </div>
-    </div>
-  </psk-layout>
+    </psk-layout>
 </webc-container>
