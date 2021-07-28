@@ -1,9 +1,9 @@
-const cscServices = require("csc-services");
-const OrdersService  = cscServices.OrderService;
-const {Topics} = cscServices.constants;
-const { orderStatusesEnum, orderTableHeaders }  = cscServices.constants.order;
+const cscServices = require('csc-services');
+const OrdersService = cscServices.OrderService;
+const { Topics } = cscServices.constants;
+const { orderStatusesEnum, orderTableHeaders } = cscServices.constants.order;
 const eventBusService = cscServices.EventBusService;
-
+const momentService = cscServices.momentService;
 // eslint-disable-next-line no-undef
 const { WebcController } = WebCardinal.controllers;
 
@@ -71,12 +71,30 @@ export default class OrdersController extends WebcController {
 
   async getOrders() {
     try {
-      this.orders = await this.ordersService.getOrders();
+      const ordersTemp = await this.ordersService.getOrders();
+      this.orders = this.transformData(ordersTemp);
       this.setOrdersModel(this.orders);
     } catch (error) {
       console.log(error);
       this.showFeedbackToast('ERROR: There was an issue accessing orders object', 'Result', 'toast');
     }
+  }
+
+  transformData(data) {
+    if (data) {
+      data.forEach((item) => {
+        item.requestDate_value = momentService(item.requestDate).format('MM/DD/YYYY HH:mm:ss');
+
+        item.lastModified_value = momentService(item.lastModified).format('MM/DD/YYYY HH:mm:ss');
+
+        const latestStatus = item.status.sort(function (a, b) {
+          return new Date(b.date) - new Date(a.date);
+        })[0];
+        item.status_value = latestStatus.status;
+        item.status_date = momentService(latestStatus.date).format('MM/DD/YYYY HH:mm:ss');
+      });
+    }
+    return data;
   }
 
   setOrdersModel(orders) {
@@ -105,11 +123,7 @@ export default class OrdersController extends WebcController {
   }
 
   attachEvents() {
-    this.model.addExpression(
-      'ordersArrayNotEmpty',
-      () => this.model.orders && Array.isArray(this.model.orders) && this.model.orders.length > 0,
-      'orders'
-    );
+    this.model.addExpression('ordersArrayNotEmpty', () => this.model.orders && Array.isArray(this.model.orders) && this.model.orders.length > 0, 'orders');
 
     this.on('openFeedback', (e) => {
       this.feedbackEmitter = e.detail;

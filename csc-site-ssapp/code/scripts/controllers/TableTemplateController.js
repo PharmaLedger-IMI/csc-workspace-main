@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-undef
 const { WebcController } = WebCardinal.controllers;
-const cscServices = require("csc-services");
-const momentService  = cscServices.momentService;
+const cscServices = require('csc-services');
+const momentService = cscServices.momentService;
 
 export default class TableTemplateController extends WebcController {
   constructor(...props) {
@@ -11,32 +11,8 @@ export default class TableTemplateController extends WebcController {
   }
 
   async init() {
-    this.model.data = [...this.transformData(this.model.data)];
-
     this.paginateData(this.model.data);
     return;
-  }
-
-  transformData(data){
-    if(data){
-      data.forEach( (item) => {
-        console.log(item);
-
-        item.requestDate_value = momentService(item.requestDate).format('MM/DD/YYYY HH:mm:ss');
-
-        item.lastModified_value = momentService(item.lastModified).format('MM/DD/YYYY HH:mm:ss');
-
-        item.status_value = item.status.sort( (function(a,b){
-          return new Date(b.date) - new Date(a.date);
-        }))[0].status
-
-        item.status_date = momentService(item.status.sort( (function(a,b){
-          return new Date(b.date) - new Date(a.date);
-        }))[0].date).format('MM/DD/YYYY HH:mm:ss');
-
-      })
-    }
-    return data;
   }
 
   attachEvents() {
@@ -45,11 +21,11 @@ export default class TableTemplateController extends WebcController {
     });
 
     this.model.addExpression(
-        'isOrdersTable',
-        () => {
-          return this.model.type === 'orders';
-        },
-        'type'
+      'isOrdersTable',
+      () => {
+        return this.model.type === 'orders';
+      },
+      'type'
     );
 
     this.on('navigate-to-page', async (event) => {
@@ -117,14 +93,7 @@ export default class TableTemplateController extends WebcController {
         selectOptions: pages.map((x) => x.value).join(' | '),
         value: page.toString(),
       };
-      this.model.pagination.slicedPages =
-          pages.length > 5 && page - 3 >= 0 && page + 3 <= pages.length
-              ? pages.slice(page - 3, page + 2)
-              : pages.length > 5 && page - 3 < 0
-              ? pages.slice(0, 5)
-              : pages.length > 5 && page + 3 > pages.length
-                  ? pages.slice(pages.length - 5, pages.length)
-                  : pages;
+      this.model.pagination.slicedPages = pages.length > 5 && page - 3 >= 0 && page + 3 <= pages.length ? pages.slice(page - 3, page + 2) : pages.length > 5 && page - 3 < 0 ? pages.slice(0, 5) : pages.length > 5 && page + 3 > pages.length ? pages.slice(pages.length - 5, pages.length) : pages;
       this.model.pagination.currentPage = page;
       this.model.pagination.totalPages = pages.length;
     }
