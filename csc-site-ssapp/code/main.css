@@ -540,6 +540,10 @@
     background: #4171b1;
 }
 
+.history-cancelled{
+    background: red;
+}
+
 .history-success {
     background: #34a86b;
 }
