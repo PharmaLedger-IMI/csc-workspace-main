@@ -28,7 +28,7 @@ class HistoryModalController extends WebcController {
             if(data.status){
 
                 data.status = [...data.status.sort( (function(a,b){
-                    return new Date(b.date) - new Date(a.date);
+                    return a.date - b.date;
                 }))];
 
 
