@@ -28,12 +28,14 @@ class HistoryModalController extends WebcController {
             if(data.status){
 
                 data.status = [...data.status.sort( (function(a,b){
-                    return new Date(b.date) - new Date(a.date);
+                    return b.date - a.date;
                 }))];
 
 
                 data.status.forEach((item) => {
                     item.approved = item.status === orderStatusesEnum.Approved;
+                    item.cancelled = item.status === orderStatusesEnum.Canceled;
+                    item.normal = item.status !== orderStatusesEnum.Canceled && item.status !== orderStatusesEnum.Approved;
                     item.date = momentService(item.date).format('MM/DD/YYYY HH:mm:ss');
                 })
 

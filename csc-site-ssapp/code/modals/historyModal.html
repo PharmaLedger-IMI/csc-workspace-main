@@ -25,8 +25,17 @@
                     <div class="history-date">{{@date}}</div>
                     <div><b>{{@status}}</b></div>
                 </div>
+            </div>
 
-                <div slot="false" class="history-status-element history-normal" >
+            <div data-if="@cancelled">
+                <div slot="true" class="history-status-element history-cancelled" >
+                    <div class="history-date">{{@date}}</div>
+                    <div><b>{{@status}}</b></div>
+                </div>
+            </div>
+
+            <div data-if="@normal">
+                <div slot="true" class="history-status-element history-normal" >
                     <div class="history-date">{{@date}}</div>
                     <div><b>{{@status}}</b></div>
                 </div>
