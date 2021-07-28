@@ -21,16 +21,35 @@
     <div class="single-order-main-holder">
       <div class="row">
         <div class="col-4 text-left">
-          <div class="order-status-box order-status-blue">
-            <div>Order Status:</div>
-            <div><b>{{@order.status_value}}</b></div>
-            <div>{{@order.deliveryDate}}</div>
+          <div data-if="@order.status_approved">
+            <div slot='true' class="order-status-box order-status-green">
+              <div>Order Status:</div>
+              <div><b>{{@order.status_value}}</b></div>
+              <div>{{@order.deliveryDate}}</div>
+            </div>
           </div>
+
+          <div data-if="@order.status_cancelled">
+            <div slot='true' class="order-status-box order-status-red">
+              <div>Order Status:</div>
+              <div><b>{{@order.status_value}}</b></div>
+              <div>{{@order.deliveryDate}}</div>
+            </div>
+          </div>
+
+          <div data-if="@order.status_normal">
+            <div slot='true' class="order-status-box order-status-blue">
+              <div>Order Status:</div>
+              <div><b>{{@order.status_value}}</b></div>
+              <div>{{@order.deliveryDate}}</div>
+            </div>
+          </div>
+
         </div>
         <div class="col-4 text-center">
           <div class="single-order-title"><b>Order</b></div>
           <div class="pending-action-text"><b>Pending Action:</b></div>
-          <div class="next-action-text">Pending Review by CMO</div>
+          <div class="next-action-text">{{@order.pending_action}}</div>
         </div>
         <div class="col-4 text-right">
           <button data-tag="history-button" class="simple-default-button">View History</button>
