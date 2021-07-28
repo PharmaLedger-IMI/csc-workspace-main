@@ -14,7 +14,6 @@ export default class TableTemplateController extends WebcController {
   async init() {
     this.model.data = [...this.transformData(this.model.data)];
     this.paginateData(this.model.data);
-    return;
   }
 
   transformData(data){

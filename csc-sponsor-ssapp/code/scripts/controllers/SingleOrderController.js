@@ -394,7 +394,7 @@ export default class SingleOrderController extends WebcController {
 
             data.couldNotBeReviewed = orderStatusesEnum.ReviewedByCMO !== data.status_value;
             data.couldNotBeCancelled = orderStatusesEnum.Approved === data.status_value || orderStatusesEnum.Canceled === data.status_value;
-            data.couldNotBeApproved = data.status.indexOf(orderStatusesEnum.ReviewedByCMO) === -1 || orderStatusesEnum.Canceled === data.status_value || orderStatusesEnum.Approved === data.status_value;
+            data.couldNotBeApproved = data.status.map(status=>status.status).indexOf(orderStatusesEnum.ReviewedByCMO) === -1 || orderStatusesEnum.Canceled === data.status_value || orderStatusesEnum.Approved === data.status_value;
 
             return data;
         }
