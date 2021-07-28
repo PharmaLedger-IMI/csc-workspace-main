@@ -7,10 +7,10 @@ const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const momentService = cscServices.momentService;
 const { Topics, Roles, NotificationTypes, order } = cscServices.constants;
-const { orderStatusesEnum } = order;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
 const CommunicationService = cscServices.CommunicationService;
+const {orderStatusesEnum} = cscServices.constants.order;
 
 export default class SingleOrderController extends WebcController {
     constructor(...props) {
@@ -365,6 +365,21 @@ export default class SingleOrderController extends WebcController {
             data.status_value = data.status.sort(function (a, b) {
                 return new Date(b.date) - new Date(a.date);
             })[0].status;
+
+            data.status_approved = data.status_value === orderStatusesEnum.Approved;
+            data.status_cancelled = data.status_value === orderStatusesEnum.Canceled;
+            data.status_normal = data.status_value !== orderStatusesEnum.Canceled && data.status_value !== orderStatusesEnum.Approved;
+
+            data.pending_action = "";
+
+            if( data.status_value === orderStatusesEnum.ReviewedByCMO){
+                data.pending_action = "Sponsor Review or Approve";
+            }
+            else if( data.status_value === orderStatusesEnum.ReviewedBySponsor){
+                data.pending_action = "Cmo Review or Approve";
+            }else{
+                data.pending_action = "There are no any further pending actions.";
+            }
 
             data.status_date = momentService(
                 data.status.sort(function (a, b) {
