@@ -5,7 +5,7 @@ const cscServices = require('csc-services');
 
 //Import
 const eventBusService = cscServices.EventBusService;
-const { Topics } = cscServices.constants;
+const { Topics , Roles } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
 const CommunicationService = cscServices.CommunicationService;
 
@@ -176,7 +176,7 @@ export default class NewOrderController extends WebcController {
 
       if (files) {
         files.forEach((file) => {
-          this.model.form.documents.push({ name: file.name, attached_by: 'Novartis', date: new Date().toLocaleString(), link: '', file: file });
+          this.model.form.documents.push({ name: file.name, attached_by: Roles.Sponsor, date: new Date().toLocaleString(), link: '', file: file });
         });
       }
 
