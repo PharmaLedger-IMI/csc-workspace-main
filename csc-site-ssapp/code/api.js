@@ -1,5 +1,4 @@
 const securityContext = require('opendsu').loadApi('sc');
-const mainDSU = securityContext.getMainDSU();
 
 function createSSIAndMount(path, callback) {
   const opendsu = require('opendsu');
@@ -16,31 +15,53 @@ function createSSIAndMount(path, callback) {
       if (err) {
         return callback(err);
       }
-      mainDSU.mount(path + '/' + keySSI, keySSI, (err) => {
+
+      securityContext.getMainDSU((err, mainDSU) => {
         if (err) {
-          console.log(err);
+          return callback(err);
         }
-        callback(err, keySSI);
+
+        mainDSU.mount(path + '/' + keySSI, keySSI, (err) => {
+          if (err) {
+            console.log(err);
+          }
+          callback(err, keySSI);
+        });
       });
     });
   });
 }
 
 function mount(path, keySSI, callback) {
-  mainDSU.mount(path + '/' + keySSI, keySSI, (err) => {
+  securityContext.getMainDSU((err, mainDSU) => {
     if (err) {
       return callback(err);
     }
-    callback(undefined);
+    mainDSU.mount(path + '/' + keySSI, keySSI, (err) => {
+      if (err) {
+        return callback(err);
+      }
+      callback(undefined);
+    });
   });
 }
 
 function unmount(path, callback) {
-  mainDSU.unmount(path, callback);
+  securityContext.getMainDSU((err, mainDSU) => {
+    if (err) {
+      return callback(err);
+    }
+    mainDSU.unmount(path, callback);
+  });
 }
 
 function listDSUs(path, callback) {
-  mainDSU.listMountedDossiers(path, callback);
+  securityContext.getMainDSU((err, mainDSU) => {
+    if (err) {
+      return callback(err);
+    }
+    mainDSU.listMountedDossiers(path, callback);
+  });
 }
 
 function loadDSU(keySSI, callback) {
@@ -49,15 +70,30 @@ function loadDSU(keySSI, callback) {
 }
 
 function readFile(path, callback) {
-  mainDSU.readFile(path, callback);
+  securityContext.getMainDSU((err, mainDSU) => {
+    if (err) {
+      return callback(err);
+    }
+    mainDSU.readFile(path, callback);
+  });
 }
 
 function listFiles(path, callback) {
-  mainDSU.listFiles(path, callback);
+  securityContext.getMainDSU((err, mainDSU) => {
+    if (err) {
+      return callback(err);
+    }
+    mainDSU.listFiles(path, callback);
+  });
 }
 
 function listFolders(path, callback) {
-  mainDSU.listFolders(path, callback);
+  securityContext.getMainDSU((err, mainDSU) => {
+    if (err) {
+      return callback(err);
+    }
+    mainDSU.listFolders(path, callback);
+  });
 }
 
 module.exports = {
