@@ -10,29 +10,23 @@
         <!-- Page number -->
         <div class="col-md-12 col-lg-6 d-flex justify-content-lg-end justify-content-md-between">
             <div class="d-flex pagination-wrapper">
-                <psk-button class="page-link page-button" disabled="@pagination.previous" event-name="go-to-first-page">
+                <button disabled="@pagination.previous" data-tag="go-to-first-page">
                     <span aria-hidden="true">&laquo;</span>
-                </psk-button>
-                <psk-button class="page-link page-button" disabled="@pagination.previous"
-                            event-name="go-to-previous-page">
+                </button>
+                <button disabled="@pagination.previous" data-tag="go-to-previous-page">
                     <span aria-hidden="true">&lsaquo;</span>
-                </psk-button>
-                <psk-for-each class="d-flex flex-row" data-view-model="@pagination.slicedPages">
-                    <psk-condition condition="@active">
-                        <psk-button class="page-link page-button active" event-data="@value"
-                                    event-name="navigate-to-page"
-                                    label="@label" slot="condition-true">
-                        </psk-button>
-                        <psk-button class="page-link page-button" event-data="@value" event-name="navigate-to-page"
-                                    label="@label" slot="condition-false"></psk-button>
-                    </psk-condition>
-                </psk-for-each>
-                <psk-button class="page-link page-button" disabled="@pagination.next" event-name="go-to-next-page">
+                </button>
+                <div class="page-numbers" data-for="@pagination.slicedPages">
+                    <button data-active-page="@active" data-tag="navigate-to-page">
+                        {{@label}}
+                    </button>
+                </div>
+                <button disabled="@pagination.next" data-tag="go-to-next-page">
                     <span aria-hidden="true">&rsaquo;</span>
-                </psk-button>
-                <psk-button class="page-link page-button" disabled="@pagination.next" event-name="go-to-last-page">
+                </button>
+                <button disabled="@pagination.next" data-tag="go-to-last-page">
                     <span aria-hidden="true">&raquo;</span>
-                </psk-button>
+                </button>
             </div>
 
             <!-- Number of results per page selector  -->

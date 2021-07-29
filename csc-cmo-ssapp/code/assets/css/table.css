@@ -16,50 +16,6 @@ label.table-cell {
     height: 100%;
 }
 
-.page-button {
-    border: none;
-    background-color: white;
-    color: black;
-    border-radius: 0;
-    margin: 0;
-    font-size: 0.95rem;
-}
-
-.page-link.page-button {
-    padding: 0;
-}
-
-.page-button.active {
-    background-color: var(--secondary);
-    color: white;
-}
-
-.page-button:focus,
-.page-button:not(:disabled):not(.disabled):active {
-    border: none;
-    outline: none;
-    box-shadow: none;
-}
-
-.page-button:hover {
-    background-color: rgba(0, 136, 152, 0.8);
-    color: white;
-}
-
-.page-button:active {
-    background-color: rgba(0, 136, 152, 0.8);
-}
-
-.page-button:disabled {
-    background-color: white !important;
-    color: #c4c4c4;
-}
-
-.page-button:disabled:hover {
-    background-color: white !important;
-    color: #c4c4c4;
-}
-
 /* ---------- bare button -------------  */
 .btn-bare {
     border: none;
@@ -100,16 +56,6 @@ label.table-cell {
     font-weight: 600;
     color: black;
     text-shadow: 0 0 black;
-}
-
-.table-container-wrapper {
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    border-radius: 2rem;
-    background-color: #FFFFFF;
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.75);
-    padding: 0.25rem 1rem;
 }
 
 .table-header {
@@ -153,23 +99,4 @@ label.table-cell {
 .search-bar input.form-control:focus,
 .search-bar input.form-control:active:focus {
     box-shadow: none;
-}
-
-@media (min-width: 768px) {
-    .pagination-wrapper {
-        margin: 0;
-    }
-}
-
-.pagination-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 0.5rem;
-    row-gap: 1rem;
-}
-
-.pagination-wrapper {
-    margin-right: 4rem;
 }

@@ -28,24 +28,23 @@ export default class TableTemplateController extends WebcController {
       'type'
     );
 
-    this.on('navigate-to-page', async (event) => {
-      event.preventDefault();
-      this.paginateData(this.model.data, event.data.value ? parseInt(event.data.value) : event.data);
+    this.onTagClick('navigate-to-page', async (model) => {
+      this.paginateData(this.model.data, model.value ? parseInt(model.value) : model.data);
     });
 
-    this.on('go-to-previous-page', async () => {
+    this.onTagClick('go-to-previous-page', async () => {
       if (this.model.pagination.currentPage !== 1) {
         this.paginateData(this.model.data, this.model.pagination.currentPage - 1);
       }
     });
 
-    this.on('go-to-next-page', async () => {
+    this.onTagClick('go-to-next-page', async () => {
       if (this.model.pagination.currentPage !== this.model.pagination.totalPages) {
         this.paginateData(this.model.data, this.model.pagination.currentPage + 1);
       }
     });
 
-    this.on('go-to-last-page', async () => {
+    this.onTagClick('go-to-last-page', async () => {
       const length = this.model.data.length;
       const numberOfPages = Math.ceil(length / this.model.pagination.itemsPerPage);
       if (this.model.pagination.currentPage !== numberOfPages) {
@@ -53,7 +52,7 @@ export default class TableTemplateController extends WebcController {
       }
     });
 
-    this.on('go-to-first-page', async () => {
+    this.onTagClick('go-to-first-page', async () => {
       if (this.model.pagination.currentPage !== 1) {
         this.paginateData(this.model.data, 1);
       }
@@ -82,8 +81,8 @@ export default class TableTemplateController extends WebcController {
         active: page === x,
       }));
 
-      this.model.pagination.previous = page > 1 && pages.length > 1 ? false : true;
-      this.model.pagination.next = page < pages.length && pages.length > 1 ? false : true;
+      this.model.pagination.previous = !(page > 1 && pages.length > 1);
+      this.model.pagination.next = !(page < pages.length && pages.length > 1);
       this.model.pagination.items = data.slice(itemsPerPage * (page - 1), itemsPerPage * page);
       this.model.pagination.pages = {
         // options: pages.map((x) => ({
