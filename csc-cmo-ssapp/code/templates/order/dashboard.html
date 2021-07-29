@@ -1,0 +1,44 @@
+<webc-container controller="OrdersController">
+    <div class="row-wrapper">
+        <!-- Filters area -->
+        <div class="filters-wrapper">
+            <div class="filter-status">
+                <span class="fa fa-icon fa-filter"></span>
+                <label>Status: </label>
+            </div>
+            <button class="btn-side-bare selected" data-custom="" data-tag="filters-cleared" id="filter-">
+                All Orders
+            </button>
+            <button class="btn-side-bare" data-custom="Initiated" data-tag="filters-changed" id="filter-Initiated">
+                Initiated
+            </button>
+            <button class="btn-side-bare" data-custom="ReviewedByCMO" data-tag="filters-changed"
+                    id="filter-ReviewedByCMO">
+                Reviewed by CMO
+            </button>
+            <button class="btn-side-bare" data-custom="ReviewedBySponsor" data-tag="filters-changed"
+                    id="filter-ReviewedBySponsor">
+                Reviewed by Sponsor
+            </button>
+            <button class="btn-side-bare" data-custom="Approved" data-tag="filters-changed" id="filter-Approved">
+                Approved
+            </button>
+            <button class="btn-side-bare" data-custom="Canceled" data-tag="filters-changed" id="filter-Canceled">
+                Canceled
+            </button>
+        </div>
+    </div>
+
+    <div class="row-wrapper">
+        <div class="table-container-wrapper">
+            <!-- Tab navigator area -->
+            <webc-template template="order/tab-navigator"></webc-template>
+
+            <!-- Table area -->
+            <psk-condition condition="@ordersArrayNotEmpty">
+                <webc-template data-view-model="@" slot="condition-true" template="table-template"></webc-template>
+                <div slot="condition-false">No orders available.</div>
+            </psk-condition>
+        </div>
+    </div>
+</webc-container>

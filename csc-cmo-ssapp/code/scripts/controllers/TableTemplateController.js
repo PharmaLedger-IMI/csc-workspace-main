@@ -64,8 +64,9 @@ export default class TableTemplateController extends WebcController {
       this.paginateData(this.model.data, 1);
     });
 
-    this.on('sort-column', async (event) => {
-      this.sortColumn(event.data);
+    this.onTagClick('sort-column', async (model) => {
+      console.log("[EVENT] sort-column", model);
+      this.sortColumn(model.column);
     });
   }
 

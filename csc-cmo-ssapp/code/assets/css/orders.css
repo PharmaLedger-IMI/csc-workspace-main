@@ -1,48 +1,45 @@
-.tabs {
-  display: grid;
+.tab-navigator {
+    font-size: 18px;
+    display: flex;
+    margin: 0.75rem 0.5rem;
 }
 
-.tabs .tab-navigator {
-  overflow-x: auto;
-  font-size: 18px;
+.tab-navigator .btn {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    padding: 0.25rem 4rem;
+    color: white;
 }
 
-.tabs .tab-container {
-  position: relative;
+.tab-navigator .btn {
+    background-color: #00345b;
 }
 
-.tabs .tab-navigator .btn {
-  margin: 0;
-  border: none;
-  border-radius: 0;
-  padding: 8px 0px;
+.tab-navigator button.active.btn {
+    background-color: #008898;
+    border-style: none;
 }
 
-.tabs .tab-navigator {
-  display: grid;
-  grid-auto-flow: column;
+.filters-wrapper {
+    display: flex;
+    border-radius: 2rem;
+    background-color: #FFFFFF;
+    width: fit-content;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.75);
+    padding: 0.25rem 1rem;
 }
 
-.tabs .tab-navigator .btn {
-  color: white;
-  width: 100%;
+.filter-status {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 2rem;
+    font-size: 0.875rem;
 }
 
-.tabs {
-  background-color: #ffffff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
-}
-
-.tabs .tab-navigator,
-.tabs .tab-navigator .btn {
-  background-color: #00345b;
-}
-
-.tabs .tab-navigator button.active.btn {
-  background-color: #008898;
-  border-style: none;
-}
-
-.tabs .tab-container {
-  padding: 1rem;
+.filter-status label {
+    margin: 0;
+    padding-left: 0.5rem;
 }
