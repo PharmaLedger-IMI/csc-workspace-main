@@ -17,6 +17,10 @@ function ControllersRegistry(){
         }
         let controller = this.controllersRegistry[controllerName];
 
+        if(!controller){
+            throw new Error(`Controller ${controllerName} was not found. Did you registered it?`);
+        }
+
         return class extends controller{
             constructor(...props) {
                 super(role, ...props);
