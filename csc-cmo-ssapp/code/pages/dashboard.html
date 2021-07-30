@@ -1,17 +1,23 @@
 <webc-container controller="DashboardController">
     <link href="themes/blue-csc-theme/sections/table.css" rel="stylesheet"/>
-    <webc-template data-view-model="@userProfile" template="header-template"></webc-template>
-    <webc-template template="dashboard-menu"></webc-template>
+    <main class="full-flex-column">
+        <section>
+            <webc-template data-view-model="@userProfile" template="header-template"></webc-template>
+            <webc-template template="dashboard-menu"></webc-template>
+        </section>
 
-    <div data-if="@isOrdersSelected">
-        <webc-template template="order/dashboard"></webc-template>
-    </div>
+        <section class="content-section">
+            <div data-if="@isOrdersSelected">
+                <webc-template data-if="@isOrdersSelected" template="order/dashboard"></webc-template>
+            </div>
 
-    <div data-if="@isShipmentsSelected">
-        <webc-template template="order/shipments"></webc-template>
-    </div>
+            <div data-if="@isShipmentsSelected">
+                <webc-template data-if="@isShipmentsSelected" template="order/shipments"></webc-template>
+            </div>
 
-    <div data-if="@isKitsSelected">
-        <webc-template template="order/kits"></webc-template>
-    </div>
+            <div data-if="@isKitsSelected">
+                <webc-template data-if="@isKitsSelected" template="order/kits"></webc-template>
+            </div>
+        </section>
+    </main>
 </webc-container>
