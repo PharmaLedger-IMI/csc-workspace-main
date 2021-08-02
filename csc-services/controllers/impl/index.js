@@ -1,0 +1,2 @@
+require("./SingleOrderControllerImpl");
+require("./HistoryModalControllerImpl");

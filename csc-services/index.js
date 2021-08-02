@@ -1,3 +1,4 @@
+const controllerRegistry = require("./controllers/ControllersRegistry").getControllersRegistry();
 module.exports = {
     OrderService: require("./services/OrdersService.js"),
     EventBusService:require("./services/lib/EventBusService"),
@@ -13,5 +14,8 @@ module.exports = {
             default:
                 throw new Error ("Requested view model not found");
         }
+    },
+    getController:function(controllerName, actor){
+        return controllerRegistry.getControllerClass(controllerName, actor);
     }
 }
