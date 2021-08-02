@@ -472,27 +472,6 @@
       ]
     },
     {
-      "name": "utilitaries",
-      "actions": [
-        {
-          "type": "copy",
-          "src": "./utilitaries",
-          "target": "./csc-sponsor-ssapp/",
-          "options": {
-            "overwrite": true
-          }
-        },
-        {
-          "type": "copy",
-          "src": "./utilitaries",
-          "target": "./csc-courier-ssapp/",
-          "options": {
-            "overwrite": true
-          }
-        }
-      ]
-    },
-    {
       "name": "build Use Case",
       "src": ".",
       "actions": [
