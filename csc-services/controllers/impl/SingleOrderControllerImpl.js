@@ -65,6 +65,10 @@ class SingleOrderControllerImpl extends WebcController {
     this.onTagEvent('history-button', 'click', (e) => {
       this.onShowHistoryClick();
     });
+
+    this.onTagEvent('download-kit-list', 'click', (e) => {
+      console.log("[EVENT] download-kit-list");
+    });
   }
 
   toggleAccordionItem(el) {
