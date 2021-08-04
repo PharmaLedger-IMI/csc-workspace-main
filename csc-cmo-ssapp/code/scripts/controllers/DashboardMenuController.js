@@ -21,30 +21,34 @@ export default class DashboardMenuController extends WebcController {
             ],
             unread: 0
         }
-        if(this.history.location.pathname === '/'){
-            makeMenuActive('menu-dashboard');
-            makeMenuInActive('menu-notifications');
-        }
 
-        if(this.history.location.pathname === '/notifications'){
-            makeMenuActive('menu-notifications');
-            makeMenuInActive('menu-dashboard');
-        }
-
-        //Add active menu class to element
-        function makeMenuActive( element ){
-            console.log("Making ACTIVE:" , element);
-            document.getElementById(element).classList.add("dashboard-tab-active");
-        }
-
-        //Remove active menu class to element
-        function makeMenuInActive( element ){
-            console.log("Making INACTIVE:" , element);
-            document.getElementById(element).classList.remove("dashboard-tab-active");
-        }
-
+        this.updateActiveMenu();
         this.getNotificationsUnread();
         this.attachAll();
+    }
+
+    updateActiveMenu() {
+        if (this.history.location.pathname === '/') {
+            this.makeMenuActive('menu-dashboard');
+            this.makeMenuInActive('menu-notifications');
+        }
+
+        if (this.history.location.pathname === '/notifications') {
+            this.makeMenuActive('menu-notifications');
+            this.makeMenuInActive('menu-dashboard');
+        }
+    }
+
+    //Add active menu class to element
+    makeMenuActive(element) {
+        console.log("Making ACTIVE:", element);
+        this.querySelector(`#${element}`).classList.add("dashboard-tab-active");
+    }
+
+    //Remove active menu class to element
+    makeMenuInActive(element) {
+        console.log("Making INACTIVE:", element);
+        this.querySelector(`#${element}`).classList.remove("dashboard-tab-active");
     }
 
     async getNotificationsUnread() {
