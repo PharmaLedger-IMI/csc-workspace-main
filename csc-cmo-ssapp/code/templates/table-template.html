@@ -1,17 +1,17 @@
 <webc-container controller="TableTemplateController" data-view-model="@">
     <div class="pagination-container">
         <!-- Search bar -->
-        <div class="col-md-6 col-lg-3 search-bar">
+        <div class="col-6 col-lg-3 search-bar">
             <span class="fa fa-icon fa-search"></span>
             <input class="form-control" data-view-model="@search" id="search-field"/>
         </div>
         <!-- Page number -->
-        <div class="col-md-12 col-lg-6 d-flex justify-content-lg-end justify-content-md-between">
+        <div class="col-12 col-lg-6 d-flex justify-content-lg-end justify-content-between p-0">
             <div class="d-flex pagination-wrapper">
-                <button disabled="@pagination.previous" data-tag="go-to-first-page">
+                <button data-tag="go-to-first-page" disabled="@pagination.previous">
                     <span aria-hidden="true">&laquo;</span>
                 </button>
-                <button disabled="@pagination.previous" data-tag="go-to-previous-page">
+                <button data-tag="go-to-previous-page" disabled="@pagination.previous">
                     <span aria-hidden="true">&lsaquo;</span>
                 </button>
                 <div class="page-numbers" data-for="@pagination.slicedPages">
@@ -19,10 +19,10 @@
                         {{@label}}
                     </button>
                 </div>
-                <button disabled="@pagination.next" data-tag="go-to-next-page">
+                <button data-tag="go-to-next-page" disabled="@pagination.next">
                     <span aria-hidden="true">&rsaquo;</span>
                 </button>
-                <button disabled="@pagination.next" data-tag="go-to-last-page">
+                <button data-tag="go-to-last-page" disabled="@pagination.next">
                     <span aria-hidden="true">&raquo;</span>
                 </button>
             </div>
@@ -35,42 +35,49 @@
         </div>
     </div>
 
-    <div class="table-header">
-        <div class="table-row" data-for="@headers">
-            <button class="btn-bare gray" data-tag="sort-column" disabled="@notSortable">
-                <label>{{@label}}</label>
-                <!--        <psk-condition condition="@asc">-->
-                <!--          <div slot="condition-true">&uarr;</div>-->
-                <!--        </psk-condition>-->
-                <!--        <psk-condition condition="@desc">-->
-                <!--          <div slot="condition-true">&darr;</div>-->
-                <!--        </psk-condition>-->
-                <!--        <psk-condition condition="@notSortable">-->
-                <!--          <div slot="condition-false">-->
-                <!--            <psk-condition condition="@asc">-->
-                <!--              <div slot="condition-false">-->
-                <!--                <psk-condition condition="@desc">-->
-                <!--                  <div slot="condition-false" style="font-weight: 300">&udarr;</div>-->
-                <!--                </psk-condition>-->
-                <!--              </div>-->
-                <!--            </psk-condition>-->
-                <!--          </div>-->
-                <!--        </psk-condition>-->
-            </button>
-        </div>
-    </div>
-
-    <div class="table-body" data-if="@isOrdersTable">
-        <div class="table-row" data-for="@pagination.items">
-            <label class="table-cell">{{@orderId}}</label>
-            <label class="table-cell">{{@sponsorId}}</label>
-            <label class="table-cell">{{@studyId}}</label>
-            <label class="table-cell">{{@siteId}}</label>
-            <label class="table-cell">{{@requestDate_value}}</label>
-            <label class="table-cell">{{@deliveryDate}}</label>
-            <label class="table-cell" data-status="@status_value">{{@status_value}}</label>
-            <label class="table-cell">{{@lastModified_value}}</label>
-            <button class="btn-bare table-cell" data-tag="view-order">&#128269;</button>
-        </div>
+    <div class="responsive-table">
+        <table class="table table-borderless">
+            <thead>
+            <tr data-for="@headers">
+                <th>
+                    <button class="btn-bare gray" data-tag="sort-column" disabled="@notSortable">
+                        <label>{{@label}}</label>
+                        <!--        <psk-condition condition="@asc">-->
+                        <!--          <div slot="condition-true">&uarr;</div>-->
+                        <!--        </psk-condition>-->
+                        <!--        <psk-condition condition="@desc">-->
+                        <!--          <div slot="condition-true">&darr;</div>-->
+                        <!--        </psk-condition>-->
+                        <!--        <psk-condition condition="@notSortable">-->
+                        <!--          <div slot="condition-false">-->
+                        <!--            <psk-condition condition="@asc">-->
+                        <!--              <div slot="condition-false">-->
+                        <!--                <psk-condition condition="@desc">-->
+                        <!--                  <div slot="condition-false" style="font-weight: 300">&udarr;</div>-->
+                        <!--                </psk-condition>-->
+                        <!--              </div>-->
+                        <!--            </psk-condition>-->
+                        <!--          </div>-->
+                        <!--        </psk-condition>-->
+                    </button>
+                </th>
+            </tr>
+            </thead>
+            <tbody data-for="@pagination.items">
+            <tr>
+                <td><label>{{@orderId}}</label></td>
+                <td><label>{{@sponsorId}}</label></td>
+                <td><label>{{@studyId}}</label></td>
+                <td><label>{{@siteId}}</label></td>
+                <td><label>{{@requestDate_value}}</label></td>
+                <td><label>{{@deliveryDate}}</label></td>
+                <td><label data-status="@status_value">{{@status_value}}</label></td>
+                <td><label>{{@lastModified_value}}</label></td>
+                <td>
+                    <button class="btn-bare table-cell" data-tag="view-order">&#128269;</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </webc-container>
