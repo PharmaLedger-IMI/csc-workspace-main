@@ -21,21 +21,21 @@
             <div class="history-connector"></div>
 
             <div data-if="@approved">
-                <div slot="true" class="history-status-element history-success" >
+                <div slot="true" class="history-status-element background-approved" >
                     <div class="history-date">{{@date}}</div>
                     <div><b>{{@status}}</b></div>
                 </div>
             </div>
 
             <div data-if="@cancelled">
-                <div slot="true" class="history-status-element history-cancelled" >
+                <div slot="true" class="history-status-element background-cancelled" >
                     <div class="history-date">{{@date}}</div>
                     <div><b>{{@status}}</b></div>
                 </div>
             </div>
 
             <div data-if="@normal">
-                <div slot="true" class="history-status-element history-normal" >
+                <div slot="true" class="history-status-element background-primary" >
                     <div class="history-date">{{@date}}</div>
                     <div><b>{{@status}}</b></div>
                 </div>

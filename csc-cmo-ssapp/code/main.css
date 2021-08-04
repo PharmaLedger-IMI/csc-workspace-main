@@ -25,35 +25,6 @@ webc-app-root {
     box-shadow: 0 0 48px -19px rgba(0, 0, 0, 0.75);
 }
 
-.single-order-navigation-holder {
-    width: 1000px;
-    height: 20px;
-    margin: 0 auto;
-    position: absolute;
-    left: calc((100% - 1000px) / 2);
-    top: 95px;
-    display: inline-block;
-    text-align: left;
-    font-size: 13px;
-    color: #00345b;
-}
-
-.single-order-main-holder {
-    width: 1000px;
-    height: calc(100vh - 153px);
-    margin: 0 auto;
-    position: absolute;
-    left: calc((100% - 1000px) / 2);
-    top: 130px;
-    padding: 20px;
-    background: white;
-    border-radius: 25px;
-    display: inline-block;
-    -webkit-box-shadow: 0 0 48px -19px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: 0 0 48px -19px rgba(0, 0, 0, 0.75);
-    box-shadow: 0 0 48px -19px rgba(0, 0, 0, 0.75);
-}
-
 .new-order-wizard-form {
     width: 1000px;
     margin: 0 auto;
@@ -121,29 +92,6 @@ webc-app-root {
     background: #177f8b;
 }
 
-.simple-default-button {
-    background: #008898;
-    min-width: 200px;
-    padding: 4px 10px;
-    border: 0;
-    color: white;
-    border-radius: 5px;
-    height: 38px;
-    font-size: 15px;
-}
-
-.simple-default-button > .link-active {
-    color: white !important;
-}
-
-.simple-default-button:focus {
-    outline: 0;
-}
-
-.simple-default-button:hover {
-    background: #177f8b;
-}
-
 .submit-button {
     background: #008898;
     min-width: 200px;
@@ -153,14 +101,6 @@ webc-app-root {
     border-radius: 5px;
     height: 38px;
     font-size: 15px;
-}
-
-.simple-default-button[disabled]:hover {
-    background: #008898;
-}
-
-.simple-default-button[disabled] {
-    opacity: 0.5;
 }
 
 .submit-button:focus {
@@ -188,37 +128,6 @@ webc-app-root {
 
 .reset-button:hover {
     background: #177f8b;
-}
-
-.attach-documents-table {
-    /*min-height:340px;*/
-}
-
-.attach-documents-table thead {
-    color: #00345b;
-}
-
-.attach-documents-table-icon {
-    cursor: pointer;
-    width: 34px;
-    height: 34px;
-    margin-top: -7px;
-}
-
-.attach-documents-table-icon path {
-    fill: #008898;
-}
-
-#attach-documents-holder {
-    /*height: 374px;*/
-}
-
-.attach-documents-table td {
-    text-align: center;
-}
-
-.attach-documents-table th {
-    text-align: center;
 }
 
 #new-order-comments-holder {
@@ -250,83 +159,6 @@ webc-app-root {
     color: #04444c;
     font-weight: 600;
     width: 100%;
-}
-
-.order-status-box {
-    text-align: center;
-    border-radius: 25px;
-    padding: 15px;
-    color: white;
-    width: 200px;
-    font-size: 13px;
-}
-
-.order-status-blue {
-    background: #4171b1;
-}
-
-.order-status-green {
-    background: #34a86b;
-}
-
-.order-status-red {
-    background: red;
-}
-
-.single-order-title {
-    font-size: 18px;
-    color: #00345b;
-    margin-bottom: 7px;
-}
-
-.pending-action-text {
-    color: #00345b;
-    font-size: 15px;
-}
-
-.next-action-text {
-    color: #00345b;
-    font-size: 13px;
-    margin-top: 10px;
-}
-
-.accordion-item {
-    border-radius: 5px 5px 0 0;
-    font-weight: 700;
-    color: #00345b;
-    transition: 0.4s;
-}
-
-.accordion-item-active {
-    background: #ecf7f9;
-}
-
-.rotate-icon {
-    transform: rotate(90deg) !important;
-}
-
-.accordion-item svg {
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-}
-
-.accordion-item svg > path {
-    fill: #00345b;
-}
-
-.single-order-data-holder {
-    margin-top: 40px;
-}
-
-.accordion-item-holder {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.2s ease-out;
-    background: white;
-    width: 100%;
-    border: 1px solid #f3f3f3;
-    border-top: 0;
 }
 
 .comment-text {
@@ -363,33 +195,6 @@ webc-app-root {
     text-align: center;
     color: white;
     border-radius: 25px;
-}
-
-label[data-status] {
-    width: 100%;
-    -webkit-border-radius: 1rem;
-    -moz-border-radius: 1rem;
-    border-radius: 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #FFFFFF;
-    padding: 0.15rem 0;
-}
-
-.history-normal,
-label[data-status] {
-    background: #4171b1;
-}
-
-.history-success,
-label[data-status="Approved"] {
-    background: #34a86b;
-}
-
-.history-cancelled,
-label[data-status="Canceled"] {
-    background: red;
 }
 
 .history-orders svg {
