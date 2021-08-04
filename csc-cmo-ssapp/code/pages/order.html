@@ -23,21 +23,21 @@
                 <div class="row-wrapper">
                     <div class="col-4 text-left">
                         <div data-if="@order.status_approved">
-                            <div class="order-status-box background-green" slot="true">
+                            <div class="order-status-box background-approved" slot="true">
                                 <div>Order Status:</div>
                                 <div><b>{{@order.status_value}}</b></div>
                                 <div>{{@order.deliveryDate}}</div>
                             </div>
                         </div>
                         <div data-if="@order.status_cancelled">
-                            <div class="order-status-box background-red" slot="true">
+                            <div class="order-status-box background-cancelled" slot="true">
                                 <div>Order Status:</div>
                                 <div><b>{{@order.status_value}}</b></div>
                                 <div>{{@order.deliveryDate}}</div>
                             </div>
                         </div>
                         <div data-if="@order.status_normal">
-                            <div class="order-status-box background-blue" slot="true">
+                            <div class="order-status-box background-primary" slot="true">
                                 <div>Order Status:</div>
                                 <div><b>{{@order.status_value}}</b></div>
                                 <div>{{@order.deliveryDate}}</div>
