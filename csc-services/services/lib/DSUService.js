@@ -1,14 +1,37 @@
+const opendsu = require('opendsu');
+const resolver = opendsu.loadAPI('resolver');
+const keySSISpace = opendsu.loadAPI('keyssi');
 class DSUService {
   PATH = '/';
+  dsuServiceIsReady = false;
+  onReadyCallbacks = [];
 
   constructor(DSUStorage, path = this.PATH) {
     this.DSUStorage = DSUStorage;
     this.PATH = path;
+
+    DSUStorage.enableDirectAccess(() => {
+      this.dsuServiceIsReady = true;
+      while (this.onReadyCallbacks.length > 0) {
+        let callback = this.onReadyCallbacks.shift();
+        callback();
+      }
+    });
+  }
+
+  onReady(callback) {
+    if (typeof callback !== 'function') {
+      throw new Error('Callback should be a function');
+    }
+    if (this.dsuServiceIsReady) {
+      return callback();
+    }
+    this.onReadyCallbacks.push(callback);
   }
 
   getEntities(path, callback) {
     [path, callback] = this.swapParamsIfPathIsMissing(path, callback);
-    this.DSUStorage.call('listDSUs', path, (err, dsuList) => {
+    this.DSUStorage.listMountedDossiers(path, (err, dsuList) => {
       if (err) {
         return callback(err, undefined);
       }
@@ -58,14 +81,29 @@ class DSUService {
 
   saveEntity(entity, path, callback) {
     [path, callback] = this.swapParamsIfPathIsMissing(path, callback);
-    this.DSUStorage.call('createSSIAndMount', path, (err, keySSI) => {
+
+    const templateSSI = keySSISpace.createTemplateSeedSSI('default');
+    resolver.createDSU(templateSSI, (err, dsuInstance) => {
       if (err) {
-        return callback(err, undefined);
+        console.log(err);
+        return callback(err);
       }
-      entity.keySSI = keySSI;
-      entity.uid = keySSI;
-      this.updateEntity(entity, path, callback);
-    });
+
+      dsuInstance.getKeySSIAsString((err, keySSI) => {
+        if (err) {
+          return callback(err);
+        }
+
+        this.DSUStorage.mount(path + '/' + keySSI,keySSI,(err) => {
+          if (err) {
+            console.log(err);
+          }
+          entity.keySSI = keySSI;
+          entity.uid = keySSI;
+          this.updateEntity(entity, path, callback);
+        })
+      })
+    })
   }
 
   async saveEntityAsync(entity, path) {
@@ -88,7 +126,7 @@ class DSUService {
 
   mountEntity(keySSI, path, callback) {
     [path, callback] = this.swapParamsIfPathIsMissing(path, callback);
-    this.DSUStorage.call('mount', path, keySSI, (err) => {
+    this.DSUStorage.mount(path + '/' + keySSI, keySSI, (err) => {
       this.getEntity(keySSI, path, (err, entity) => {
         if (err) {
           return callback(err, undefined);
@@ -105,7 +143,7 @@ class DSUService {
   unmountEntity(uid, path, callback) {
     [path, callback] = this.swapParamsIfPathIsMissing(path, callback);
     let unmountPath = path + '/' + uid;
-    this.DSUStorage.call('unmount', unmountPath, (err, result) => {
+    this.DSUStorage.unmount(unmountPath, (err, result) => {
       if (err) {
         return callback(err, undefined);
       }

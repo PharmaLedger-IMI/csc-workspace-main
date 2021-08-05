@@ -189,8 +189,6 @@ class OrdersService extends DSUService {
       },
       shortDescription: 'Order Review by CMO',
     });
-
-    return;
   }
 
   async saveDocuments(files) {
@@ -206,23 +204,40 @@ class OrdersService extends DSUService {
     );
     console.log(documentsDSU);
     for (const file of files) {
-      const attachmentKeySSI = await this.uploadFile('/documents' + '/' + documentsDSU.uid + '/' + 'files', file);
-      documentsDSU.documents.find((x) => x.name === file.name).attachmentKeySSI = attachmentKeySSI;
+      let absoluteFilePath = '/documents' + '/' + documentsDSU.uid + '/' + 'files'+'/'+ file.name;
+      await this.uploadFile(absoluteFilePath, file);
+      documentsDSU.documents.find((x) => x.name === file.name).attachmentKeySSI = absoluteFilePath;
     }
-    const updatedDocumentsDSU = await this.updateEntityAsync(documentsDSU);
+    await this.updateEntityAsync(documentsDSU);
 
     return documentsDSU.uid;
   }
 
   uploadFile(path, file) {
+
+    function getFileContentAsBuffer(file, callback) {
+      let fileReader = new FileReader();
+      fileReader.onload = function (evt) {
+        let arrayBuffer = fileReader.result;
+        callback(undefined, arrayBuffer);
+      }
+
+      fileReader.readAsArrayBuffer(file);
+    }
+
     return new Promise((resolve, reject) => {
-      this.DSUStorage.uploadFile(path, file, undefined, (err, keySSI) => {
-        if (err) {
-          reject(new Error(err));
-          return;
+      getFileContentAsBuffer(file,(err, arrayBuffer)=>{
+        if(err){
+          reject("Could not get file as a Buffer");
         }
-        resolve(keySSI);
-      });
+        this.DSUStorage.writeFile(path, $$.Buffer.from(arrayBuffer), undefined, (err, keySSI) => {
+          if (err) {
+            reject(new Error(err));
+            return;
+          }
+          resolve();
+        });
+      })
     });
   }
 

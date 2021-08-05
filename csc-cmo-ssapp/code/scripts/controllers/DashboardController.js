@@ -30,7 +30,9 @@ export default class DashboardController extends WebcController {
 
         this.attachAll();
 
-        this.handleMessages();
+        this.ordersService.onReady(()=>{
+            this.handleMessages();
+        })
     }
 
     init() {}
