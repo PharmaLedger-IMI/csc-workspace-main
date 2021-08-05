@@ -109,15 +109,11 @@ $ snap install drawio
 
 in linux
 
-<<<<<<< HEAD
 after instalation if not present, add drawio to path
 
 ```shell
 $ which drawio
 ```
-=======
-### Sponsor wallet
-
 
 add a file under ```docs/bin``` called ```drawio_exec_command.os``` containing the command/path to execute drawio
 
@@ -125,11 +121,10 @@ add a file under ```docs/bin``` called ```drawio_exec_command.os``` containing t
     ```echo "drawio"```
  - Windows:
     ```echo "${PATH_TO_DRAW_IO}\drawio.exe"```
-=======
-### Contract Manufacturing Operations wallet
 
 ### Build Mobile
-=======
+Currently Not Supported
+
 ### Courier wallet
 
 TODO
@@ -140,7 +135,6 @@ Currently Not Supported
 
 #### Build Android APK
 
-TODO Not working...
 
 Steps
 
