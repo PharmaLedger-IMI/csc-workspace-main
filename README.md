@@ -80,10 +80,6 @@ While in the *csc-workspace-main* folder run:
 $ npm run server
 ```
 
-At the end of this command you get something similar to:
-
-![alt text](resources/scr-npm-run-server.png)
-
 #### Step 3: Build all DSUs and anchor them to the 'blockchain'.
 
 Open a new console inside *csc-workspace-main* folder and run:
