@@ -20,10 +20,10 @@ export default class ReviewOrderController extends WebcController {
 
         this.model = {
             wizard_form: [
-                { id: 'wizard_form_step_1', holder_id: 'wizard_form_step_1_holder', name: 'Order Details', visible: true, validated: false },
-                { id: 'wizard_form_step_2', holder_id: 'wizard_form_step_2_holder', name: 'Attach Documents', visible: false, validated: false },
-                { id: 'wizard_form_step_3', holder_id: 'wizard_form_step_3_holder', name: 'Comments', visible: false, validated: false },
-                { id: 'wizard_form_step_4', holder_id: 'wizard_form_step_4_holder', name: 'Confirmation', visible: false, validated: false },
+                { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Order Details', visible: true, validated: false },
+                { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Attach Documents', visible: false, validated: false },
+                { id: 'step-3', holder_id: 'step-3-wrapper', name: 'Comments', visible: false, validated: false },
+                { id: 'step-4', holder_id: 'step-4-wrapper', name: 'Confirmation', visible: false, validated: false },
             ],
             wizard_form_navigation: [
                 { id: 'from_step_1_to_2', name: 'Next', visible: true, validated: false },
@@ -99,50 +99,50 @@ export default class ReviewOrderController extends WebcController {
         // },500);
 
         //When you click step 1
-        this.onTagEvent('wizard_form_step_1', 'click', (e) => {
-            makeStepActive('wizard_form_step_1', 'wizard_form_step_1_holder', e);
+        this.onTagEvent('step-1', 'click', (e) => {
+            makeStepActive('step-1', 'step-1-wrapper', e);
         });
 
         //When you click step 2
-        this.onTagEvent('wizard_form_step_2', 'click', (e) => {
-            makeStepActive('wizard_form_step_2', 'wizard_form_step_2_holder', e);
+        this.onTagEvent('step-2', 'click', (e) => {
+            makeStepActive('step-2', 'step-2-wrapper', e);
         });
 
         //When you click step 3
-        this.onTagEvent('wizard_form_step_3', 'click', (e) => {
-            makeStepActive('wizard_form_step_3', 'wizard_form_step_3_holder', e);
+        this.onTagEvent('step-3', 'click', (e) => {
+            makeStepActive('step-3', 'step-3-wrapper', e);
         });
 
         //When you click step 4
-        this.onTagEvent('wizard_form_step_4', 'click', (e) => {
-            makeStepActive('wizard_form_step_4', 'wizard_form_step_4_holder', e);
+        this.onTagEvent('step-4', 'click', (e) => {
+            makeStepActive('step-4', 'step-4-wrapper', e);
         });
 
         //STEP BUTTONS LOGIC
 
         //When you want to navigate from step 1 to step 2
         this.onTagEvent('from_step_1_to_2', 'click', (e) => {
-            makeStepActive('wizard_form_step_2', 'wizard_form_step_2_holder', e);
+            makeStepActive('step-2', 'step-2-wrapper', e);
         });
 
         //When you want to navigate from step 2 to step 1
         this.onTagEvent('from_step_2_to_1', 'click', (e) => {
-            makeStepActive('wizard_form_step_1', 'wizard_form_step_1_holder', e);
+            makeStepActive('step-1', 'step-1-wrapper', e);
         });
 
         //When you want to navigate from step 2 to step 3
         this.onTagEvent('from_step_2_to_3', 'click', (e) => {
-            makeStepActive('wizard_form_step_3', 'wizard_form_step_3_holder', e);
+            makeStepActive('step-3', 'step-3-wrapper', e);
         });
 
         //When you want to navigate from step 3 to step 2
         this.onTagEvent('from_step_3_to_2', 'click', (e) => {
-            makeStepActive('wizard_form_step_2', 'wizard_form_step_2_holder', e);
+            makeStepActive('step-2', 'step-2-wrapper', e);
         });
 
         //When you want to navigate from step 3 to step 2
         this.onTagEvent('from_step_3_to_4', 'click', (e) => {
-            makeStepActive('wizard_form_step_4', 'wizard_form_step_4_holder', e);
+            makeStepActive('step-4', 'step-4-wrapper', e);
         });
 
         //When you submit form
@@ -253,31 +253,24 @@ export default class ReviewOrderController extends WebcController {
         function makeStepActive(step_id, step_holder_id, e) {
             if (e) {
                 e.wizard_form.forEach((item) => {
-                    document.getElementById(item.id).classList.remove('new-order-wizard-active');
+                    document.getElementById(item.id).classList.remove('step-active');
                     hideStep(item.holder_id);
                 });
 
-                document.getElementById(step_id).classList.add('new-order-wizard-active');
+                document.getElementById(step_id).classList.add('step-active');
 
                 showStep(step_holder_id);
             }
         }
 
-        //Remove active menu class to element
-        function makeMenuInActive(element) {
-            document.getElementById(element).classList.remove('dashboard-tab-active');
-        }
-
         function hideStep(item) {
             var el = document.getElementById(item);
-            el.classList.remove('show-step');
-            el.classList.add('hide-step');
+            el.classList.add('step-hidden');
         }
 
         function showStep(item) {
             var el = document.getElementById(item);
-            el.classList.remove('hide-step');
-            el.classList.add('show-step');
+            el.classList.remove('step-hidden');
         }
     }
 
