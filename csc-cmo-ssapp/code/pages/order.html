@@ -8,7 +8,8 @@
         <section class="order-section">
             <div class="single-order-navigation-holder">
                 <webc-link class="nav-back" tag="dashboard">
-                    <svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" xml:space="preserve">
+                    <svg viewBox="0 0 52 52" x="0px"
+                         xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
                         <path d="M50,24H6.83L27.41,3.41a2,2,0,0,0,0-2.82,2,2,0,0,0-2.82,0l-24,24a1.79,1.79,0,0,0-.25.31A1.19,1.19,0,0,0,.25,25c0,.07-.07.13-.1.2l-.06.2a.84.84,0,0,0,0,.17,2,2,0,0,0,0,.78.84.84,0,0,0,0,.17l.06.2c0,.07.07.13.1.2a1.19,1.19,0,0,0,.09.15,1.79,1.79,0,0,0,.25.31l24,24a2,2,0,1,0,2.82-2.82L6.83,28H50a2,2,0,0,0,0-4Z"/>
                     </svg>
                 </webc-link>
@@ -53,8 +54,9 @@
 
                     <div class="col-4 text-right">
                         <button class="btn-default" data-tag="history-button">
-                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                                 viewBox="0 0 464.811 464.811" xml:space="preserve">
+                            <svg version="1.1" viewBox="0 0 464.811 464.811"
+                                 x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+                                 xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
                                 <path d="M416.637,90.805c-37.824-49.214-92.541-80.75-154.09-88.803c-60.941-7.972-121.344,8.04-170.302,45.074L74.543,29.349
                                     c-5.051-5.057-9.712-3.366-10.358,3.745l-5.811,63.458c-0.65,7.111,4.639,12.411,11.756,11.769l63.46-5.734
                                     c7.117-0.64,8.811-5.305,3.757-10.362l-18.364-18.387c40.313-28.887,89.296-41.248,138.711-34.783
@@ -65,7 +67,7 @@
                                     c-6.75,60.067,9.832,119.552,46.677,167.491c37.824,49.213,92.546,80.752,154.088,88.804
                                     c61.54,8.049,122.53-8.349,171.751-46.172c14.255-10.951,27.037-23.336,38.187-36.892c27.336-33.22,44.895-73.479,50.617-117.191
                                     C470.851,201.01,454.458,140.016,416.637,90.805z"/>
-                                                    <path d="M223.275,81.15c-8.354,0-15.127,6.772-15.127,15.125v150.751l137.865,71.262c2.223,1.152,4.598,1.699,6.933,1.695
+                                <path d="M223.275,81.15c-8.354,0-15.127,6.772-15.127,15.125v150.751l137.865,71.262c2.223,1.152,4.598,1.699,6.933,1.695
                                     c5.481,0,10.766-2.982,13.454-8.185c3.84-7.423,0.933-16.549-6.489-20.391l-121.5-62.812V96.276
                                     C238.41,87.923,231.636,81.15,223.275,81.15z"/>
                             </svg>
@@ -87,7 +89,7 @@
                         <span>Order Details</span>
                     </div>
                     <div class="accordion-item-holder">
-                        <webc-template data-view-model="@" template="order/order-details"/>
+                        <webc-template data-view-model="@" template="order/order-details"></webc-template>
                     </div>
 
                     <!-- Attached Documents -->
@@ -109,8 +111,8 @@
                                 <th scope="col">Document Name</th>
                                 <th scope="col">Attached By</th>
                                 <th scope="col">Date/Time Attached</th>
-                                <th scope="col">Open/Download</th>
-                                <th scope="col">Delete</th>
+                                <th class="text-center" scope="col">Open/Download</th>
+                                <th class="text-center" scope="col">Delete</th>
                             </tr>
                             </thead>
                             <tbody data-for="@order.documents">
@@ -118,22 +120,26 @@
                                 <th>{{@name}}</th>
                                 <td>{{@attached_by}}</td>
                                 <td>{{@date}}</td>
-                                <td>
-                                    <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200" id="Layer_1"
+                                <td class="text-center">
+                                    <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200"
+                                         id="Layer_1"
                                          version="1.1" viewBox="0 0 200 200"
                                          x="0px" xml:space="preserve"
-                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                         y="0px">
                                     <path d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
                                         c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
                                         c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
                                         c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"/>
                                     </svg>
                                 </td>
-                                <td>
-                                    <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200" id="Layer_1"
+                                <td class="text-center">
+                                    <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200"
+                                         id="Layer_1"
                                          version="1.1" viewBox="0 0 200 200"
                                          x="0px" xml:space="preserve"
-                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                         y="0px">
                                     <path d="M111.732,79.544L99.998,91.271L88.277,79.544c-2.417-2.419-6.314-2.419-8.735,0
                                         c-2.419,2.42-2.419,6.327,0,8.735L91.267,100l-11.726,11.727c-2.419,2.402-2.419,6.316,0,8.729c2.421,2.422,6.318,2.422,8.735,0
                                         l11.721-11.726l11.734,11.726c2.403,2.422,6.308,2.422,8.73,0c2.41-2.412,2.41-6.326,0-8.729L108.744,100l11.719-11.721
@@ -184,12 +190,13 @@
 
                 <div class="row-wrapper button-wrapper">
                     <button class="btn-default" data-tag="review-order" disabled="@order.actions.couldNotBeReviewed">
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                             viewBox="0 0 528.899 528.899" xml:space="preserve">
-                            <path fill="#000000" d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981
+                        <svg version="1.1" viewBox="0 0 528.899 528.899" x="0px"
+                             xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+                             xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+                            <path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981
                                 c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611
                                 C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069
-                                L27.473,390.597L0.3,512.69z"/>
+                                L27.473,390.597L0.3,512.69z" fill="#000000"/>
                         </svg>
                         Review
                     </button>

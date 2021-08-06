@@ -2,77 +2,6 @@ webc-app-root {
     height: 100%;
 }
 
-.view-more-icon {
-    width: 30px;
-    height: 28px;
-    margin-top: -2px;
-    display: inline;
-}
-
-.view-more-icon path {
-    fill: white;
-}
-
-.new-order-main-holder {
-    width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-    background: white;
-    border-radius: 25px;
-    display: inline-block;
-    -webkit-box-shadow: 0 0 48px -19px rgba(0, 0, 0, 0.75);
-    -moz-box-shadow: 0 0 48px -19px rgba(0, 0, 0, 0.75);
-    box-shadow: 0 0 48px -19px rgba(0, 0, 0, 0.75);
-}
-
-.new-order-wizard-form {
-    width: 1000px;
-    margin: 0 auto;
-    padding: 2rem 0;
-}
-
-.new-order-wizard-form-element {
-    width: 220.5px;
-    height: 40px;
-    border: 3px solid #00345c;
-    border-radius: 10px;
-    display: inline-block;
-    background: #f7f7f7;
-    cursor: pointer;
-    text-align: center;
-    padding-top: 5px;
-    font-weight: bold;
-}
-
-.new-order-wizard-active {
-    background: #4dfdf3 !important;
-}
-
-.new-order-wizard-form-break {
-    width: 26px;
-    display: inline-block;
-    position: relative;
-    left: -4px;
-}
-
-.new-order-wizard-form-break-line {
-    width: 34px;
-    height: 3px;
-    background: #00345c;
-}
-
-.new-order-wizard-form-step-holder {
-    width: 100%;
-}
-
-.show-step {
-    display: inline-block;
-}
-
-.hide-step {
-    display: none;
-}
-
 .next-button {
     background: #008898;
     min-width: 200px;
@@ -128,29 +57,6 @@ webc-app-root {
 
 .reset-button:hover {
     background: #177f8b;
-}
-
-#new-order-comments-holder {
-    height: 580px;
-}
-
-#new-order-details-holder {
-    height: 580px;
-}
-
-#new-order-confirmation-holder {
-    height: 580px;
-}
-
-#new-order-confirmation-holder label {
-    font-size: 12px;
-    color: #00345b;
-    font-weight: bold !important;
-}
-
-#new-order-comments-holder label {
-    color: #00345b;
-    font-weight: bold !important;
 }
 
 .new-order-created-title {
