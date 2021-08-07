@@ -186,8 +186,15 @@ class SingleOrderControllerImpl extends WebcController {
       }
       else if( data.status_value === orderStatusesEnum.ReviewedBySponsor){
         data.pending_action = "Cmo Review or Approve";
-      }else{
-        data.pending_action = "There are no any further pending actions.";
+      }
+      else if(data.status_value === orderStatusesEnum.Canceled) {
+        data.pending_action = "There are not further pending actions";
+      }
+      else if(data.status_value === orderStatusesEnum.Approved) {
+        data.pending_action = "Pending Shipment Preparation";
+      }
+      else{
+        data.pending_action = "Pending Review by CMO";
       }
 
       if(data.comments){
