@@ -1,9 +1,9 @@
 <div class="grid-column-wrapper">
-    <!-- Sponsor ID -->
-    <label>{{@form.inputs.sponsor_id.label}}</label>
-    <input class="form-control form-control-sm" disabled="@form.inputs.sponsor_id.disabled"
-           name="@form.inputs.sponsor_id.name" placeholder="@form.inputs.sponsor_id.placeholder" type="text"
-           value="@order.sponsorId"/>
+    <!-- Order ID -->
+    <label>{{@form.inputs.order_id.label}}</label>
+    <input class="form-control form-control-sm" disabled="@form.inputs.order_id.disabled"
+           name="@form.inputs.order_id.name" placeholder="@form.inputs.order_id.placeholder" type="text"
+           value="@order.orderId"/>
 
     <!-- Request Delivery Date/Time -->
     <label>Requested Delivery Date/Time</label>
@@ -20,15 +20,15 @@
            name="@form.inputs.target_cmo_id.name" placeholder="@form.inputs.target_cmo_id.placeholder"
            type="text" value="@order.targetCmoId"/>
 
+    <!-- Sponsor ID -->
+    <label>{{@form.inputs.sponsor_id.label}}</label>
+    <input class="form-control form-control-sm" disabled="@form.inputs.sponsor_id.disabled"
+           name="@form.inputs.sponsor_id.name" type="text" value="@order.sponsorId"/>
+
     <!-- Study ID -->
     <label>{{@form.inputs.study_id.label}}</label>
     <input class="form-control form-control-sm" disabled="@form.inputs.study_id.disabled"
            name="@form.inputs.study_id.name" type="text" value="@order.studyId"/>
-
-    <!-- Order ID -->
-    <label>{{@form.inputs.order_id.label}}</label>
-    <input class="form-control form-control-sm" disabled="@form.inputs.order_id.disabled"
-           name="@form.inputs.order_id.name" type="text" value="@order.orderId"/>
 
     <!-- Kit ID List -->
     <label>{{@form.inputs.kit_id_list.label}}</label>
