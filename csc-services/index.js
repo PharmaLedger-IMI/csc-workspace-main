@@ -4,6 +4,7 @@ module.exports = {
     EventBusService:require("./services/lib/EventBusService"),
     NotificationsService:require("./services/lib/NotificationService"),
     CommunicationService:require("./services/lib/CommunicationService"),
+    ProfileService: require("./services/lib/ProfileService"),
     constants:require("./services/constants"),
     momentService: require("./services/lib/moment.min"),
 
