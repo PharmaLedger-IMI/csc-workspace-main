@@ -15,10 +15,6 @@ export default class DashboardMenuController extends WebcController {
         this.notificationsService = new NotificationsService(this.DSUStorage);
 
         this.model = {
-            menu_items : [
-                { name: "Dashboard" ,     url : "/" , id: "menu-dashboard"},
-                { name: "Notifications" , url : "/notifications", id: "menu-notifications"},
-            ],
             unread: 0
         }
 
@@ -41,13 +37,11 @@ export default class DashboardMenuController extends WebcController {
 
     //Add active menu class to element
     makeMenuActive(element) {
-        console.log("Making ACTIVE:", element);
         this.querySelector(`#${element}`).classList.add("dashboard-tab-active");
     }
 
     //Remove active menu class to element
     makeMenuInActive(element) {
-        console.log("Making INACTIVE:", element);
         this.querySelector(`#${element}`).classList.remove("dashboard-tab-active");
     }
 

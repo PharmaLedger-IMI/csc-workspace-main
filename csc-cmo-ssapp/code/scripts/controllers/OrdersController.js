@@ -42,7 +42,6 @@ export default class OrdersController extends WebcController {
     super(...props);
 
     this.ordersService = new OrdersService(this.DSUStorage);
-    this.feedbackEmitter = null;
 
     this.model = {
       statuses: this.statuses,
@@ -113,12 +112,6 @@ export default class OrdersController extends WebcController {
     this.setOrdersModel(result);
   }
 
-  showFeedbackToast(title, message, alertType) {
-    if (typeof this.feedbackEmitter === 'function') {
-      this.feedbackEmitter(message, title, alertType);
-    }
-  }
-
   attachEvents() {
     this.model.onChange("search.value", () => {
       setTimeout(() => {
@@ -127,10 +120,6 @@ export default class OrdersController extends WebcController {
     });
 
     this.model.addExpression('ordersArrayNotEmpty', () => this.model.orders && Array.isArray(this.model.orders) && this.model.orders.length > 0, 'orders');
-
-    this.on('openFeedback', (e) => {
-      this.feedbackEmitter = e.detail;
-    });
 
     this.onTagClick('view-order', async (model) => {
       const orderId = model.orderId;
