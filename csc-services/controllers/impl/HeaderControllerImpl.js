@@ -1,14 +1,15 @@
 const { WebcController } = WebCardinal.controllers;
+
 const cscServices = require('csc-services');
 const ProfileService = cscServices.ProfileService;
 
-export default class HeaderController extends WebcController {
-	constructor(...props) {
+class HeaderControllerImpl extends WebcController {
+	constructor(role, ...props) {
 		super(...props);
 
 		this.model = {
 			logoURL: 'resources/images/pl_logo.png',
-			appName: 'CMO',
+			appName: role,
 			userName: ''
 		};
 
@@ -22,3 +23,6 @@ export default class HeaderController extends WebcController {
 		});
 	}
 }
+
+const controllersRegistry = require('../ControllersRegistry').getControllersRegistry();
+controllersRegistry.registerController('HeaderController', HeaderControllerImpl);
