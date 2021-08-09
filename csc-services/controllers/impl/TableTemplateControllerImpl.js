@@ -1,12 +1,10 @@
 // eslint-disable-next-line no-undef
 const { WebcController } = WebCardinal.controllers;
-const cscServices = require('csc-services');
-const momentService = cscServices.momentService;
 
-export default class TableTemplateController extends WebcController {
-  localData = null;
-  constructor(...props) {
+class TableTemplateControllerImpl extends WebcController {
+  constructor(role, ...props) {
     super(...props);
+    this.role = role;
     this.attachEvents();
     this.init();
   }
@@ -131,3 +129,6 @@ export default class TableTemplateController extends WebcController {
     }
   }
 }
+
+const controllersRegistry = require("../ControllersRegistry").getControllersRegistry();
+controllersRegistry.registerController("TableTemplateController", TableTemplateControllerImpl);
