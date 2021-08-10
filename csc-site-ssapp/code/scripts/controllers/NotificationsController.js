@@ -15,7 +15,6 @@ export default class NotificationsController extends WebcController {
 
   async getNotifications() {
     let notifications = await this.notificationsService.getNotifications();
-    console.log('NOTIFICATIONS:', notifications);
     this.model.setChainValue('notifications', notifications);
   }
 
