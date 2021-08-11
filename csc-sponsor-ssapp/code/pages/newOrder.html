@@ -90,7 +90,8 @@
 									<div class='input-group d-flex justify-content-between align-items-center'>
 										<input class='form-control' disabled
 										       value='@form.inputs.kit_ids_attachment.name' />
-										<psk-files-chooser class='pl-3' data-view-model='@form.inputs.kit_ids_attachment'
+										<psk-files-chooser class='pl-3'
+										                   data-view-model='@form.inputs.kit_ids_attachment'
 										                   event-name='add-kit-ids-file'></psk-files-chooser>
 									</div>
 									<small style='color: red'>{{ @form.inputs.kit_ids_attachment.error }}</small>
@@ -155,14 +156,12 @@
 
 					<!-- Navigation Between Steps-->
 					<div class='row-wrapper button-wrapper'>
-						<div class='col-6 d-flex justify-content-center'></div>
+						<div></div>
 						<!-- Next Button -->
-						<div class='col-6 d-flex justify-content-center'>
-							<button class='btn-default' data-tag='from_step_1_to_2' id='from_step_1_to_2'>
-								Next
-								<i class='fas fa-angle-right'></i>
-							</button>
-						</div>
+						<button class='btn-default' data-tag='from_step_1_to_2' id='from_step_1_to_2'>
+							Next
+							<i class='fas fa-angle-right'></i>
+						</button>
 					</div>
 				</div>
 
@@ -236,19 +235,15 @@
 
 					<!-- Navigation Between Steps-->
 					<div class='row-wrapper button-wrapper'>
-						<div class='col-6 d-flex justify-content-center'>
-							<button class='btn-default' data-tag='from_step_2_to_1' id='from_step_2_to_1'>
-								<i class='fas fa-angle-left'></i>
-								Previous
-							</button>
-						</div>
+						<button class='btn-default' data-tag='from_step_2_to_1' id='from_step_2_to_1'>
+							<i class='fas fa-angle-left'></i>
+							Previous
+						</button>
 						<!-- Next Button -->
-						<div class='col-6 d-flex justify-content-center'>
-							<button class='btn-default' data-tag='from_step_2_to_3' id='from_step_2_to_3'>
-								Next
-								<i class='fas fa-angle-right'></i>
-							</button>
-						</div>
+						<button class='btn-default' data-tag='from_step_2_to_3' id='from_step_2_to_3'>
+							Next
+							<i class='fas fa-angle-right'></i>
+						</button>
 					</div>
 				</div>
 				<!-- Comments -->
@@ -284,19 +279,15 @@
 
 					<!-- Navigation Between Steps-->
 					<div class='row-wrapper button-wrapper'>
-						<div class='col-6 d-flex justify-content-center'>
-							<button class='btn-default' data-tag='from_step_3_to_2' id='from_step_3_to_2'>
-								<i class='fas fa-angle-left'></i>
-								Previous
-							</button>
-						</div>
+						<button class='btn-default' data-tag='from_step_3_to_2' id='from_step_3_to_2'>
+							<i class='fas fa-angle-left'></i>
+							Previous
+						</button>
 						<!-- Next Button -->
-						<div class='col-6 d-flex justify-content-center'>
-							<button class='btn-default' data-tag='from_step_3_to_4' id='from_step_3_to_4'>
-								Next
-								<i class='fas fa-angle-right'></i>
-							</button>
-						</div>
+						<button class='btn-default' data-tag='from_step_3_to_4' id='from_step_3_to_4'>
+							Next
+							<i class='fas fa-angle-right'></i>
+						</button>
 					</div>
 				</div>
 				<!-- Confirmation -->
@@ -410,18 +401,14 @@
 					</div>
 
 					<div class='row-wrapper button-wrapper'>
-						<div class='col-6 d-flex justify-content-center'>
-							<button class='btn-reset' data-tag='form_reset'>
-								<i class='fas fa-times'></i>
-								Cancel Changes
-							</button>
-						</div>
-						<div class='col-6 d-flex justify-content-center'>
-							<button class='btn-default' data-tag='form_submit'>
-								<i class='fas fa-check'></i>
-								Submit Review
-							</button>
-						</div>
+						<button class='btn-reset' data-tag='form_reset'>
+							<i class='fas fa-times'></i>
+							Cancel Changes
+						</button>
+						<button class='btn-default' data-tag='form_submit'>
+							<i class='fas fa-check'></i>
+							Submit Review
+						</button>
 					</div>
 				</div>
 			</div>
