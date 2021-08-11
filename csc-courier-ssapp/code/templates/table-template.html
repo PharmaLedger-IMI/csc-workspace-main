@@ -34,9 +34,9 @@
   <span data-if="@isOrdersTable">
     <psk-for-each data-view-model="@pagination.items" style="display: contents">
       <psk-layout columns="9" class="justify-content-center align-items-center table-row">
+        <psk-label class="table-cell" label="@orderId"></psk-label>
         <psk-label class="table-cell" label="@sponsorId"></psk-label>
         <psk-label class="table-cell" label="@studyId"></psk-label>
-        <psk-label class="table-cell" label="@orderId"></psk-label>
         <psk-label class="table-cell" label="@siteId"></psk-label>
         <psk-label class="table-cell" label="@requestDate"></psk-label>
         <psk-label class="table-cell" label="@deliveryDate"></psk-label>
