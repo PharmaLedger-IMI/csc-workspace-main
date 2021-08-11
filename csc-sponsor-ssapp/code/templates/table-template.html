@@ -1,103 +1,83 @@
 <webc-container controller="TableTemplateController" data-view-model="@">
-  <link rel="stylesheet" href="assets/css/table.css" />
-  <psk-layout class="background-primary table-row" columns="@tableLength">
-    <psk-for-each data-view-model="@headers" class="display-contents" style="display: contents">
-      <span class="d-flex flex-row align-items-center justify-content-between pr-1 table-cell">
-        <psk-button class="btn-bare gray" disabled="@notSortable" event-name="sort-column" event-data="@column">
-          <div class="background-primary d-flex flex-row align-items-center justify-content-between pr-1">
-            <psk-label label="@label"></psk-label>
-            <div>
-              <psk-condition condition="@asc">
-                <div slot="condition-true">&uarr;</div>
-              </psk-condition>
-              <psk-condition condition="@desc">
-                <div slot="condition-true">&darr;</div>
-              </psk-condition>
-              <psk-condition condition="@notSortable">
-                <div slot="condition-false">
-                  <psk-condition condition="@asc">
-                    <div slot="condition-false">
-                      <psk-condition condition="@desc">
-                        <div style="font-weight: 300" slot="condition-false">&udarr;</div>
-                      </psk-condition>
-                    </div>
-                  </psk-condition>
-                </div>
-              </psk-condition>
-            </div>
-          </div>
-        </psk-button>
-      </span>
-    </psk-for-each>
-  </psk-layout>
+	<div class="pagination-container">
+		<!-- Search bar -->
+		<div class="col-6 col-lg-3 search-bar">
+			<span class="fa fa-icon fa-search"></span>
+			<input class="form-control" data-view-model="@search" id="search-field"/>
+		</div>
+		<!-- Page number -->
+		<div class="col-12 col-lg-6 d-flex justify-content-lg-end justify-content-between p-0">
+			<div class="d-flex pagination-wrapper">
+				<button data-tag="go-to-first-page" disabled="@pagination.previous">
+					<span aria-hidden="true">&laquo;</span>
+				</button>
+				<button data-tag="go-to-previous-page" disabled="@pagination.previous">
+					<span aria-hidden="true">&lsaquo;</span>
+				</button>
+				<div class="page-numbers" data-for="@pagination.slicedPages">
+					<button data-active-page="@active" data-tag="navigate-to-page">
+						{{@label}}
+					</button>
+				</div>
+				<button data-tag="go-to-next-page" disabled="@pagination.next">
+					<span aria-hidden="true">&rsaquo;</span>
+				</button>
+				<button data-tag="go-to-last-page" disabled="@pagination.next">
+					<span aria-hidden="true">&raquo;</span>
+				</button>
+			</div>
 
-  <span data-if="@isOrdersTable">
-    <psk-for-each data-view-model="@pagination.items" style="display: contents">
-      <psk-layout columns="9" class="justify-content-center align-items-center table-row">
-        <psk-label class="table-cell" label="@orderId"></psk-label>
-        <psk-label class="table-cell" label="@sponsorId"></psk-label>
-        <psk-label class="table-cell" label="@studyId"></psk-label>
-        <psk-label class="table-cell" label="@siteId"></psk-label>
-        <psk-label class="table-cell" label="@requestDate_value"></psk-label>
-        <psk-label class="table-cell" label="@deliveryDate"></psk-label>
-        <psk-label class="table-cell" label="@status_value"></psk-label>
-        <psk-label class="table-cell" label="@lastModified_value"></psk-label>
-        <div class="d-flex flex-row">
-          <psk-button class="btn-bare table-cell" event-name="view-order" event-data="@orderId"> &#128269; </psk-button>
-        </div>
-      </psk-layout>
-    </psk-for-each>
-  </span>
+			<!-- Number of results per page selector  -->
+			<div class="d-flex align-items-center justify-content-center">
+				<psk-select event-name="set-items-per-page" view-model="@pagination.itemsPerPageOptions"></psk-select>
+				<span>&nbsp;Items Per Page</span>
+			</div>
+		</div>
+	</div>
 
-  <div class="d-flex align-items-center justify-content-between flex-wrap">
-    <div class="d-flex align-items-center justify-content-center">
-      <span>Page&nbsp;</span>
-      <!-- TODO: no two-way binding on select, also how to set default/initial value -->
-      <psk-select view-model="@pagination.pages" event-name="navigate-to-page"></psk-select>
-      <span>&nbsp;of&nbsp;</span>
-      <psk-label label="@pagination.totalPages"></psk-label>
-      <span>&nbsp;Pages</span>
-    </div>
-
-    <div class="d-flex flex-row">
-      <psk-button class="page-link page-button" disabled="@pagination.previous" event-name="go-to-first-page">
-        <span aria-hidden="true">&laquo;</span>
-      </psk-button>
-      <psk-button class="page-link page-button" disabled="@pagination.previous" event-name="go-to-previous-page">
-        <span aria-hidden="true">&lsaquo;</span>
-      </psk-button>
-      <psk-for-each class="d-flex flex-row" data-view-model="@pagination.slicedPages">
-        <psk-condition condition="@active">
-          <div slot="condition-true" class="active">
-            <psk-button
-              class="page-link page-button active"
-              label="@label"
-              event-name="navigate-to-page"
-              event-data="@value"
-            >
-            </psk-button>
-          </div>
-          <div slot="condition-false">
-            <psk-button
-              class="page-link page-button"
-              label="@label"
-              event-name="navigate-to-page"
-              event-data="@value"
-            ></psk-button>
-          </div>
-        </psk-condition>
-      </psk-for-each>
-      <psk-button class="page-link page-button" disabled="@pagination.next" event-name="go-to-next-page">
-        <span aria-hidden="true">&rsaquo;</span>
-      </psk-button>
-      <psk-button class="page-link page-button" disabled="@pagination.next" event-name="go-to-last-page">
-        <span aria-hidden="true">&raquo;</span>
-      </psk-button>
-    </div>
-
-    <div class="d-flex align-items-center justify-content-center">
-      <psk-select view-model="@pagination.itemsPerPageOptions" event-name="set-items-per-page"></psk-select>
-      <span>&nbsp;Items Per Page</span>
-    </div>
-  </div>
+	<div class="responsive-table">
+		<table class="table table-borderless">
+			<thead>
+			<tr data-for="@headers">
+				<th>
+					<button class="btn-bare gray" data-tag="sort-column" disabled="@notSortable">
+						<label>{{@label}}</label>
+						<!--        <psk-condition condition="@asc">-->
+						<!--          <div slot="condition-true">&uarr;</div>-->
+						<!--        </psk-condition>-->
+						<!--        <psk-condition condition="@desc">-->
+						<!--          <div slot="condition-true">&darr;</div>-->
+						<!--        </psk-condition>-->
+						<!--        <psk-condition condition="@notSortable">-->
+						<!--          <div slot="condition-false">-->
+						<!--            <psk-condition condition="@asc">-->
+						<!--              <div slot="condition-false">-->
+						<!--                <psk-condition condition="@desc">-->
+						<!--                  <div slot="condition-false" style="font-weight: 300">&udarr;</div>-->
+						<!--                </psk-condition>-->
+						<!--              </div>-->
+						<!--            </psk-condition>-->
+						<!--          </div>-->
+						<!--        </psk-condition>-->
+					</button>
+				</th>
+			</tr>
+			</thead>
+			<tbody data-for="@pagination.items">
+			<tr>
+				<td><label>{{@orderId}}</label></td>
+				<td><label>{{@sponsorId}}</label></td>
+				<td><label>{{@studyId}}</label></td>
+				<td><label>{{@siteId}}</label></td>
+				<td><label>{{@requestDate_value}}</label></td>
+				<td><label>{{@deliveryDate}}</label></td>
+				<td><label data-status="@status_value">{{@status_value}}</label></td>
+				<td><label>{{@lastModified_value}}</label></td>
+				<td>
+					<button class="btn-bare table-cell" data-tag="view-order">&#128269;</button>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
 </webc-container>
