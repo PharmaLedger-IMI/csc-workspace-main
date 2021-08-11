@@ -1,82 +1,200 @@
-<div class="grid-column-wrapper">
+<div class="row" style="padding: 20px">
+  <div class="col-6">
     <!-- Sponsor ID -->
-    <label>{{@form.inputs.sponsor_id.label}}</label>
-    <input class="form-control form-control-sm" disabled="@form.inputs.sponsor_id.disabled"
-           name="@form.inputs.sponsor_id.name" placeholder="@form.inputs.sponsor_id.placeholder" type="text"
-           value="@order.sponsorId"/>
+    <div class="row">
+      <!--Label -->
+      <div class="col-5">
+        <label class="my-1 mr-2">{{@form.inputs.sponsor_id.label}}</label>
+      </div>
+      <!-- Input -->
+      <div class="col-7">
+        <input class="form-control form-control-sm" type="text" name="@form.inputs.sponsor_id.name" placeholder="@form.inputs.sponsor_id.placeholder" value="@order.sponsorId" disabled="@form.inputs.sponsor_id.disabled" />
+      </div>
+    </div>
+
+    <!-- Break -->
+    <div class="row">
+      <div class="col-12"><br /></div>
+    </div>
 
     <!-- Request Delivery Date/Time -->
-    <label>Requested Delivery Date/Time</label>
-    <div>
-        <input class="form-control form-control-sm" disabled="@form.inputs.delivery_date.disabled"
-               name="@form.inputs.delivery_date.name" type="text" value="@order.delivery_date.date"/>
-        <input class="form-control form-control-sm" disabled="@form.inputs.delivery_time.disabled"
-               name="@form.inputs.delivery_time.name" type="text" value="@order.delivery_date.time"/>
+    <div class="row">
+      <!--Label -->
+      <div class="col-5">
+        <label class="my-1 mr-2">Request Delivery Date/Time</label>
+      </div>
+      <!-- Input -->
+      <div class="col-7">
+        <div class="row">
+          <div class="col-7">
+            <!-- Input -->
+            <input class="form-control form-control-sm" type="text" value="@order.delivery_date.date" name="@form.inputs.delivery_date.name" disabled="@form.inputs.delivery_date.disabled" />
+          </div>
+          <div class="col-5">
+            <!-- Input -->
+            <input class="form-control form-control-sm" type="text" value="@order.delivery_date.time" name="@form.inputs.delivery_time.name" disabled="@form.inputs.delivery_time.disabled" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Break -->
+    <div class="row">
+      <div class="col-12"><br /></div>
     </div>
 
     <!-- Target CMO ID -->
-    <label>{{@form.inputs.target_cmo_id.label}}</label>
-    <input class="form-control form-control-sm" disabled="@form.inputs.target_cmo_id.disabled"
-           name="@form.inputs.target_cmo_id.name" placeholder="@form.inputs.target_cmo_id.placeholder"
-           type="text" value="@order.targetCmoId"/>
+    <div class="row">
+      <!--Label -->
+      <div class="col-5">
+        <label class="my-1 mr-2">{{@form.inputs.target_cmo_id.label}}</label>
+      </div>
+      <!-- Input -->
+      <div class="col-7">
+        <input class="form-control form-control-sm" type="text" name="@form.inputs.target_cmo_id.name" placeholder="@form.inputs.target_cmo_id.placeholder" value="@order.targetCmoId" disabled="@form.inputs.target_cmo_id.disabled" />
+      </div>
+    </div>
+
+    <!-- Break -->
+    <div class="row">
+      <div class="col-12"><br /></div>
+    </div>
 
     <!-- Study ID -->
-    <label>{{@form.inputs.study_id.label}}</label>
-    <input class="form-control form-control-sm" disabled="@form.inputs.study_id.disabled"
-           name="@form.inputs.study_id.name" type="text" value="@order.studyId"/>
+    <div class="row">
+      <!--Label -->
+      <div class="col-5">
+        <label class="my-1 mr-2">{{@form.inputs.study_id.label}}</label>
+      </div>
+      <!-- Input -->
+      <div class="col-7">
+        <input class="form-control form-control-sm" type="text" name="@form.inputs.study_id.name" value="@order.studyId" disabled="@form.inputs.study_id.disabled" />
+      </div>
+    </div>
+
+    <!-- Break -->
+    <div class="row">
+      <div class="col-12"><br /></div>
+    </div>
 
     <!-- Order ID -->
-    <label>{{@form.inputs.order_id.label}}</label>
-    <input class="form-control form-control-sm" disabled="@form.inputs.order_id.disabled"
-           name="@form.inputs.order_id.name" type="text" value="@order.orderId"/>
+    <div class="row">
+      <!--Label -->
+      <div class="col-5">
+        <label class="my-1 mr-2">{{@form.inputs.order_id.label}}</label>
+      </div>
+      <!-- Input -->
+      <div class="col-7">
+        <input class="form-control form-control-sm" type="text" name="@form.inputs.order_id.name" value="@order.orderId" disabled="@form.inputs.order_id.disabled" />
+      </div>
+    </div>
+
+    <!-- Break -->
+    <div class="row">
+      <div class="col-12"><br /></div>
+    </div>
 
     <!-- Kit ID List -->
-    <label>{{@form.inputs.kit_id_list.label}}</label>
-    <div>
-        <input class="form-control form-control-sm" disabled="@form.inputs.kit_id_list.disabled"
-               name="@form.inputs.kit_id_list.name" type="text" value="@order.kitsFilename"/>
-        <button class="btn-download-small" data-tag="download-kit-list">
-            <svg version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve"
-                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
-            <path d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
-                  c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
-                  c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
-                  c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"/>
-        </svg>
-        </button>
+    <div class="row">
+      <!--Label -->
+      <div class="col-5">
+        <label class="my-1 mr-2">{{@form.inputs.kit_id_list.label}}</label>
+      </div>
+      <!-- Input -->
+      <div class="col-7">
+        <input class="form-control form-control-sm" type="text" name="@form.inputs.kit_id_list.name" value="@order.kitsFilename" disabled="@form.inputs.kit_id_list.disabled" />
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6">
+    <!-- Site ID -->
+    <div class="row">
+      <!--Label -->
+      <div class="col-5">
+        <label class="my-1 mr-2">{{@form.inputs.site_id.label}}</label>
+      </div>
+      <!-- Input -->
+      <div class="col-7">
+        <input class="form-control form-control-sm" type="text" name="@form.inputs.site_id.name" value="@order.siteId" disabled="@form.inputs.site_id.disabled" />
+      </div>
     </div>
 
-    <!-- Site ID -->
-    <label>{{@form.inputs.site_id.label}}</label>
-    <input class="form-control form-control-sm" disabled="@form.inputs.site_id.disabled"
-           name="@form.inputs.site_id.name" type="text" value="@order.siteId"/>
+    <!-- Break -->
+    <div class="row">
+      <div class="col-12"><br /></div>
+    </div>
 
     <!-- Site Region ID -->
-    <label>{{@form.inputs.site_region_id.label}}</label>
-    <input class="form-control form-control-sm" disabled="@form.inputs.site_region_id.disabled"
-           name="@form.inputs.site_region_id.name" type="text" value="@order.siteRegionId"/>
-
-    <!-- Site Country -->
-    <label>{{@form.inputs.site_country.label}}</label>
-    <input class="form-control form-control-sm" disabled="@form.inputs.site_country.disabled"
-           name="@form.inputs.site_country.name" type="text" value="@order.siteCountry"/>
-
-    <!-- Keep Between -->
-    <label>{{@form.inputs.keep_between_temperature.label}}</label>
-    <div>
-        <input class="form-control form-control-sm"
-               disabled="@form.inputs.keep_between_temperature_min.disabled"
-               name="@form.inputs.keep_between_temperature_min.name" type="text"
-               value="@order.temperatures.min"/>
-        <label>{{@form.inputs.keep_between_temperature.andLabel}}</label>
-        <input class="form-control form-control-sm"
-               disabled="@form.inputs.keep_between_temperature_max.disabled"
-               name="@form.inputs.keep_between_temperature_max.name" type="text"
-               value="@order.temperatures.max"/>
+    <div class="row">
+      <!--Label -->
+      <div class="col-5">
+        <label class="my-1 mr-2">{{@form.inputs.site_region_id.label}}</label>
+      </div>
+      <!-- Input -->
+      <div class="col-7">
+        <input class="form-control form-control-sm" type="text" name="@form.inputs.site_region_id.name" value="@order.siteRegionId" disabled="@form.inputs.site_region_id.disabled" />
+      </div>
     </div>
 
-    <!-- Temperature Comments -->
-    <label>{{@form.inputs.temperature_comments.label}}</label>
-    <input class="form-control form-control-sm" disabled="@form.inputs.temperature_comments.disabled"
-           name="@form.inputs.temperature_comments.name" type="text" value="@order.temperature_comments"/>
+    <!-- Break -->
+    <div class="row">
+      <div class="col-12"><br /></div>
+    </div>
+
+    <!-- Site Country -->
+    <div class="row">
+      <!--Label -->
+      <div class="col-5">
+        <label class="my-1 mr-2">{{@form.inputs.site_country.label}}</label>
+      </div>
+      <!-- Input -->
+      <div class="col-7">
+        <input class="form-control form-control-sm" type="text" name="@form.inputs.site_country.name" value="@order.siteCountry" disabled="@form.inputs.site_country.disabled" />
+      </div>
+    </div>
+
+    <!-- Break -->
+    <div class="row">
+      <div class="col-12"><br /></div>
+    </div>
+
+    <div class="row" style="margin-top: -15px; margin-bottom: -15px">
+      <div class="col-6">
+        <!-- Keep Between -->
+        <div class="form-group">
+          <!-- Label -->
+          <label for="@form.inputs.keep_between_temperature_min_name">{{@form.inputs.keep_between_temperature_min.label}}</label>
+          <!--Input -->
+          <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature_min.name" value="@order.temperatures.min" disabled="@form.inputs.keep_between_temperature_min.disabled" />
+        </div>
+      </div>
+      <div class="col-6">
+        <!-- Keep Between -->
+        <div class="form-group">
+          <!-- Label -->
+          <label for="@form.inputs.keep_between_temperature_max_name">{{@form.inputs.keep_between_temperature_max.label}}</label>
+          <!--Input -->
+          <input type="text" class="form-control form-control-sm" name="@form.inputs.keep_between_temperature_max.name" value="@order.temperatures.max" disabled="@form.inputs.keep_between_temperature_max.disabled" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Break -->
+    <div class="row">
+      <div class="col-12"><br /></div>
+    </div>
+
+    <!-- Site Country -->
+    <div class="row">
+      <!--Label -->
+      <div class="col-5">
+        <label class="my-1 mr-2">{{@form.inputs.temperature_comments.label}}</label>
+      </div>
+      <!-- Input -->
+      <div class="col-7">
+        <input class="form-control form-control-sm" type="text" name="@form.inputs.temperature_comments.name" value="@order.temperature_comments" disabled="@form.inputs.temperature_comments.disabled" />
+      </div>
+    </div>
+  </div>
 </div>
