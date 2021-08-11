@@ -170,22 +170,14 @@
 					</div>
 					<div class='accordion-item-holder'>
 						<div data-if='@order.comments'>
-							<table class='table table-borderless attach-documents-table'>
-								<thead>
-								<tr>
-									<th scope='col'>Comment</th>
-									<th scope='col'>Entity</th>
-									<th scope='col'>Date/Time</th>
-								</tr>
-								</thead>
-								<tbody data-for='@order.comments'>
-								<tr>
-									<th>{{@comment}}</th>
-									<td>{{@entity}}</td>
-									<td>{{@date}}</td>
-								</tr>
-								</tbody>
-							</table>
+							<div class='comments-container py-5 flex-column' data-for='@order.comments'>
+								<div class='comment'>
+									<div class='identity'><small>{{@entity}}</small>, <small>{{@date}}</small>
+									</div>
+									<div>{{@comment}}</div>
+								</div>
+								<div slot='no-data'>No comments</div>
+							</div>
 						</div>
 					</div>
 				</div>
