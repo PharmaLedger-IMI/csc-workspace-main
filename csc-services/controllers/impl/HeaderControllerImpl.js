@@ -9,7 +9,7 @@ class HeaderControllerImpl extends WebcController {
 
 		this.model = {
 			logoURL: 'resources/images/pl_logo.png',
-			appName: role,
+			appName: role.toUpperCase(),
 			userName: ''
 		};
 

@@ -1,98 +1,77 @@
 const { WebcController } = WebCardinal.controllers;
 
-//Services
 const cscServices = require('csc-services');
-
-//Import
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
-const {Topics} = cscServices.constants;
+const { Topics } = cscServices.constants;
 
 export default class DashboardMenuController extends WebcController {
 
-    constructor(...props) {
+	constructor(...props) {
 
-        super(...props);
+		super(...props);
 
-        console.log(this.history);
+		console.log(this.history);
 
-        this.notificationsService = new NotificationsService(this.DSUStorage);
+		this.notificationsService = new NotificationsService(this.DSUStorage);
 
-        this.model = {
-            menu_items : [
-                { name: "Dashboard" ,     url : "/" , id: "menu-dashboard"},
-                { name: "New Order" ,     url : "/new-order", id: "menu-new-order"},
-                { name: "Notifications" , url : "/notifications", id: "menu-notifications"},
-            ],
-            unread: 0
-        }
-        if(this.history.location.pathname === '/'){
-            makeMenuActive('menu-dashboard');
-            makeMenuInActive('menu-new-order');
-            makeMenuInActive('menu-notifications');
-        }
+		this.model = {
+			unread: 0
+		};
 
-        if(this.history.location.pathname === '/new-order'){
-            makeMenuActive('menu-new-order');
-            makeMenuInActive('menu-dashboard');
-            makeMenuInActive('menu-notifications');
-        }
+		this.updateActiveMenu();
+		this.getNotificationsUnread();
+		this.attachAll();
+	}
 
-        if(this.history.location.pathname === '/notifications'){
-            makeMenuActive('menu-notifications');
-            makeMenuInActive('menu-dashboard');
-            makeMenuInActive('menu-new-order');
-        }
+	updateActiveMenu() {
+		if (this.history.location.pathname === '/') {
+			this.makeMenuActive('menu-dashboard');
+			this.makeMenuInActive('menu-new-order');
+			this.makeMenuInActive('menu-notifications');
+		}
 
-        // //For every menu item check which one is the active and add the class
-        // if(this.model.menu_items){
-        //     this.model.menu_items.forEach( (item) => {
-        //         // if(this.history.location.pathname === item.url){
-        //         //     console.log("URL" , this.history.location.pathname);
-        //         //     makeMenuActive(item.id);
-        //         // }
-        //         // else{
-        //         //     makeMenuInActive(item.id);
-        //         // }
-        //
-        //
-        //     })
-        // }
+		if (this.history.location.pathname === '/new-order') {
+			this.makeMenuActive('menu-new-order');
+			this.makeMenuInActive('menu-dashboard');
+			this.makeMenuInActive('menu-notifications');
+		}
 
-        //Add active menu class to element
-        function makeMenuActive( element ){
-            // console.log("Making ACTIVE:" , element);
-            document.getElementById(element).classList.add("dashboard-tab-active");
-        }
+		if (this.history.location.pathname === '/notifications') {
+			this.makeMenuActive('menu-notifications');
+			this.makeMenuInActive('menu-new-order');
+			this.makeMenuInActive('menu-dashboard');
+		}
+	}
 
-        //Remove active menu class to element
-        function makeMenuInActive( element ){
-            // console.log("Making INACTIVE:" , element);
-            document.getElementById(element).classList.remove("dashboard-tab-active");
-        }
+	//Add active menu class to element
+	makeMenuActive(element) {
+		this.querySelector(`#${element}`).classList.add('dashboard-tab-active');
+	}
 
-        this.getNotificationsUnread();
-        this.attachAll();
-    }
+	//Remove active menu class to element
+	makeMenuInActive(element) {
+		this.querySelector(`#${element}`).classList.remove('dashboard-tab-active');
+	}
 
-    async getNotificationsUnread() {
-        const unread = await this.notificationsService.getNumberOfUnreadNotifications();
-        this.model.unread = unread || 0;
-    }
+	async getNotificationsUnread() {
+		const unread = await this.notificationsService.getNumberOfUnreadNotifications();
+		this.model.unread = unread || 0;
+	}
 
-    attachAll() {
-        this.model.addExpression(
-            'isUnreadZero',
-            () => {
-              return !!this.model.unread;
-            },
-            'unread'
-        );
+	attachAll() {
+		this.model.addExpression(
+			'isUnreadZero',
+			() => {
+				return !!this.model.unread;
+			},
+			'unread'
+		);
 
-        eventBusService.addEventListener(Topics.RefreshNotifications, async (data) => {
-            this.getNotificationsUnread();
-        });
-    }
+		eventBusService.addEventListener(Topics.RefreshNotifications, async (data) => {
+			this.getNotificationsUnread();
+		});
+	}
 
 
 }

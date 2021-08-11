@@ -140,7 +140,6 @@ export default class OrdersController extends WebcController {
     });
 
     this.onTagClick('filters-changed', async (model, target) => {
-      console.log("[EVENT] filters-changed");
       const selectedFilter = target.getAttribute('data-custom') || null;
       if (selectedFilter) {
         document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
@@ -151,7 +150,6 @@ export default class OrdersController extends WebcController {
     });
 
     this.onTagClick('filters-cleared', async () => {
-      console.log("[EVENT] filters-cleared");
       document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
       this.model.filter = '';
       document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
