@@ -1,111 +1,22 @@
 <webc-container controller="DashboardController">
-  <link rel="stylesheet" href="assets/css/orders.css" />
-  <psk-layout columns="1">
+    <main class="full-flex-column">
+        <section>
+            <webc-template template="header-template"></webc-template>
+            <webc-template template="dashboard-menu"></webc-template>
+        </section>
 
-    <!-- Header -->
-    <webc-template template="header"></webc-template>
-
-    <!-- Menu -->
-    <webc-template template="dashboard-menu"></webc-template>
-
-    <div class="card p-2">
-      <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-9">
-          <div class="tabs">
-            <div class="tab-navigator">
-              <button id="tab-0" class="btn active" data-tag="change-tab" data-custom="0">
-                <i class="far fa-list-alt mr-2"></i>Orders
-              </button>
-              <button id="tab-1" class="btn" data-tag="change-tab" data-custom="1">
-                <i class="fas fa-truck mr-2"></i>Shipments
-              </button>
-              <button id="tab-2" class="btn" data-tag="change-tab" data-custom="2">
-                <i class="fas fa-medkit mr-2"></i>Kits
-              </button>
+        <section class="content-section">
+            <div data-if="@isOrdersSelected">
+                <webc-template data-if="@isOrdersSelected" template="order/dashboard"></webc-template>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div data-if="@isOrdersSelected">
-        <webc-container controller="OrdersController">
-          <div class="row mt-2">
-            <div class="col-md-3">
-              <div class="card p-3">
-                <button id="filter-" class="btn-side-bare selected" data-tag="filters-cleared" data-custom="">
-                  All Orders
-                </button>
-                <button id="filter-Initiated" class="btn-side-bare" data-tag="filters-changed" data-custom="Initiated">
-                  Initiated
-                </button>
-                <button
-                  id="filter-ReviewedByCMO"
-                  class="btn-side-bare"
-                  data-tag="filters-changed"
-                  data-custom="ReviewedByCMO"
-                >
-                  Reviewed by CMO
-                </button>
-                <button
-                  id="filter-ReviewedBySponsor"
-                  class="btn-side-bare"
-                  data-tag="filters-changed"
-                  data-custom="ReviewedBySponsor"
-                >
-                  Reviewed by Sponsor
-                </button>
-                <button id="filter-Approved" class="btn-side-bare" data-tag="filters-changed" data-custom="Approved">
-                  Approved
-                </button>
-                <button id="filter-Canceled" class="btn-side-bare" data-tag="filters-changed" data-custom="Canceled">
-                  Canceled
-                </button>
-              </div>
+            <div data-if="@isShipmentsSelected">
+                <webc-template data-if="@isShipmentsSelected" template="order/shipments"></webc-template>
             </div>
-            <div class="col-md-9">
-              <div class="card p-3">
-                <psk-input
-                  id="search-field"
-                  view-model="search"
-                  event-name="filters-changed"
-                  event-data="text"
-                ></psk-input>
-                <psk-condition condition="@ordersArrayNotEmpty">
-                  <div slot="condition-true">
-                    <webc-template template="table-template" data-view-model="@"></webc-template>
-                  </div>
-                  <div slot="condition-false">
-                    <div>No orders available.</div>
-                  </div>
-                </psk-condition>
-              </div>
+
+            <div data-if="@isKitsSelected">
+                <webc-template data-if="@isKitsSelected" template="order/kits"></webc-template>
             </div>
-          </div>
-        </webc-container>
-      </div>
-
-      <div data-if="@isShipmentsSelected">
-        <div class="row mt-2">
-          <div class="col-md-3">
-            <div class="card p-3">Shipments Filters</div>
-          </div>
-          <div class="col-md-9">
-            <div class="card p-3">Shipments</div>
-          </div>
-        </div>
-      </div>
-
-      <div data-if="@isKitsSelected">
-        <div class="row mt-2">
-          <div class="col-md-3">
-            <div class="card p-3">Kits Filters</div>
-          </div>
-          <div class="col-md-9">
-            <div class="card p-3">Kits</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </psk-layout>
+        </section>
+    </main>
 </webc-container>
