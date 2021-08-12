@@ -1,42 +1,45 @@
-<webc-container controller="NotificationsController">
-	<main class="full-flex-column">
+<webc-container controller='NotificationsController'>
+	<main class='full-flex-column'>
 		<section>
-			<webc-template template="header-template"></webc-template>
-			<webc-template template="dashboard-menu"></webc-template>
+			<webc-template template='header-template'></webc-template>
+			<webc-template template='dashboard-menu'></webc-template>
 		</section>
 
-		<section class="notifications-section">
-			<table class="table table-borderless">
+		<section class='notifications-section'>
+			<table class='table table-borderless'>
 				<thead>
 				<tr>
 					<th></th>
 					<th>Notification</th>
 					<th>By</th>
 					<th>Role</th>
-					<th class="d-none d-lg-table-cell">Date/Time</th>
+					<th class='d-none d-lg-table-cell'>Date/Time</th>
 					<th>View</th>
 				</tr>
 				</thead>
-				<tbody data-for="@notifications">
-				<tr data-read-notification="@read">
-					<td class="align-items-center" data-if="@read">
-						<button class="btn-bare" data-custom="@orderId" data-tag="mark-order" slot="true">
-							<i class="fas fa-check"></i>
-						</button>
-						<button class="btn-bare" data-custom="@orderId" data-tag="mark-order" slot="false">
-							<i class="fas fa-circle"></i>
+				<tbody data-for='@notifications'>
+				<tr data-read-notification='@read'>
+					<td class='align-items-center'>
+						<button class='btn-bare' data-if='@read' data-tag='mark-notification'>
+							<i class='fas fa-check' slot='true'></i>
+							<i class='fas fa-circle' slot='false'></i>
 						</button>
 					</td>
-					<td class="d-flex flex-column">
+					<td class='d-flex flex-column'>
 						<label>Order [{{@orderId}}]: {{@status}}</label>
-						<label class="d-lg-none">{{ @date }}</label>
+						<label class='d-lg-none'>{{ @date }}</label>
 					</td>
 					<td>{{ @did}}</td>
 					<td>{{ @role }}</td>
-					<td class="d-none d-lg-table-cell">{{ @date }}</td>
+					<td class='d-none d-lg-table-cell'>{{ @date }}</td>
 					<td>
-						<button class="btn-bare" data-custom="@orderId" data-tag="view-order">
-							<i class="fas fa-search"></i>
+						<button class='btn-bare' data-tag='view-notification'>
+							<svg class='view-more-icon' enable-background='new 0 0 200 200' height='200px' id='Layer_1'
+							     version='1.1' viewBox='0 0 200 200' width='200px' x='0px' xml:space='preserve'
+							     xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' y='0px'>
+					            <path d='M107.5,62.462h67.57v15.021H107.5V62.462z M107.5,137.538h67.57v-15.021H107.5V137.538z M130.02,107.51
+					                h45.051V92.493H130.02V107.51z M107.5,99.999L69.961,62.462v30.031H24.93v15.017h45.031v30.028L107.5,99.999z' fill='#231F20'></path>
+					        </svg>
 						</button>
 					</td>
 				</tr>
