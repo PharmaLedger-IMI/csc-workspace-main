@@ -1,47 +1,47 @@
 <webc-container controller="NotificationsController">
-    <main class="full-flex-column">
-        <section>
-            <webc-template template="header-template"></webc-template>
-            <webc-template template="dashboard-menu"></webc-template>
-        </section>
+  <psk-layout columns="1">
+    <!-- Header -->
+    <webc-template template="header"></webc-template>
 
-        <section class="notifications-section">
-            <table class="table table-borderless">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Notification</th>
-                    <th>By</th>
-                    <th>Role</th>
-                    <th class="d-none d-lg-table-cell">Date/Time</th>
-                    <th>View</th>
-                </tr>
-                </thead>
-                <tbody data-for="@notifications">
-                <tr data-read-notification="@read">
-                    <td class="align-items-center" data-if="@read">
-                        <button class="btn-bare" data-custom="@orderId" data-tag="mark-order" slot="true">
-                            <i class="fas fa-check"></i>
-                        </button>
-                        <button class="btn-bare" data-custom="@orderId" data-tag="mark-order" slot="false">
-                            <i class="fas fa-circle"></i>
-                        </button>
-                    </td>
-                    <td class="d-flex flex-column">
-                        <label>Order [{{@orderId}}]: {{@status}}</label>
-                        <label class="d-lg-none">{{ @date }}</label>
-                    </td>
-                    <td>{{ @did}}</td>
-                    <td>{{ @role }}</td>
-                    <td class="d-none d-lg-table-cell">{{ @date }}</td>
-                    <td>
-                        <button class="btn-bare" data-custom="@orderId" data-tag="view-order">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </section>
-    </main>
+    <!-- Menu -->
+    <webc-template template="dashboard-menu"></webc-template>
+
+    <div class="row ml-5 mr-5">
+      <div class="col-md-12 mb-2">
+        <psk-layout class="" columns="6">
+          <div></div>
+          <div>Notification</div>
+          <div>By</div>
+          <div>Role</div>
+          <div>Date/Time</div>
+          <div>View</div>
+        </psk-layout>
+      </div>
+    </div>
+    <div data-if="@test">
+      <div slot="true" class="">
+        <div data-for="@notifications" class="row ml-5 mr-5">
+          <div class="col-md-12 card mb-2">
+            <psk-layout class="align-items-center" columns="6">
+              <div data-if="@read" class="align-items-center">
+                <button class="btn btn-bare" slot="true" data-tag="mark-order" data-custom="@orderId">
+                  <i class="fas fa-check"></i>
+                </button>
+                <button class="btn btn-bare" slot="false" data-tag="mark-order" data-custom="@orderId">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+              <div>Order [{{@orderId}}]: {{@status}}</div>
+              <div>{{ @did}}</div>
+              <div>{{ @role }}</div>
+              <div>{{ @date }}</div>
+              <button data-tag="view-order" data-custom="@orderId" class="btn btn-bare">
+                <i class="fas fa-search"></i>
+              </button>
+            </psk-layout>
+          </div>
+        </div>
+      </div>
+    </div>
+  </psk-layout>
 </webc-container>

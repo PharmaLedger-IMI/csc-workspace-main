@@ -56,7 +56,7 @@ export default class ReviewOrderController extends WebcController {
             this.model.allComments = [...this.model.order.comments];
             if (comment) {
                 this.model.allComments.push({
-                    entity: 'CMO',
+                    entity: Roles.CMO,
                     date: new Date().toLocaleString(),
                     comment: comment,
                 });

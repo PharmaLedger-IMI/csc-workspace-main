@@ -1,10 +1,9 @@
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
-const {Topics} = cscServices.constants;
-const { orderStatusesEnum, orderTableHeaders }  = cscServices.constants.order;
+const { Topics } = cscServices.constants;
+const { orderStatusesEnum, orderTableHeaders } = cscServices.constants.order;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
-
 // eslint-disable-next-line no-undef
 const { WebcController } = WebCardinal.controllers;
 
@@ -24,11 +23,11 @@ export default class OrdersController extends WebcController {
   pagination = {
     previous: false,
     next: false,
-    items: [],
+    items: null,
     pages: {
       selectOptions: '',
     },
-    slicedPages: [],
+    slicedPages: null,
     currentPage: 0,
     itemsPerPage: 10,
     totalPages: null,
@@ -52,6 +51,7 @@ export default class OrdersController extends WebcController {
       pagination: this.pagination,
       headers: this.headers,
       type: 'orders',
+      clearButtonDisabled: true,
       tableLength: this.headers.length,
     };
 
@@ -63,7 +63,7 @@ export default class OrdersController extends WebcController {
   async init() {
     await this.getOrders();
     eventBusService.addEventListener(Topics.RefreshOrders, async (data) => {
-      await this.getOrders();
+      this.getOrders();
     });
   }
 
@@ -82,6 +82,7 @@ export default class OrdersController extends WebcController {
     if (data) {
       data.forEach((item) => {
         item.requestDate_value = momentService(item.requestDate).format('MM/DD/YYYY HH:mm:ss');
+
         item.lastModified_value = momentService(item.lastModified).format('MM/DD/YYYY HH:mm:ss');
 
         const latestStatus = item.status.sort(function (a, b) {
@@ -113,12 +114,6 @@ export default class OrdersController extends WebcController {
     this.setOrdersModel(result);
   }
 
-  showFeedbackToast(title, message, alertType) {
-    if (typeof this.feedbackEmitter === 'function') {
-      this.feedbackEmitter(message, title, alertType);
-    }
-  }
-
   attachEvents() {
     this.model.onChange("search.value", () => {
       setTimeout(() => {
@@ -127,10 +122,6 @@ export default class OrdersController extends WebcController {
     });
 
     this.model.addExpression('ordersArrayNotEmpty', () => this.model.orders && Array.isArray(this.model.orders) && this.model.orders.length > 0, 'orders');
-
-    this.on('openFeedback', (e) => {
-      this.feedbackEmitter = e.detail;
-    });
 
     this.onTagClick('view-order', async (model) => {
       const orderId = model.orderId;
@@ -151,7 +142,6 @@ export default class OrdersController extends WebcController {
     });
 
     this.onTagClick('filters-changed', async (model, target) => {
-      console.log("[EVENT] filters-changed");
       const selectedFilter = target.getAttribute('data-custom') || null;
       if (selectedFilter) {
         document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
@@ -162,7 +152,6 @@ export default class OrdersController extends WebcController {
     });
 
     this.onTagClick('filters-cleared', async () => {
-      console.log("[EVENT] filters-cleared");
       document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
       this.model.filter = '';
       document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
