@@ -8,11 +8,13 @@ const ACTOR = cscServices.constants.Roles.Courier;
 // const HistoryModalController = cscServices.getController('HistoryModalController', ACTOR);
 // const HeaderController = cscServices.getController('HeaderController', ACTOR);
 const NotificationsController = cscServices.getController('NotificationsController', ACTOR);
+const DashboardMenuController = cscServices.getController('DashboardMenuController', ACTOR);
 
 addControllers({
 	// TableTemplateController,
 	// SingleOrderController,
 	// HistoryModalController,
 	// HeaderController,
-	NotificationsController
+	NotificationsController,
+	DashboardMenuController
 });
