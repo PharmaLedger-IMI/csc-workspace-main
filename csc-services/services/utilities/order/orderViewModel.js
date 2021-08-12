@@ -45,6 +45,7 @@ const orderViewModel = {
             target_cmo_id: {
                 label: 'Target CMO ID',
                 name: 'target_cmo_id',
+                id: 'target_cmo_id',
                 placeholder: 'Select Target CMO ID...',
                 required: true,
                 disabled:false,
@@ -53,6 +54,7 @@ const orderViewModel = {
                     {label: 'ID 2', value: '2'},
                     {label: 'ID 3', value: '3'},
                 ],
+                value: '1'
             },
             study_id: {
                 label: 'Study ID',
@@ -78,9 +80,19 @@ const orderViewModel = {
                 disabled:false,
                 value: '',
             },
+            kit_ids_attachment: {
+                label: 'Upload File',
+                listFiles: false,
+                filesAppend: false,
+                files: [],
+                name: 'No File',
+                ids: [],
+                error: '',
+            },
             site_id: {
                 label: 'Site ID',
                 name: 'site_id',
+                id: 'site_id',
                 placeholder: 'Select Site ID...',
                 required: true,
                 disabled:false,
@@ -89,6 +101,7 @@ const orderViewModel = {
                     {label: 'Site ID 2', value: '2'},
                     {label: 'Site ID 3', value: '3'},
                 ],
+                value: '1'
             },
             site_region_id: {
                 label: 'Site Region ID (Autofilled)',
@@ -132,12 +145,12 @@ const orderViewModel = {
                 value: '',
             },
             keep_between_temperature_max: {
-                    label: 'Max Temperature (°C)',
-                    name: 'keep_between_temperature_max',
-                    required: true,
-                    placeholder: '',
-                    disabled:false,
-                    value: '',
+                label: 'Max Temperature (°C)',
+                name: 'keep_between_temperature_max',
+                required: true,
+                placeholder: '',
+                disabled:false,
+                value: '',
             },
             add_comment: {
                 label: 'Add a Comment',
@@ -151,7 +164,6 @@ const orderViewModel = {
         docs: {},
         attachment: {
             label: 'Select files',
-
             listFiles: true,
             filesAppend: false,
             files: [],

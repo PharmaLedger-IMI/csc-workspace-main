@@ -1,10 +1,9 @@
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
-const {Topics} = cscServices.constants;
-const { orderStatusesEnum, orderTableHeaders }  = cscServices.constants.order;
+const { Topics } = cscServices.constants;
+const { orderStatusesEnum, orderTableHeaders } = cscServices.constants.order;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
-
 // eslint-disable-next-line no-undef
 const { WebcController } = WebCardinal.controllers;
 
@@ -15,7 +14,9 @@ export default class OrdersController extends WebcController {
   headers = orderTableHeaders;
 
   search = {
-    placeholder: 'Search',
+    label: 'Search for an order',
+    required: false,
+    placeholder: 'Order name...',
     value: '',
   };
 
@@ -24,11 +25,11 @@ export default class OrdersController extends WebcController {
   pagination = {
     previous: false,
     next: false,
-    items: [],
+    items: null,
     pages: {
       selectOptions: '',
     },
-    slicedPages: [],
+    slicedPages: null,
     currentPage: 0,
     itemsPerPage: 10,
     totalPages: null,
@@ -52,6 +53,7 @@ export default class OrdersController extends WebcController {
       pagination: this.pagination,
       headers: this.headers,
       type: 'orders',
+      clearButtonDisabled: true,
       tableLength: this.headers.length,
     };
 
@@ -63,7 +65,7 @@ export default class OrdersController extends WebcController {
   async init() {
     await this.getOrders();
     eventBusService.addEventListener(Topics.RefreshOrders, async (data) => {
-      await this.getOrders();
+      this.getOrders();
     });
   }
 
@@ -82,6 +84,7 @@ export default class OrdersController extends WebcController {
     if (data) {
       data.forEach((item) => {
         item.requestDate_value = momentService(item.requestDate).format('MM/DD/YYYY HH:mm:ss');
+
         item.lastModified_value = momentService(item.lastModified).format('MM/DD/YYYY HH:mm:ss');
 
         const latestStatus = item.status.sort(function (a, b) {
@@ -120,54 +123,50 @@ export default class OrdersController extends WebcController {
   }
 
   attachEvents() {
-    this.model.onChange("search.value", () => {
-      setTimeout(() => {
-        this.filterData();
-      }, 300);
-    });
-
     this.model.addExpression('ordersArrayNotEmpty', () => this.model.orders && Array.isArray(this.model.orders) && this.model.orders.length > 0, 'orders');
 
     this.on('openFeedback', (e) => {
       this.feedbackEmitter = e.detail;
     });
 
-    this.onTagClick('view-order', async (model) => {
-      const orderId = model.orderId;
-      console.log(
-          JSON.stringify(
-              this.orders.find((x) => x.orderId === orderId),
-              null,
-              2
-          )
-      );
-      console.log(JSON.stringify(this.orders, null, 2));
-      console.log(orderId);
+    this.on('run-filters', (e) => {
+      this.filterData();
+    });
+
+    this.on('view-order', async (event) => {
       this.navigateToPageTag('order', {
-        id: orderId,
-        keySSI: this.orders.find((x) => x.orderId === orderId).orderSSI,
-        documentsKeySSI: this.orders.find((x) => x.orderId === orderId).documentsKeySSI,
+        id: event.data,
+        keySSI: this.orders.find((x) => x.orderId === event.data).orderSSI,
+        documentsKeySSI: this.orders.find((x) => x.orderId === event.data).documentsKeySSI,
       });
     });
 
-    this.onTagClick('filters-changed', async (model, target) => {
-      console.log("[EVENT] filters-changed");
+    this.onTagClick('filters-changed', async (model, target, event) => {
       const selectedFilter = target.getAttribute('data-custom') || null;
       if (selectedFilter) {
         document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
         this.model.filter = selectedFilter;
         document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
+        this.model.clearButtonDisabled = false;
         this.filterData();
       }
     });
 
-    this.onTagClick('filters-cleared', async () => {
-      console.log("[EVENT] filters-cleared");
+    this.onTagClick('filters-cleared', async (event) => {
       document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
       this.model.filter = '';
       document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
+      this.model.clearButtonDisabled = true;
       this.model.search.value = null;
       this.filterData();
+    });
+
+    const searchField = this.element.querySelector('#search-field');
+    searchField.addEventListener('keydown', () => {
+      setTimeout(() => {
+        this.model.clearButtonDisabled = false;
+        this.filterData();
+      }, 300);
     });
   }
 }

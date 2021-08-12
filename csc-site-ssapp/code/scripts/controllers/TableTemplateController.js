@@ -4,7 +4,6 @@ const cscServices = require('csc-services');
 const momentService = cscServices.momentService;
 
 export default class TableTemplateController extends WebcController {
-  localData = null;
   constructor(...props) {
     super(...props);
     this.attachEvents();

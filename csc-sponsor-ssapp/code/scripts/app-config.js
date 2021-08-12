@@ -1,7 +1,7 @@
 const { addControllers } = WebCardinal.preload;
 
 const cscServices = require('csc-services');
-const ACTOR = cscServices.constants.Roles.CMO;
+const ACTOR = cscServices.constants.Roles.Sponsor;
 
 const TableTemplateController = cscServices.getController('TableTemplateController', ACTOR);
 const SingleOrderController = cscServices.getController('SingleOrderController', ACTOR);

@@ -7,7 +7,6 @@ const cscServices = require('csc-services');
 //Import
 const eventBusService = cscServices.EventBusService;
 const OrdersService = cscServices.OrderService;
-const NotificationsService = cscServices.NotificationsService;
 const { Topics } = cscServices.constants;
 const { orderStatusesEnum, orderTableHeaders } = cscServices.constants.order;
 const momentService = cscServices.momentService;
@@ -20,8 +19,6 @@ export default class OrdersController extends WebcController {
 
   search = {
     label: 'Search for an order',
-    required: false,
-    placeholder: 'Order name...',
     value: '',
   };
 
@@ -30,11 +27,11 @@ export default class OrdersController extends WebcController {
   pagination = {
     previous: false,
     next: false,
-    items: null,
+    items: [],
     pages: {
       selectOptions: '',
     },
-    slicedPages: null,
+    slicedPages: [],
     currentPage: 0,
     itemsPerPage: 10,
     totalPages: null,
@@ -48,7 +45,6 @@ export default class OrdersController extends WebcController {
     super(...props);
 
     this.ordersService = new OrdersService(this.DSUStorage);
-    this.feedbackEmitter = null;
 
     this.model = {
       statuses: this.statuses,
@@ -58,7 +54,6 @@ export default class OrdersController extends WebcController {
       pagination: this.pagination,
       headers: this.headers,
       type: 'orders',
-      clearButtonDisabled: true,
       tableLength: this.headers.length,
     };
 
@@ -81,7 +76,6 @@ export default class OrdersController extends WebcController {
       this.setOrdersModel(this.orders);
     } catch (error) {
       console.log(error);
-      this.showFeedbackToast('ERROR: There was an issue accessing orders object', 'Result', 'toast');
     }
   }
 
@@ -121,64 +115,49 @@ export default class OrdersController extends WebcController {
     this.setOrdersModel(result);
   }
 
-  showFeedbackToast(title, message, alertType) {
-    if (typeof this.feedbackEmitter === 'function') {
-      this.feedbackEmitter(message, title, alertType);
-    }
-  }
-
   attachEvents() {
+    this.model.onChange("search.value", () => {
+      setTimeout(() => {
+        this.filterData();
+      }, 300);
+    });
+
     this.model.addExpression('ordersArrayNotEmpty', () => this.model.orders && Array.isArray(this.model.orders) && this.model.orders.length > 0, 'orders');
 
-    this.on('openFeedback', (e) => {
-      this.feedbackEmitter = e.detail;
-    });
-
-    this.on('run-filters', (e) => {
-      this.filterData();
-    });
-
-    this.on('view-order', async (event) => {
+    this.onTagClick('view-order', async (model) => {
+      const orderId = model.orderId;
       console.log(
-        JSON.stringify(
-          this.orders.find((x) => x.orderId === event.data),
-          null,
-          2
-        )
+          JSON.stringify(
+              this.orders.find((x) => x.orderId === orderId),
+              null,
+              2
+          )
       );
       console.log(JSON.stringify(this.orders, null, 2));
-      console.log(event.data);
+      console.log(orderId);
       this.navigateToPageTag('order', {
-        keySSI: this.orders.find((x) => x.orderId === event.data).orderSSI,
+        id: orderId,
+        keySSI: this.orders.find((x) => x.orderId === orderId).orderSSI,
+        documentsKeySSI: this.orders.find((x) => x.orderId === orderId).documentsKeySSI,
       });
     });
 
-    this.onTagClick('filters-changed', async (model, target, event) => {
+    this.onTagClick('filters-changed', async (model, target) => {
       const selectedFilter = target.getAttribute('data-custom') || null;
       if (selectedFilter) {
         document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
         this.model.filter = selectedFilter;
         document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
-        this.model.clearButtonDisabled = false;
         this.filterData();
       }
     });
 
-    this.onTagClick('filters-cleared', async (event) => {
+    this.onTagClick('filters-cleared', async () => {
       document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
       this.model.filter = '';
       document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
-      this.model.clearButtonDisabled = true;
       this.model.search.value = null;
       this.filterData();
-    });
-
-    const searchField = this.element.querySelector('#search-field');
-    searchField.addEventListener('keydown', () => {
-      setTimeout(() => {
-        this.model.clearButtonDisabled = false;
-        this.filterData();
-      }, 300);
     });
   }
 }
