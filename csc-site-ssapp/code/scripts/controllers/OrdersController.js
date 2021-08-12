@@ -14,9 +14,7 @@ export default class OrdersController extends WebcController {
   headers = orderTableHeaders;
 
   search = {
-    label: 'Search for an order',
-    required: false,
-    placeholder: 'Order name...',
+    placeholder: 'Search',
     value: '',
   };
 
@@ -116,57 +114,49 @@ export default class OrdersController extends WebcController {
     this.setOrdersModel(result);
   }
 
-  showFeedbackToast(title, message, alertType) {
-    if (typeof this.feedbackEmitter === 'function') {
-      this.feedbackEmitter(message, title, alertType);
-    }
-  }
-
   attachEvents() {
+    this.model.onChange("search.value", () => {
+      setTimeout(() => {
+        this.filterData();
+      }, 300);
+    });
+
     this.model.addExpression('ordersArrayNotEmpty', () => this.model.orders && Array.isArray(this.model.orders) && this.model.orders.length > 0, 'orders');
 
-    this.on('openFeedback', (e) => {
-      this.feedbackEmitter = e.detail;
-    });
-
-    this.on('run-filters', (e) => {
-      this.filterData();
-    });
-
-    this.on('view-order', async (event) => {
+    this.onTagClick('view-order', async (model) => {
+      const orderId = model.orderId;
+      console.log(
+          JSON.stringify(
+              this.orders.find((x) => x.orderId === orderId),
+              null,
+              2
+          )
+      );
+      console.log(JSON.stringify(this.orders, null, 2));
+      console.log(orderId);
       this.navigateToPageTag('order', {
-        id: event.data,
-        keySSI: this.orders.find((x) => x.orderId === event.data).orderSSI,
-        documentsKeySSI: this.orders.find((x) => x.orderId === event.data).documentsKeySSI,
+        id: orderId,
+        keySSI: this.orders.find((x) => x.orderId === orderId).orderSSI,
+        documentsKeySSI: this.orders.find((x) => x.orderId === orderId).documentsKeySSI,
       });
     });
 
-    this.onTagClick('filters-changed', async (model, target, event) => {
+    this.onTagClick('filters-changed', async (model, target) => {
       const selectedFilter = target.getAttribute('data-custom') || null;
       if (selectedFilter) {
         document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
         this.model.filter = selectedFilter;
         document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
-        this.model.clearButtonDisabled = false;
         this.filterData();
       }
     });
 
-    this.onTagClick('filters-cleared', async (event) => {
+    this.onTagClick('filters-cleared', async () => {
       document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
       this.model.filter = '';
       document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
-      this.model.clearButtonDisabled = true;
       this.model.search.value = null;
       this.filterData();
-    });
-
-    const searchField = this.element.querySelector('#search-field');
-    searchField.addEventListener('keydown', () => {
-      setTimeout(() => {
-        this.model.clearButtonDisabled = false;
-        this.filterData();
-      }, 300);
     });
   }
 }
