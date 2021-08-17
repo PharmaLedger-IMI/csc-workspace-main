@@ -301,6 +301,10 @@ class SingleOrderControllerImpl extends WebcController {
         break;
       case Roles.CMO:
         actions.couldNotBeReviewed = [orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.Approved, orderStatusesEnum.Canceled].indexOf(order.status_value)!==-1;
+        if (order.status_value == orderStatusesEnum.Approved) {
+          document.getElementById("btnShipment").style.display = "block";
+          document.getElementById("btnReview").style.display = "none";
+        }
         this.onTagEvent('review-order', 'click', (e) => {
           this.navigateToPageTag('review-order', {
             order: JSON.parse(JSON.stringify(this.model.order)),
