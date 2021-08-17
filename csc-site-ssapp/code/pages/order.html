@@ -92,69 +92,6 @@
                         <webc-template data-view-model="@" template="order/order-details"></webc-template>
                     </div>
 
-                    <!-- Attached Documents -->
-                    <div class="accordion-item" data-tag="attached_documents_accordion"
-                         id="attached_documents_accordion">
-                        <svg enable-background="new 0 0 200 200" id="attached_documents_accordion_icon" version="1.1"
-                             viewBox="0 0 200 200" x="0px" xml:space="preserve"
-                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
-                        <path d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
-                            l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
-                            C79.619,74.358,79.684,70.511,81.969,68.167z" fill="#231F20"/>
-                        </svg>
-                        <span>Attached Documents</span>
-                    </div>
-                    <div class="accordion-item-holder" data-if="@order.documents">
-                        <table class="table table-borderless attach-documents-table">
-                            <thead>
-                            <tr>
-                                <th scope="col">Document Name</th>
-                                <th scope="col">Attached By</th>
-                                <th scope="col">Date/Time Attached</th>
-                                <th class="text-center" scope="col">Open/Download</th>
-                                <th class="text-center" scope="col">Delete</th>
-                            </tr>
-                            </thead>
-                            <tbody data-for="@order.documents">
-                            <tr>
-                                <th>{{@name}}</th>
-                                <td>{{@attached_by}}</td>
-                                <td>{{@date}}</td>
-                                <td class="text-center">
-                                    <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200"
-                                         id="Layer_1"
-                                         version="1.1" viewBox="0 0 200 200"
-                                         x="0px" xml:space="preserve"
-                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                         y="0px">
-                                    <path d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
-                                        c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
-                                        c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
-                                        c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"/>
-                                    </svg>
-                                </td>
-                                <td class="text-center">
-                                    <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200"
-                                         id="Layer_1"
-                                         version="1.1" viewBox="0 0 200 200"
-                                         x="0px" xml:space="preserve"
-                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                         y="0px">
-                                    <path d="M111.732,79.544L99.998,91.271L88.277,79.544c-2.417-2.419-6.314-2.419-8.735,0
-                                        c-2.419,2.42-2.419,6.327,0,8.735L91.267,100l-11.726,11.727c-2.419,2.402-2.419,6.316,0,8.729c2.421,2.422,6.318,2.422,8.735,0
-                                        l11.721-11.726l11.734,11.726c2.403,2.422,6.308,2.422,8.73,0c2.41-2.412,2.41-6.326,0-8.729L108.744,100l11.719-11.721
-                                        c2.41-2.408,2.41-6.315,0-8.735C118.04,77.184,114.071,77.184,111.732,79.544z M99.998,38.014C65.721,38.014,38.01,65.73,38.01,100
-                                        c0,34.281,27.711,61.986,61.987,61.986c34.279,0,61.992-27.705,61.992-61.986C161.99,65.73,134.277,38.014,99.998,38.014z
-                                         M99.998,149.582c-27.33,0-49.585-22.24-49.585-49.582s22.255-49.583,49.585-49.583c27.348,0,49.586,22.241,49.586,49.583
-                                        S127.345,149.582,99.998,149.582z"/>
-                                    </svg>
-                                </td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
-
                     <!-- Order Comments -->
                     <div class="accordion-item" data-tag="order_comments_accordion" id="order_comments_accordion">
                         <svg enable-background="new 0 0 200 200" id="order_comments_accordion_icon" version="1.1"
@@ -180,19 +117,6 @@
                     </div>
                 </div>
 
-                <div class="row-wrapper button-wrapper">
-                    <button class="btn-default" data-tag="review-order" disabled="@order.actions.couldNotBeReviewed">
-                        <svg version="1.1" viewBox="0 0 528.899 528.899" x="0px"
-                             xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
-                             xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
-                            <path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981
-                                c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611
-                                C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069
-                                L27.473,390.597L0.3,512.69z" fill="#000000"/>
-                        </svg>
-                        Review
-                    </button>
-                </div>
             </div>
         </section>
     </main>
