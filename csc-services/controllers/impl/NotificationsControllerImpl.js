@@ -48,12 +48,9 @@ class NotificationsControllerImpl extends WebcController {
 		});
 
 		this.onTagClick('mark-notification', async (model) => {
-			const pk = model.pk;
-			if (pk) {
-				await this.notificationsService.changeNotificationStatus(pk);
-				await this.getNotifications();
-				eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-			}
+			await this.notificationsService.changeNotificationStatus(model.pk);
+			await this.getNotifications();
+			eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
 		});
 	}
 }

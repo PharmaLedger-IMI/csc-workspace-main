@@ -19,22 +19,7 @@
       "src": "notifications.html",
       "indexed": false,
       "tag": "notifications"
-    },
-    {
-      "name": "New Order",
-      "path": "./new-order",
-      "src": "newOrder.html",
-      "indexed": false,
-      "tag": "new_order"
-    },
-    {
-      "name": "order",
-      "path": "/order",
-      "src": "order.html",
-      "tag": "order",
-      "indexed": false
     }
   ],
-  "skin" : "default"
-
+  "skin": "default"
 }
