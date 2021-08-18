@@ -239,7 +239,7 @@ class SingleOrderControllerImpl extends WebcController {
         actions.couldNotBeCancelled = cancellableOrderStatus.indexOf(order.status_value) === -1;
         actions.couldNotBeApproved = order.status.map((status) => status.status).indexOf(orderStatusesEnum.ReviewedByCMO) === -1
             || orderStatusesEnum.Canceled === order.status_value || orderStatusesEnum.Approved === order.status_value;
-        actions.cancel_button_text = order.pending_action === "Pending Shipment Ready for Dispatch" ? "Cancel Order & Shipment" : "Cancel Order";
+        actions.orderCancelButtonText = order.pending_action === "Pending Shipment Ready for Dispatch" ? "Cancel Order & Shipment" : "Cancel Order";
         this.onTagEvent('review-order', 'click', (e) => {
           this.navigateToPageTag('review-order', {
             order: JSON.parse(JSON.stringify(this.model.order)),
