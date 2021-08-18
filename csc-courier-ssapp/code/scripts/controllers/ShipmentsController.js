@@ -1,12 +1,10 @@
 const { WebcController } = WebCardinal.controllers;
 
-export default class DashboardController extends WebcController {
+export default class ShipmentsController extends WebcController {
 	constructor(...props) {
 		super(...props);
 
-		this.model = {
-			shipmentsArrayNotEmpty: false
-		};
+		this.model = {};
 
 		this.init();
 		this.attachAll();
