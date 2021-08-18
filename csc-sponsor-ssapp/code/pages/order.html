@@ -184,7 +184,8 @@
 
 				<div class='row-wrapper button-wrapper'>
 					<button class='btn-cancel' data-tag='cancel-order'
-					        disabled='@order.actions.couldNotBeCancelled'>
+					        hidden = '@order.actions.couldNotBeCancelled'
+							disabled='@order.actions.couldNotBeCancelled'>
 						<svg id='Layer_1' style='enable-background:new 0 0 512 512;' version='1.1'
 						     viewBox='0 0 512 512' x='0px' xml:space='preserve'
 						     xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' y='0px'>
@@ -193,9 +194,11 @@
 								C372.398,467.366,316.87,490.667,256,490.667z M429.227,414.138L97.862,82.772C139.607,44.632,195.133,21.333,256,21.333
 								c129.396,0,234.667,105.271,234.667,234.667C490.667,316.867,467.367,372.393,429.227,414.138z' />
 						</svg>
-						Cancel Order
+						{{ @order.actions.orderCancelButtonText }}
 					</button>
-					<button class='btn-default' data-tag='review-order' disabled='@order.actions.couldNotBeReviewed'>
+					<button class='btn-default' data-tag='review-order' 
+							hidden = '@order.actions.couldNotBeReviewed'
+							disabled='@order.actions.couldNotBeReviewed'>
 						<svg version='1.1' viewBox='0 0 528.899 528.899' x='0px'
 						     xml:space='preserve' xmlns='http://www.w3.org/2000/svg'
 						     xmlns:xlink='http://www.w3.org/1999/xlink' y='0px'>
@@ -207,6 +210,7 @@
 						Review
 					</button>
 					<button class='btn-approve' data-tag='approve-order'
+							hidden = '@order.actions.couldNotBeApproved'
 					        disabled='@order.actions.couldNotBeApproved'>
 						<svg id='Layer_1' style='enable-background:new 0 0 463 463;' version='1.1'
 						     viewBox='0 0 463 463' x='0px' xml:space='preserve'

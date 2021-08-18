@@ -4,6 +4,7 @@ const orderStatusesEnum = {
     ReviewedBySponsor: 'Reviewed by Sponsor',
     Approved: 'Approved',
     Canceled: 'Canceled',
+    InPreparation: 'In Preparation'
 };
 
 const orderTableHeaders = [
