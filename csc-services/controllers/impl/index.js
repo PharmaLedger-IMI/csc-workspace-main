@@ -6,3 +6,4 @@ require("./NotificationsControllerImpl");
 require("./DashboardMenuControllerImpl");
 require("./DashboardControllerImpl")
 require("./OrdersControllerImpl");
+require("./ReviewOrderControllerImpl");
