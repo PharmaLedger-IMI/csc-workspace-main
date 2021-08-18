@@ -11,6 +11,7 @@ const NotificationsController = cscServices.getController('NotificationsControll
 const DashboardMenuController = cscServices.getController('DashboardMenuController', ACTOR);
 const DashboardController = cscServices.getController('DashboardController', ACTOR);
 const OrdersController = cscServices.getController('OrdersController', ACTOR);
+const ReviewOrderController = cscServices.getController('ReviewOrderController', ACTOR);
 
 addControllers({
 	TableTemplateController,
@@ -20,5 +21,6 @@ addControllers({
 	NotificationsController,
 	DashboardMenuController,
 	DashboardController,
-	OrdersController
+	OrdersController,
+	ReviewOrderController
 });
