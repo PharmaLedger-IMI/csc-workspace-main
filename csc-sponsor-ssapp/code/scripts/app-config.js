@@ -9,6 +9,9 @@ const HistoryModalController = cscServices.getController('HistoryModalController
 const HeaderController = cscServices.getController('HeaderController', ACTOR);
 const NotificationsController = cscServices.getController('NotificationsController', ACTOR);
 const DashboardMenuController = cscServices.getController('DashboardMenuController', ACTOR);
+const DashboardController = cscServices.getController('DashboardController', ACTOR);
+const OrdersController = cscServices.getController('OrdersController', ACTOR);
+const ReviewOrderController = cscServices.getController('ReviewOrderController', ACTOR);
 
 addControllers({
 	TableTemplateController,
@@ -16,5 +19,8 @@ addControllers({
 	HistoryModalController,
 	HeaderController,
 	NotificationsController,
-	DashboardMenuController
+	DashboardMenuController,
+	DashboardController,
+	OrdersController,
+	ReviewOrderController
 });
