@@ -1,6 +1,7 @@
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
+const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
@@ -30,6 +31,7 @@ class SingleOrderControllerImpl extends WebcController {
     this.notificationsService = new NotificationsService(this.DSUStorage);
     let communicationService = CommunicationService.getInstance(csIdentities[role]);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
+    this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
 
     this.model.keySSI = keySSI;
 
@@ -307,6 +309,18 @@ class SingleOrderControllerImpl extends WebcController {
             order: JSON.parse(JSON.stringify(this.model.order)),
           });
         });
+        this.onTagEvent('prepare-shipment', 'click', () => {
+          this.showErrorModal(new Error(`Are you sure you want to prepare the shipment?`), 'Prepare Shipment', prepareShipment, () => {}, {
+            disableExpanding: true,
+            cancelButtonText: 'No',
+            confirmButtonText: 'Yes',
+            id: 'error-modal',
+          });
+        });
+        const prepareShipment = async () => {
+          const result = await this.shipmentsService.createShipment(this.model.order);
+          this.showErrorModalAndRedirect('Shipment Initiated, redirecting to dashboard...', 'Shipment Initiated', '/', 2000);
+        };
         break;
     }
     return actions;
