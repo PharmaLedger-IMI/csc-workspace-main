@@ -233,14 +233,15 @@ class SingleOrderControllerImpl extends WebcController {
 
   setOrderActions(){
     const actions = {};
+    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, orderStatusesEnum.InPreparation];
     const order = this.model.order;
     switch (this.role){
       case Roles.Sponsor:
         actions.couldNotBeReviewed = orderStatusesEnum.ReviewedByCMO !== order.status_value;
-        actions.couldNotBeCancelled = orderStatusesEnum.Approved === order.status_value || orderStatusesEnum.Canceled === order.status_value;
+        actions.couldNotBeCancelled = cancellableOrderStatus.indexOf(order.status_value) === -1;
         actions.couldNotBeApproved = order.status.map((status) => status.status).indexOf(orderStatusesEnum.ReviewedByCMO) === -1
             || orderStatusesEnum.Canceled === order.status_value || orderStatusesEnum.Approved === order.status_value;
-
+        actions.orderCancelButtonText = order.pending_action === "Pending Shipment Ready for Dispatch" ? "Cancel Order & Shipment" : "Cancel Order";
         this.onTagEvent('review-order', 'click', (e) => {
           this.navigateToPageTag('review-order', {
             order: JSON.parse(JSON.stringify(this.model.order)),
