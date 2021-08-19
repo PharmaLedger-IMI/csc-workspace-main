@@ -13,7 +13,7 @@ const csIdentities = {};
 csIdentities [Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
 csIdentities [Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
 
-export default class ReviewOrderControllerImpl extends WebcController {
+class ReviewOrderControllerImpl extends WebcController {
 	constructor(role, ...props) {
 		super(...props);
 
