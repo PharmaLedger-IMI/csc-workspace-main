@@ -80,8 +80,8 @@ class ReviewOrderControllerImpl extends WebcController {
 			this.showErrorModal(
 				new Error(`Are you sure you want to submit the review?`), // An error or a string, it's your choice
 				'Submit Review',
-				this.onSubmitYesResponse,
-				this.onSubmitNoResponse,
+				this.onSubmitYesResponse.bind(this),
+				this.onSubmitNoResponse.bind(this),
 				{
 					disableExpanding: true,
 					cancelButtonText: 'No',
