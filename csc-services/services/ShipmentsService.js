@@ -69,7 +69,7 @@ class ShipmentsService extends DSUService {
       {
         orderSSI: order.uid,
       },
-      'Shipment In Preparation'
+      messagesEnum.ShipmentInPreparation
     );
 
     this.sendMessageToEntity(
@@ -78,7 +78,7 @@ class ShipmentsService extends DSUService {
       {
         orderSSI: order.uid,
       },
-      'Shipment In Preparation'
+      messagesEnum.ShipmentInPreparation
     );
 
     return shipmentDb;
