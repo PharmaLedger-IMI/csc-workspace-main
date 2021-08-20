@@ -1,5 +1,6 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require("./lib/DSUService");
+const { messagesEnum, order } = require('./constants');
 const NotificationsService = require('./lib/NotificationService.js');
 const eventBusService = require('./lib/EventBusService.js');
 const CommunicationService = require('./lib/CommunicationService.js');
@@ -22,6 +23,14 @@ class ShipmentsService extends DSUService {
   async addShipmentToDB(data, key) {
     const newRecord = await this.storageService.insertRecord(this.SHIPMENTS_TABLE, key ? key : data.orderId, data);
     return newRecord;
+  }
+
+  sendMessageToEntity(entity, operation, data, shortDescription) {
+    this.communicationService.sendMessage(entity, {
+      operation,
+      data,
+      shortDescription,
+    });
   }
 
 
@@ -53,6 +62,26 @@ class ShipmentsService extends DSUService {
       },
       shipment.uid
     );
+
+    this.sendMessageToEntity(
+      CommunicationService.identities.CSC.SPONSOR_IDENTITY,
+      messagesEnum.ShipmentInPreparation,
+      {
+        orderSSI: order.uid,
+      },
+      messagesEnum.ShipmentInPreparation
+    );
+
+    this.sendMessageToEntity(
+      CommunicationService.identities.CSC.SITE_IDENTITY,
+      messagesEnum.ShipmentInPreparation,
+      {
+        orderSSI: order.uid,
+      },
+      messagesEnum.ShipmentInPreparation
+    );
+
+    return shipmentDb;
 
   }
 }

@@ -4,4 +4,5 @@ module.exports.messagesEnum = {
   StatusReviewedBySponsor: 'Reviewed by Sponsor',
   StatusApproved: 'Approved',
   StatusCanceled: 'Canceled',
+  ShipmentInPreparation: 'Shipment In Preparation',
 };
