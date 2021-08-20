@@ -9,6 +9,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const momentService  = cscServices.momentService;
 const {Roles,Topics, NotificationTypes} = cscServices.constants;
 const {orderStatusesEnum} = cscServices.constants.order;
+const {shipmentStatusesEnum} = cscServices.constants.shipment;
 
 const csIdentities  = {};
 csIdentities [Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
@@ -319,6 +320,19 @@ class SingleOrderControllerImpl extends WebcController {
         });
         const prepareShipment = async () => {
           const result = await this.shipmentsService.createShipment(this.model.order);
+          const notification = {
+            operation: NotificationTypes.UpdateShipmentStatus,
+            orderId: this.model.order.orderId,
+            read: false,
+            status: shipmentStatusesEnum.InPreparation,
+            keySSI: this.model.order.keySSI,
+            role: Roles.CMO,
+            did: order.sponsorId,
+            date: new Date().toISOString(),
+          };
+          await this.notificationsService.insertNotification(notification);
+          eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+          eventBusService.emitEventListeners(Topics.RefreshOrders, null);
           this.showErrorModalAndRedirect('Shipment Initiated, redirecting to dashboard...', 'Shipment Initiated', '/', 2000);
         };
         break;
