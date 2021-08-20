@@ -6,12 +6,12 @@ const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
-const momentService  = cscServices.momentService;
-const {Roles,Topics, NotificationTypes} = cscServices.constants;
-const {orderStatusesEnum} = cscServices.constants.order;
+const momentService = cscServices.momentService;
+const { Roles, Topics, NotificationTypes, ButtonsEnum, Commons } = cscServices.constants;
+const { orderStatusesEnum, orderPendingActionEnum } = cscServices.constants.order;
 const {shipmentStatusesEnum} = cscServices.constants.shipment;
 
-const csIdentities  = {};
+const csIdentities = {};
 csIdentities [Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
 csIdentities [Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
 csIdentities [Roles.Site] = CommunicationService.identities.CSC.SITE_IDENTITY;
@@ -165,7 +165,7 @@ class SingleOrderControllerImpl extends WebcController {
 
       if(data.sponsorDocuments){
         data.sponsorDocuments.forEach( (item) => {
-          item.date = momentService(item.data).format('MM/DD/YYYY HH:mm:ss');
+          item.date = momentService(item.data).format(Commons.DateTimeFormatPattern);
 
         });
       }
@@ -176,60 +176,56 @@ class SingleOrderControllerImpl extends WebcController {
 
       data.status_date = momentService(data.status.sort( (function(a,b){
         return new Date(b.date) - new Date(a.date);
-      }))[0].date).format('MM/DD/YYYY HH:mm:ss');
+      }))[0].date).format(Commons.DateTimeFormatPattern);
 
       data.status_approved = data.status_value === orderStatusesEnum.Approved;
       data.status_cancelled = data.status_value === orderStatusesEnum.Canceled;
       data.status_normal = data.status_value !== orderStatusesEnum.Canceled && data.status_value !== orderStatusesEnum.Approved;
-
-      data.pending_action = "";
-
-      switch (data.status_value){
-        
-        case orderStatusesEnum.Initiated:
-            data.pending_action = "Pending Review by CMO";
-            break;
-
-        case orderStatusesEnum.ReviewedByCMO:
-            data.pending_action = "Sponsor Review or Approve";
-            break;
-
-        case orderStatusesEnum.ReviewedBySponsor:
-            data.pending_action = "Cmo Review or Approve";
-            break;
-
-        case orderStatusesEnum.Canceled:
-            data.pending_action = "There are no any further pending actions";
-            break;
-
-        case orderStatusesEnum.Approved:
-            data.pending_action = "Pending Shipment Preparation";
-            break;
-        
-      }
+      data.pending_action = this.getPendingAction(data.status_value);
 
       if(data.comments){
         data.comments.forEach( (comment) => {
-          comment.date = momentService(comment.date).format('MM/DD/YYYY HH:mm:ss');
+          comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
         })
       }
 
       if (data.sponsorDocuments) {
         data.sponsorDocuments.forEach((doc) => {
-          doc.date = momentService(doc.date).format('MM/DD/YYYY HH:mm:ss');
+          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
           data.documents.push(doc);
         });
       }
 
       if (data.cmoDocuments) {
         data.cmoDocuments.forEach((doc) => {
-          doc.date = momentService(doc.date).format('MM/DD/YYYY HH:mm:ss');
+          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
           data.documents.push(doc);
         });
       }
 
       return data;
     }
+  }
+
+  getPendingAction(status_value) {
+    switch (status_value) {
+      case orderStatusesEnum.Initiated:
+        return orderPendingActionEnum.PendingReviewByCMO;
+
+      case orderStatusesEnum.ReviewedByCMO:
+        return orderPendingActionEnum.SponsorReviewOrApprove;
+
+      case orderStatusesEnum.ReviewedBySponsor:
+        return orderPendingActionEnum.CMOReviewOrApprove;
+
+      case orderStatusesEnum.Canceled:
+        return orderPendingActionEnum.NoPendingActions;
+
+      case orderStatusesEnum.Approved:
+        return orderPendingActionEnum.PendingShipmentPreparation;
+    }
+
+    return '';
   }
 
   setOrderActions(){
@@ -242,7 +238,7 @@ class SingleOrderControllerImpl extends WebcController {
         actions.couldNotBeCancelled = cancellableOrderStatus.indexOf(order.status_value) === -1;
         actions.couldNotBeApproved = order.status.map((status) => status.status).indexOf(orderStatusesEnum.ReviewedByCMO) === -1
             || orderStatusesEnum.Canceled === order.status_value || orderStatusesEnum.Approved === order.status_value;
-        actions.orderCancelButtonText = order.pending_action === "Pending Shipment Ready for Dispatch" ? "Cancel Order & Shipment" : "Cancel Order";
+        actions.orderCancelButtonText = order.pending_action === orderPendingActionEnum.PendingShipmentDispatch ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
         this.onTagEvent('review-order', 'click', (e) => {
           this.navigateToPageTag('review-order', {
             order: JSON.parse(JSON.stringify(this.model.order)),
