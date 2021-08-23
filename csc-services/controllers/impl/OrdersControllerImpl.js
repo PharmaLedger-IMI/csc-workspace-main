@@ -4,7 +4,7 @@ const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
-const { Topics } = cscServices.constants;
+const { Topics, Commons } = cscServices.constants;
 const { orderTableHeaders, orderStatusesEnum } = cscServices.constants.order;
 
 class OrdersControllerImpl extends WebcController {
@@ -39,14 +39,14 @@ class OrdersControllerImpl extends WebcController {
 	transformData(data) {
 		if (data) {
 			data.forEach((item) => {
-				item.requestDate_value = momentService(item.requestDate).format('MM/DD/YYYY HH:mm:ss');
-				item.lastModified_value = momentService(item.lastModified).format('MM/DD/YYYY HH:mm:ss');
+				item.requestDate_value = momentService(item.requestDate).format(Commons.DateTimeFormatPattern);
+				item.lastModified_value = momentService(item.lastModified).format(Commons.DateTimeFormatPattern);
 
 				const latestStatus = item.status.sort(function(a, b) {
 					return new Date(b.date) - new Date(a.date);
 				})[0];
 				item.status_value = latestStatus.status;
-				item.status_date = momentService(latestStatus.date).format('MM/DD/YYYY HH:mm:ss');
+				item.status_date = momentService(latestStatus.date).format(Commons.DateTimeFormatPattern);
 			});
 		}
 
