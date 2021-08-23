@@ -1,6 +1,7 @@
 const controllerRegistry = require("./controllers/ControllersRegistry").getControllersRegistry();
 module.exports = {
-    OrderService: require("./services/OrdersService.js"),
+    OrderService: require("./services/OrdersService"),
+    ShipmentService:require("./services/ShipmentsService"),
     EventBusService:require("./services/lib/EventBusService"),
     NotificationsService:require("./services/lib/NotificationService"),
     CommunicationService:require("./services/lib/CommunicationService"),
