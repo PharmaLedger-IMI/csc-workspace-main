@@ -7,3 +7,4 @@ require("./DashboardMenuControllerImpl");
 require("./DashboardControllerImpl")
 require("./OrdersControllerImpl");
 require("./ReviewOrderControllerImpl");
+require("./SingleShipmentControllerImpl")
