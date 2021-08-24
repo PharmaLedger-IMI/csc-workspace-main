@@ -68,11 +68,21 @@ class ReviewOrderControllerImpl extends WebcController {
 						attached_by: this.role,
 						date: new Date().toLocaleString(),
 						link: '',
+						canRemove: true,
 						file: file
 					});
 				});
-			}
+			}			
 		});
+
+		this.onTagClick('remove-file', (event) => {
+            this.model.form.documents.forEach((document) => {
+				if(document.canRemove === true){
+					let idx = this.model.form.documents.indexOf(document);
+					this.model.form.documents.splice(idx,1);
+				}
+            });
+       });
 	}
 
 	formSubmitHandler() {
