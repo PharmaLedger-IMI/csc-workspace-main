@@ -2,7 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService;
-const { Topics , Roles } = cscServices.constants;
+const { Topics, Roles } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
 const CommunicationService = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
@@ -36,7 +36,7 @@ export default class NewOrderController extends WebcController {
 
       if (files) {
         files.forEach((file) => {
-          this.model.form.documents.push({ name: file.name, attached_by: Roles.Sponsor, date: new Date().toLocaleString(), link: '', file: file });
+          this.model.form.documents.push({ name: file.name, attached_by: Roles.Sponsor, date: new Date().toLocaleString(), link: '', canRemove: true, file: file });
         });
       }
 
@@ -59,6 +59,15 @@ export default class NewOrderController extends WebcController {
           this.model.form.inputs.kit_ids_attachment.error = err;
         }
       }
+    });
+
+    this.onTagClick('remove-file', (event) => {
+      this.model.form.documents.forEach((document) => {
+        if (document.canRemove === true) {
+          let idx = this.model.form.documents.indexOf(document);
+          this.model.form.documents.splice(idx, 1);
+        }
+      });
     });
 
     //When you click step 1
@@ -134,8 +143,8 @@ export default class NewOrderController extends WebcController {
             keys.forEach((key) => {
               if (key === 'delivery_date' || key === 'delivery_time') {
                 payload['delivery_date'] = this.getDateTime();
-              } else if(key.indexOf('keep_between_temperature') !== -1) {
-              	payload['keep_between_temperature'] = this.getTemperature();
+              } else if (key.indexOf('keep_between_temperature') !== -1) {
+                payload['keep_between_temperature'] = this.getTemperature();
               } else {
                 payload[key] = this.model.form.inputs[key].value;
               }
