@@ -2,11 +2,13 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
+const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
-const { messagesEnum, order, NotificationTypes, Roles, Topics } = cscServices.constants;
+const { messagesEnum, order, shipment, NotificationTypes, Roles, Topics } = cscServices.constants;
 const { orderStatusesEnum } = order;
+const { shipmentStatusesEnum } = shipment;
 
 const csIdentities = {};
 csIdentities [Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
@@ -20,6 +22,7 @@ class DashboardControllerImpl extends WebcController {
 
 		this.role = role;
 		this.ordersService = new OrdersService(this.DSUStorage);
+		this.shipmentService = new ShipmentsService(this.DSUStorage);
 		this.communicationService = CommunicationService.getInstance(csIdentities[role]);
 		this.notificationsService = new NotificationsService(this.DSUStorage, this.communicationService);
 
@@ -34,7 +37,11 @@ class DashboardControllerImpl extends WebcController {
 
 	attachHandlers() {
 		this.ordersService.onReady(() => {
-			this.handleMessages();
+			this.handleOrderMessages();
+		});
+
+		this.shipmentService.onReady(() => {
+			this.handleShipmentMessages();
 		});
 
 		this.model.addExpression('isOrdersSelected', () => this.model.tabNavigator.selected === '0', 'tabNavigator.selected');
@@ -48,7 +55,7 @@ class DashboardControllerImpl extends WebcController {
 		});
 	}
 
-	handleMessages() {
+	handleOrderMessages() {
 		this.communicationService.listenForMessages(async (err, data) => {
 			if (err) {
 				return console.error(err);
@@ -56,8 +63,8 @@ class DashboardControllerImpl extends WebcController {
 
 			data = JSON.parse(data);
 			console.log('message received', data);
-			const [orderData, orderStatus, notificationRole] = await this.getNotificationDataForStatus(data);
-			console.log('getNotificationDataForStatus received', orderData, orderStatus, notificationRole);
+			const [orderData, orderStatus, notificationRole] = await this.getNotificationDataForOrderStatus(data);
+			console.log('getNotificationDataForOrderStatus received', orderData, orderStatus, notificationRole);
 			const notification = {
 				operation: NotificationTypes.UpdateOrderStatus,
 				orderId: orderData.orderId,
@@ -76,7 +83,36 @@ class DashboardControllerImpl extends WebcController {
 		});
 	}
 
-	async getNotificationDataForStatus(data) {
+
+	handleShipmentMessages(){
+		this.communicationService.listenForMessages(async (err, data) => {
+			if (err) {
+				return console.error(err);
+			}
+
+			data = JSON.parse(data);
+			console.log('message received', data);
+			const [shipmentData, shipmentStatus, notificationRole] = await this.getNotificationDataForShipmentStatus(data);
+			console.log('getNotificationDataForShipmentStatus received', shipmentData, shipmentStatus, notificationRole);
+			const notification = {
+				operation: NotificationTypes.UpdateShipmentStatus,
+				shipmentId: shipmentData.shipmentId,
+				read: false,
+				status: shipmentStatus,
+				keySSI: data.message.data.orderSSI,
+				role: notificationRole,
+				did: shipmentData.sponsorId,
+				date: new Date().toISOString()
+			};
+
+			const notificationResult = await this.notificationsService.insertNotification(notification);
+			eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+			eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+			console.log('notification added', notification, notificationResult);
+		});
+	}
+
+	async getNotificationDataForOrderStatus(data) {
 		let orderData;
 		let orderStatus;
 		let notificationRole;
@@ -141,6 +177,30 @@ class DashboardControllerImpl extends WebcController {
 		}
 
 		return [orderData, orderStatus, notificationRole];
+	}
+
+	async getNotificationDataForShipmentStatus(data) {
+		let shipmentData;
+		let shipmentStatus;
+		let notificationRole;
+
+		switch (data.message.operation) {
+
+			case messagesEnum.ShipmentInPreparation: {
+				notificationRole = Roles.Sponsor;
+				shipmentStatus = shipmentStatusesEnum.InPreparation;
+
+				const {
+					shipmentSSI,
+					statusKeySSI
+				} = data.message.data;
+				
+				shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusKeySSI);
+
+				break;
+			}
+
+		}
 	}
 }
 
