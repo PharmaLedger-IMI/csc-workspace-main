@@ -61,55 +61,48 @@ class DashboardControllerImpl extends WebcController {
 				return console.error(err);
 			}
 
-			handleOrderMessages(data);
-			handleShipmentMessages(data);
+			//handle Order Messages
+			data = JSON.parse(data);
+			console.log('message received', data);
+			const [orderData, orderStatus, notificationRole] = await this.getNotificationDataForOrderStatus(data);
+			console.log('getNotificationDataForOrderStatus received', orderData, orderStatus, notificationRole);
+			const notification = {
+				operation: NotificationTypes.UpdateOrderStatus,
+				orderId: orderData.orderId,
+				read: false,
+				status: orderStatus,
+				keySSI: data.message.data.orderSSI,
+				role: notificationRole,
+				did: orderData.sponsorId,
+				date: new Date().toISOString()
+			};
 
+			const notificationResult = await this.notificationsService.insertNotification(notification);
+			eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+			eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+			console.log('notification added', notification, notificationResult);
+
+			//handle Shipment Messages
+			data = JSON.parse(data);
+			console.log('message received', data);
+			const [shipmentData, shipmentStatus, notificationRole] = await this.getNotificationDataForShipmentStatus(data);
+			console.log('getNotificationDataForShipmentStatus received', shipmentData, shipmentStatus, notificationRole);
+			const notification = {
+				operation: NotificationTypes.UpdateShipmentStatus,
+				shipmentId: shipmentData.shipmentId,
+				read: false,
+				status: shipmentStatus,
+				keySSI: data.message.data.shipmentSSI,
+				role: notificationRole,
+				did: shipmentData.sponsorId,
+				date: new Date().toISOString()
+			};
+
+			const notificationResult = await this.notificationsService.insertNotification(notification);
+			eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+			eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+			console.log('notification added', notification, notificationResult);
 		});
-	}
-
-	handleOrderMessages(data) {
-		data = JSON.parse(data);
-		console.log('message received', data);
-		const [orderData, orderStatus, notificationRole] = await this.getNotificationDataForOrderStatus(data);
-		console.log('getNotificationDataForOrderStatus received', orderData, orderStatus, notificationRole);
-		const notification = {
-			operation: NotificationTypes.UpdateOrderStatus,
-			orderId: orderData.orderId,
-			read: false,
-			status: orderStatus,
-			keySSI: data.message.data.orderSSI,
-			role: notificationRole,
-			did: orderData.sponsorId,
-			date: new Date().toISOString()
-		};
-
-		const notificationResult = await this.notificationsService.insertNotification(notification);
-		eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-		eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-		console.log('notification added', notification, notificationResult);
-	}
-
-
-	handleShipmentMessages(data) {
-		data = JSON.parse(data);
-		console.log('message received', data);
-		const [shipmentData, shipmentStatus, notificationRole] = await this.getNotificationDataForShipmentStatus(data);
-		console.log('getNotificationDataForShipmentStatus received', shipmentData, shipmentStatus, notificationRole);
-		const notification = {
-			operation: NotificationTypes.UpdateShipmentStatus,
-			shipmentId: shipmentData.shipmentId,
-			read: false,
-			status: shipmentStatus,
-			keySSI: data.message.data.shipmentSSI,
-			role: notificationRole,
-			did: shipmentData.sponsorId,
-			date: new Date().toISOString()
-		};
-
-		const notificationResult = await this.notificationsService.insertNotification(notification);
-		eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-		eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-		console.log('notification added', notification, notificationResult);
 	}
 
 	async getNotificationDataForOrderStatus(data) {
