@@ -14,6 +14,8 @@ module.exports = {
     switch (viewModel) {
       case 'order':
         return require('./services/utilities').getOrderViewModel();
+      case 'shipment':
+        return require('./services/utilities').getShipmentViewModel();
       default:
         throw new Error('Requested view model not found');
     }
