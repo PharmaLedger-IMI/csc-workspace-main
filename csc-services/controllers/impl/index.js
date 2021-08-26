@@ -9,3 +9,4 @@ require("./OrdersControllerImpl");
 require("./ReviewOrderControllerImpl");
 require("./SingleShipmentControllerImpl");
 require("./ShipmentsControllerImpl");
+require("./ShipmentsControllerImpl");
