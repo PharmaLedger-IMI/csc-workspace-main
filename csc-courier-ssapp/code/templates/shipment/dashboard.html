@@ -24,12 +24,10 @@
 	</div>
 
 	<div class="row-wrapper full-flex-column">
-		<div class="table-container-wrapper full-flex-column">
+		<div class="table-container-wrapper full-flex-column" data-if="@shipments">
 			<!-- Table area -->
-			<psk-condition condition="@shipmentsArrayNotEmpty">
-<!--				<webc-template data-view-model="@" slot="condition-true" template="table-template"></webc-template>-->
-				<div slot="condition-false">No shipments available.</div>
-			</psk-condition>
+			<webc-template data-view-model="@" slot="true" template="table-template"></webc-template>
+			<div slot="false">No shipments available.</div>
 		</div>
 	</div>
 </webc-container>

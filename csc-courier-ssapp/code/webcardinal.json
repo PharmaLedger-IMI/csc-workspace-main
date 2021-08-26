@@ -14,6 +14,13 @@
       "tag": "dashboard"
     },
     {
+      "name": "Scan Shipment",
+      "path": "./scan_shipment",
+      "src": "scan_shipment.html",
+      "indexed": false,
+      "tag": "scan_shipment"
+    },
+    {
       "name": "Notifications",
       "path": "./notifications",
       "src": "notifications.html",
