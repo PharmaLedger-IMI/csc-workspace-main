@@ -1,6 +1,6 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require("./lib/DSUService");
-const { messagesEnum, order } = require('./constants');
+const { Roles, messagesEnum, shipment, FoldersEnum } = require('./constants');
 const NotificationsService = require('./lib/NotificationService.js');
 const eventBusService = require('./lib/EventBusService.js');
 const CommunicationService = require('./lib/CommunicationService.js');
@@ -74,7 +74,7 @@ class ShipmentsService extends DSUService {
       CommunicationService.identities.CSC.SPONSOR_IDENTITY,
       messagesEnum.ShipmentInPreparation,
       {
-        orderSSI: order.uid,
+        shipmentSSI: shipment.uid,
       },
       messagesEnum.ShipmentInPreparation
     );
@@ -83,13 +83,50 @@ class ShipmentsService extends DSUService {
       CommunicationService.identities.CSC.SITE_IDENTITY,
       messagesEnum.ShipmentInPreparation,
       {
-        orderSSI: order.uid,
+        shipmentSSI: shipment.uid,
       },
       messagesEnum.ShipmentInPreparation
     );
 
     return shipmentDb;
 
+  }
+
+  // -> Functions for mounting newly created shipment in other actors except cmo
+  async mountAndReceiveShipment(shipmentSSI, role, statusKeySSI) {
+    let shipment, shipmentDb, status;
+    switch (role) {
+      case Roles.Sponsor:
+        shipment = await this.mountEntityAsync(shipmentSSI, FoldersEnum.Shipments);
+        status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.Statuses);
+
+        shipmentDb = await this.addShipmentToDB(
+          {
+            ...shipment,
+            shipmentSSI: shipment.uid,
+            status: status.history,
+            statusSSI: status.uid,
+          },
+          shipment.uid
+        );
+
+        return shipmentDb;
+      case Roles.Site:
+        shipment = await this.mountEntityAsync(shipmentSSI, FoldersEnum.Shipments);
+        status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.Statuses);
+
+        shipmentDb = await this.addShipmentToDB(
+          {
+            ...shipment,
+            shipmentSSI: shipment.uid,
+            status: status.history,
+            statusSSI: status.uid,
+          },
+          shipment.uid
+        );
+
+        return shipmentDb;
+    }
   }
 }
 
