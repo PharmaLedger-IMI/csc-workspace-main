@@ -61,16 +61,19 @@ class DashboardControllerImpl extends WebcController {
 				return console.error(err);
 			}
 
-			handleOrderMessages(data);
-			handleShipmentMessages(data);
-
+			this.handleOrderMessages(data);
+			this.handleShipmentMessages(data);
 		});
 	}
 
-	handleOrderMessages(data) {
+	async handleOrderMessages(data) {
 		data = JSON.parse(data);
 		console.log('message received', data);
 		const [orderData, orderStatus, notificationRole] = await this.getNotificationDataForOrderStatus(data);
+		if (!orderData || !orderStatus || !notificationRole) {
+			return;
+		}
+
 		console.log('getNotificationDataForOrderStatus received', orderData, orderStatus, notificationRole);
 		const notification = {
 			operation: NotificationTypes.UpdateOrderStatus,
@@ -89,11 +92,14 @@ class DashboardControllerImpl extends WebcController {
 		console.log('notification added', notification, notificationResult);
 	}
 
-
-	handleShipmentMessages(data) {
+	async handleShipmentMessages(data) {
 		data = JSON.parse(data);
 		console.log('message received', data);
 		const [shipmentData, shipmentStatus, notificationRole] = await this.getNotificationDataForShipmentStatus(data);
+		if (!shipmentData || !shipmentStatus || !notificationRole) {
+			return;
+		}
+
 		console.log('getNotificationDataForShipmentStatus received', shipmentData, shipmentStatus, notificationRole);
 		const notification = {
 			operation: NotificationTypes.UpdateShipmentStatus,
@@ -185,7 +191,6 @@ class DashboardControllerImpl extends WebcController {
 		let notificationRole;
 
 		switch (data.message.operation) {
-
 			case messagesEnum.ShipmentInPreparation: {
 				notificationRole = Roles.CMO;
 				shipmentStatus = shipmentStatusesEnum.InPreparation;
@@ -196,11 +201,11 @@ class DashboardControllerImpl extends WebcController {
 				} = data.message.data;
 
 				shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusKeySSI);
-
 				break;
 			}
-
 		}
+
+		return [shipmentData, shipmentStatus, notificationRole];
 	}
 }
 
