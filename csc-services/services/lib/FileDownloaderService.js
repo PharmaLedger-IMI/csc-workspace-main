@@ -1,57 +1,66 @@
-class FileDownloaderService {
-  constructor(path, fileName) {
-    this.path = path;
-    this.fileName = fileName;
+const DSUService = require('./DSUService.js');
 
-    if (this.path === '/') {
-      this.path = '';
+module.exports = class FileDownloaderService extends DSUService {
+  files = [];
+
+  constructor(DSUStorage) {
+    super(DSUStorage);
+    this.DSUStorage = DSUStorage;
+  }
+
+  addFileForDownload(path, filename) {
+    const file = this.files.find((x) => x.filename === filename);
+    if (!file) {
+      this.files.push({
+        path: path === '/' ? '' : path,
+        filename,
+      });
     }
   }
 
-  downloadFile(callback) {
-    if (!callback || typeof callback !== 'function') {
-      callback = this.downloadFileToDevice;
-    }
+  async downloadFile(filename) {
+    const file = this.files.find((x) => x.filename === filename);
+    if (!file) return;
 
-    this._getFileBlob(this.path, this.fileName, callback);
+    await this._getFileBlob(file.path, file.filename);
   }
 
-  /**
-   * @param {Object{ contentType: string, rawBlob: Blob }
-   */
-  downloadFileToDevice = (downloadedFile) => {
+  async downloadExistingFile(file) {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      let blob = new Blob([new Uint8Array(e.target.result)], { type: file.type });
+      this.files.push({
+        filename: file.name,
+        rawBlob: blob,
+        mimeType: blob.type,
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  downloadFileToDevice = (filename) => {
+    const downloadedFile = this.files.find((x) => x.filename === filename);
     window.URL = window.URL || window.webkitURL;
     let blob = downloadedFile.rawBlob;
 
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      const file = new File([blob], this.fileName);
+      const file = new File([blob], filename);
       window.navigator.msSaveOrOpenBlob(file);
       return;
     }
 
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.download = this.fileName;
+    link.download = filename;
     link.click();
   };
 
-  _getFileBlob(path, fileName, callback) {
-    let url = `/download${path}/${fileName}`;
-    fetch(url).then((response) => {
-      if (response.ok) {
-        response.blob().then((blob) => {
-          callback({
-            contentType: response.headers.get('Content-Type') || '',
-            rawBlob: blob,
-          });
-        });
-      } else {
-        console.error(`Error on download file ${path}/${fileName}: `, response);
-      }
-    });
+  async _getFileBlob(path, filename) {
+    const file = this.files.find((x) => x.filename === filename);
+    const buffer = await this.readFileAsync(path + '/' + filename);
+    const blob = new Blob([buffer]);
+    file['rawBlob'] = blob;
+    file['mimeType'] = blob.type;
+    return;
   }
-}
-
-const fileDownloaderService = new FileDownloaderService();
-
-module.exports = fileDownloaderService;
+};

@@ -45,14 +45,12 @@ class DSUService {
           let textDecoder = new TextDecoder('utf-8');
           let entity = JSON.parse(textDecoder.decode(content));
           entities.push(entity);
-
           if (dsuList.length === 0) {
             return callback(undefined, entities);
           }
           getServiceDsu(dsuList.shift());
         });
       };
-
       if (dsuList.length === 0) {
         return callback(undefined, []);
       }
@@ -94,16 +92,16 @@ class DSUService {
           return callback(err);
         }
 
-        this.DSUStorage.mount(path + '/' + keySSI,keySSI,(err) => {
+        this.DSUStorage.mount(path + '/' + keySSI, keySSI, (err) => {
           if (err) {
             console.log(err);
           }
           entity.keySSI = keySSI;
           entity.uid = keySSI;
           this.updateEntity(entity, path, callback);
-        })
-      })
-    })
+        });
+      });
+    });
   }
 
   async saveEntityAsync(entity, path) {
@@ -163,6 +161,20 @@ class DSUService {
     return typeof path === 'function' ? [this.PATH, path] : [path, callback];
   }
 
+  readFile(path, callback) {
+    [path, callback] = this.swapParamsIfPathIsMissing(path, callback);
+    this.DSUStorage.readFile(path, (err, data) => {
+      if (err) {
+        return callback(err, undefined);
+      }
+      return callback(null, data);
+    });
+  }
+
+  async readFileAsync(path) {
+    return this.asyncMyFunction(this.readFile, [...arguments]);
+  }
+
   //TODO: use $$.promisify
   asyncMyFunction = (func, params) => {
     func = func.bind(this);
@@ -177,4 +189,4 @@ class DSUService {
   };
 }
 
-module.exports = DSUService
+module.exports = DSUService;

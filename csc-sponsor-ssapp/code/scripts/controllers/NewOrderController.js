@@ -6,12 +6,14 @@ const { Topics, Roles } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
 const CommunicationService = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
+const FileDownloaderService = cscServices.FileDownloaderService;
 
 export default class NewOrderController extends WebcController {
   constructor(...props) {
     super(...props);
     let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
+    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
 
     this.model = {
       wizard_form: [
@@ -36,6 +38,7 @@ export default class NewOrderController extends WebcController {
 
       if (files) {
         files.forEach((file) => {
+          this.FileDownloaderService.downloadExistingFile(file);
           this.model.form.documents.push({ name: file.name, attached_by: Roles.Sponsor, date: new Date().toLocaleString(), link: '', canRemove: true, file: file });
         });
       }
@@ -49,6 +52,7 @@ export default class NewOrderController extends WebcController {
       if (files && files.length > 0) {
         console.log(files);
         try {
+          this.FileDownloaderService.downloadExistingFile(files[0]);
           const ids = await this.readFile(files[0]);
           this.model.form.inputs.kit_ids_attachment.name = files[0].name;
           this.model.form.inputs.kit_ids_attachment.ids = ids;
@@ -68,6 +72,13 @@ export default class NewOrderController extends WebcController {
           this.model.form.documents.splice(idx, 1);
         }
       });
+    });
+
+    this.onTagClick('download-file', (model, target, event) => {
+      const filename = target.getAttribute('data-custom') || null;
+      if (filename) {
+        this.FileDownloaderService.downloadFileToDevice(filename);
+      }
     });
 
     //When you click step 1
@@ -192,7 +203,7 @@ export default class NewOrderController extends WebcController {
 
     //When you reset form
     this.onTagEvent('form_reset', 'click', (e) => {
-      this.model.form = viewModelResolver("order").form;
+      this.model.form = viewModelResolver('order').form;
     });
 
     //Add active menu class to element

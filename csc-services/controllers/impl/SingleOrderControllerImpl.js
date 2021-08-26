@@ -4,17 +4,18 @@ const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
+const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
 const momentService = cscServices.momentService;
-const { Roles, Topics, NotificationTypes, ButtonsEnum, Commons } = cscServices.constants;
+const { Roles, Topics, NotificationTypes, ButtonsEnum, Commons, FoldersEnum } = cscServices.constants;
 const { orderStatusesEnum, orderPendingActionEnum } = cscServices.constants.order;
-const {shipmentStatusesEnum} = cscServices.constants.shipment;
+const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
 const csIdentities = {};
-csIdentities [Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
-csIdentities [Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
-csIdentities [Roles.Site] = CommunicationService.identities.CSC.SITE_IDENTITY;
+csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
+csIdentities[Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
+csIdentities[Roles.Site] = CommunicationService.identities.CSC.SITE_IDENTITY;
 
 class SingleOrderControllerImpl extends WebcController {
   constructor(role, ...props) {
@@ -28,8 +29,9 @@ class SingleOrderControllerImpl extends WebcController {
     }
     this.model = model;
 
-    let {keySSI} = this.history.location.state;
+    let { keySSI } = this.history.location.state;
     this.notificationsService = new NotificationsService(this.DSUStorage);
+    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     let communicationService = CommunicationService.getInstance(csIdentities[role]);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
@@ -69,8 +71,11 @@ class SingleOrderControllerImpl extends WebcController {
       this.onShowHistoryClick();
     });
 
-    this.onTagEvent('download-kit-list', 'click', (e) => {
-      console.log("[EVENT] download-kit-list");
+    this.onTagClick('download-file', (model, target, event) => {
+      const filename = target.getAttribute('data-custom') || null;
+      if (filename) {
+        this.FileDownloaderService.downloadFileToDevice(filename);
+      }
     });
   }
 
@@ -147,46 +152,48 @@ class SingleOrderControllerImpl extends WebcController {
   async init() {
     const order = await this.ordersService.getOrder(this.model.keySSI);
     this.model.order = order;
-    this.model.order = {...this.transformData(this.model.order)};
+    this.model.order = { ...this.transformData(this.model.order) };
 
     this.model.order.delivery_date = {
       date: this.getDate(this.model.order.deliveryDate),
-      time: this.getTime(this.model.order.deliveryDate)
-    }
+      time: this.getTime(this.model.order.deliveryDate),
+    };
 
     this.model.order.actions = this.setOrderActions();
     console.log(this.model.order);
+    this.prepareDocumentsDownloads(JSON.parse(JSON.stringify(this.model.order.documents)), this.model.order.cmoDocumentsKeySSI, this.model.order.sponsorDocumentsKeySSI);
+    this.prepareKitsFileDownload(this.model.order.kitsFilename, this.model.order.kitsSSI);
   }
 
-  transformData(data){
-    if(data){
-
+  transformData(data) {
+    if (data) {
       data.documents = [];
 
-      if(data.sponsorDocuments){
-        data.sponsorDocuments.forEach( (item) => {
+      if (data.sponsorDocuments) {
+        data.sponsorDocuments.forEach((item) => {
           item.date = momentService(item.data).format(Commons.DateTimeFormatPattern);
-
         });
       }
 
-      data.status_value = data.status.sort( (function(a,b){
+      data.status_value = data.status.sort(function (a, b) {
         return new Date(b.date) - new Date(a.date);
-      }))[0].status
+      })[0].status;
 
-      data.status_date = momentService(data.status.sort( (function(a,b){
-        return new Date(b.date) - new Date(a.date);
-      }))[0].date).format(Commons.DateTimeFormatPattern);
+      data.status_date = momentService(
+        data.status.sort(function (a, b) {
+          return new Date(b.date) - new Date(a.date);
+        })[0].date
+      ).format(Commons.DateTimeFormatPattern);
 
       data.status_approved = data.status_value === orderStatusesEnum.Approved;
       data.status_cancelled = data.status_value === orderStatusesEnum.Canceled;
       data.status_normal = data.status_value !== orderStatusesEnum.Canceled && data.status_value !== orderStatusesEnum.Approved;
       data.pending_action = this.getPendingAction(data.status_value);
 
-      if(data.comments){
-        data.comments.forEach( (comment) => {
+      if (data.comments) {
+        data.comments.forEach((comment) => {
           comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
-        })
+        });
       }
 
       if (data.sponsorDocuments) {
@@ -228,16 +235,15 @@ class SingleOrderControllerImpl extends WebcController {
     return '';
   }
 
-  setOrderActions(){
+  setOrderActions() {
     const actions = {};
     const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, orderStatusesEnum.InPreparation];
     const order = this.model.order;
-    switch (this.role){
+    switch (this.role) {
       case Roles.Sponsor:
         actions.couldNotBeReviewed = orderStatusesEnum.ReviewedByCMO !== order.status_value;
         actions.couldNotBeCancelled = cancellableOrderStatus.indexOf(order.status_value) === -1;
-        actions.couldNotBeApproved = order.status.map((status) => status.status).indexOf(orderStatusesEnum.ReviewedByCMO) === -1
-            || orderStatusesEnum.Canceled === order.status_value || orderStatusesEnum.Approved === order.status_value;
+        actions.couldNotBeApproved = order.status.map((status) => status.status).indexOf(orderStatusesEnum.ReviewedByCMO) === -1 || orderStatusesEnum.Canceled === order.status_value || orderStatusesEnum.Approved === order.status_value;
         actions.orderCancelButtonText = order.pending_action === orderPendingActionEnum.PendingShipmentDispatch ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
         this.onTagEvent('review-order', 'click', (e) => {
           this.navigateToPageTag('review-order', {
@@ -300,7 +306,7 @@ class SingleOrderControllerImpl extends WebcController {
         };
         break;
       case Roles.CMO:
-        actions.couldNotBeReviewed = [orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.Approved, orderStatusesEnum.Canceled].indexOf(order.status_value)!==-1;
+        actions.couldNotBeReviewed = [orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.Approved, orderStatusesEnum.Canceled].indexOf(order.status_value) !== -1;
         this.onTagEvent('review-order', 'click', (e) => {
           this.navigateToPageTag('review-order', {
             order: JSON.parse(JSON.stringify(this.model.order)),
@@ -343,6 +349,30 @@ class SingleOrderControllerImpl extends WebcController {
   getTime(str) {
     return str.split(' ')[1];
   }
+
+  prepareKitsFileDownload(filename, keySSI) {
+    let path = FoldersEnum.Kits + '/' + keySSI + '/' + 'files';
+    this.FileDownloaderService.addFileForDownload(path, filename);
+    this.FileDownloaderService.downloadFile(filename);
+  }
+
+  prepareDocumentsDownloads(documents, cmoDocumentsKeySSI, sponsorDocumentsKeySSI) {
+    if (documents && documents.length > 0) {
+      documents.forEach((x) => {
+        let path = null;
+        if (x.attached_by === Roles.Sponsor) {
+          path = FoldersEnum.Documents + '/' + sponsorDocumentsKeySSI + '/' + 'files';
+        } else if (x.attached_by === Roles.CMO) {
+          path = FoldersEnum.Documents + '/' + cmoDocumentsKeySSI + '/' + 'files';
+        }
+
+        if (path) {
+          this.FileDownloaderService.addFileForDownload(path, x.name);
+          this.FileDownloaderService.downloadFile(x.name);
+        }
+      });
+    }
+  }
 }
-const controllersRegistry = require("../ControllersRegistry").getControllersRegistry();
-controllersRegistry.registerController("SingleOrderController", SingleOrderControllerImpl);
+const controllersRegistry = require('../ControllersRegistry').getControllersRegistry();
+controllersRegistry.registerController('SingleOrderController', SingleOrderControllerImpl);
