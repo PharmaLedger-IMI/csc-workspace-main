@@ -90,7 +90,6 @@ const shipmentViewModel = {
 			value: ''
 		}
 	}
-
 };
 
 module.exports = shipmentViewModel;

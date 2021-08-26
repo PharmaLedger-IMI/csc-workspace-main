@@ -1,5 +1,3 @@
-import cscServices from 'csc-services';
-
 const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
@@ -15,15 +13,8 @@ export default class EditShipmentController extends WebcController {
 	}
 
 	attachEventHandlers() {
-		this.attachModelChangeHandlers();
 		this.attachNavigationHandlers();
 		this.attachFormActions();
-	}
-
-	attachModelChangeHandlers() {
-		this.model.onChange('form.type', () => {
-
-		});
 	}
 
 	attachFormActions() {
