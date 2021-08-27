@@ -1,6 +1,9 @@
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
-const { shipmentTableHeaders} = cscServices.constants.shipment;
+const eventBusService = cscServices.EventBusService;
+const momentService = cscServices.momentService;
+const { Topics, Commons } = cscServices.constants;
+const { shipmentTableHeaders, shipmentStatusesEnum } = cscServices.constants.shipment;
 
 class ShipmentsControllerImpl extends WebcController {
 
@@ -8,52 +11,169 @@ class ShipmentsControllerImpl extends WebcController {
     super(...props);
 
     this.model = this.getShipmentsViewModel();
-    this.setOrdersModel(this.getFakeShipmentData());
-
     this.init();
-
+    this.attachEvents();
     this.attachEventHandlers();
   }
 
-  async init() {}
+  async init() {
+    await this.getShipments();
+    eventBusService.addEventListener(Topics.RefreshShipments, async (data) => {
+      await this.getShipments();
+    });
+  }
 
-  setOrdersModel(shipments) {
+  async getShipments() {
+    try {
+      this.shipments = this.transformData(this.getFakeShipmentData());
+      this.setShipmentsModel(this.shipments);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  setShipmentsModel(shipments) {
     this.model.shipments = shipments;
     this.model.data = shipments;
     this.model.headers = this.model.headers.map((x) => ({ ...x, asc: false, desc: false }));
   }
-  attachEventHandlers(){
-    this.model.onChange("shipments" , () => {
-      this.model.shipmentsArrayNotEmpty = this.model.shipments.length >=1;
+
+  attachEvents() {
+    this.attachEventHandlers();
+    // this.viewOrderHandler();
+
+    this.searchFilterHandler();
+    this.filterChangedHandler();
+    this.filterClearedHandler();
+  }
+
+  transformData(data) {
+    if (data) {
+      data.forEach((item) => {
+        item.requestDate_value = momentService(item.requestDate).format(Commons.DateTimeFormatPattern);
+        item.deliveryDate_value = momentService(item.schedulePickupDate).format(Commons.DateTimeFormatPattern);
+        item.lastModified_value = momentService(item.lastModified).format(Commons.DateTimeFormatPattern);
+        item.status_value = item.status;
+      });
+    }
+
+    return data;
+  }
+
+  searchFilterHandler() {
+    this.model.onChange('search.value', () => {
+      setTimeout(() => {
+        this.filterData();
+      }, 300);
     });
   }
 
-  getFakeShipmentData(){
-    return [
-      { "shipmentDate" : new Date().toISOString(), "shipperId" : "123123123", "specialInstructions" : "You have to do this.", "typeShipment" : "type_a",
-        "dimension" : {
-          "dimensionHeight" : 100,
-          "dimensionWidth" : 200,
-          "dimensionLength" : 300
-        },
-        "origin" : "Greece", "scheduledPickupDateTime" : new Date().toISOString(), "shippingCondition" : "broken", "signature" : "",
-      },
-      { "shipmentDate" : new Date().toISOString(), "shipperId" : "123123123", "specialInstructions" : "You have to do this.", "typeShipment" : "type_a",
-        "dimension" : {
-          "dimensionHeight" : 100,
-          "dimensionWidth" : 200,
-          "dimensionLength" : 300
-        },
-        "origin" : "Greece", "scheduledPickupDateTime" : new Date().toISOString(), "shippingCondition" : "broken", "signature" : "",
-      },
-      { "shipmentDate" : new Date().toISOString(), "shipperId" : "123123123", "specialInstructions" : "You have to do this.", "typeShipment" : "type_a",
-        "dimension" : {
-          "dimensionHeight" : 100,
-          "dimensionWidth" : 200,
-          "dimensionLength" : 300
-        },
-        "origin" : "Greece", "scheduledPickupDateTime" : new Date().toISOString(), "shippingCondition" : "broken", "signature" : "",
+  filterChangedHandler() {
+    this.onTagClick('filters-changed', async (model, target) => {
+      const selectedFilter = target.getAttribute('data-custom') || null;
+      if (selectedFilter) {
+        document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
+        this.model.filter = selectedFilter;
+        document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
+        this.filterData();
       }
+    });
+  }
+
+  filterClearedHandler() {
+    this.onTagClick('filters-cleared', async () => {
+      document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
+      this.model.filter = '';
+      document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
+      this.model.search.value = null;
+      this.filterData();
+    });
+  }
+
+  filterData() {
+    let result = this.shipments;
+    if (this.model.filter) {
+      result = result.filter((x) => x.status_value === shipmentStatusesEnum[this.model.filter]);
+    }
+    if (this.model.search.value && this.model.search.value !== '') {
+      result = result.filter((x) => x.orderId.toUpperCase().search(this.model.search.value.toUpperCase()) !== -1);
+    }
+
+    this.setShipmentsModel(result);
+  }
+
+  attachEventHandlers() {
+    this.model.addExpression('shipmentsArrayNotEmpty', () => {
+      return this.model.shipments && Array.isArray(this.model.shipments) && this.model.shipments.length > 0;
+    }, 'shipments');
+    // this.model.onChange("shipments" , () => {
+    //    console.log('Inside model onChange : ');
+    //   this.model.shipmentsArrayNotEmpty = this.model.shipments.length >=1;
+    // });
+  }
+
+  getFakeShipmentData() {
+    return [
+      {
+        "orderId": "O-202", "shipperId": "123123123", "origin": "Greece", "type": "ocean", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date().toISOString(), "status": "In Preparation"
+        , "lastModified": new Date()
+      },
+      {
+        "orderId": "O-204", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
+        , "lastModified": new Date()
+      },
+      {
+        "orderId": "O-205", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
+        , "lastModified": new Date()
+      },
+      {
+        "orderId": "0-305", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
+        , "lastModified": new Date()
+      },
+      {
+        "orderId": "O-304", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
+        , "lastModified": new Date()
+      },
+      {
+        "orderId": "O-505", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
+        , "lastModified": new Date()
+      },
+      {
+        "orderId": "O-504", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
+        , "lastModified": new Date()
+      },
+      {
+        "orderId": "O-804", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
+        , "lastModified": new Date()
+      },
+      {
+        "orderId": "O-808", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
+        , "lastModified": new Date()
+      }
+      // { "shipmentDate" : new Date().toISOString(), "shipperId" : "123123123", "specialInstructions" : "You have to do this.", "typeShipment" : "type_a",
+      //   "dimension" : {
+      //     "dimensionHeight" : 100,
+      //     "dimensionWidth" : 200,
+      //     "dimensionLength" : 300
+      //   },
+      //   "origin" : "Greece", "scheduledPickupDateTime" : new Date().toISOString(), "shippingCondition" : "broken", "signature" : "",
+      // },
+      // { "shipmentDate" : new Date().toISOString(), "shipperId" : "123123123", "specialInstructions" : "You have to do this.", "typeShipment" : "type_a",
+      //   "dimension" : {
+      //     "dimensionHeight" : 100,
+      //     "dimensionWidth" : 200,
+      //     "dimensionLength" : 300
+      //   },
+      //   "origin" : "Greece", "scheduledPickupDateTime" : new Date().toISOString(), "shippingCondition" : "broken", "signature" : "",
+      // },
+      // { "shipmentDate" : new Date().toISOString(), "shipperId" : "123123123", "specialInstructions" : "You have to do this.", "typeShipment" : "type_a",
+      //   "dimension" : {
+      //     "dimensionHeight" : 100,
+      //     "dimensionWidth" : 200,
+      //     "dimensionLength" : 300
+      //   },
+      //   "origin" : "Greece", "scheduledPickupDateTime" : new Date().toISOString(), "shippingCondition" : "broken", "signature" : "",
+      // }
     ];
   }
 
