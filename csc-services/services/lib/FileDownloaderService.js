@@ -8,16 +8,6 @@ module.exports = class FileDownloaderService extends DSUService {
     this.DSUStorage = DSUStorage;
   }
 
-  addFileForDownload(path, filename) {
-    const file = this.files.find((x) => x.filename === filename);
-    if (!file) {
-      this.files.push({
-        path: path === '/' ? '' : path,
-        filename,
-      });
-    }
-  }
-
   async prepareDownloadFromDsu(path, filename) {
     let file = this.files.find((x) => x.filename === filename);
     if (!file) {
