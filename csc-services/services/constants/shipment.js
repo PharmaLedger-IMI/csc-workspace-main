@@ -88,7 +88,7 @@ const shipmentTableHeaders = [
 ];
 
 module.exports = {
-	shipmentStatusesEnum
-	, shipmentTableHeaders,
+	shipmentStatusesEnum,
+	shipmentTableHeaders,
 	shipmentPendingActionEnum
 };

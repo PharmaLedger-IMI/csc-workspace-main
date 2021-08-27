@@ -21,16 +21,8 @@ class ShipmentsService extends DSUService {
   }
 
   async addShipmentToDB(data, key) {
-    console.log('Data: ', JSON.stringify(data));
     const newRecord = await this.storageService.insertRecord(this.SHIPMENTS_TABLE, key ? key : data.orderId, data);
     return newRecord;
-  }
-
-  async getShipments() {
-    const result = await this.storageService.filter(this.SHIPMENTS_TABLE);
-    if (result) {
-      return result.filter((x) => !x.deleted);
-    } else return [];
   }
 
   sendMessageToEntity(entity, operation, data, shortDescription) {
@@ -46,25 +38,26 @@ class ShipmentsService extends DSUService {
   async createShipment(data) {
 
     const shipmentModel = {
-      sponsorId: data.sponsorId,
-      targetCmoId: data.targetCmoId,
-      studyId: data.studyId,
-      orderId: data.orderId,
-      siteId: data.siteId,
-      siteRegionId: data.siteRegionId,
-      siteCountry: data.siteCountry,
+      sponsorId: data.sponsor_id,
+      targetCmoId: data.target_cmo_id,
+      studyId: data.study_id,
+      orderId: data.order_id,
+      siteId: data.site_id,
+      siteRegionId: data.site_region_id,
+      siteCountry: data.site_country,
       temperatures: data.keep_between_temperature,
       temperature_comments: data.temperature_comments,
       requestDate: data.requestDate,
-      deliveryDate: data.deliveryDate,
+      deliveryDate: data.delivery_date,
       lastModified: data.lastModified,
     };
-    console.log('shipmentmodel: ', JSON.stringify(shipmentModel));
+
     const shipment = await this.saveEntityAsync(shipmentModel);
+
     const shipmentDb = await this.addShipmentToDB(
       {
-        ...shipmentModel,
-        shipmentSSI: shipment.uid,
+      ...shipmentModel,
+      shipmentSSI: shipment.uid,
 
       },
       shipment.uid
