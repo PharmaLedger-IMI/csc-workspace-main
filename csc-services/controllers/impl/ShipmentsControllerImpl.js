@@ -1,7 +1,11 @@
 const { WebcController } = WebCardinal.controllers;
+
 const cscServices = require('csc-services');
+
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
+const ShipmentService = cscServices.ShipmentService;
+
 const { Topics, Commons } = cscServices.constants;
 const { shipmentTableHeaders, shipmentStatusesEnum } = cscServices.constants.shipment;
 
@@ -11,6 +15,8 @@ class ShipmentsControllerImpl extends WebcController {
     super(...props);
 
     this.model = this.getShipmentsViewModel();
+    this.shipmentService = new ShipmentService(this.DSUStorage);
+
     this.init();
     this.attachEvents();
     this.attachEventHandlers();
@@ -25,7 +31,8 @@ class ShipmentsControllerImpl extends WebcController {
 
   async getShipments() {
     try {
-      this.shipments = this.transformData(this.getFakeShipmentData());
+      const shipmentsList = await this.shipmentService.getShipments();
+      this.shipments = this.transformData(shipmentsList);
       this.setShipmentsModel(this.shipments);
     } catch (error) {
       console.log(error);
@@ -40,7 +47,7 @@ class ShipmentsControllerImpl extends WebcController {
 
   attachEvents() {
     this.attachEventHandlers();
-    // this.viewOrderHandler();
+    this.viewShipmentHandler();
 
     this.searchFilterHandler();
     this.filterChangedHandler();
@@ -58,6 +65,12 @@ class ShipmentsControllerImpl extends WebcController {
     }
 
     return data;
+  }
+
+  viewShipmentHandler() {
+    this.onTagClick('view-shipment', (model) => {
+      this.navigateToPageTag('shipment', { keySSI: model.keySSI });
+    });
   }
 
   searchFilterHandler() {
@@ -106,75 +119,6 @@ class ShipmentsControllerImpl extends WebcController {
     this.model.addExpression('shipmentsArrayNotEmpty', () => {
       return this.model.shipments && Array.isArray(this.model.shipments) && this.model.shipments.length > 0;
     }, 'shipments');
-    // this.model.onChange("shipments" , () => {
-    //    console.log('Inside model onChange : ');
-    //   this.model.shipmentsArrayNotEmpty = this.model.shipments.length >=1;
-    // });
-  }
-
-  getFakeShipmentData() {
-    return [
-      {
-        "orderId": "O-202", "shipperId": "123123123", "origin": "Greece", "type": "ocean", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date().toISOString(), "status": "In Preparation"
-        , "lastModified": new Date()
-      },
-      {
-        "orderId": "O-204", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
-        , "lastModified": new Date()
-      },
-      {
-        "orderId": "O-205", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
-        , "lastModified": new Date()
-      },
-      {
-        "orderId": "0-305", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
-        , "lastModified": new Date()
-      },
-      {
-        "orderId": "O-304", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
-        , "lastModified": new Date()
-      },
-      {
-        "orderId": "O-505", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
-        , "lastModified": new Date()
-      },
-      {
-        "orderId": "O-504", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
-        , "lastModified": new Date()
-      },
-      {
-        "orderId": "O-804", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
-        , "lastModified": new Date()
-      },
-      {
-        "orderId": "O-808", "shipperId": "123123125", "origin": "India", "type": "air", "requestDeliveryDate": new Date().toISOString(), "schedulePickupDate": new Date(), "status": "Ready For Dispatch"
-        , "lastModified": new Date()
-      }
-      // { "shipmentDate" : new Date().toISOString(), "shipperId" : "123123123", "specialInstructions" : "You have to do this.", "typeShipment" : "type_a",
-      //   "dimension" : {
-      //     "dimensionHeight" : 100,
-      //     "dimensionWidth" : 200,
-      //     "dimensionLength" : 300
-      //   },
-      //   "origin" : "Greece", "scheduledPickupDateTime" : new Date().toISOString(), "shippingCondition" : "broken", "signature" : "",
-      // },
-      // { "shipmentDate" : new Date().toISOString(), "shipperId" : "123123123", "specialInstructions" : "You have to do this.", "typeShipment" : "type_a",
-      //   "dimension" : {
-      //     "dimensionHeight" : 100,
-      //     "dimensionWidth" : 200,
-      //     "dimensionLength" : 300
-      //   },
-      //   "origin" : "Greece", "scheduledPickupDateTime" : new Date().toISOString(), "shippingCondition" : "broken", "signature" : "",
-      // },
-      // { "shipmentDate" : new Date().toISOString(), "shipperId" : "123123123", "specialInstructions" : "You have to do this.", "typeShipment" : "type_a",
-      //   "dimension" : {
-      //     "dimensionHeight" : 100,
-      //     "dimensionWidth" : 200,
-      //     "dimensionLength" : 300
-      //   },
-      //   "origin" : "Greece", "scheduledPickupDateTime" : new Date().toISOString(), "shippingCondition" : "broken", "signature" : "",
-      // }
-    ];
   }
 
   getShipmentsViewModel() {
