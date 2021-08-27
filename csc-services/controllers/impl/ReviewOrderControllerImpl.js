@@ -68,7 +68,7 @@ class ReviewOrderControllerImpl extends WebcController {
 
       if (files) {
         files.forEach((file) => {
-          this.FileDownloaderService.downloadExistingFile(file);
+          this.FileDownloaderService.prepareDownloadFromBrowser(file);
           this.model.form.documents.push({
             name: file.name,
             attached_by: this.role,
@@ -288,8 +288,7 @@ class ReviewOrderControllerImpl extends WebcController {
 
   prepareKitsFileDownload(filename, keySSI) {
     let path = FoldersEnum.Kits + '/' + keySSI + '/' + 'files';
-    this.FileDownloaderService.addFileForDownload(path, filename);
-    this.FileDownloaderService.downloadFile(filename);
+    this.FileDownloaderService.prepareDownloadFromDsu(path, filename);
   }
 
   prepareDocumentsDownloads(documents, cmoDocumentsKeySSI, sponsorDocumentsKeySSI) {
@@ -303,8 +302,7 @@ class ReviewOrderControllerImpl extends WebcController {
         }
 
         if (path) {
-          this.FileDownloaderService.addFileForDownload(path, x.name);
-          this.FileDownloaderService.downloadFile(x.name);
+          this.FileDownloaderService.prepareDownloadFromDsu(path, x.name);
         }
       });
     }

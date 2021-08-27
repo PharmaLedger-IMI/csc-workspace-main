@@ -18,14 +18,20 @@ module.exports = class FileDownloaderService extends DSUService {
     }
   }
 
-  async downloadFile(filename) {
-    const file = this.files.find((x) => x.filename === filename);
-    if (!file) return;
+  async prepareDownloadFromDsu(path, filename) {
+    let file = this.files.find((x) => x.filename === filename);
+    if (!file) {
+      file = {
+        path: path === '/' ? '' : path,
+        filename,
+      };
+      this.files.push(file);
 
-    await this._getFileBlob(file.path, file.filename);
+      await this._getFileBlob(file.path, file.filename);
+    }
   }
 
-  async downloadExistingFile(file) {
+  async prepareDownloadFromBrowser(file) {
     let reader = new FileReader();
     reader.onload = (e) => {
       let blob = new Blob([new Uint8Array(e.target.result)], { type: file.type });

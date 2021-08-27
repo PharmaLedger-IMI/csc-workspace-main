@@ -38,7 +38,7 @@ export default class NewOrderController extends WebcController {
 
       if (files) {
         files.forEach((file) => {
-          this.FileDownloaderService.downloadExistingFile(file);
+          this.FileDownloaderService.prepareDownloadFromBrowser(file);
           this.model.form.documents.push({ name: file.name, attached_by: Roles.Sponsor, date: new Date().toLocaleString(), link: '', canRemove: true, file: file });
         });
       }
@@ -52,7 +52,7 @@ export default class NewOrderController extends WebcController {
       if (files && files.length > 0) {
         console.log(files);
         try {
-          this.FileDownloaderService.downloadExistingFile(files[0]);
+          this.FileDownloaderService.prepareDownloadFromBrowser(files[0]);
           const ids = await this.readFile(files[0]);
           this.model.form.inputs.kit_ids_attachment.name = files[0].name;
           this.model.form.inputs.kit_ids_attachment.ids = ids;

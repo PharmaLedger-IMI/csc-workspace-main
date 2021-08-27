@@ -352,8 +352,7 @@ class SingleOrderControllerImpl extends WebcController {
 
   prepareKitsFileDownload(filename, keySSI) {
     let path = FoldersEnum.Kits + '/' + keySSI + '/' + 'files';
-    this.FileDownloaderService.addFileForDownload(path, filename);
-    this.FileDownloaderService.downloadFile(filename);
+    this.FileDownloaderService.prepareDownloadFromDsu(path, filename);
   }
 
   prepareDocumentsDownloads(documents, cmoDocumentsKeySSI, sponsorDocumentsKeySSI) {
@@ -367,8 +366,7 @@ class SingleOrderControllerImpl extends WebcController {
         }
 
         if (path) {
-          this.FileDownloaderService.addFileForDownload(path, x.name);
-          this.FileDownloaderService.downloadFile(x.name);
+          this.FileDownloaderService.prepareDownloadFromDsu(path, x.name);
         }
       });
     }
