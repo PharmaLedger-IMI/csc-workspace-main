@@ -1,417 +1,374 @@
-<webc-container controller='NewOrderController'>
-	<main class='full-flex-column'>
-		<section>
-			<webc-template template='header-template'></webc-template>
-			<webc-template template='dashboard-menu'></webc-template>
-		</section>
+<webc-container controller="NewOrderController">
+  <main class="full-flex-column">
+    <section>
+      <webc-template template="header-template"></webc-template>
+      <webc-template template="dashboard-menu"></webc-template>
+    </section>
 
-		<section class='order-section'>
-			<div class='single-order-main-holder'>
-				<div class='stepper-container'>
-					<!--First Step -->
-					<div class='step-element step-active' data-tag='step-1' id='step-1'>1 - Order Details</div>
-					<!-- Line -->
-					<div class='step-break-line'></div>
-					<!--Second Step -->
-					<div class='step-element' data-tag='step-2' id='step-2'>2 - Attach Documents</div>
-					<!-- Line -->
-					<div class='step-break-line'></div>
-					<!-- Comments -->
-					<div class='step-element' data-tag='step-3' id='step-3'>3 - Comments</div>
-					<!-- Line -->
-					<div class='step-break-line'></div>
-					<!-- Confirmation -->
-					<div class='step-element' data-tag='step-4' id='step-4'>4 - Confirmation</div>
-				</div>
+    <section class="order-section">
+      <div class="single-order-main-holder">
+        <div class="stepper-container">
+          <!--First Step -->
+          <div class="step-element step-active" data-tag="step-1" id="step-1">1 - Order Details</div>
+          <!-- Line -->
+          <div class="step-break-line"></div>
+          <!--Second Step -->
+          <div class="step-element" data-tag="step-2" id="step-2">2 - Attach Documents</div>
+          <!-- Line -->
+          <div class="step-break-line"></div>
+          <!-- Comments -->
+          <div class="step-element" data-tag="step-3" id="step-3">3 - Comments</div>
+          <!-- Line -->
+          <div class="step-break-line"></div>
+          <!-- Confirmation -->
+          <div class="step-element" data-tag="step-4" id="step-4">4 - Confirmation</div>
+        </div>
 
-				<!-- 1 - Order Details -->
-				<div class='step-holder' id='step-1-wrapper'>
-					<div class='row w-100' id='new-order-details-holder'>
-						<div class='col-6'>
-							<!-- Sponsor ID -->
-							<div class='form-group'>
-								<!--Label -->
-								<label>{{@form.inputs.sponsor_id.label}}</label>
-								<!-- Input -->
-								<input class='form-control' data-view-model='@form.inputs.sponsor_id' type='text' />
-							</div>
+        <!-- 1 - Order Details -->
+        <div class="step-holder" id="step-1-wrapper">
+          <div class="row w-100" id="new-order-details-holder">
+            <div class="col-6">
+              <!-- Sponsor ID -->
+              <div class="form-group">
+                <!--Label -->
+                <label>{{@form.inputs.sponsor_id.label}}</label>
+                <!-- Input -->
+                <input class="form-control" data-view-model="@form.inputs.sponsor_id" type="text" />
+              </div>
 
-							<!-- Delivery Date/Time -->
-							<div class='form-group'>
-								<!--Label -->
-								<label>{{@form.inputs.delivery_date.label}}</label>
-								<div class='row'>
-									<div class='col-8'>
-										<!-- Input -->
-										<input class='form-control' data-view-model='@form.inputs.delivery_date'
-										       type='date' />
-									</div>
-									<div class='col-4'>
-										<!-- Input -->
-										<input class='form-control' data-view-model='@form.inputs.delivery_time'
-										       type='time' />
-									</div>
-								</div>
-							</div>
+              <!-- Delivery Date/Time -->
+              <div class="form-group">
+                <!--Label -->
+                <label>{{@form.inputs.delivery_date.label}}</label>
+                <div class="row">
+                  <div class="col-8">
+                    <!-- Input -->
+                    <input class="form-control" data-view-model="@form.inputs.delivery_date" type="date" />
+                  </div>
+                  <div class="col-4">
+                    <!-- Input -->
+                    <input class="form-control" data-view-model="@form.inputs.delivery_time" type="time" />
+                  </div>
+                </div>
+              </div>
 
-							<!-- Target CMO ID -->
-							<div class='form-group'>
-								<!--Label -->
-								<label>{{@form.inputs.target_cmo_id.label}}</label>
-								<!-- Select -->
-								<select class='form-control' data-for='@form.inputs.target_cmo_id.options'
-								        id='@form.inputs.target_cmo_id.name'
-								        name='@form.inputs.target_cmo_id.name' value='@form.inputs.target_cmo_id.value'>
-									<option value='@value'>{{@label}}</option>
-								</select>
-							</div>
+              <!-- Target CMO ID -->
+              <div class="form-group">
+                <!--Label -->
+                <label>{{@form.inputs.target_cmo_id.label}}</label>
+                <!-- Select -->
+                <select class="form-control" data-for="@form.inputs.target_cmo_id.options" id="@form.inputs.target_cmo_id.name" name="@form.inputs.target_cmo_id.name" value="@form.inputs.target_cmo_id.value">
+                  <option value="@value">{{@label}}</option>
+                </select>
+              </div>
 
-							<!-- Study ID -->
-							<div class='form-group'>
-								<!--Label -->
-								<label>{{@form.inputs.study_id.label}}</label>
-								<!-- Input -->
-								<input class='form-control' data-view-model='@form.inputs.study_id' type='text' />
-							</div>
+              <!-- Study ID -->
+              <div class="form-group">
+                <!--Label -->
+                <label>{{@form.inputs.study_id.label}}</label>
+                <!-- Input -->
+                <input class="form-control" data-view-model="@form.inputs.study_id" type="text" />
+              </div>
 
-							<!-- Order ID -->
-							<div class='form-group'>
-								<!--Label -->
-								<label>{{@form.inputs.order_id.label}}</label>
-								<!-- Input -->
-								<input class='form-control' data-view-model='@form.inputs.order_id' type='text' />
-							</div>
+              <!-- Order ID -->
+              <div class="form-group">
+                <!--Label -->
+                <label>{{@form.inputs.order_id.label}}</label>
+                <!-- Input -->
+                <input class="form-control" data-view-model="@form.inputs.order_id" type="text" />
+              </div>
 
-							<!-- Kit ID List -->
-							<div class='form-group'>
-								<!-- Label -->
-								<label>{{@form.inputs.kit_id_list.label}}</label>
-								<div class='input-group d-flex flex-column'>
-									<div class='input-group d-flex justify-content-between align-items-center'>
-										<input class='form-control' disabled
-										       value='@form.inputs.kit_ids_attachment.name' />
-										<psk-files-chooser class='pl-3'
-										                   data-view-model='@form.inputs.kit_ids_attachment'
-										                   event-name='add-kit-ids-file'></psk-files-chooser>
-									</div>
-									<small style='color: red'>{{ @form.inputs.kit_ids_attachment.error }}</small>
-								</div>
-							</div>
-						</div>
-						<div class='col-6'>
-							<!-- Site Id -->
-							<div class='form-group'>
-								<!--Label -->
-								<label>{{@form.inputs.site_id.label}}</label>
-								<!-- Select -->
-								<select class='form-control' data-for='@form.inputs.site_id.options'
-								        id='@form.inputs.site_id.name' name='@form.inputs.site_id.name'
-								        value='@form.inputs.site_id.value'>
-									<option value='@value'>{{@label}}</option>
-								</select>
-							</div>
+              <!-- Kit ID List -->
+              <div class="form-group">
+                <!-- Label -->
+                <label>{{@form.inputs.kit_id_list.label}}</label>
+                <div class="input-group d-flex flex-column">
+                  <div class="input-group d-flex justify-content-between align-items-center">
+                    <input class="form-control" disabled value="@form.inputs.kit_ids_attachment.name" />
+                    <psk-files-chooser class="pl-3" data-view-model="@form.inputs.kit_ids_attachment" event-name="add-kit-ids-file"></psk-files-chooser>
+                  </div>
+                  <small style="color: red">{{ @form.inputs.kit_ids_attachment.error }}</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <!-- Site Id -->
+              <div class="form-group">
+                <!--Label -->
+                <label>{{@form.inputs.site_id.label}}</label>
+                <!-- Select -->
+                <select class="form-control" data-for="@form.inputs.site_id.options" id="@form.inputs.site_id.name" name="@form.inputs.site_id.name" value="@form.inputs.site_id.value">
+                  <option value="@value">{{@label}}</option>
+                </select>
+              </div>
 
-							<!-- Site Region ID -->
-							<div class='form-group'>
-								<!--Label -->
-								<label>{{@form.inputs.site_region_id.label}}</label>
-								<!-- Input -->
-								<input class='form-control' data-view-model='@form.inputs.site_region_id' type='text' />
-							</div>
+              <!-- Site Region ID -->
+              <div class="form-group">
+                <!--Label -->
+                <label>{{@form.inputs.site_region_id.label}}</label>
+                <!-- Input -->
+                <input class="form-control" data-view-model="@form.inputs.site_region_id" type="text" />
+              </div>
 
-							<!-- Site Country -->
-							<div class='form-group'>
-								<!--Label -->
-								<label>{{@form.inputs.site_country.label}}</label>
-								<!-- Input -->
-								<input class='form-control' data-view-model='@form.inputs.site_country' type='text' />
-							</div>
+              <!-- Site Country -->
+              <div class="form-group">
+                <!--Label -->
+                <label>{{@form.inputs.site_country.label}}</label>
+                <!-- Input -->
+                <input class="form-control" data-view-model="@form.inputs.site_country" type="text" />
+              </div>
 
-							<!-- Temperature -->
-							<div class='form-group'>
-								<!-- Label -->
-								<label>{{@form.inputs.keep_between_temperature_min.label}}</label>
-								<!--Input -->
-								<input class='form-control' data-view-model='@form.inputs.keep_between_temperature_min'
-								       type='text' />
-							</div>
-							<div class='form-group'>
-								<!-- Label -->
-								<label>{{@form.inputs.keep_between_temperature_max.label}}</label>
-								<!--Input -->
-								<input class='form-control' data-view-model='@form.inputs.keep_between_temperature_max'
-								       type='text' />
-							</div>
+              <!-- Temperature -->
+              <div class="form-group">
+                <!-- Label -->
+                <label>{{@form.inputs.keep_between_temperature_min.label}}</label>
+                <!--Input -->
+                <input class="form-control" data-view-model="@form.inputs.keep_between_temperature_min" type="text" />
+              </div>
+              <div class="form-group">
+                <!-- Label -->
+                <label>{{@form.inputs.keep_between_temperature_max.label}}</label>
+                <!--Input -->
+                <input class="form-control" data-view-model="@form.inputs.keep_between_temperature_max" type="text" />
+              </div>
 
-							<!-- Temperature Comments -->
-							<div class='form-group'>
-								<!--Label -->
-								<label>{{@form.inputs.temperature_comments.label}}</label>
-								<!-- Input -->
-								<input class='form-control' data-view-model='@form.inputs.temperature_comments'
-								       type='text' />
-							</div>
-						</div>
-					</div>
+              <!-- Temperature Comments -->
+              <div class="form-group">
+                <!--Label -->
+                <label>{{@form.inputs.temperature_comments.label}}</label>
+                <!-- Input -->
+                <input class="form-control" data-view-model="@form.inputs.temperature_comments" type="text" />
+              </div>
+            </div>
+          </div>
 
-					<!-- Navigation Between Steps-->
-					<div class='row-wrapper button-wrapper'>
-						<div></div>
-						<!-- Next Button -->
-						<button class='btn-default' data-tag='from_step_1_to_2' id='from_step_1_to_2'>
-							Next
-							<i class='fas fa-angle-right'></i>
-						</button>
-					</div>
-				</div>
+          <!-- Navigation Between Steps-->
+          <div class="row-wrapper button-wrapper">
+            <div></div>
+            <!-- Next Button -->
+            <button class="btn-default" data-tag="from_step_1_to_2" id="from_step_1_to_2">
+              Next
+              <i class="fas fa-angle-right"></i>
+            </button>
+          </div>
+        </div>
 
-				<!-- 2 - Attach Documents -->
-				<div class='step-holder step-hidden' id='step-2-wrapper'>
-					<!-- Attach Documents-->
-					<div class='row'>
-						<div class='col-12 upload-attachment'>
-							<psk-files-chooser data-view-model='@form.attachment'
-							                   event-name='add-file'></psk-files-chooser>
-							<p>Maximum upload file size: 64MB</p>
-						</div>
-						<div class='col-12'>
-							<table class='table table-borderless attach-documents-table'>
-								<thead>
-								<tr>
-									<th scope='col'>Document Name</th>
-									<th scope='col'>Attached By</th>
-									<th scope='col'>Date/Time Attached</th>
-									<th class='text-center' scope='col'>Open/Download</th>
-									<th class='text-center' scope='col'>Delete</th>
-								</tr>
-								</thead>
-								<tbody data-for='@form.documents'>
-								<tr>
-									<th>{{@name}}</th>
-									<td>{{@attached_by}}</td>
-									<td>{{@date}}</td>
-									<td class='text-center'>
-										<svg class='attach-documents-table-icon' enable-background='new 0 0 200 200'
-										     height='200px'
-										     id='Layer_1'
-										     version='1.1' viewBox='0 0 200 200' width='200px' x='0px'
-										     xml:space='preserve' xmlns='http://www.w3.org/2000/svg'
-										     xmlns:xlink='http://www.w3.org/1999/xlink'
-										     y='0px'>
-                                          <path
-	                                          d='M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
+        <!-- 2 - Attach Documents -->
+        <div class="step-holder step-hidden" id="step-2-wrapper">
+          <!-- Attach Documents-->
+          <div class="row">
+            <div class="col-12 upload-attachment">
+              <psk-files-chooser data-view-model="@form.attachment" event-name="add-file"></psk-files-chooser>
+              <p>Maximum upload file size: 64MB</p>
+            </div>
+            <div class="col-12">
+              <table class="table table-borderless attach-documents-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Document Name</th>
+                    <th scope="col">Attached By</th>
+                    <th scope="col">Date/Time Attached</th>
+                    <th class="text-center" scope="col">Open/Download</th>
+                    <th class="text-center" scope="col">Delete</th>
+                  </tr>
+                </thead>
+                <tbody data-for="@form.documents">
+                  <tr>
+                    <th>{{@name}}</th>
+                    <td>{{@attached_by}}</td>
+                    <td>{{@date}}</td>
+                    <td class="text-center" data-tag="download-file" data-custom="@name">
+                      <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200" height="200px" id="Layer_1" version="1.1" viewBox="0 0 200 200" width="200px" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+                        <path
+                          d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
                                                             c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
                                                             c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
-                                                            c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z'
-	                                          fill='#231F20'
-                                          />
-                                        </svg>
-									</td>
-									<td class='text-center' data-tag='remove-file' data-if='@canRemove'>
-										<svg class='attach-documents-table-icon' enable-background='new 0 0 200 200'
-										     height='200px'
-										     id='Layer_1'
-										     version='1.1' viewBox='0 0 200 200' width='200px' x='0px'
-										     xml:space='preserve' xmlns='http://www.w3.org/2000/svg'
-										     xmlns:xlink='http://www.w3.org/1999/xlink'
-										     y='0px'>
-                                          <path
-	                                          d='M111.732,79.544L99.998,91.271L88.277,79.544c-2.417-2.419-6.314-2.419-8.735,0
-                                                            c-2.419,2.42-2.419,6.327,0,8.735L91.267,100l-11.726,11.727c-2.419,2.402-2.419,6.316,0,8.729c2.421,2.422,6.318,2.422,8.735,0
-                                                            l11.721-11.726l11.734,11.726c2.403,2.422,6.308,2.422,8.73,0c2.41-2.412,2.41-6.326,0-8.729L108.744,100l11.719-11.721
-                                                            c2.41-2.408,2.41-6.315,0-8.735C118.04,77.184,114.071,77.184,111.732,79.544z M99.998,38.014C65.721,38.014,38.01,65.73,38.01,100
-                                                            c0,34.281,27.711,61.986,61.987,61.986c34.279,0,61.992-27.705,61.992-61.986C161.99,65.73,134.277,38.014,99.998,38.014z
-                                                             M99.998,149.582c-27.33,0-49.585-22.24-49.585-49.582s22.255-49.583,49.585-49.583c27.348,0,49.586,22.241,49.586,49.583
-                                                            S127.345,149.582,99.998,149.582z'
-	                                          fill='#231F20'
-                                          />
-                                        </svg>
-									</td>
-								</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
+                                                            c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"
+                          fill="#231F20"
+                        />
+                      </svg>
+                    </td>
+                    <td class="text-center" data-tag="remove-file" data-if="@canRemove">
+                      <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200" height="200px" id="Layer_1" version="1.1" viewBox="0 0 200 200" width="200px" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+                        <path
+                          d="M111.732,79.544L99.998,91.271L88.277,79.544c-2.417-2.419-6.314-2.419-8.735,0
+														c-2.419,2.42-2.419,6.327,0,8.735L91.267,100l-11.726,11.727c-2.419,2.402-2.419,6.316,0,8.729c2.421,2.422,6.318,2.422,8.735,0
+														l11.721-11.726l11.734,11.726c2.403,2.422,6.308,2.422,8.73,0c2.41-2.412,2.41-6.326,0-8.729L108.744,100l11.719-11.721
+														c2.41-2.408,2.41-6.315,0-8.735C118.04,77.184,114.071,77.184,111.732,79.544z M99.998,38.014C65.721,38.014,38.01,65.73,38.01,100
+														c0,34.281,27.711,61.986,61.987,61.986c34.279,0,61.992-27.705,61.992-61.986C161.99,65.73,134.277,38.014,99.998,38.014z
+														M99.998,149.582c-27.33,0-49.585-22.24-49.585-49.582s22.255-49.583,49.585-49.583c27.348,0,49.586,22.241,49.586,49.583
+														S127.345,149.582,99.998,149.582z"
+                          fill="#231F20"
+                        />
+                      </svg>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-					<!-- Navigation Between Steps-->
-					<div class='row-wrapper button-wrapper'>
-						<button class='btn-default' data-tag='from_step_2_to_1' id='from_step_2_to_1'>
-							<i class='fas fa-angle-left'></i>
-							Previous
-						</button>
-						<!-- Next Button -->
-						<button class='btn-default' data-tag='from_step_2_to_3' id='from_step_2_to_3'>
-							Next
-							<i class='fas fa-angle-right'></i>
-						</button>
-					</div>
-				</div>
-				<!-- Comments -->
-				<div class='step-holder step-hidden' id='step-3-wrapper'>
-					<div class='row comments-container'>
-						<!-- Comments Preview -->
-						<div class='col-lg-12 col-xl-6'>
-							<label>Comments:</label>
-							<div class='comments-wrapper' data-for='@form.comments'>
-								<div class='comment'>
-									<div class='identity'><small>{{@entity}}</small>, <small>{{@date}}</small>
-									</div>
-									<div>{{@comment}}</div>
-								</div>
-								<div slot='no-data'>There is no comment added.</div>
-							</div>
-						</div>
-						<!-- Comments Submission -->
-						<div class='col-lg-12 col-xl-6'>
-							<!-- Add Comment -->
-							<div class='form-group'>
-								<!--Label -->
-								<label>{{@form.inputs.add_comment.label}}</label>
-								<!-- Input -->
-								<input class='form-control' name='@form.inputs.add_comment.name'
-								       placeholder='@form.inputs.add_comment.placeholder'
-								       required='@form.inputs.add_comment.required'
-								       type='text'
-								       value='@form.inputs.add_comment.value' />
-							</div>
-						</div>
-					</div>
+          <!-- Navigation Between Steps-->
+          <div class="row-wrapper button-wrapper">
+            <button class="btn-default" data-tag="from_step_2_to_1" id="from_step_2_to_1">
+              <i class="fas fa-angle-left"></i>
+              Previous
+            </button>
+            <!-- Next Button -->
+            <button class="btn-default" data-tag="from_step_2_to_3" id="from_step_2_to_3">
+              Next
+              <i class="fas fa-angle-right"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Comments -->
+        <div class="step-holder step-hidden" id="step-3-wrapper">
+          <div class="row comments-container">
+            <!-- Comments Preview -->
+            <div class="col-lg-12 col-xl-6">
+              <label>Comments:</label>
+              <div class="comments-wrapper" data-for="@form.comments">
+                <div class="comment">
+                  <div class="identity"><small>{{@entity}}</small>, <small>{{@date}}</small></div>
+                  <div>{{@comment}}</div>
+                </div>
+                <div slot="no-data">There is no comment added.</div>
+              </div>
+            </div>
+            <!-- Comments Submission -->
+            <div class="col-lg-12 col-xl-6">
+              <!-- Add Comment -->
+              <div class="form-group">
+                <!--Label -->
+                <label>{{@form.inputs.add_comment.label}}</label>
+                <!-- Input -->
+                <input class="form-control" name="@form.inputs.add_comment.name" placeholder="@form.inputs.add_comment.placeholder" required="@form.inputs.add_comment.required" type="text" value="@form.inputs.add_comment.value" />
+              </div>
+            </div>
+          </div>
 
-					<!-- Navigation Between Steps-->
-					<div class='row-wrapper button-wrapper'>
-						<button class='btn-default' data-tag='from_step_3_to_2' id='from_step_3_to_2'>
-							<i class='fas fa-angle-left'></i>
-							Previous
-						</button>
-						<!-- Next Button -->
-						<button class='btn-default' data-tag='from_step_3_to_4' id='from_step_3_to_4'>
-							Next
-							<i class='fas fa-angle-right'></i>
-						</button>
-					</div>
-				</div>
-				<!-- Confirmation -->
-				<div class='step-holder step-hidden' id='step-4-wrapper'>
-					<div class='row'>
-						<div class='col-lg-12 col-xl-6'>
-							<div class='grid-column-wrapper'>
-								<!-- Sponsor ID -->
-								<label>{{@form.inputs.sponsor_id.label}}</label>
-								<input class='form-control form-control-sm' readonly type='text'
-								       value='@form.inputs.sponsor_id.value' />
+          <!-- Navigation Between Steps-->
+          <div class="row-wrapper button-wrapper">
+            <button class="btn-default" data-tag="from_step_3_to_2" id="from_step_3_to_2">
+              <i class="fas fa-angle-left"></i>
+              Previous
+            </button>
+            <!-- Next Button -->
+            <button class="btn-default" data-tag="from_step_3_to_4" id="from_step_3_to_4">
+              Next
+              <i class="fas fa-angle-right"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Confirmation -->
+        <div class="step-holder step-hidden" id="step-4-wrapper">
+          <div class="row">
+            <div class="col-lg-12 col-xl-6">
+              <div class="grid-column-wrapper">
+                <!-- Sponsor ID -->
+                <label>{{@form.inputs.sponsor_id.label}}</label>
+                <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.sponsor_id.value" />
 
-								<!-- Request Delivery Date/Time -->
-								<label>Requested Delivery Date/Time</label>
-								<div>
-									<input class='form-control form-control-sm' readonly type='date'
-									       value='@form.inputs.delivery_date.value' />
-									<input class='form-control form-control-sm' readonly type='time'
-									       value='@form.inputs.delivery_time.value' />
-								</div>
+                <!-- Request Delivery Date/Time -->
+                <label>Requested Delivery Date/Time</label>
+                <div>
+                  <input class="form-control form-control-sm" readonly type="date" value="@form.inputs.delivery_date.value" />
+                  <input class="form-control form-control-sm" readonly type="time" value="@form.inputs.delivery_time.value" />
+                </div>
 
-								<!-- Target CMO ID -->
-								<label>{{@form.inputs.target_cmo_id.label}}</label>
-								<input class='form-control form-control-sm' readonly type='text'
-								       value='@form.inputs.target_cmo_id.value' />
+                <!-- Target CMO ID -->
+                <label>{{@form.inputs.target_cmo_id.label}}</label>
+                <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.target_cmo_id.value" />
 
-								<!-- Study ID -->
-								<label>{{@form.inputs.study_id.label}}</label>
-								<input class='form-control form-control-sm' readonly
-								       type='text' value='@form.inputs.study_id.value' />
+                <!-- Study ID -->
+                <label>{{@form.inputs.study_id.label}}</label>
+                <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.study_id.value" />
 
-								<!-- Order ID -->
-								<label>{{@form.inputs.order_id.label}}</label>
-								<input class='form-control form-control-sm' readonly
-								       type='text' value='@form.inputs.order_id.value' />
+                <!-- Order ID -->
+                <label>{{@form.inputs.order_id.label}}</label>
+                <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.order_id.value" />
 
-								<!-- Kit ID List -->
-								<label>{{@form.inputs.kit_id_list.label}}</label>
-								<div>
-									<input class='form-control form-control-sm' readonly type='text'
-									       value='@form.inputs.kit_ids_attachment.name' />
-									<button class='btn-download-small' data-tag='download-kit-list'>
-										<svg version='1.1' viewBox='0 0 200 200' x='0px' xml:space='preserve'
-										     xmlns='http://www.w3.org/2000/svg'
-										     xmlns:xlink='http://www.w3.org/1999/xlink' y='0px'>
-								            <path d='M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
-								                  c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
-								                  c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
-								                  c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z' />
-								        </svg>
-									</button>
-								</div>
+                <!-- Kit ID List -->
+                <label>{{@form.inputs.kit_id_list.label}}</label>
+                <div>
+                  <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.kit_ids_attachment.name" />
+                  <button class="btn-download-small" data-tag="download-file" data-custom="@form.inputs.kit_ids_attachment.name">
+                    <svg version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+                      <path
+                        d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
+													c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
+													c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
+													c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"
+                      />
+                    </svg>
+                  </button>
+                </div>
 
-								<!-- Site ID -->
-								<label>{{@form.inputs.site_id.label}}</label>
-								<input class='form-control form-control-sm' readonly
-								       type='text' value='@form.inputs.site_id.value' />
+                <!-- Site ID -->
+                <label>{{@form.inputs.site_id.label}}</label>
+                <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.site_id.value" />
 
-								<!-- Site Region ID -->
-								<label>{{@form.inputs.site_region_id.label}}</label>
-								<input class='form-control form-control-sm' readonly
-								       type='text' value='@form.inputs.site_region_id.value' />
+                <!-- Site Region ID -->
+                <label>{{@form.inputs.site_region_id.label}}</label>
+                <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.site_region_id.value" />
 
-								<!-- Site Country -->
-								<label>{{@form.inputs.site_country.label}}</label>
-								<input class='form-control form-control-sm' readonly
-								       type='text' value='@form.inputs.site_country.value' />
+                <!-- Site Country -->
+                <label>{{@form.inputs.site_country.label}}</label>
+                <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.site_country.value" />
 
-								<!-- Keep Between -->
-								<label>{{@form.inputs.keep_between_temperature.label}}</label>
-								<div>
-									<input class='form-control form-control-sm' readonly
-									       type='text' value='@form.inputs.keep_between_temperature_min.value' />
-									<label>{{@form.inputs.keep_between_temperature.andLabel}}</label>
-									<input class='form-control form-control-sm' readonly
-									       type='text' value='@form.inputs.keep_between_temperature_max.value' />
-								</div>
+                <!-- Keep Between -->
+                <label>{{@form.inputs.keep_between_temperature.label}}</label>
+                <div>
+                  <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.keep_between_temperature_min.value" />
+                  <label>{{@form.inputs.keep_between_temperature.andLabel}}</label>
+                  <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.keep_between_temperature_max.value" />
+                </div>
 
-								<!-- Temperature Comments -->
-								<label>{{@form.inputs.temperature_comments.label}}</label>
-								<input class='form-control form-control-sm' readonly type='text'
-								       value='@form.inputs.temperature_comments.value' />
-							</div>
-						</div>
+                <!-- Temperature Comments -->
+                <label>{{@form.inputs.temperature_comments.label}}</label>
+                <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.temperature_comments.value" />
+              </div>
+            </div>
 
-						<div class='col-lg-12 col-xl-6'>
-							<div class='grid-column-wrapper'>
-								<label>Comments</label>
-								<div class='comments-wrapper'>
-									<label>{{@form.inputs.add_comment.value}}</label>
-								</div>
-							</div>
+            <div class="col-lg-12 col-xl-6">
+              <div class="grid-column-wrapper">
+                <label>Comments</label>
+                <div class="comments-wrapper">
+                  <label>{{@form.inputs.add_comment.value}}</label>
+                </div>
+              </div>
 
-							<div class='grid-column-wrapper' data-for='@form.documents'>
-								<label>Attached Document</label>
-								<div>
-									<input class='form-control form-control-sm' disabled type='text' value='@name' />
-									<button class='btn-download-small' data-tag='download-kit-list'>
-										<svg version='1.1' viewBox='0 0 200 200' x='0px' xml:space='preserve'
-										     xmlns='http://www.w3.org/2000/svg'
-										     xmlns:xlink='http://www.w3.org/1999/xlink' y='0px'>
-                                            <path d='M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
-                                                  c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
-                                                  c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
-                                                  c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z' />
-                                        </svg>
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
+              <div class="grid-column-wrapper" data-for="@form.documents">
+                <label>Attached Document</label>
+                <div>
+                  <input class="form-control form-control-sm" disabled type="text" value="@name" />
+                  <button class="btn-download-small" data-tag="download-file" data-custom="@name">
+                    <svg version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+                      <path
+                        d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
+													c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
+													c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
+													c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
 
-					<div class='row-wrapper button-wrapper'>
-						<button class='btn-reset' data-tag='form_reset'>
-							<i class='fas fa-times'></i>
-							Cancel Changes
-						</button>
-						<button class='btn-default' data-tag='form_submit'>
-							<i class='fas fa-check'></i>
-							Submit
-						</button>
-					</div>
-				</div>
-			</div>
-		</section>
-	</main>
+          <div class="row-wrapper button-wrapper">
+            <button class="btn-reset" data-tag="form_reset">
+              <i class="fas fa-times"></i>
+              Cancel Changes
+            </button>
+            <button class="btn-default" data-tag="form_submit">
+              <i class="fas fa-check"></i>
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 </webc-container>

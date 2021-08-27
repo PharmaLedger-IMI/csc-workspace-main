@@ -204,7 +204,7 @@ class OrdersService extends DSUService {
     );
     console.log(documentsDSU);
     for (const file of files) {
-      let absoluteFilePath = '/documents' + '/' + documentsDSU.uid + '/' + 'files'+'/'+ file.name;
+      let absoluteFilePath = '/documents' + '/' + documentsDSU.uid + '/' + 'files' + '/' + file.name;
       await this.uploadFile(absoluteFilePath, file);
       documentsDSU.documents.find((x) => x.name === file.name).attachmentKeySSI = absoluteFilePath;
     }
@@ -214,21 +214,20 @@ class OrdersService extends DSUService {
   }
 
   uploadFile(path, file) {
-
     function getFileContentAsBuffer(file, callback) {
       let fileReader = new FileReader();
       fileReader.onload = function (evt) {
         let arrayBuffer = fileReader.result;
         callback(undefined, arrayBuffer);
-      }
+      };
 
       fileReader.readAsArrayBuffer(file);
     }
 
     return new Promise((resolve, reject) => {
-      getFileContentAsBuffer(file,(err, arrayBuffer)=>{
-        if(err){
-          reject("Could not get file as a Buffer");
+      getFileContentAsBuffer(file, (err, arrayBuffer) => {
+        if (err) {
+          reject('Could not get file as a Buffer');
         }
         this.DSUStorage.writeFile(path, $$.Buffer.from(arrayBuffer), undefined, (err, keySSI) => {
           if (err) {
@@ -237,7 +236,7 @@ class OrdersService extends DSUService {
           }
           resolve();
         });
-      })
+      });
     });
   }
 
@@ -250,7 +249,7 @@ class OrdersService extends DSUService {
   }
 
   // *************************************************************************************************
-  // ******************* New functions for new flow/architecture(not tested) *************************
+  // ******************* New functions for new flow/architecture *************************
   // *************************************************************************************************
 
   // -> Functions for creation of order
@@ -418,7 +417,7 @@ class OrdersService extends DSUService {
     );
 
     for (const file of files) {
-      const attachmentKeySSI = await this.uploadFile(FoldersEnum.Documents + '/' + updatedDocumentsDSU.uid + '/' + 'files', file);
+      const attachmentKeySSI = await this.uploadFile(FoldersEnum.Documents + '/' + updatedDocumentsDSU.uid + '/' + 'files' + '/' + file.name, file);
       updatedDocumentsDSU.documents.find((x) => x.name === file.name).attachmentKeySSI = attachmentKeySSI;
     }
     const result = await this.updateEntityAsync(updatedDocumentsDSU, FoldersEnum.Documents);
@@ -441,7 +440,7 @@ class OrdersService extends DSUService {
       FoldersEnum.Kits
     );
 
-    const attachmentKeySSI = await this.uploadFile(FoldersEnum.Kits + '/' + updatedDSU.uid + '/' + 'files', file);
+    const attachmentKeySSI = await this.uploadFile(FoldersEnum.Kits + '/' + updatedDSU.uid + '/' + 'files' + '/' + file.name, file);
     updatedDSU.file.attachmentKeySSI = attachmentKeySSI;
     const result = await this.updateEntityAsync(updatedDSU, FoldersEnum.Kits);
     return result;
