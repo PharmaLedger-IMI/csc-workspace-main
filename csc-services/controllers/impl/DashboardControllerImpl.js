@@ -61,48 +61,61 @@ class DashboardControllerImpl extends WebcController {
 				return console.error(err);
 			}
 
-			//handle Order Messages
-			data = JSON.parse(data);
-			console.log('message received', data);
-			const [orderData, orderStatus, notificationRole] = await this.getNotificationDataForOrderStatus(data);
-			console.log('getNotificationDataForOrderStatus received', orderData, orderStatus, notificationRole);
-			const notification = {
-				operation: NotificationTypes.UpdateOrderStatus,
-				orderId: orderData.orderId,
-				read: false,
-				status: orderStatus,
-				keySSI: data.message.data.orderSSI,
-				role: notificationRole,
-				did: orderData.sponsorId,
-				date: new Date().toISOString()
-			};
-
-			const notificationResult = await this.notificationsService.insertNotification(notification);
-			eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-			eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-			console.log('notification added', notification, notificationResult);
-
-			//handle Shipment Messages
-			data = JSON.parse(data);
-			console.log('message received', data);
-			const [shipmentData, shipmentStatus, notificationRole] = await this.getNotificationDataForShipmentStatus(data);
-			console.log('getNotificationDataForShipmentStatus received', shipmentData, shipmentStatus, notificationRole);
-			const notification = {
-				operation: NotificationTypes.UpdateShipmentStatus,
-				shipmentId: shipmentData.shipmentId,
-				read: false,
-				status: shipmentStatus,
-				keySSI: data.message.data.shipmentSSI,
-				role: notificationRole,
-				did: shipmentData.sponsorId,
-				date: new Date().toISOString()
-			};
-
-			const notificationResult = await this.notificationsService.insertNotification(notification);
-			eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-			eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-			console.log('notification added', notification, notificationResult);
+			this.handleOrderMessages(data);
+			this.handleShipmentMessages(data);
 		});
+	}
+
+	async handleOrderMessages(data) {
+		data = JSON.parse(data);
+		console.log('message received', data);
+		const [orderData, orderStatus, notificationRole] = await this.getNotificationDataForOrderStatus(data);
+		if (!orderData || !orderStatus || !notificationRole) {
+			return;
+		}
+
+		console.log('getNotificationDataForOrderStatus received', orderData, orderStatus, notificationRole);
+		const notification = {
+			operation: NotificationTypes.UpdateOrderStatus,
+			orderId: orderData.orderId,
+			read: false,
+			status: orderStatus,
+			keySSI: data.message.data.orderSSI,
+			role: notificationRole,
+			did: orderData.sponsorId,
+			date: new Date().toISOString()
+		};
+
+		const notificationResult = await this.notificationsService.insertNotification(notification);
+		eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+		eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+		console.log('notification added', notification, notificationResult);
+	}
+
+	async handleShipmentMessages(data) {
+		data = JSON.parse(data);
+		console.log('message received', data);
+		const [shipmentData, shipmentStatus, notificationRole] = await this.getNotificationDataForShipmentStatus(data);
+		if (!shipmentData || !shipmentStatus || !notificationRole) {
+			return;
+		}
+
+		console.log('getNotificationDataForShipmentStatus received', shipmentData, shipmentStatus, notificationRole);
+		const notification = {
+			operation: NotificationTypes.UpdateShipmentStatus,
+			shipmentId: shipmentData.shipmentId,
+			read: false,
+			status: shipmentStatus,
+			keySSI: data.message.data.shipmentSSI,
+			role: notificationRole,
+			did: shipmentData.sponsorId,
+			date: new Date().toISOString()
+		};
+
+		const notificationResult = await this.notificationsService.insertNotification(notification);
+		eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+		eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+		console.log('notification added', notification, notificationResult);
 	}
 
 	async getNotificationDataForOrderStatus(data) {
@@ -178,7 +191,6 @@ class DashboardControllerImpl extends WebcController {
 		let notificationRole;
 
 		switch (data.message.operation) {
-
 			case messagesEnum.ShipmentInPreparation: {
 				notificationRole = Roles.CMO;
 				shipmentStatus = shipmentStatusesEnum.InPreparation;
@@ -189,11 +201,11 @@ class DashboardControllerImpl extends WebcController {
 				} = data.message.data;
 
 				shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusKeySSI);
-
 				break;
 			}
-
 		}
+
+		return [shipmentData, shipmentStatus, notificationRole];
 	}
 }
 
