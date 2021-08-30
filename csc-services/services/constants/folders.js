@@ -5,4 +5,5 @@ module.exports.FoldersEnum = {
     Statuses: '/statuses',
     Kits: '/kits',
     Shipments: '/shipments',
+    ShipmentsStatuses: 'shipmentsstatuses',
 };
