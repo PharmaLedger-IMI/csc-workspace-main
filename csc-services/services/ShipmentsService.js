@@ -1,10 +1,8 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require("./lib/DSUService");
-const { messagesEnum, order } = require('./constants');
+const { Roles, messagesEnum, FoldersEnum } = require('./constants');
 const NotificationsService = require('./lib/NotificationService.js');
-const eventBusService = require('./lib/EventBusService.js');
 const CommunicationService = require('./lib/CommunicationService.js');
-
 
 class ShipmentsService extends DSUService {
   SHIPMENTS_TABLE = 'shipments';
@@ -21,8 +19,18 @@ class ShipmentsService extends DSUService {
   }
 
   async addShipmentToDB(data, key) {
-    const newRecord = await this.storageService.insertRecord(this.SHIPMENTS_TABLE, key ? key : data.orderId, data);
-    return newRecord;
+    return await this.storageService.insertRecord(this.SHIPMENTS_TABLE, key ? key : data.shipmentId, data);
+  }
+
+  async getShipment(keySSI) {
+    return await this.storageService.getRecord(this.SHIPMENTS_TABLE, keySSI);
+  }
+
+  async getShipments() {
+    const result = await this.storageService.filter(this.SHIPMENTS_TABLE);
+    if (result) {
+      return result.filter((x) => !x.deleted);
+    } else return [];
   }
 
   sendMessageToEntity(entity, operation, data, shortDescription) {
@@ -32,7 +40,6 @@ class ShipmentsService extends DSUService {
       shortDescription,
     });
   }
-
 
   // -> Functions for creation of shipment
   async createShipment(data) {
@@ -67,7 +74,7 @@ class ShipmentsService extends DSUService {
       CommunicationService.identities.CSC.SPONSOR_IDENTITY,
       messagesEnum.ShipmentInPreparation,
       {
-        orderSSI: order.uid,
+        shipmentSSI: shipment.uid,
       },
       messagesEnum.ShipmentInPreparation
     );
@@ -76,13 +83,49 @@ class ShipmentsService extends DSUService {
       CommunicationService.identities.CSC.SITE_IDENTITY,
       messagesEnum.ShipmentInPreparation,
       {
-        orderSSI: order.uid,
+        shipmentSSI: shipment.uid,
       },
       messagesEnum.ShipmentInPreparation
     );
 
     return shipmentDb;
+  }
 
+  // -> Functions for mounting newly created shipment in other actors except cmo
+  async mountAndReceiveShipment(shipmentSSI, role, statusKeySSI) {
+    let shipment, shipmentDb, status;
+    switch (role) {
+      case Roles.Sponsor:
+        shipment = await this.mountEntityAsync(shipmentSSI, FoldersEnum.Shipments);
+        status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.Statuses);
+
+        shipmentDb = await this.addShipmentToDB(
+          {
+            ...shipment,
+            shipmentSSI: shipment.uid,
+            status: status.history,
+            statusSSI: status.uid,
+          },
+          shipment.uid
+        );
+
+        return shipmentDb;
+      case Roles.Site:
+        shipment = await this.mountEntityAsync(shipmentSSI, FoldersEnum.Shipments);
+        status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.Statuses);
+
+        shipmentDb = await this.addShipmentToDB(
+          {
+            ...shipment,
+            shipmentSSI: shipment.uid,
+            status: status.history,
+            statusSSI: status.uid,
+          },
+          shipment.uid
+        );
+
+        return shipmentDb;
+    }
   }
 }
 

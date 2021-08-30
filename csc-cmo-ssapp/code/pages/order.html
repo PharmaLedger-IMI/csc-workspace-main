@@ -1,63 +1,63 @@
 <webc-container controller="SingleOrderController">
-    <main class="full-flex-column">
-        <section>
-            <webc-template template="header-template"></webc-template>
-            <webc-template template="dashboard-menu"></webc-template>
-        </section>
+  <main class="full-flex-column">
+    <section>
+      <webc-template template="header-template"></webc-template>
+      <webc-template template="dashboard-menu"></webc-template>
+    </section>
 
-        <section class="order-section">
-            <div class="single-order-navigation-holder">
-                <webc-link class="nav-back" tag="dashboard">
-                    <svg viewBox="0 0 52 52" x="0px"
-                         xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
-                        <path d="M50,24H6.83L27.41,3.41a2,2,0,0,0,0-2.82,2,2,0,0,0-2.82,0l-24,24a1.79,1.79,0,0,0-.25.31A1.19,1.19,0,0,0,.25,25c0,.07-.07.13-.1.2l-.06.2a.84.84,0,0,0,0,.17,2,2,0,0,0,0,.78.84.84,0,0,0,0,.17l.06.2c0,.07.07.13.1.2a1.19,1.19,0,0,0,.09.15,1.79,1.79,0,0,0,.25.31l24,24a2,2,0,1,0,2.82-2.82L6.83,28H50a2,2,0,0,0,0-4Z"/>
-                    </svg>
-                </webc-link>
-                <webc-link tag="dashboard">Dashboard</webc-link>
-                /
-                <webc-link tag="dashboard">Orders</webc-link>
-                /
-                <strong>{{@order.orderId}}</strong>
+    <section class="order-section">
+      <div class="single-order-navigation-holder">
+        <webc-link class="nav-back" tag="dashboard">
+          <svg viewBox="0 0 52 52" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+            <path
+              d="M50,24H6.83L27.41,3.41a2,2,0,0,0,0-2.82,2,2,0,0,0-2.82,0l-24,24a1.79,1.79,0,0,0-.25.31A1.19,1.19,0,0,0,.25,25c0,.07-.07.13-.1.2l-.06.2a.84.84,0,0,0,0,.17,2,2,0,0,0,0,.78.84.84,0,0,0,0,.17l.06.2c0,.07.07.13.1.2a1.19,1.19,0,0,0,.09.15,1.79,1.79,0,0,0,.25.31l24,24a2,2,0,1,0,2.82-2.82L6.83,28H50a2,2,0,0,0,0-4Z"
+            />
+          </svg>
+        </webc-link>
+        <webc-link tag="dashboard">Dashboard</webc-link>
+        /
+        <webc-link tag="dashboard">Orders</webc-link>
+        /
+        <strong>{{@order.orderId}}</strong>
+      </div>
+
+      <div class="single-order-main-holder">
+        <div class="row-wrapper">
+          <div class="col-4 text-left">
+            <div data-if="@order.status_approved">
+              <div class="order-status-box background-approved" slot="true">
+                <div>Order Status:</div>
+                <div><b>{{@order.status_value}}</b></div>
+                <div>{{@order.deliveryDate}}</div>
+              </div>
             </div>
+            <div data-if="@order.status_cancelled">
+              <div class="order-status-box background-cancelled" slot="true">
+                <div>Order Status:</div>
+                <div><b>{{@order.status_value}}</b></div>
+                <div>{{@order.deliveryDate}}</div>
+              </div>
+            </div>
+            <div data-if="@order.status_normal">
+              <div class="order-status-box background-primary" slot="true">
+                <div>Order Status:</div>
+                <div><b>{{@order.status_value}}</b></div>
+                <div>{{@order.deliveryDate}}</div>
+              </div>
+            </div>
+          </div>
 
-            <div class="single-order-main-holder">
-                <div class="row-wrapper">
-                    <div class="col-4 text-left">
-                        <div data-if="@order.status_approved">
-                            <div class="order-status-box background-approved" slot="true">
-                                <div>Order Status:</div>
-                                <div><b>{{@order.status_value}}</b></div>
-                                <div>{{@order.deliveryDate}}</div>
-                            </div>
-                        </div>
-                        <div data-if="@order.status_cancelled">
-                            <div class="order-status-box background-cancelled" slot="true">
-                                <div>Order Status:</div>
-                                <div><b>{{@order.status_value}}</b></div>
-                                <div>{{@order.deliveryDate}}</div>
-                            </div>
-                        </div>
-                        <div data-if="@order.status_normal">
-                            <div class="order-status-box background-primary" slot="true">
-                                <div>Order Status:</div>
-                                <div><b>{{@order.status_value}}</b></div>
-                                <div>{{@order.deliveryDate}}</div>
-                            </div>
-                        </div>
-                    </div>
+          <div class="col-4 text-center">
+            <div class="single-order-title"><b>Order</b></div>
+            <div class="single-order-subtitle"><b>Pending Action:</b></div>
+            <div class="single-order-disclaimer">{{@order.pending_action}}</div>
+          </div>
 
-                    <div class="col-4 text-center">
-                        <div class="single-order-title"><b>Order</b></div>
-                        <div class="single-order-subtitle"><b>Pending Action:</b></div>
-                        <div class="single-order-disclaimer">{{@order.pending_action}}</div>
-                    </div>
-
-                    <div class="col-4 text-right">
-                        <button class="btn-default" data-tag="history-button">
-                            <svg version="1.1" viewBox="0 0 464.811 464.811"
-                                 x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
-                                 xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
-                                <path d="M416.637,90.805c-37.824-49.214-92.541-80.75-154.09-88.803c-60.941-7.972-121.344,8.04-170.302,45.074L74.543,29.349
+          <div class="col-4 text-right">
+            <button class="btn-default" data-tag="history-button">
+              <svg version="1.1" viewBox="0 0 464.811 464.811" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+                <path
+                  d="M416.637,90.805c-37.824-49.214-92.541-80.75-154.09-88.803c-60.941-7.972-121.344,8.04-170.302,45.074L74.543,29.349
                                     c-5.051-5.057-9.712-3.366-10.358,3.745l-5.811,63.458c-0.65,7.111,4.639,12.411,11.756,11.769l63.46-5.734
                                     c7.117-0.64,8.811-5.305,3.757-10.362l-18.364-18.387c40.313-28.887,89.296-41.248,138.711-34.783
                                     c51.653,6.757,97.573,33.224,129.313,74.524c31.738,41.297,45.491,92.479,38.734,144.122
@@ -66,152 +66,151 @@
                                     c-30.921-40.229-44.832-90.144-39.176-140.55c1.151-10.257-6.23-19.508-16.49-20.655c-10.253-1.155-19.498,6.23-20.644,16.487
                                     c-6.75,60.067,9.832,119.552,46.677,167.491c37.824,49.213,92.546,80.752,154.088,88.804
                                     c61.54,8.049,122.53-8.349,171.751-46.172c14.255-10.951,27.037-23.336,38.187-36.892c27.336-33.22,44.895-73.479,50.617-117.191
-                                    C470.851,201.01,454.458,140.016,416.637,90.805z"/>
-                                <path d="M223.275,81.15c-8.354,0-15.127,6.772-15.127,15.125v150.751l137.865,71.262c2.223,1.152,4.598,1.699,6.933,1.695
+                                    C470.851,201.01,454.458,140.016,416.637,90.805z"
+                />
+                <path
+                  d="M223.275,81.15c-8.354,0-15.127,6.772-15.127,15.125v150.751l137.865,71.262c2.223,1.152,4.598,1.699,6.933,1.695
                                     c5.481,0,10.766-2.982,13.454-8.185c3.84-7.423,0.933-16.549-6.489-20.391l-121.5-62.812V96.276
-                                    C238.41,87.923,231.636,81.15,223.275,81.15z"/>
-                            </svg>
-                            View History
-                        </button>
-                    </div>
-                </div>
+                                    C238.41,87.923,231.636,81.15,223.275,81.15z"
+                />
+              </svg>
+              View History
+            </button>
+          </div>
+        </div>
 
-                <div class="row-wrapper single-order-data-holder">
-                    <!-- Order Details -->
-                    <div class="accordion-item" data-tag="order_details_accordion" id="order_details_accordion">
-                        <svg enable-background="new 0 0 200 200" id="order_details_accordion_icon" version="1.1"
-                             viewBox="0 0 200 200" x="0px" xml:space="preserve"
-                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
-                        <path d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
-                            l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
-                            C79.619,74.358,79.684,70.511,81.969,68.167z" fill="#231F20"/>
-                        </svg>
-                        <span>Order Details</span>
-                    </div>
-                    <div class="accordion-item-holder">
-                        <webc-template data-view-model="@" template="order/order-details"></webc-template>
-                    </div>
+        <div class="row-wrapper single-order-data-holder">
+          <!-- Order Details -->
+          <div class="accordion-item" data-tag="order_details_accordion" id="order_details_accordion">
+            <svg enable-background="new 0 0 200 200" id="order_details_accordion_icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+              <path
+                d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
+                    l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
+                    C79.619,74.358,79.684,70.511,81.969,68.167z"
+                fill="#231F20"
+              />
+            </svg>
+            <span>Order Details</span>
+          </div>
+          <div class="accordion-item-holder">
+            <webc-template data-view-model="@" template="order/order-details"></webc-template>
+          </div>
 
-                    <!-- Attached Documents -->
-                    <div class="accordion-item" data-tag="attached_documents_accordion"
-                         id="attached_documents_accordion">
-                        <svg enable-background="new 0 0 200 200" id="attached_documents_accordion_icon" version="1.1"
-                             viewBox="0 0 200 200" x="0px" xml:space="preserve"
-                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
-                        <path d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
-                            l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
-                            C79.619,74.358,79.684,70.511,81.969,68.167z" fill="#231F20"/>
-                        </svg>
-                        <span>Attached Documents</span>
-                    </div>
-                    <div class="accordion-item-holder" data-if="@order.documents">
-                        <table class="table table-borderless attach-documents-table">
-                            <thead>
-                            <tr>
-                                <th scope="col">Document Name</th>
-                                <th scope="col">Attached By</th>
-                                <th scope="col">Date/Time Attached</th>
-                                <th class="text-center" scope="col">Open/Download</th>
-                                <th class="text-center" scope="col">Delete</th>
-                            </tr>
-                            </thead>
-                            <tbody data-for="@order.documents">
-                            <tr>
-                                <th>{{@name}}</th>
-                                <td>{{@attached_by}}</td>
-                                <td>{{@date}}</td>
-                                <td class="text-center">
-                                    <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200"
-                                         id="Layer_1"
-                                         version="1.1" viewBox="0 0 200 200"
-                                         x="0px" xml:space="preserve"
-                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                         y="0px">
-                                    <path d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
+          <!-- Attached Documents -->
+          <div class="accordion-item" data-tag="attached_documents_accordion" id="attached_documents_accordion">
+            <svg enable-background="new 0 0 200 200" id="attached_documents_accordion_icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+              <path
+                d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
+                    l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
+                    C79.619,74.358,79.684,70.511,81.969,68.167z"
+                fill="#231F20"
+              />
+            </svg>
+            <span>Attached Documents</span>
+          </div>
+          <div class="accordion-item-holder" data-if="@order.documents">
+            <table class="table table-borderless attach-documents-table">
+              <thead>
+                <tr>
+                  <th scope="col">Document Name</th>
+                  <th scope="col">Attached By</th>
+                  <th scope="col">Date/Time Attached</th>
+                  <th class="text-center" scope="col">Open/Download</th>
+                  <th class="text-center" scope="col">Delete</th>
+                </tr>
+              </thead>
+              <tbody data-for="@order.documents">
+                <tr>
+                  <th>{{@name}}</th>
+                  <td>{{@attached_by}}</td>
+                  <td>{{@date}}</td>
+                  <td class="text-center" data-tag="download-file" data-custom="@name">
+                    <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200" id="Layer_1" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+                      <path
+                        d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
                                         c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
                                         c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
-                                        c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"/>
-                                    </svg>
-                                </td>
-                                <td class="text-center">
-                                    <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200"
-                                         id="Layer_1"
-                                         version="1.1" viewBox="0 0 200 200"
-                                         x="0px" xml:space="preserve"
-                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                         y="0px">
-                                    <path d="M111.732,79.544L99.998,91.271L88.277,79.544c-2.417-2.419-6.314-2.419-8.735,0
+                                        c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"
+                      />
+                    </svg>
+                  </td>
+                  <td class="text-center">
+                    <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200" id="Layer_1" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+                      <path
+                        d="M111.732,79.544L99.998,91.271L88.277,79.544c-2.417-2.419-6.314-2.419-8.735,0
                                         c-2.419,2.42-2.419,6.327,0,8.735L91.267,100l-11.726,11.727c-2.419,2.402-2.419,6.316,0,8.729c2.421,2.422,6.318,2.422,8.735,0
                                         l11.721-11.726l11.734,11.726c2.403,2.422,6.308,2.422,8.73,0c2.41-2.412,2.41-6.326,0-8.729L108.744,100l11.719-11.721
                                         c2.41-2.408,2.41-6.315,0-8.735C118.04,77.184,114.071,77.184,111.732,79.544z M99.998,38.014C65.721,38.014,38.01,65.73,38.01,100
                                         c0,34.281,27.711,61.986,61.987,61.986c34.279,0,61.992-27.705,61.992-61.986C161.99,65.73,134.277,38.014,99.998,38.014z
                                          M99.998,149.582c-27.33,0-49.585-22.24-49.585-49.582s22.255-49.583,49.585-49.583c27.348,0,49.586,22.241,49.586,49.583
-                                        S127.345,149.582,99.998,149.582z"/>
-                                    </svg>
-                                </td>
-                            </tr>
+                                        S127.345,149.582,99.998,149.582z"
+                      />
+                    </svg>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Order Comments -->
-                    <div class="accordion-item" data-tag="order_comments_accordion" id="order_comments_accordion">
-                        <svg enable-background="new 0 0 200 200" id="order_comments_accordion_icon" version="1.1"
-                             viewBox="0 0 200 200" x="0px" xml:space="preserve"
-                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
-                        <path d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
+          <!-- Order Comments -->
+          <div class="accordion-item" data-tag="order_comments_accordion" id="order_comments_accordion">
+            <svg enable-background="new 0 0 200 200" id="order_comments_accordion_icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+              <path
+                d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
                             l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
-                            C79.619,74.358,79.684,70.511,81.969,68.167z" fill="#231F20"/>
-                        </svg>
-                        <span>Order Comments</span>
-                    </div>
-                    <div class="accordion-item-holder">
-	                    <div data-if='@order.comments'>
-		                    <div class='comments-container py-5 flex-column' data-for='@order.comments'>
-			                    <div class='comment'>
-				                    <div class='identity'><small>{{@entity}}</small>, <small>{{@date}}</small>
-				                    </div>
-				                    <div>{{@comment}}</div>
-			                    </div>
-			                    <div slot='no-data'>No comments</div>
-		                    </div>
-	                    </div>
-                    </div>
+                            C79.619,74.358,79.684,70.511,81.969,68.167z"
+                fill="#231F20"
+              />
+            </svg>
+            <span>Order Comments</span>
+          </div>
+          <div class="accordion-item-holder">
+            <div data-if="@order.comments">
+              <div class="comments-container py-5 flex-column" data-for="@order.comments">
+                <div class="comment">
+                  <div class="identity"><small>{{@entity}}</small>, <small>{{@date}}</small></div>
+                  <div>{{@comment}}</div>
                 </div>
+                <div slot="no-data">No comments</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-                <div class="row-wrapper button-wrapper">
-                <div data-if="@order.status_normal">
-                    <button class="btn-default" data-tag="review-order" disabled="@order.actions.couldNotBeReviewed">
-                        <svg version="1.1" viewBox="0 0 528.899 528.899" x="0px"
-                             xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
-                             xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
-                            <path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981
+        <div class="row-wrapper button-wrapper">
+          <div data-if="@order.status_normal">
+            <button class="btn-default" data-tag="review-order" disabled="@order.actions.couldNotBeReviewed">
+              <svg version="1.1" viewBox="0 0 528.899 528.899" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
+                <path
+                  d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981
                                 c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611
                                 C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069
-                                L27.473,390.597L0.3,512.69z" fill="#000000"/>
-                        </svg>
-                        Review
-                    </button>
-                </div>
-                <div data-if="@order.status_approved">
-                    <button class='btn-default' data-tag='prepare-shipment'>
-                        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                            x="0px" y="0px" width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200"
-                            xml:space="preserve">
-                            <path fill="#231F20" d="M156.457,71.777h-21.152V43.549H36.488c-7.756,0-14.113,6.343-14.113,14.11v77.625h14.113
+                                L27.473,390.597L0.3,512.69z"
+                  fill="#000000"
+                />
+              </svg>
+              Review
+            </button>
+          </div>
+          <div data-if="@order.status_approved">
+            <button class="btn-default" data-tag="prepare-shipment">
+              <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
+                <path
+                  fill="#231F20"
+                  d="M156.457,71.777h-21.152V43.549H36.488c-7.756,0-14.113,6.343-14.113,14.11v77.625h14.113
                     	c0,11.714,9.457,21.167,21.188,21.167c11.709,0,21.155-9.453,21.155-21.167h42.354c0,11.714,9.458,21.167,21.16,21.167
                     	c11.709,0,21.165-9.453,21.165-21.167h14.113V100L156.457,71.777z M152.925,82.36L166.758,100h-31.453V82.36H152.925z
                     	 M57.677,142.334c-3.895,0-7.066-3.167-7.066-7.05c0-3.884,3.172-7.055,7.066-7.055c3.861,0,7.046,3.171,7.046,7.055
                     	C64.723,139.167,61.538,142.334,57.677,142.334z M73.342,121.173c-3.897-4.305-9.372-7.056-15.665-7.056
                     	c-6.299,0-11.801,2.75-15.682,7.056h-5.507V57.659h84.698v63.514H73.342z M142.347,142.334c-3.886,0-7.042-3.167-7.042-7.05
-                    	c0-3.884,3.156-7.055,7.042-7.055c3.901,0,7.057,3.171,7.057,7.055C149.403,139.167,146.248,142.334,142.347,142.334z" />
-                        </svg>
-                        Prepare Shipment
-                    </button>
-                </div>
-                </div>
-            </div>
-        </section>
-    </main>
+                    	c0-3.884,3.156-7.055,7.042-7.055c3.901,0,7.057,3.171,7.057,7.055C149.403,139.167,146.248,142.334,142.347,142.334z"
+                />
+              </svg>
+              Prepare Shipment
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 </webc-container>
