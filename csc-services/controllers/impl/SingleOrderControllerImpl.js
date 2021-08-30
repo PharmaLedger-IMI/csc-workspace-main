@@ -327,7 +327,7 @@ class SingleOrderControllerImpl extends WebcController {
             shipmentId:"1234",
             read: false,
             status: shipmentStatusesEnum.InPreparation,
-            keySSI: this.model.order.keySSI,
+            keySSI: result.keySSI,
             role: Roles.CMO,
             did: order.sponsorId,
             date: new Date().toISOString(),

@@ -23,7 +23,6 @@ class SingleShipmentControllerImpl extends WebcController {
 
 		let communicationService = CommunicationService.getInstance(csIdentities[role]);
 		this.notificationsService = new NotificationsService(this.DSUStorage);
-		this.ordersService = new OrdersService(this.DSUStorage, communicationService);
 		this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
 
 		this.initViewModel();
@@ -94,7 +93,7 @@ class SingleShipmentControllerImpl extends WebcController {
 		console.log('Show History Clicked');
 	}
 
-	transformOrderData(data) {
+	transformShipmentData(data) {
 		if (data) {
 			data.status_value = data.status.sort((function(a, b) {
 				return new Date(b.date) - new Date(a.date);
@@ -104,14 +103,6 @@ class SingleShipmentControllerImpl extends WebcController {
 				return new Date(b.date) - new Date(a.date);
 			}))[0].date).format(Commons.DateTimeFormatPattern);
 
-			return data;
-		}
-
-		return {};
-	}
-
-	transformShipmentData(data) {
-		if (data) {
 			const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
 			data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
 			data.status_normal = !(data.status_approved);
@@ -164,22 +155,13 @@ class SingleShipmentControllerImpl extends WebcController {
 			model.form.inputs[prop].disabled = true;
 		}
 
-		let { orderKeySSI, shipmentKeySSI } = this.history.location.state;
-		model.orderKeySSI = orderKeySSI;
-		model.shipmentKeySSI = shipmentKeySSI;
+		let { keySSI} = this.history.location.state;
+		model.keySSI = keySSI;
 
-		model.order = await this.ordersService.getOrder(model.orderKeySSI);
-		model.order = { ...this.transformOrderData(model.order) };
-		model.order.delivery_date = {
-			date: this.getDate(model.order.deliveryDate),
-			time: this.getTime(model.order.deliveryDate)
-		};
-
-		// TODO: Next tasks will involve shipmentService.getShipment() to get the details after the shipment is scanned
-		model.shipment = {};
+		model.shipment = await this.shipmentsService.getShipment(model.keySSI);
 		model.shipment = { ...this.transformShipmentData(model.shipment) }; // Will take effect after shipmentService.getShipment() is implemented
 		model.shipment.actions = this.setShipmentActions();
-
+		debugger;
 		this.model = model;
 	}
 }
