@@ -26,6 +26,12 @@ class ShipmentsControllerImpl extends WebcController {
     this.model.onChange("shipments" , () => {
       this.model.shipmentsArrayNotEmpty = this.model.shipments.length >=1;
     });
+
+    this.onTagEvent('view-shipment', 'click', (model) => {
+     this.navigateToPageTag("shipment", { model: model });
+    });
+
+
   }
 
   getFakeShipmentData(){
