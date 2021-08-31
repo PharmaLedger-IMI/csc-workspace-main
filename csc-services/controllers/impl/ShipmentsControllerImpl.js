@@ -6,14 +6,20 @@ const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const ShipmentService = cscServices.ShipmentService;
 
-const { Topics, Commons } = cscServices.constants;
-const { shipmentTableHeaders, shipmentStatusesEnum } = cscServices.constants.shipment;
+const { Topics, Commons, Roles } = cscServices.constants;
+const {
+	shipmentStatusesEnum,
+	shipmentCMOTableHeaders,
+	shipmentSiteTableHeaders,
+	shipmentSponsorTableHeaders
+} = cscServices.constants.shipment;
 
 class ShipmentsControllerImpl extends WebcController {
 
 	constructor(role, ...props) {
 		super(...props);
 
+		this.role = role;
 		this.model = this.getShipmentsViewModel();
 		this.shipmentService = new ShipmentService(this.DSUStorage);
 
@@ -132,12 +138,13 @@ class ShipmentsControllerImpl extends WebcController {
 	}
 
 	getShipmentsViewModel() {
+		const tableHeaders = this.getTableHeaders();
 		return {
 			filter: '',
 			search: this.getSearchViewModel(),
 			pagination: this.getPaginationViewModel(),
-			headers: shipmentTableHeaders,
-			tableLength: shipmentTableHeaders.length,
+			headers: tableHeaders,
+			tableLength: tableHeaders.length,
 			shipmentsArrayNotEmpty: false,
 			shipments: []
 		};
@@ -178,6 +185,22 @@ class ShipmentsControllerImpl extends WebcController {
 		}
 
 		return '-';
+	}
+
+	getTableHeaders() {
+		switch (this.role) {
+			case Roles.CMO: {
+				return shipmentCMOTableHeaders;
+			}
+			case Roles.Site: {
+				return shipmentSiteTableHeaders;
+			}
+			case Roles.Sponsor: {
+				return shipmentSponsorTableHeaders;
+			}
+		}
+
+		return [];
 	}
 }
 

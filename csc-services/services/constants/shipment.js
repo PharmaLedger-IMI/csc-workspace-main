@@ -14,7 +14,7 @@ const shipmentPendingActionEnum = {
 	ManageKits: 'Manage Kits'
 };
 
-const shipmentTableHeaders = [
+const shipmentCMOTableHeaders = [
 	{
 		column: 'orderId',
 		label: 'Order ID',
@@ -87,8 +87,164 @@ const shipmentTableHeaders = [
 	}
 ];
 
+const shipmentSiteTableHeaders = [
+	{
+		column: 'shipmentId',
+		label: 'Shipment ID',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'shipperID',
+		label: 'Shipper ID',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'origin',
+		label: 'Origin',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'type',
+		label: 'Type',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'recipientName',
+		label: 'Recipient Name',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'requestDeliveryDate',
+		label: 'Requested Delivery Date/Time',
+		notSortable: false,
+		type: 'date',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'status',
+		label: 'Shipment Status',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'lastModified',
+		label: 'Last Modified',
+		type: 'date',
+		notSortable: false,
+		asc: null,
+		desc: null
+	},
+	{
+		column: null,
+		label: 'View',
+		notSortable: true,
+		desc: null
+	}
+];
+
+const shipmentSponsorTableHeaders = [
+	{
+		column: 'shipmentId',
+		label: 'Shipment ID',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'shipperID',
+		label: 'Shipper ID',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'origin',
+		label: 'Origin',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'type',
+		label: 'Type',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'recipientName',
+		label: 'Recipient Name',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'requestDeliveryDate',
+		label: 'Requested Delivery Date/Time',
+		notSortable: false,
+		type: 'date',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'schedulePickupDate',
+		label: 'Schedule Pickup Date/Time',
+		notSortable: false,
+		type: 'date',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'status',
+		label: 'Shipment Status',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'lastModified',
+		label: 'Last Modified',
+		type: 'date',
+		notSortable: false,
+		asc: null,
+		desc: null
+	},
+	{
+		column: null,
+		label: 'View',
+		notSortable: true,
+		desc: null
+	}
+];
+
 module.exports = {
 	shipmentStatusesEnum,
-	shipmentTableHeaders,
+	shipmentCMOTableHeaders,
+	shipmentSiteTableHeaders,
+	shipmentSponsorTableHeaders,
 	shipmentPendingActionEnum
 };
