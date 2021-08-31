@@ -1,6 +1,7 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require("./lib/DSUService");
-const { Roles, messagesEnum, FoldersEnum } = require('./constants');
+const { Roles, messagesEnum, shipment, FoldersEnum } = require('./constants');
+const shipmentStatusesEnum = shipment.shipmentStatusesEnum;
 const NotificationsService = require('./lib/NotificationService.js');
 const CommunicationService = require('./lib/CommunicationService.js');
 
@@ -44,16 +45,20 @@ class ShipmentsService extends DSUService {
   // -> Functions for creation of shipment
   async createShipment(data) {
 
+    const { statusDsu } = await this.createShipmentOtherDSUs();
+
+    const status = await this.updateStatusDsu(shipmentStatusesEnum.InPreparation, statusDsu.uid);
+
     const shipmentModel = {
-      sponsorId: data.sponsor_id,
-      targetCmoId: data.target_cmo_id,
-      studyId: data.study_id,
-      orderId: data.order_id,
-      siteId: data.site_id,
-      siteRegionId: data.site_region_id,
-      siteCountry: data.site_country,
+      sponsorId: data.sponsorId,
+      targetCmoId: data.targetCmoId,
+      studyId: data.studyId,
+      orderId: data.orderId,
+      siteId: data.siteId,
+      siteRegionId: data.siteRegionId,
+      siteCountry: data.siteCountry,
       temperatures: data.keep_between_temperature,
-      temperature_comments: data.temperature_comments,
+      temperature_comments: data.temperatures,
       requestDate: data.requestDate,
       deliveryDate: data.delivery_date,
       lastModified: data.lastModified,
@@ -65,6 +70,8 @@ class ShipmentsService extends DSUService {
       {
       ...shipmentModel,
       shipmentSSI: shipment.uid,
+      status: status.history,
+      statusSSI: status.uid,
 
       },
       shipment.uid
@@ -75,6 +82,7 @@ class ShipmentsService extends DSUService {
       messagesEnum.ShipmentInPreparation,
       {
         shipmentSSI: shipment.uid,
+        statusKeySSI: statusDsu.uid,
       },
       messagesEnum.ShipmentInPreparation
     );
@@ -84,6 +92,7 @@ class ShipmentsService extends DSUService {
       messagesEnum.ShipmentInPreparation,
       {
         shipmentSSI: shipment.uid,
+        statusKeySSI: statusDsu.uid,
       },
       messagesEnum.ShipmentInPreparation
     );
@@ -91,13 +100,39 @@ class ShipmentsService extends DSUService {
     return shipmentDb;
   }
 
+  async createShipmentOtherDSUs() {
+
+    const statusDsu = await this.saveEntityAsync(
+      {
+        history: [],
+      },
+      FoldersEnum.ShipmentsStatuses
+    );
+
+    return { statusDsu };
+
+  }
+
+  async updateStatusDsu(newStatus, keySSI) {
+    const statusDsu = await this.getEntityAsync(keySSI, FoldersEnum.ShipmentsStatuses);
+    const result = await this.updateEntityAsync(
+      {
+        ...statusDsu,
+        history: [...statusDsu.history, { status: newStatus, date: new Date().getTime() }],
+      },
+      FoldersEnum.ShipmentsStatuses
+    );
+    return result;
+  }
+
+
   // -> Functions for mounting newly created shipment in other actors except cmo
   async mountAndReceiveShipment(shipmentSSI, role, statusKeySSI) {
     let shipment, shipmentDb, status;
     switch (role) {
       case Roles.Sponsor:
         shipment = await this.mountEntityAsync(shipmentSSI, FoldersEnum.Shipments);
-        status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.Statuses);
+        status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.ShipmentsStatuses);
 
         shipmentDb = await this.addShipmentToDB(
           {
@@ -112,7 +147,7 @@ class ShipmentsService extends DSUService {
         return shipmentDb;
       case Roles.Site:
         shipment = await this.mountEntityAsync(shipmentSSI, FoldersEnum.Shipments);
-        status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.Statuses);
+        status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.ShipmentsStatuses);
 
         shipmentDb = await this.addShipmentToDB(
           {
