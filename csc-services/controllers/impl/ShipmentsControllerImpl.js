@@ -57,15 +57,20 @@ class ShipmentsControllerImpl extends WebcController {
 	transformData(data) {
 		if (data) {
 			data.forEach((item) => {
-				item.requestDate_value = momentService(item.requestDate).format(Commons.DateTimeFormatPattern);
-				item.deliveryDate_value = momentService(item.schedulePickupDate).format(Commons.DateTimeFormatPattern);
-				item.lastModified_value = momentService(item.lastModified).format(Commons.DateTimeFormatPattern);
+				item.orderId = item.orderId || '-';
+				item.shipmentId = item.shipmentId || '-';
+				item.shipperId = item.shipperId || '-';
+				item.origin = item.origin || '-';
+				item.type = item.type || '-';
+				item.recipientName = item.recipientName || '-';
 
 				const latestStatus = item.status.sort(function(a, b) {
 					return new Date(b.date) - new Date(a.date);
 				})[0];
 				item.status_value = latestStatus.status;
-				item.status_date = momentService(latestStatus.date).format(Commons.DateTimeFormatPattern);
+				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateFormatPattern) : '-';
+				item.requestDate = item.requestDate ? momentService(item.requestDate).format(Commons.DateTimeFormatPattern) : '-';
+				item.scheduledPickupDate = this.getPickupDateTime(item.scheduledPickupDate);
 			});
 		}
 
@@ -164,6 +169,15 @@ class ShipmentsControllerImpl extends WebcController {
 				value: itemsPerPageArray[1].toString()
 			}
 		};
+	}
+
+	getPickupDateTime(scheduledPickupDate) {
+		if (scheduledPickupDate) {
+			const timestamp = new Date(`${scheduledPickupDate.date} ${scheduledPickupDate.time}`).getTime();
+			return momentService(timestamp).format(Commons.DateTimeFormatPattern);
+		}
+
+		return '-';
 	}
 }
 

@@ -1,3 +1,4 @@
 module.exports.Commons = {
-	DateTimeFormatPattern: 'MM/DD/YYYY HH:mm:ss'
+	DateTimeFormatPattern: 'DD-MMM-YYYY, HH:mm',
+	DateFormatPattern: "DD-MMM-YYYY"
 }
