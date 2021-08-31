@@ -1,4 +1,5 @@
 const { WebcController } = WebCardinal.controllers;
+
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
@@ -23,6 +24,7 @@ class SingleShipmentControllerImpl extends WebcController {
 
 		let communicationService = CommunicationService.getInstance(csIdentities[role]);
 		this.notificationsService = new NotificationsService(this.DSUStorage);
+		this.ordersService = new OrdersService(this.DSUStorage, communicationService);
 		this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
 
 		this.initViewModel();
@@ -34,6 +36,8 @@ class SingleShipmentControllerImpl extends WebcController {
 		this.showHistoryHandler();
 		this.downloadKitListHandler();
 		this.toggleAccordionItemHandler();
+
+		this.editShipmentHandler();
 	}
 
 	toggleAccordionItemHandler() {
@@ -60,6 +64,30 @@ class SingleShipmentControllerImpl extends WebcController {
 		targetIcon.classList.toggle('rotate-icon');
 		panel.style.maxHeight = '1000px';
 	}
+
+	editShipmentHandler() {
+		this.onTagClick('edit-shipment', () => {
+			const modalConfiguration = {
+				controller: 'EditShipmentController',
+				disableExpanding: true,
+				disableBackdropClosing: false,
+				disableFooter: true,
+				model: { keySSI: this.model.keySSI }
+			};
+
+			this.showModalFromTemplate('editShipment', this.confirmEditShipmentCallback, () => {
+			}, modalConfiguration);
+		});
+	}
+
+	confirmEditShipmentCallback = async (event) => {
+		console.log('[EDIT Shipment] Confirm', event);
+		const shipmentDetails = event.detail;
+		const result = await this.shipmentsService.updateShipment(this.model.keySSI,
+			shipmentDetails, shipmentStatusesEnum.ReadyForDispatch, this.role);
+
+		console.log('\n\n[UPDATE SHIPMENT AFTER EDIT]\n\n', JSON.stringify(result, null, 2));
+	};
 
 	downloadKitListHandler() {
 		this.onTagEvent('download-kit-list', 'click', (model, target, event) => {
@@ -91,6 +119,24 @@ class SingleShipmentControllerImpl extends WebcController {
 		});
 
 		console.log('Show History Clicked');
+	}
+
+	transformOrderData(data) {
+		if (data) {
+			data.delivery_date = this.getDateTime(data.deliveryDate);
+
+			return data;
+		}
+
+		return {};
+	}
+
+	getDateTime(str) {
+		const dateTime = str.split(' ');
+		return {
+			date: dateTime[0],
+			time: dateTime[1]
+		};
 	}
 
 	transformShipmentData(data) {
@@ -137,15 +183,12 @@ class SingleShipmentControllerImpl extends WebcController {
 
 	setShipmentActions() {
 		const actions = {};
+
+		// TODO: Update the logic according to statuses after #61 is completed
+		actions.canScanShipment = false;
+		actions.canEditShipment = true;
+
 		return actions;
-	}
-
-	getDate(str) {
-		return str.split(' ')[0];
-	}
-
-	getTime(str) {
-		return str.split(' ')[1];
 	}
 
 	async initViewModel() {
@@ -155,13 +198,16 @@ class SingleShipmentControllerImpl extends WebcController {
 			model.form.inputs[prop].disabled = true;
 		}
 
-		let { keySSI} = this.history.location.state;
+		let { keySSI } = this.history.location.state;
 		model.keySSI = keySSI;
 
 		model.shipment = await this.shipmentsService.getShipment(model.keySSI);
-		model.shipment = { ...this.transformShipmentData(model.shipment) }; // Will take effect after shipmentService.getShipment() is implemented
-		model.shipment.actions = this.setShipmentActions();
-		debugger;
+		model.shipment = { ...this.transformShipmentData(model.shipment) };
+		model.actions = this.setShipmentActions();
+
+		model.order = await this.ordersService.getOrder(model.shipment.orderSSI);
+		model.order = { ...this.transformOrderData(model.order) };
+
 		this.model = model;
 	}
 }
