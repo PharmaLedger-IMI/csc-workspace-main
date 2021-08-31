@@ -82,10 +82,13 @@ class ReviewOrderControllerImpl extends WebcController {
     });
 
     this.onTagClick('remove-file', (event) => {
+      let idx = 0;
       this.model.form.documents.forEach((document) => {
-        if (document.canRemove === true) {
-          let idx = this.model.form.documents.indexOf(document);
-          this.model.form.documents.splice(idx, 1);
+        if (JSON.stringify(event) === JSON.stringify(document)) {
+          if (event.canRemove === true) {
+            idx = this.model.form.documents.indexOf(document);
+            this.model.form.documents.splice(idx, 1);
+          }
         }
       });
     });
