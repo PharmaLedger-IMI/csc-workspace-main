@@ -7,7 +7,6 @@ const CommunicationService = require('./lib/CommunicationService.js');
 
 class ShipmentsService extends DSUService {
 	SHIPMENTS_TABLE = 'shipments';
-	SHIPMENTS_FOLDER = '/shipments';
 
 	constructor(DSUStorage, communicationService) {
 		super(DSUStorage, '/shipments');
@@ -45,7 +44,7 @@ class ShipmentsService extends DSUService {
 	// -> Functions for creation of shipment
 	async createShipment(data) {
 		const statusModel = { history: [] };
-		const statusDSU = await this.saveEntityAsync(statusModel, FoldersEnum.Statuses);
+		const statusDSU = await this.saveEntityAsync(statusModel, FoldersEnum.ShipmentsStatuses);
 		const status = await this.updateStatusDsu(shipmentStatusesEnum.InPreparation, statusDSU.keySSI);
 
 		const shipmentModel = {
@@ -122,7 +121,7 @@ class ShipmentsService extends DSUService {
 		switch (role) {
 			case Roles.Sponsor:
 				shipment = await this.mountEntityAsync(shipmentSSI, FoldersEnum.Shipments);
-				status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.Statuses);
+				status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.ShipmentsStatuses);
 
 				shipmentDb = await this.addShipmentToDB(
 					{
@@ -137,7 +136,7 @@ class ShipmentsService extends DSUService {
 				return shipmentDb;
 			case Roles.Site:
 				shipment = await this.mountEntityAsync(shipmentSSI, FoldersEnum.Shipments);
-				status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.Statuses);
+				status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.ShipmentsStatuses);
 
 				shipmentDb = await this.addShipmentToDB(
 					{
@@ -154,13 +153,13 @@ class ShipmentsService extends DSUService {
 	}
 
 	async updateStatusDsu(newStatus, keySSI) {
-		const statusDsu = await this.getEntityAsync(keySSI, FoldersEnum.Statuses);
+		const statusDsu = await this.getEntityAsync(keySSI, FoldersEnum.ShipmentsStatuses);
 		const result = await this.updateEntityAsync(
 			{
 				...statusDsu,
 				history: [...statusDsu.history, { status: newStatus, date: new Date().getTime() }]
 			},
-			FoldersEnum.Statuses
+			FoldersEnum.ShipmentsStatuses
 		);
 		return result;
 	}

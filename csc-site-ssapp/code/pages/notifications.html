@@ -26,8 +26,16 @@
 	                    </button>
                     </td>
                     <td class="d-flex flex-column">
-                        <label>Order [{{@orderId}}]: {{@status}}</label>
-                        <label class="d-lg-none">{{ @date }}</label>
+                        <div data-if="@orderId">
+							<container slot="true">
+								<label>Order [{{@orderId}}]: {{@status}}</label>
+								<label class="d-lg-none">{{ @date }}</label>
+							</container>
+							<container slot="false">
+								<label>Shipment [1234]: {{@status}}</label>
+								<label class="d-lg-none">{{ @date }}</label>
+							</container>
+                        </div>
                     </td>
                     <td>{{ @did}}</td>
                     <td>{{ @role }}</td>
