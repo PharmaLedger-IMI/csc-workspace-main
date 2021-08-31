@@ -1,3 +1,9 @@
+<style>
+	webc-modal {
+		--max-width: 1400px;
+	}
+</style>
+
 <div slot='header'>
 	<div class='new-order-created-title'>Edit Shipment</div>
 </div>
@@ -15,73 +21,79 @@
 				<div class='step-element' data-tag='step-2' id='step-2'>2 - Confirmation</div>
 			</div>
 
-			<div class='step-holder' id='step-1-wrapper'>
-				<webc-template data-view-model='@' template='order/order-details'></webc-template>
+			<div class='step-holder-modal' id='step-1-wrapper'>
+				<webc-template data-view-model='@orderModel' template='order/order-details'></webc-template>
 				<br />
-				<div class='row w-100'>
+				<div class='container'>
 					<!-- Shipper ID -->
 					<div class='form-group'>
-						<label>{{@form.shipperId.label}}</label>
-						<input class='form-control' data-view-model='@form.shipperId' />
+						<label>{{@shipmentModel.form.shipperId.label}}</label>
+						<input class='form-control' data-view-model='@shipmentModel.form.shipperId' />
 					</div>
 					<!-- Origin -->
 					<div class='form-group'>
-						<label>{{@form.origin.label}}</label>
-						<input class='form-control' data-view-model='@form.origin' />
+						<label>{{@shipmentModel.form.origin.label}}</label>
+						<input class='form-control' data-view-model='@shipmentModel.form.origin' />
 					</div>
 					<!-- Type -->
 					<div class='form-group'>
-						<label>{{@form.type.label}}</label>
-						<select class='form-control' data-for='@form.type.options' id='@form.type.name'
-						        name='@form.type.name' value='@form.type.value'>
+						<label>{{@shipmentModel.form.type.label}}</label>
+						<select class='form-control' data-for='@shipmentModel.form.type.options'
+						        id='@shipmentModel.form.type.name'
+						        name='@shipmentModel.form.type.name' value='@shipmentModel.form.type.value'>
 							<option value='@value'>{{@label}}</option>
 						</select>
 					</div>
 					<!-- Scheduled Pickup Date/Time -->
 					<div class='form-group'>
-						<label>{{@form.pickupDate.label}}</label>
+						<label>{{@shipmentModel.form.pickupDate.label}}</label>
 						<div class='row'>
 							<div class='col-8'>
-								<input class='form-control' data-view-model='@form.pickupDate' />
+								<input class='form-control' data-view-model='@shipmentModel.form.pickupDate' />
 							</div>
 							<div class='col-4'>
-								<input class='form-control' data-view-model='@form.pickupTime' />
+								<input class='form-control' data-view-model='@shipmentModel.form.pickupTime' />
 							</div>
 						</div>
 					</div>
 					<!-- Dimension -->
 					<div class='form-group'>
-						<label>{{@form.dimension.label}}</label>
+						<label>{{@shipmentModel.form.dimension.label}}</label>
 						<div class='row'>
 							<div class='col-4'>
 								<div class='form-inline'>
-									<label>{{@form.dimension.width.label}}</label>
-									<input class='form-control' data-view-model='@form.dimension.width' />
+									<label>{{@shipmentModel.form.dimension.height.label}}</label>
+									<input class='form-control'
+									       data-view-model='@shipmentModel.form.dimension.height' />
 								</div>
 							</div>
 							<div class='col-4'>
 								<div class='form-inline'>
-									<label>{{@form.dimension.length.label}}</label>
-									<input class='form-control' data-view-model='@form.dimension.length' />
+									<label>{{@shipmentModel.form.dimension.length.label}}</label>
+									<input class='form-control'
+									       data-view-model='@shipmentModel.form.dimension.length' />
 								</div>
 							</div>
 							<div class='col-4'>
 								<div class='form-inline'>
-									<label>{{@form.dimension.width.label}}</label>
-									<input class='form-control' data-view-model='@form.dimension.width' />
+									<label>{{@shipmentModel.form.dimension.width.label}}</label>
+									<input class='form-control'
+									       data-view-model='@shipmentModel.form.dimension.width' />
 								</div>
 							</div>
 						</div>
 					</div>
 					<!-- Special Instructions -->
 					<div class='form-group'>
-						<label>{{@form.specialInstructions.label}}</label>
-						<texarea class='form-control' data-view-model='@form.specialInstructions'></texarea>
+						<label>{{@shipmentModel.form.specialInstructions.label}}</label>
+						<textarea class='form-control'
+						          data-view-model='@shipmentModel.form.specialInstructions'></textarea>
 					</div>
 					<!-- Shipping/Handling Conditions -->
 					<div class='form-group'>
-						<label>{{@form.shippingConditions.label}}</label>
-						<texarea class='form-control' data-view-model='@form.shippingConditions'></texarea>
+						<label>{{@shipmentModel.form.shippingConditions.label}}</label>
+						<textarea class='form-control'
+						          data-view-model='@shipmentModel.form.shippingConditions'></textarea>
 					</div>
 				</div>
 
@@ -96,63 +108,67 @@
 				</div>
 			</div>
 
-			<div class='step-holder' id='step-2-wrapper'>
-				<webc-template data-view-model='@' template='order/order-details'></webc-template>
+			<div class='step-holder-modal step-hidden' id='step-2-wrapper'>
+				<webc-template data-view-model='@orderModel' template='order/order-details'></webc-template>
 				<br />
 				<div class='grid-column-wrapper'>
 					<!-- Shipper ID -->
-					<label>{{@form.shipperId.label}}</label>
-					<input class='form-control' data-view-model='@form.shipperId' disabled='disabled' />
+					<label>{{@shipmentModel.form.shipperId.label}}</label>
+					<input class='form-control' data-view-model='@shipmentModel.form.shipperId' readonly='readonly' />
 					<!-- Origin -->
-					<label>{{@form.origin.label}}</label>
-					<input class='form-control' data-view-model='@form.origin' />
+					<label>{{@shipmentModel.form.origin.label}}</label>
+					<input class='form-control' data-view-model='@shipmentModel.form.origin' readonly='readonly' />
 					<!-- Type -->
-					<label>{{@form.type.label}}</label>
-					<input class='form-control' type='text' value='@form.type.value' />
+					<label>{{@shipmentModel.form.type.label}}</label>
+					<input class='form-control' type='text' value='@shipmentModel.form.type.value'
+					       readonly='readonly' />
 					<!-- Scheduled Pickup Date/Time -->
-					<label>{{@form.pickupDate.label}}</label>
+					<label>{{@shipmentModel.form.pickupDate.label}}</label>
 					<div>
-						<input class='form-control form-control-sm' readonly type='date'
-						       value='@form.pickupDate.value' />
-						<input class='form-control form-control-sm' readonly type='time'
-						       value='@form.pickupTime.value' />
+						<input class='form-control form-control-sm' readonly='readonly' type='date'
+						       value='@shipmentModel.form.pickupDate.value' />
+						<input class='form-control form-control-sm' readonly='readonly' type='time'
+						       value='@shipmentModel.form.pickupTime.value' />
 					</div>
 					<!-- Dimension -->
-					<label>{{@form.dimension.label}}</label>
+					<label>{{@shipmentModel.form.dimension.label}}</label>
 					<div>
-						<div class='form-inline'>
-							<label>{{@form.dimension.width.label}}</label>
-							<input class='form-control' data-view-model='@form.dimension.width' />
+						<div class='d-flex justify-content-center align-items-center'>
+							<label class="pr-2 m-0">{{@shipmentModel.form.dimension.height.label}}</label>
+							<input class='form-control' data-view-model='@shipmentModel.form.dimension.height'
+							       readonly='readonly' />
 						</div>
-						<div class='form-inline'>
-							<label>{{@form.dimension.length.label}}</label>
-							<input class='form-control' data-view-model='@form.dimension.length' />
+						<div class='d-flex justify-content-center align-items-center'>
+							<label class="pr-2 m-0">{{@shipmentModel.form.dimension.length.label}}</label>
+							<input class='form-control' data-view-model='@shipmentModel.form.dimension.length'
+							       readonly='readonly' />
 						</div>
-						<div class='form-inline'>
-							<label>{{@form.dimension.width.label}}</label>
-							<input class='form-control' data-view-model='@form.dimension.width' />
+						<div class='d-flex justify-content-center align-items-center'>
+							<label class="pr-2 m-0">{{@shipmentModel.form.dimension.width.label}}</label>
+							<input class='form-control' data-view-model='@shipmentModel.form.dimension.width'
+							       readonly='readonly' />
 						</div>
 					</div>
 					<!-- Special Instructions -->
-					<label>{{@form.specialInstructions.label}}</label>
-					<texarea class='form-control' data-view-model='@form.specialInstructions'></texarea>
+					<label>{{@shipmentModel.form.specialInstructions.label}}</label>
+					<textarea class='form-control' data-view-model='@shipmentModel.form.specialInstructions'
+					          readonly='readonly'></textarea>
 					<!-- Shipping/Handling Conditions -->
-					<label>{{@form.shippingConditions.label}}</label>
-					<texarea class='form-control' data-view-model='@form.shippingConditions'></texarea>
+					<label>{{@shipmentModel.form.shippingConditions.label}}</label>
+					<textarea class='form-control' data-view-model='@shipmentModel.form.shippingConditions'
+					          readonly='readonly'></textarea>
 				</div>
 
 				<!-- Navigation Between Steps-->
 				<div class='row-wrapper button-wrapper'>
-					<div class='row-wrapper button-wrapper'>
-						<button class='btn-reset' data-tag='form:reset'>
-							<i class='fas fa-times'></i>
-							Clear Form
-						</button>
-						<button class='btn-default' data-tag='form:submit'>
-							<i class='fas fa-check'></i>
-							Confirm
-						</button>
-					</div>
+					<button class='btn-reset' data-tag='form:reset'>
+						<i class='fas fa-times'></i>
+						Clear Form
+					</button>
+					<button class='btn-default' data-tag='form:submit'>
+						<i class='fas fa-check'></i>
+						Confirm
+					</button>
 				</div>
 			</div>
 		</div>

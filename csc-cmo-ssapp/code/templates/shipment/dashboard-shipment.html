@@ -1,38 +1,39 @@
-<webc-container class="full-flex-column" controller="ShipmentsController">
-    <div class="row-wrapper">
-        <!-- Filters area -->
-        <div class="filters-wrapper">
-            <div class="filter-status">
-                <span class="fa fa-icon fa-filter"></span>
-                <label>Status: </label>
-            </div>
-            <button class="btn-filter selected" data-custom="AllShipment" data-tag="filters-cleared" id="filter-">
-                All Shipments
-            </button>
-            <button class="btn-filter" data-custom="InPreparation" data-tag="filters-changed" id="filter-InPreparation">
-                In Preparation
-            </button>
-            <button class="btn-filter" data-custom="ReadyforDispatch" data-tag="filters-changed"
-                    id="filter-ReadyforDispatch">
-                Ready for Dispatch
-            </button>
-            <button class="btn-filter" data-custom="InTransit" data-tag="filters-changed"
-                    id="filter-InTransit">
-                In Transit
-            </button>
-        </div>
-    </div>
+<webc-container class='full-flex-column' controller='ShipmentsController'>
+	<div class='row-wrapper'>
+		<!-- Filters area -->
+		<div class='filters-wrapper'>
+			<div class='filter-status'>
+				<span class='fas fa-filter'></span>
+				<label>Status: </label>
+			</div>
+			<button class='btn-filter selected' data-custom='AllShipment' data-tag='filters-cleared' id='filter-'>
+				All Shipments
+			</button>
+			<button class='btn-filter' data-custom='InPreparation' data-tag='filters-changed' id='filter-InPreparation'>
+				In Preparation
+			</button>
+			<button class='btn-filter' data-custom='ReadyforDispatch' data-tag='filters-changed'
+			        id='filter-ReadyforDispatch'>
+				Ready for Dispatch
+			</button>
+			<button class='btn-filter' data-custom='InTransit' data-tag='filters-changed'
+			        id='filter-InTransit'>
+				In Transit
+			</button>
+		</div>
+	</div>
 
-        <div class="row-wrapper full-flex-column">
-        <div class="table-container-wrapper full-flex-column">
-            <!-- Tab navigator area -->
-            <webc-template template="shipment/tab-navigator"></webc-template>
+	<div class='row-wrapper full-flex-column'>
+		<div class='table-container-wrapper full-flex-column'>
+			<!-- Tab navigator area -->
+			<webc-template template='shipment/tab-navigator'></webc-template>
 
-            <!-- Table area -->
-            <psk-condition condition="@shipmentsArrayNotEmpty">
-                <webc-template data-view-model="@" slot="condition-true" template="shipment/table-template-shipment"></webc-template>
-                <div slot="condition-false">No shipments available.</div>
-            </psk-condition>
-        </div>
-    </div>
+			<!-- Table area -->
+			<psk-condition condition='@shipmentsArrayNotEmpty'>
+				<webc-template data-view-model='@' slot='condition-true'
+				               template='shipment/table-template-shipment'></webc-template>
+				<div slot='condition-false'>No shipments available.</div>
+			</psk-condition>
+		</div>
+	</div>
 </webc-container>
