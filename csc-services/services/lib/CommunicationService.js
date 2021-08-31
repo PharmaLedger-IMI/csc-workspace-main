@@ -47,14 +47,14 @@ class CommunicationService {
     };
     const recipientIdentity = this._getIdentityConsideringDemoMode(destinationIdentity.did);
     this.didDocument.sendMessage(JSON.stringify(toSentObject), recipientIdentity, (err) => {
+      //TODO should we be aware that an actor is/is not online
       if (err) {
         if (
           err.debug_message === 'Failed to send message' &&
           destinationIdentity.domain !== this.senderIdentity.domain
         ) {
-          return console.log(destinationIdentity, ' was not initialized.');
+          return console.log(destinationIdentity, ' is not available at the moment.');
         }
-        throw err;
       }
       console.log(this.senderIdentity, ' sent a message to ', destinationIdentity);
     });
@@ -65,10 +65,14 @@ class CommunicationService {
     this.didDocument.readMessage((err, msg) => {
       this.listenerIsActive = false;
       if (err) {
-        return callback(err);
+        //network errors may occur
+        if (err.message !== 'Failed to fetch') {
+          return callback(err);
+        }
+      } else {
+        console.log(this.senderIdentity, ` received message: ${msg}`);
+        callback(err, msg);
       }
-      console.log(this.senderIdentity, ` received message: ${msg}`);
-      callback(err, msg);
     });
   }
 
