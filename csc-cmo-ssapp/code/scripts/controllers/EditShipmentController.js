@@ -122,13 +122,10 @@ export default class EditShipmentController extends WebcController {
 		const shipmentFormData = this.model.toObject('shipmentModel.form');
 
 		return {
-			// Shipment Id will be replaced when courier scans the shipment and will generate another shipment id
-			shipmentId: this.model.orderModel.order.orderId,
-			orderId: this.model.orderModel.order.orderId,
 			shipperId: shipmentFormData.shipperId.value,
 			origin: shipmentFormData.origin.value,
 			type: shipmentFormData.type.value,
-			pickupDateTime: {
+			scheduledPickupDate: {
 				date: shipmentFormData.pickupDate.value,
 				time: shipmentFormData.pickupTime.value
 			},

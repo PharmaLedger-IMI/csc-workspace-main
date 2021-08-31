@@ -47,6 +47,10 @@ class ShipmentsService extends DSUService {
 
 		const shipmentModel = {
 			orderSSI: data.orderSSI,
+			requestDate: data.requestDate,
+			orderId: data.orderId,
+			// Shipment Id will be replaced when courier scans the shipment and will generate another shipment id
+			shipmentId: data.orderId,
 			status: status.history
 		};
 		const shipmentDSU = await this.saveEntityAsync(shipmentModel);
@@ -86,27 +90,21 @@ class ShipmentsService extends DSUService {
 		};
 		const result = await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentKeySSI, shipmentDB);
 
-		const notifyIdentities = [
-			CommunicationService.identities.CSC.SPONSOR_IDENTITY,
-			CommunicationService.identities.CSC.SITE_IDENTITY
-		];
+		let notifyIdentities = [];
 		switch (newStatus) {
 			case shipmentStatusesEnum.ReadyForDispatch: {
+				notifyIdentities.push(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
 				notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
 				break;
 			}
 		}
 
+		const notificationData = {
+			shipmentSSI: shipmentKeySSI,
+			statusSSI: shipmentDB.statusSSI
+		};
 		notifyIdentities.forEach(identity => {
-			this.sendMessageToEntity(
-				identity,
-				newStatus,
-				{
-					shipmentSSI: shipmentKeySSI,
-					statusSSI: shipmentDB.statusSSI
-				},
-				newStatus
-			);
+			this.sendMessageToEntity(identity, newStatus, notificationData, newStatus);
 		});
 
 		return result;
