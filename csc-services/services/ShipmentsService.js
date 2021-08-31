@@ -28,9 +28,7 @@ class ShipmentsService extends DSUService {
 
 	async getShipments() {
 		const result = await this.storageService.filter(this.SHIPMENTS_TABLE);
-		if (result) {
-			return result.filter((x) => !x.deleted);
-		} else return [];
+		return result ? result : [];
 	}
 
 	sendMessageToEntity(entity, operation, data, shortDescription) {
