@@ -153,11 +153,12 @@ class SingleOrderControllerImpl extends WebcController {
     const order = await this.ordersService.getOrder(this.model.keySSI);
     this.model.order = order;
     this.model.order = { ...this.transformData(this.model.order) };
-
+    this.model.order.created_date = momentService(this.model.order.requestDate).format(Commons.DateTimeFormatPattern);
     this.model.order.delivery_date = {
       date: this.getDate(this.model.order.deliveryDate),
       time: this.getTime(this.model.order.deliveryDate),
     };
+    
 
     this.model.order.actions = this.setOrderActions();
     //console.log("SingleOrderController" +  JSON.stringify(this.model.order));

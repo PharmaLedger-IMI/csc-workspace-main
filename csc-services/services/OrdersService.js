@@ -276,12 +276,13 @@ class OrdersService extends DSUService {
       siteCountry: data.site_country,
       temperatures: data.keep_between_temperature,
       temperature_comments: data.temperature_comments,
-      requestDate: new Date().getTime(),
+      requestDate: data.created_date,
       deliveryDate: data.delivery_date,
       lastModified: new Date().getTime(),
     };
 
     const order = await this.saveEntityAsync(orderModel);
+    //console.log("orderServiceData " + JSON.stringify(order));
 
     const orderDb = await this.addOrderToDB(
       {
