@@ -23,10 +23,7 @@ class OrdersService extends DSUService {
 
   async getOrders() {
     const result = await this.storageService.filter(this.ORDERS_TABLE);
-    // return demoData;
-    if (result) {
-      return result.filter((x) => !x.deleted);
-    } else return [];
+    return result ? result : [];
   }
 
   async getOrder(keySSI) {
