@@ -27,21 +27,21 @@
                             <div class="order-status-box background-approved" slot="true">
                                 <div>Order Status:</div>
                                 <div><b>{{@order.status_value}}</b></div>
-                                <div>{{@order.lastModifiedDate}}</div>
+                                <div>{{@order.status_date}}</div>
                             </div>
                         </div>
                         <div data-if="@order.status_cancelled">
                             <div class="order-status-box background-cancelled" slot="true">
                                 <div>Order Status:</div>
                                 <div><b>{{@order.status_value}}</b></div>
-                                <div>{{@order.lastModifiedDate}}</div>
+                                <div>{{@order.status_date}}</div>
                             </div>
                         </div>
                         <div data-if="@order.status_normal">
                             <div class="order-status-box background-primary" slot="true">
                                 <div>Order Status:</div>
                                 <div><b>{{@order.status_value}}</b></div>
-                                <div>{{@order.lastModifiedDate}}</div>
+                                <div>{{@order.status_date}}</div>
                             </div>
                         </div>
                     </div>
