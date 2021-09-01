@@ -9,6 +9,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const { Topics, Roles, NotificationTypes, order, FoldersEnum } = cscServices.constants;
 const { orderStatusesEnum } = order;
 const FileDownloaderService = cscServices.FileDownloaderService;
+const randomNumber = cscServices.RandomNumberService;
 
 const csIdentities = {};
 csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
@@ -71,6 +72,7 @@ class ReviewOrderControllerImpl extends WebcController {
           this.FileDownloaderService.prepareDownloadFromBrowser(file);
           this.model.form.documents.push({
             name: file.name,
+            uuid: randomNumber(),
             attached_by: this.role,
             date: new Date().toLocaleString(),
             link: '',
@@ -81,16 +83,12 @@ class ReviewOrderControllerImpl extends WebcController {
       }
     });
 
-    this.onTagClick('remove-file', (event) => {
-      let idx = 0;
-      this.model.form.documents.forEach((document) => {
-        if (JSON.stringify(event) === JSON.stringify(document)) {
-          if (event.canRemove === true) {
-            idx = this.model.form.documents.indexOf(document);
-            this.model.form.documents.splice(idx, 1);
-          }
-        }
-      });
+    this.onTagClick('remove-file', (document) => {
+      if (document.canRemove === true) {
+        let doc = this.model.form.documents.find(item => item.uuid == document.uuid);
+        let idx = this.model.form.documents.indexOf(doc);
+        this.model.form.documents.splice(idx, 1);
+      }
     });
 
     this.onTagClick('download-file', (model, target, event) => {
