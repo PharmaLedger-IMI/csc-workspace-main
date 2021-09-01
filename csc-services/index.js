@@ -9,7 +9,7 @@ module.exports = {
   constants: require('./services/constants'),
   momentService: require('./services/lib/moment.min'),
   FileDownloaderService: require('./services/lib/FileDownloaderService'),
-  RandomNumberService: require('./services/lib/RandomNumber'),
+  util: require('./services/lib/util'),
 
   viewModelResolver: function (viewModel) {
     switch (viewModel) {

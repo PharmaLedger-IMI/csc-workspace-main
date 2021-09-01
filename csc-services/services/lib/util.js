@@ -5,4 +5,4 @@ function uuidv4() {
   });
 }
 
-module.exports = uuidv4;
+module.exports ={uuidv4};

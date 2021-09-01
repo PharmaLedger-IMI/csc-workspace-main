@@ -9,7 +9,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const { Topics, Roles, NotificationTypes, order, FoldersEnum } = cscServices.constants;
 const { orderStatusesEnum } = order;
 const FileDownloaderService = cscServices.FileDownloaderService;
-const randomNumber = cscServices.RandomNumberService;
+const { uuidv4 } = cscServices.util;
 
 const csIdentities = {};
 csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
@@ -72,7 +72,7 @@ class ReviewOrderControllerImpl extends WebcController {
           this.FileDownloaderService.prepareDownloadFromBrowser(file);
           this.model.form.documents.push({
             name: file.name,
-            uuid: randomNumber(),
+            uuid: uuidv4(),
             attached_by: this.role,
             date: new Date().toLocaleString(),
             link: '',
