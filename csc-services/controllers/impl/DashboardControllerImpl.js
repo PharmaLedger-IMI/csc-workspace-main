@@ -197,10 +197,10 @@ class DashboardControllerImpl extends WebcController {
 
 				const {
 					shipmentSSI,
-					statusKeySSI
+					statusSSI
 				} = data.message.data;
 
-				shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusKeySSI);
+				shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusSSI);
 				break;
 			}
 		}
