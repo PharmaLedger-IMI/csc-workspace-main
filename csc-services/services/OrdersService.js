@@ -1,6 +1,7 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
-const { Roles, NotificationTypes, Topics, messagesEnum, order, FoldersEnum } = require('./constants');
+const { Roles, Topics, messagesEnum, order, notifications, FoldersEnum } = require('./constants');
+const { NotificationTypes } = notifications;
 const orderStatusesEnum = order.orderStatusesEnum;
 const NotificationsService = require('./lib/NotificationService.js');
 const eventBusService = require('./lib/EventBusService.js');

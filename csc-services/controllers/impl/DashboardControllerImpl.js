@@ -6,7 +6,8 @@ const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
-const { messagesEnum, order, shipment, NotificationTypes, Roles, Topics } = cscServices.constants;
+const { messagesEnum, order, shipment, Roles, Topics } = cscServices.constants;
+const { NotificationTypes } = cscServices.constants.notifications;
 const { orderStatusesEnum } = order;
 const { shipmentStatusesEnum } = shipment;
 

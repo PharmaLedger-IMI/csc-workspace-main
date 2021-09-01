@@ -8,7 +8,8 @@ const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
 const momentService = cscServices.momentService;
-const { Roles, Topics, NotificationTypes, ButtonsEnum, Commons, FoldersEnum } = cscServices.constants;
+const { Roles, Topics, ButtonsEnum, Commons, FoldersEnum } = cscServices.constants;
+const { NotificationTypes } = cscServices.constants.notifications;
 const { orderStatusesEnum, orderPendingActionEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
@@ -160,7 +161,6 @@ class SingleOrderControllerImpl extends WebcController {
     };
 
     this.model.order.actions = this.setOrderActions();
-    //console.log("SingleOrderController" +  JSON.stringify(this.model.order));
     this.prepareDocumentsDownloads(JSON.parse(JSON.stringify(this.model.order.documents)), this.model.order.cmoDocumentsKeySSI, this.model.order.sponsorDocumentsKeySSI);
     this.prepareKitsFileDownload(this.model.order.kitsFilename, this.model.order.kitsSSI);
   }
@@ -217,13 +217,11 @@ class SingleOrderControllerImpl extends WebcController {
   getPendingAction(status_value) {
     switch (status_value) {
       case orderStatusesEnum.Initiated:
+      case orderStatusesEnum.ReviewedBySponsor:
         return orderPendingActionEnum.PendingReviewByCMO;
 
       case orderStatusesEnum.ReviewedByCMO:
         return orderPendingActionEnum.SponsorReviewOrApprove;
-
-      case orderStatusesEnum.ReviewedBySponsor:
-        return orderPendingActionEnum.CMOReviewOrApprove;
 
       case orderStatusesEnum.Canceled:
         return orderPendingActionEnum.NoPendingActions;
@@ -243,7 +241,7 @@ class SingleOrderControllerImpl extends WebcController {
       case Roles.Sponsor:
         actions.couldNotBeReviewed = orderStatusesEnum.ReviewedByCMO !== order.status_value;
         actions.couldNotBeCancelled = cancellableOrderStatus.indexOf(order.status_value) === -1;
-        actions.couldNotBeApproved = order.status.map((status) => status.status).indexOf(orderStatusesEnum.ReviewedByCMO) === -1 || orderStatusesEnum.Canceled === order.status_value || orderStatusesEnum.Approved === order.status_value;
+        actions.couldNotBeApproved = actions.couldNotBeReviewed;
         actions.orderCancelButtonText = order.pending_action === orderPendingActionEnum.PendingShipmentDispatch ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
         this.onTagEvent('review-order', 'click', (e) => {
           this.navigateToPageTag('review-order', {
@@ -324,7 +322,7 @@ class SingleOrderControllerImpl extends WebcController {
           const result = await this.shipmentsService.createShipment(this.model.order);
           const notification = {
             operation: NotificationTypes.UpdateShipmentStatus,
-            shipmentId:"1234",
+            shipmentId: this.model.order.orderId,
             read: false,
             status: shipmentStatusesEnum.InPreparation,
             keySSI: result.keySSI,
