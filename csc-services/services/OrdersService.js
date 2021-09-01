@@ -275,7 +275,7 @@ class OrdersService extends DSUService {
       temperature_comments: data.temperature_comments,
       requestDate: new Date().getTime(),
       deliveryDate: data.delivery_date,
-      lastModified: new Date().toISOString(),
+      lastModified: new Date().getTime(),
     };
 
     const order = await this.saveEntityAsync(orderModel);
@@ -628,7 +628,7 @@ class OrdersService extends DSUService {
         }
         break;
     }
-    orderDB.lastModified = new Date().toISOString();
+    orderDB.lastModified = new Date().getTime();
     const result = await this.updateOrderToDB(orderDB, orderKeySSI);
     return result;
   }
