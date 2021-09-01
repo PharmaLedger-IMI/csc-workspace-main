@@ -537,7 +537,7 @@ class OrdersService extends DSUService {
       comments = await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
       orderDB.comments = comments.comments;
     }
-    orderDB.lastModified = new Date().toISOString();
+    orderDB.lastModified = new Date().getTime();
     const result = await this.updateOrderToDB(orderDB, orderKeySSI);
 
     let operation;
