@@ -273,9 +273,9 @@ class OrdersService extends DSUService {
       siteCountry: data.site_country,
       temperatures: data.keep_between_temperature,
       temperature_comments: data.temperature_comments,
-      requestDate: data.created_date,
+      requestDate: new Date().getTime(),
       deliveryDate: data.delivery_date,
-      lastModified: new Date().getTime(),
+      lastModified: new Date().toISOString(),
     };
 
     const order = await this.saveEntityAsync(orderModel);
@@ -537,6 +537,7 @@ class OrdersService extends DSUService {
       comments = await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
       orderDB.comments = comments.comments;
     }
+    orderDB.lastModified = new Date().toISOString();
     const result = await this.updateOrderToDB(orderDB, orderKeySSI);
 
     let operation;
@@ -627,7 +628,7 @@ class OrdersService extends DSUService {
         }
         break;
     }
-
+    orderDB.lastModified = new Date().toISOString();
     const result = await this.updateOrderToDB(orderDB, orderKeySSI);
     return result;
   }

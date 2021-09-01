@@ -172,7 +172,6 @@ export default class NewOrderController extends WebcController {
 
         payload['kitIds'] = JSON.parse(JSON.stringify(this.model.form.inputs.kit_ids_attachment.ids));
         payload['kitIdsFile'] = this.model.form.inputs.kit_ids_attachment.file;
-        payload['created_date'] = new Date().toString();
 
         console.log('SUBMIT : Payload: ', payload);
 
