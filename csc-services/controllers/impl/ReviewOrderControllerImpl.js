@@ -9,7 +9,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const { Topics, Roles, NotificationTypes, order, FoldersEnum } = cscServices.constants;
 const { orderStatusesEnum } = order;
 const FileDownloaderService = cscServices.FileDownloaderService;
-const { uuidv4 } = cscServices.util;
+const { uuidv4 } = cscServices.utils;
 
 const csIdentities = {};
 csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
