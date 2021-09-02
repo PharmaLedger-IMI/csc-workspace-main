@@ -9,6 +9,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const { Topics, Roles, NotificationTypes, order, FoldersEnum } = cscServices.constants;
 const { orderStatusesEnum } = order;
 const FileDownloaderService = cscServices.FileDownloaderService;
+const { uuidv4 } = cscServices.utils;
 
 const csIdentities = {};
 csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
@@ -76,18 +77,18 @@ class ReviewOrderControllerImpl extends WebcController {
             link: '',
             canRemove: true,
             file: file,
+            uuid: uuidv4(),
           });
         });
       }
     });
 
-    this.onTagClick('remove-file', (event) => {
-      this.model.form.documents.forEach((document) => {
-        if (document.canRemove === true) {
-          let idx = this.model.form.documents.indexOf(document);
-          this.model.form.documents.splice(idx, 1);
-        }
-      });
+    this.onTagClick('remove-file', (document) => {
+      if (document.canRemove === true) {
+        let doc = this.model.form.documents.find(item => item.uuid === document.uuid);
+        let idx = this.model.form.documents.indexOf(doc);
+        this.model.form.documents.splice(idx, 1);
+      }
     });
 
     this.onTagClick('download-file', (model, target, event) => {
