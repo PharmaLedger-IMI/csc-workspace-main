@@ -136,9 +136,8 @@ class DashboardControllerImpl extends WebcController {
 					commentsKeySSI,
 					statusKeySSI
 				} = data.message.data;
-				// TODO: Issue #21 - Refactor
 				orderData = await this.ordersService.mountAndReceiveOrder(orderSSI, this.role,
-					sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsKeySSI, commentsKeySSI, statusKeySSI);
+					{ sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsKeySSI, commentsKeySSI, statusKeySSI });
 
 				break;
 			}

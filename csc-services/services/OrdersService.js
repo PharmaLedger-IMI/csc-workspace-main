@@ -460,16 +460,17 @@ class OrdersService extends DSUService {
 
   // -> Functions for mounting newly created order in other actors except sponsor
 
-  async mountAndReceiveOrder(orderSSI, role, sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsDsu, commentsKeySSI, statusKeySSI) {
+  async mountAndReceiveOrder(orderSSI, role, attachedDSUKeySSIs) {
+    // async mountAndReceiveOrder(orderSSI, role, sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsDsu, commentsKeySSI, statusKeySSI) {
     let order, sponsorDocuments, cmoDocuments, kits, comments, orderDb, status;
     switch (role) {
       case Roles.CMO:
         order = await this.mountEntityAsync(orderSSI, FoldersEnum.Orders);
-        status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.Statuses);
-        sponsorDocuments = await this.mountEntityAsync(sponsorDocumentsKeySSI, FoldersEnum.Documents);
-        cmoDocuments = await this.mountEntityAsync(cmoDocumentsKeySSI, FoldersEnum.Documents);
-        kits = await this.mountEntityAsync(kitIdsDsu, FoldersEnum.Kits);
-        comments = await this.mountEntityAsync(commentsKeySSI, FoldersEnum.Comments);
+        status = await this.mountEntityAsync(attachedDSUKeySSIs.statusKeySSI, FoldersEnum.Statuses);
+        sponsorDocuments = await this.mountEntityAsync(attachedDSUKeySSIs.sponsorDocumentsKeySSI, FoldersEnum.Documents);
+        cmoDocuments = await this.mountEntityAsync(attachedDSUKeySSIs.cmoDocumentsKeySSI, FoldersEnum.Documents);
+        kits = await this.mountEntityAsync(attachedDSUKeySSIs.kitIdsKeySSI, FoldersEnum.Kits);
+        comments = await this.mountEntityAsync(attachedDSUKeySSIs.commentsKeySSI, FoldersEnum.Comments);
 
         orderDb = await this.addOrderToDB(
           {
@@ -493,9 +494,9 @@ class OrdersService extends DSUService {
         return orderDb;
       case Roles.Site:
         order = await this.mountEntityAsync(orderSSI, FoldersEnum.Orders);
-        kits = await this.mountEntityAsync(kitIdsDsu, FoldersEnum.Kits);
-        comments = await this.mountEntityAsync(commentsKeySSI, FoldersEnum.Comments);
-        status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.Statuses);
+        kits = await this.mountEntityAsync(attachedDSUKeySSIs.kitIdsKeySSI, FoldersEnum.Kits);
+        comments = await this.mountEntityAsync(attachedDSUKeySSIs.commentsKeySSI, FoldersEnum.Comments);
+        status = await this.mountEntityAsync(attachedDSUKeySSIs.statusKeySSI, FoldersEnum.Statuses);
 
         orderDb = await this.addOrderToDB(
           {
