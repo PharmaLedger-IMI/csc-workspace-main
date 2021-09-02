@@ -41,14 +41,15 @@ export default class NewOrderController extends WebcController {
 
       if (files) {
         files.forEach((file) => {
-          this.files.push({ fileContent: file, type: DocumentTypes.Document });
+          const uuid = uuidv4();
+          this.files.push({ fileContent: file, type: DocumentTypes.Document, uuid });
           this.model.form.documents.push({
             name: file.name,
             attached_by: Roles.Sponsor,
             date: new Date().toLocaleString(),
             link: '',
             canRemove: true,
-            uuid: uuidv4(),
+            uuid,
           });
         });
       }
@@ -61,10 +62,16 @@ export default class NewOrderController extends WebcController {
 
       if (files && files.length > 0) {
         try {
-          this.files.push({ fileContent: files[0], type: DocumentTypes.Kit });
+          const existsIdx = this.files.findIndex((x) => x.type === DocumentTypes.Kit);
+          if (existsIdx > -1) {
+            this.files.splice(existsIdx, 1);
+          }
+          const uuid = uuidv4();
+          this.files.push({ fileContent: files[0], type: DocumentTypes.Kit, uuid });
           const ids = await this.readFile(files[0]);
           this.model.form.inputs.kit_ids_attachment.name = files[0].name;
           this.model.form.inputs.kit_ids_attachment.ids = ids;
+          this.model.form.inputs.kit_ids_attachment.uuid = uuid;
         } catch (err) {
           console.log(err);
           this.model.form.inputs.kit_ids_attachment.name = 'No File';
@@ -75,7 +82,7 @@ export default class NewOrderController extends WebcController {
 
     this.onTagClick('remove-file', (document) => {
       if (document.canRemove === true) {
-        const fileIdx = this.files.findIndex((x) => x.fileContent.name === document.name);
+        const fileIdx = this.files.findIndex((x) => x.uuid === document.uuid);
         this.files.splice(fileIdx, 1);
         let doc = this.model.form.documents.find((item) => item.uuid === document.uuid);
         let idx = this.model.form.documents.indexOf(doc);
@@ -84,12 +91,12 @@ export default class NewOrderController extends WebcController {
     });
 
     this.onTagClick('download-file', async (model, target, event) => {
-      const filename = target.getAttribute('data-custom') || null;
-      if (filename) {
+      const uuid = target.getAttribute('data-custom') || null;
+      if (uuid) {
         window.WebCardinal.loader.hidden = false;
-        const file = this.files.find((x) => x.fileContent.name === filename);
+        const file = this.files.find((x) => x.uuid === uuid);
         await this.FileDownloaderService.prepareDownloadFromBrowser(file.fileContent);
-        this.FileDownloaderService.downloadFileToDevice(filename);
+        this.FileDownloaderService.downloadFileToDevice(file.fileContent.name);
         window.WebCardinal.loader.hidden = true;
       }
     });

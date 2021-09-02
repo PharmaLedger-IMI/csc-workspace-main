@@ -71,14 +71,15 @@ class ReviewOrderControllerImpl extends WebcController {
 
       if (files) {
         files.forEach((file) => {
-          this.files.push(file);
+          const uuid = uuidv4();
+          this.files.push({ fileContent: file, uuid });
           this.model.form.documents.push({
             name: file.name,
             attached_by: this.role,
             date: new Date().toLocaleString(),
             link: '',
             canRemove: true,
-            uuid: uuidv4(),
+            uuid,
           });
         });
       }
@@ -86,7 +87,7 @@ class ReviewOrderControllerImpl extends WebcController {
 
     this.onTagClick('remove-file', (document) => {
       if (document.canRemove === true) {
-        const fileIdx = this.files.findIndex((x) => x.name === document.name);
+        const fileIdx = this.files.findIndex((x) => x.uuid === document.uuid);
         this.files.splice(fileIdx, 1);
         let doc = this.model.form.documents.find((item) => item.uuid === document.uuid);
         let idx = this.model.form.documents.indexOf(doc);
@@ -95,21 +96,26 @@ class ReviewOrderControllerImpl extends WebcController {
     });
 
     this.onTagClick('download-file', async (model, target, event) => {
-      const filename = target.getAttribute('data-custom') || null;
-      if (filename) {
+      const uuid = target.getAttribute('data-custom') || null;
+      if (uuid) {
         if (model.canRemove) {
           window.WebCardinal.loader.hidden = false;
-          const file = this.files.find((x) => x.name === filename);
-          await this.FileDownloaderService.prepareDownloadFromBrowser(file);
-          this.FileDownloaderService.downloadFileToDevice(filename);
+          const file = this.files.find((x) => x.uuid === uuid);
+          await this.FileDownloaderService.prepareDownloadFromBrowser(file.fileContent);
+          this.FileDownloaderService.downloadFileToDevice(file.fileContent.name);
           window.WebCardinal.loader.hidden = true;
-        } else if (model.name && model.name === filename) {
-          const document = this.model.order.documents.find((x) => x.name === filename);
-          const keySSI = document.attached_by === Roles.Sponsor ? this.model.order.sponsorDocumentsKeySSI : this.model.order.cmoDocumentsKeySSI;
-          await this.downloadFile(filename, FoldersEnum.Documents, keySSI);
         } else {
-          await this.downloadFile(filename, FoldersEnum.Kits, model.order.kitsSSI);
+          const file = this.files.find((x) => x.uuid === uuid);
+          const keySSI = file.fileContent.attached_by === Roles.Sponsor ? this.model.order.sponsorDocumentsKeySSI : this.model.order.cmoDocumentsKeySSI;
+          await this.downloadFile(file.fileContent.name, FoldersEnum.Documents, keySSI);
         }
+      }
+    });
+
+    this.onTagClick('download-kits-file', async (model, target, event) => {
+      const filename = target.getAttribute('data-custom') || null;
+      if (filename) {
+        await this.downloadFile(filename, FoldersEnum.Kits, model.order.kitsSSI);
       }
     });
   }
@@ -133,7 +139,7 @@ class ReviewOrderControllerImpl extends WebcController {
 
   async onSubmitYesResponse() {
     const orderStatus = this.role === Roles.Sponsor ? orderStatusesEnum.ReviewedBySponsor : orderStatusesEnum.ReviewedByCMO;
-    const newFiles = this.files;
+    const newFiles = this.files.filter((x) => x.fileContent instanceof File).map((x) => x.fileContent);
     const reviewComment = {
       entity: this.role,
       comment: this.model.form.inputs.add_comment.value,
@@ -298,6 +304,8 @@ class ReviewOrderControllerImpl extends WebcController {
 
   setDocuments(model) {
     model.form.documents = JSON.parse(JSON.stringify(this.originalOrder.documents));
+    model.form.documents = model.form.documents.map((x) => ({ ...x, uuid: uuidv4() }));
+    this.files = model.form.documents.map((x) => ({ fileContent: x, uuid: x.uuid }));
     return model;
   }
 
