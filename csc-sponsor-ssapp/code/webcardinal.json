@@ -40,13 +40,6 @@
       "src": "review-order.html",
       "tag": "review-order",
       "indexed": false
-    },
-    {
-      "name": "Shipment",
-      "path": "/shipment",
-      "src": "shipment.html",
-      "tag": "shipment",
-      "indexed": false
     }
   ],
   "skin" : "default"
