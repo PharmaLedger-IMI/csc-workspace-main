@@ -9,16 +9,19 @@ module.exports = class FileDownloaderService extends DSUService {
   }
 
   async prepareDownloadFromDsu(path, filename) {
-    let file = this.files.find((x) => x.filename === filename);
-    if (!file) {
-      file = {
-        path: path === '/' ? '' : path,
-        filename,
-      };
-      this.files.push(file);
+    return new Promise(async (resolve) => {
+      let file = this.files.find((x) => x.filename === filename);
+      if (!file) {
+        file = {
+          path: path === '/' ? '' : path,
+          filename,
+        };
+        this.files.push(file);
 
-      await this._getFileBlob(file.path, file.filename);
-    }
+        await this._getFileBlob(file.path, file.filename);
+        resolve();
+      } else resolve();
+    });
   }
 
   prepareDownloadFromBrowser(file) {
