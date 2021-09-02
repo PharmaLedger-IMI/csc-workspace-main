@@ -1,5 +1,6 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
+const cscServices = require('csc-services');
 const { Roles, NotificationTypes, Topics, messagesEnum, order, FoldersEnum } = require('./constants');
 const orderStatusesEnum = order.orderStatusesEnum;
 const NotificationsService = require('./lib/NotificationService.js');
@@ -308,7 +309,7 @@ class OrdersService extends DSUService {
       keySSI: order.uid,
       role: Roles.Sponsor,
       did: '123-56',
-      date: new Date().toISOString(),
+      date: new Date().toLocaleString(),
     };
 
     const resultNotification = await this.notificationsService.insertNotification(notification);

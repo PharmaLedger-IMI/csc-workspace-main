@@ -83,7 +83,7 @@ class DashboardControllerImpl extends WebcController {
 			keySSI: data.message.data.orderSSI,
 			role: notificationRole,
 			did: orderData.sponsorId,
-			date: new Date().toISOString()
+			date: new Date().toLocaleString()
 		};
 
 		const notificationResult = await this.notificationsService.insertNotification(notification);

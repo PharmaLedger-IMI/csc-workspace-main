@@ -132,7 +132,7 @@ class ReviewOrderControllerImpl extends WebcController {
       keySSI: this.model.order.keySSI,
       role: this.role,
       did: this.model.order.sponsorId,
-      date: new Date().toISOString(),
+      date: new Date().toLocaleString(),
     };
 
     await this.notificationsService.insertNotification(notification);
@@ -251,7 +251,7 @@ class ReviewOrderControllerImpl extends WebcController {
           validated: false,
         },
         { id: 'step-3', holder_id: 'step-3-wrapper', name: 'Comments', visible: false, validated: false },
-        { id: 'step-4', holder_id: 'step-4-wrapper', name: 'Confirmation', visible: false, validated: false },
+        { id: 'step-4', holder_id: 'step-4-wrapper', name: 'Summary', visible: false, validated: false },
       ],
       wizard_form_navigation: [
         { id: 'from_step_1_to_2', name: 'Next', visible: true, validated: false },
