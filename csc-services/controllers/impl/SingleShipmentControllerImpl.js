@@ -1,133 +1,108 @@
 const { WebcController } = WebCardinal.controllers;
+
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
-const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
 const momentService = cscServices.momentService;
-const { Roles, Topics, NotificationTypes, ButtonsEnum, Commons } = cscServices.constants;
-const { orderStatusesEnum, orderPendingActionEnum } = cscServices.constants.order;
-const {shipmentStatusesEnum} = cscServices.constants.shipment;
+const { Roles, Commons } = cscServices.constants;
+const { shipmentStatusesEnum, shipmentPendingActionEnum } = cscServices.constants.shipment;
 
 const csIdentities = {};
 csIdentities [Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
 csIdentities [Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
 csIdentities [Roles.Site] = CommunicationService.identities.CSC.SITE_IDENTITY;
+csIdentities [Roles.Courier] = CommunicationService.identities.CSC.COU_IDENTITY;
 
 class SingleShipmentControllerImpl extends WebcController {
   constructor(role, ...props) {
-
     super(...props);
+
     this.role = role;
 
-    const model = viewModelResolver('shipment');
-
-    //all fields are disabled
-    for (let prop in model.form.inputs) {
-      model.form.inputs[prop].disabled = true;
-    }
-    this.model = model;
-
-    let {keySSI} = this.history.location.state;
-    this.notificationsService = new NotificationsService(this.DSUStorage);
     let communicationService = CommunicationService.getInstance(csIdentities[role]);
+    this.notificationsService = new NotificationsService(this.DSUStorage);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
 
-    this.model.keySSI = keySSI;
+    this.initViewModel();
+    this.attachEventListeners();
+    this.openFirstAccordion();
+  }
 
-    this.init();
+  attachEventListeners() {
+    this.showHistoryHandler();
+    this.downloadKitListHandler();
+    this.toggleAccordionItemHandler();
 
-    //Init Check on Accordion Items
-    if (this.model.accordion) {
-      let keys = Object.keys(this.model.accordion);
-      if (keys) {
-        keys.forEach((key) => {
-          if (this.model.accordion[key].isOpened) {
-            this.openAccordionItem(this.model.accordion[key].id);
-          }
-        });
+    this.editShipmentHandler();
+  }
+
+  toggleAccordionItemHandler() {
+    this.onTagEvent('toggle-accordion', 'click', (model, target) => {
+      const targetIcon = target.querySelector('.accordion-icon');
+      target.classList.toggle('accordion-item-active');
+      targetIcon.classList.toggle('rotate-icon');
+
+      const panel = target.nextElementSibling;
+      if (panel.style.maxHeight === '1000px') {
+        panel.style.maxHeight = '0px';
+      } else {
+        panel.style.maxHeight = '1000px';
       }
-    }
-
-    this.onTagEvent('shipment_details_accordion', 'click', (e) => {
-      this.toggleAccordionItem('order_details_accordion');
-      this.model.accordion.order_details.isOpened = !this.model.accordion.order_details.isOpened;
-    });
-
-    this.onTagEvent('attached_documents_accordion', 'click', (e) => {
-      this.toggleAccordionItem('attached_documents_accordion');
-      this.model.accordion.attached_documents.isOpened = !this.model.accordion.attached_documents.isOpened;
-    });
-
-    this.onTagEvent('shipment_comments_accordion', 'click', (e) => {
-      this.toggleAccordionItem('order_comments_accordion');
-      this.model.accordion.order_comments.isOpened = !this.model.accordion.order_comments.isOpened;
-    });
-
-    this.onTagEvent('history-button', 'click', (e) => {
-      this.onShowHistoryClick();
-    });
-
-    this.onTagEvent('download-kit-list', 'click', (e) => {
-      console.log("[EVENT] download-kit-list");
     });
   }
 
-  toggleAccordionItem(el) {
-    const element = document.getElementById(el);
+  openFirstAccordion() {
+    const accordion = this.querySelector('.accordion-item');
+    const targetIcon = accordion.querySelector('.accordion-icon');
+    const panel = accordion.nextElementSibling;
 
-    const icon = document.getElementById(el + '_icon');
-    element.classList.toggle('accordion-item-active');
-    icon.classList.toggle('rotate-icon');
-
-    const panel = element.nextElementSibling;
-
-    if (panel.style.maxHeight === '1000px') {
-      panel.style.maxHeight = '0px';
-    } else {
-      panel.style.maxHeight = '1000px';
-    }
-  }
-
-  openAccordionItem(el) {
-    const element = document.getElementById(el);
-    const icon = document.getElementById(el + '_icon');
-
-    element.classList.add('accordion-item-active');
-    icon.classList.add('rotate-icon');
-
-    const panel = element.nextElementSibling;
+    accordion.classList.toggle('accordion-item-active');
+    targetIcon.classList.toggle('rotate-icon');
     panel.style.maxHeight = '1000px';
-
-    this.closeAllExcept(el);
   }
 
-  closeAccordionItem(el) {
-    const element = document.getElementById(el);
-    const icon = document.getElementById(el + '_icon');
+  editShipmentHandler() {
+    this.onTagClick('edit-shipment', () => {
+      const modalConfiguration = {
+        controller: 'EditShipmentController',
+        disableExpanding: true,
+        disableBackdropClosing: false,
+        disableFooter: true,
+        model: { keySSI: this.model.keySSI }
+      };
 
-    element.classList.remove('accordion-item-active');
-    icon.classList.remove('rotate-icon');
-
-    const panel = element.nextElementSibling;
-    panel.style.maxHeight = '0px';
+      this.showModalFromTemplate('editShipment', this.confirmEditShipmentCallback, () => {
+      }, modalConfiguration);
+    });
   }
 
-  closeAllExcept(el) {
-    const element = document.getElementById(el);
+  confirmEditShipmentCallback = async (event) => {
+    console.log('[EDIT Shipment] Confirm', event);
+    const shipmentDetails = event.detail;
+    const result = await this.shipmentsService.updateShipment(this.model.keySSI,
+      shipmentDetails, shipmentStatusesEnum.ReadyForDispatch, this.role);
 
-    if (el === 'order_details_accordion') {
-      this.closeAccordionItem('order_comments_accordion');
-    }
+    console.log('\n\n[UPDATE SHIPMENT AFTER EDIT]\n\n', JSON.stringify(result, null, 2));
+  };
 
-    if (el === 'order_comments_accordion') {
-      this.closeAccordionItem('order_details_accordion');
-    }
+  downloadKitListHandler() {
+    this.onTagEvent('download-kit-list', 'click', (model, target, event) => {
+      console.log('[EVENT] download-kit-list');
+    });
   }
 
+  showHistoryHandler() {
+    this.onTagEvent('history-button', 'click', (model, target, event) => {
+      console.log('[EVENT] history-button');
+      // this.onShowHistoryClick();
+    });
+  }
+
+  // TODO: Show Shipment History
   onShowHistoryClick() {
     this.createWebcModal({
       template: 'historyModal',
@@ -140,228 +115,102 @@ class SingleShipmentControllerImpl extends WebcController {
       disableClosing: false,
       disableCancelButton: true,
       expanded: false,
-      centered: true,
+      centered: true
     });
 
     console.log('Show History Clicked');
   }
 
-  async init() {
-
-    this.model.shipment = this.getSingleFakeShipment();
-
-    console.log(this.model);
-
-    // const shipment = await this.shipmentsService.getOrder(this.model.keySSI);
-    // this.model.order = order;
-    // this.model.order = {...this.transformData(this.model.order)};
-    //
-    // this.model.order.delivery_date = {
-    //   date: this.getDate(this.model.order.deliveryDate),
-    //   time: this.getTime(this.model.order.deliveryDate)
-    // }
-    //
-    // this.model.order.actions = this.setOrderActions();
-    // console.log(this.model.order);
-  }
-
-
-  getSingleFakeShipment(){
-    return  { "shipmentDate" : new Date().toISOString(), "shipperId" : "123123123", "specialInstructions" : "You have to do this.", "typeShipment" : "type_a",
-      "dimension" : {
-        "dimensionHeight" : 100,
-        "dimensionWidth" : 200,
-        "dimensionLength" : 300
-      },
-      "origin" : "Greece", "scheduledPickupDateTime" : new Date().toISOString(), "shippingCondition" : "broken", "signature" : "",
-    };
-  }
-
-  transformData(data){
-    if(data){
-
-      data.documents = [];
-
-      if(data.sponsorDocuments){
-        data.sponsorDocuments.forEach( (item) => {
-          item.date = momentService(item.data).format(Commons.DateTimeFormatPattern);
-
-        });
-      }
-
-      data.status_value = data.status.sort( (function(a,b){
-        return new Date(b.date) - new Date(a.date);
-      }))[0].status
-
-      data.status_date = momentService(data.status.sort( (function(a,b){
-        return new Date(b.date) - new Date(a.date);
-      }))[0].date).format(Commons.DateTimeFormatPattern);
-
-      data.status_approved = data.status_value === orderStatusesEnum.Approved;
-      data.status_cancelled = data.status_value === orderStatusesEnum.Canceled;
-      data.status_normal = data.status_value !== orderStatusesEnum.Canceled && data.status_value !== orderStatusesEnum.Approved;
-      data.pending_action = this.getPendingAction(data.status_value);
-
-      if(data.comments){
-        data.comments.forEach( (comment) => {
-          comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
-        })
-      }
-
-      if (data.sponsorDocuments) {
-        data.sponsorDocuments.forEach((doc) => {
-          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
-          data.documents.push(doc);
-        });
-      }
-
-      if (data.cmoDocuments) {
-        data.cmoDocuments.forEach((doc) => {
-          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
-          data.documents.push(doc);
-        });
-      }
+  transformOrderData(data) {
+    if (data) {
+      data.delivery_date = this.getDateTime(data.deliveryDate);
 
       return data;
     }
+
+    return {};
+  }
+
+  getDateTime(str) {
+    const dateTime = str.split(' ');
+    return {
+      date: dateTime[0],
+      time: dateTime[1]
+    };
+  }
+
+  transformShipmentData(data) {
+    if (data) {
+      data.status_value = data.status.sort((function(a, b) {
+        return new Date(b.date) - new Date(a.date);
+      }))[0].status;
+
+      data.status_date = momentService(data.status.sort((function(a, b) {
+        return new Date(b.date) - new Date(a.date);
+      }))[0].date).format(Commons.DateTimeFormatPattern);
+
+      const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
+      data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
+      data.status_normal = !(data.status_approved);
+      data.pending_action = this.getPendingAction(data.status_value);
+
+      return data;
+    }
+
+    return {};
   }
 
   getPendingAction(status_value) {
     switch (status_value) {
-      case orderStatusesEnum.Initiated:
-        return orderPendingActionEnum.PendingReviewByCMO;
+      case shipmentStatusesEnum.InPreparation:
+        return shipmentPendingActionEnum.PendingReadyForDispatch;
 
-      case orderStatusesEnum.ReviewedByCMO:
-        return orderPendingActionEnum.SponsorReviewOrApprove;
+      case shipmentStatusesEnum.ReadyForDispatch:
+        return shipmentPendingActionEnum.PendingPickUp;
 
-      case orderStatusesEnum.ReviewedBySponsor:
-        return orderPendingActionEnum.CMOReviewOrApprove;
+      case shipmentStatusesEnum.InTransit:
+        return shipmentPendingActionEnum.PendingDelivery;
 
-      case orderStatusesEnum.Canceled:
-        return orderPendingActionEnum.NoPendingActions;
+      case shipmentStatusesEnum.Delivered:
+        return shipmentPendingActionEnum.PendingReception;
 
-      case orderStatusesEnum.Approved:
-        return orderPendingActionEnum.PendingShipmentPreparation;
+      case shipmentStatusesEnum.Received:
+        return shipmentPendingActionEnum.ManageKits;
     }
 
-    return '';
+    return '-';
   }
 
-  setOrderActions(){
+  setShipmentActions() {
     const actions = {};
-    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, orderStatusesEnum.InPreparation];
-    const order = this.model.order;
-    switch (this.role){
-      case Roles.Sponsor:
-        actions.couldNotBeReviewed = orderStatusesEnum.ReviewedByCMO !== order.status_value;
-        actions.couldNotBeCancelled = cancellableOrderStatus.indexOf(order.status_value) === -1;
-        actions.couldNotBeApproved = order.status.map((status) => status.status).indexOf(orderStatusesEnum.ReviewedByCMO) === -1
-            || orderStatusesEnum.Canceled === order.status_value || orderStatusesEnum.Approved === order.status_value;
-        actions.orderCancelButtonText = order.pending_action === orderPendingActionEnum.PendingShipmentDispatch ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
-        this.onTagEvent('review-order', 'click', (e) => {
-          this.navigateToPageTag('review-order', {
-            order: JSON.parse(JSON.stringify(this.model.order)),
-          });
-        });
 
-        this.onTagEvent('cancel-order', 'click', (e) => {
-          this.showErrorModal(new Error(`Are you sure you want to cancel this order?`), 'Cancel Order', cancelOrder, () => {}, {
-            disableExpanding: true,
-            cancelButtonText: 'No',
-            confirmButtonText: 'Yes',
-            id: 'error-modal',
-          });
-        });
+    // TODO: Update the logic according to statuses after #61 is completed
+    actions.canScanShipment = false;
+    actions.canEditShipment = true;
 
-        this.onTagEvent('approve-order', 'click', () => {
-          this.showErrorModal(new Error(`Are you sure you want to approve the order?`), 'Approve Order', approveOrder, () => {}, {
-            disableExpanding: true,
-            cancelButtonText: 'No',
-            confirmButtonText: 'Yes',
-            id: 'error-modal',
-          });
-        });
-
-        const cancelOrder = async () => {
-          const result = await this.ordersService.updateOrderNew(this.model.order.keySSI, null, null, Roles.Sponsor, orderStatusesEnum.Canceled);
-          const notification = {
-            operation: NotificationTypes.UpdateOrderStatus,
-            orderId: this.model.order.orderId,
-            read: false,
-            status: orderStatusesEnum.Canceled,
-            keySSI: this.model.order.keySSI,
-            role: Roles.Sponsor,
-            did: order.sponsorId,
-            date: new Date().toISOString(),
-          };
-          await this.notificationsService.insertNotification(notification);
-          eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-          eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-          this.showErrorModalAndRedirect('Order was canceled, redirecting to dashboard...', 'Order Cancelled', '/', 2000);
-        };
-
-        const approveOrder = async () => {
-          const result = await this.ordersService.updateOrderNew(this.model.order.keySSI, null, null, Roles.Sponsor, orderStatusesEnum.Approved);
-          const notification = {
-            operation: NotificationTypes.UpdateOrderStatus,
-            orderId: this.model.order.orderId,
-            read: false,
-            status: orderStatusesEnum.Approved,
-            keySSI: this.model.order.keySSI,
-            role: Roles.Sponsor,
-            did: order.sponsorId,
-            date: new Date().toISOString(),
-          };
-          await this.notificationsService.insertNotification(notification);
-          eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-          eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-          this.showErrorModalAndRedirect('Order was approved, redirecting to dashboard...', 'Order Approved', '/', 2000);
-        };
-        break;
-      case Roles.CMO:
-        actions.couldNotBeReviewed = [orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.Approved, orderStatusesEnum.Canceled].indexOf(order.status_value)!==-1;
-        this.onTagEvent('review-order', 'click', (e) => {
-          this.navigateToPageTag('review-order', {
-            order: JSON.parse(JSON.stringify(this.model.order)),
-          });
-        });
-        this.onTagEvent('prepare-shipment', 'click', () => {
-          this.showErrorModal(new Error(`Are you sure you want to prepare the shipment?`), 'Prepare Shipment', prepareShipment, () => {}, {
-            disableExpanding: true,
-            cancelButtonText: 'No',
-            confirmButtonText: 'Yes',
-            id: 'error-modal',
-          });
-        });
-        const prepareShipment = async () => {
-          const result = await this.shipmentsService.createShipment(this.model.order);
-          const notification = {
-            operation: NotificationTypes.UpdateShipmentStatus,
-            orderId: this.model.order.orderId,
-            read: false,
-            status: shipmentStatusesEnum.InPreparation,
-            keySSI: this.model.order.keySSI,
-            role: Roles.CMO,
-            did: order.sponsorId,
-            date: new Date().toISOString(),
-          };
-          await this.notificationsService.insertNotification(notification);
-          eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-          eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-          this.showErrorModalAndRedirect('Shipment Initiated, redirecting to dashboard...', 'Shipment Initiated', '/', 2000);
-        };
-        break;
-    }
     return actions;
   }
 
-  getDate(str) {
-    return str.split(' ')[0];
-  }
+  async initViewModel() {
+    const model = viewModelResolver('order');
+    //all fields are disabled
+    for (let prop in model.form.inputs) {
+      model.form.inputs[prop].disabled = true;
+    }
 
-  getTime(str) {
-    return str.split(' ')[1];
+    let { keySSI } = this.history.location.state;
+    model.keySSI = keySSI;
+
+    model.shipment = await this.shipmentsService.getShipment(model.keySSI);
+    model.shipment = { ...this.transformShipmentData(model.shipment) };
+    model.actions = this.setShipmentActions();
+
+    model.order = await this.ordersService.getOrder(model.shipment.orderSSI);
+    model.order = { ...this.transformOrderData(model.order) };
+
+    this.model = model;
   }
 }
-const controllersRegistry = require("../ControllersRegistry").getControllersRegistry();
-controllersRegistry.registerController("SingleShipmentController", SingleShipmentControllerImpl);
+
+const controllersRegistry = require('../ControllersRegistry').getControllersRegistry();
+controllersRegistry.registerController('SingleShipmentController', SingleShipmentControllerImpl);

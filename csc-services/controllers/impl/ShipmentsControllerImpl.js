@@ -6,14 +6,20 @@ const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const ShipmentService = cscServices.ShipmentService;
 
-const { Topics, Commons } = cscServices.constants;
-const { shipmentTableHeaders, shipmentStatusesEnum } = cscServices.constants.shipment;
+const { Topics, Commons, Roles } = cscServices.constants;
+const {
+  shipmentStatusesEnum,
+  shipmentCMOTableHeaders,
+  shipmentSiteTableHeaders,
+  shipmentSponsorTableHeaders
+} = cscServices.constants.shipment;
 
 class ShipmentsControllerImpl extends WebcController {
 
   constructor(role, ...props) {
     super(...props);
 
+    this.role = role;
     this.model = this.getShipmentsViewModel();
     this.shipmentService = new ShipmentService(this.DSUStorage);
 
@@ -57,10 +63,20 @@ class ShipmentsControllerImpl extends WebcController {
   transformData(data) {
     if (data) {
       data.forEach((item) => {
-        item.requestDate_value = momentService(item.requestDate).format(Commons.DateTimeFormatPattern);
-        item.deliveryDate_value = momentService(item.schedulePickupDate).format(Commons.DateTimeFormatPattern);
-        item.lastModified_value = momentService(item.lastModified).format(Commons.DateTimeFormatPattern);
-        item.status_value = item.status;
+        item.orderId = item.orderId || '-';
+        item.shipmentId = item.shipmentId || '-';
+        item.shipperId = item.shipperId || '-';
+        item.origin = item.origin || '-';
+        item.type = item.type || '-';
+        item.recipientName = item.recipientName || '-';
+
+        const latestStatus = item.status.sort(function(a, b) {
+          return new Date(b.date) - new Date(a.date);
+        })[0];
+        item.status_value = latestStatus.status;
+        item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateFormatPattern) : '-';
+        item.requestDate = item.requestDate ? momentService(item.requestDate).format(Commons.DateTimeFormatPattern) : '-';
+        item.scheduledPickupDate = this.getPickupDateTime(item.scheduledPickupDate);
       });
     }
 
@@ -71,12 +87,6 @@ class ShipmentsControllerImpl extends WebcController {
     this.onTagClick('view-shipment', (model) => {
       this.navigateToPageTag('shipment', { keySSI: model.keySSI });
     });
-
-    this.onTagEvent('view-shipment', 'click', (model) => {
-     this.navigateToPageTag("shipment", { model: model });
-    });
-
-
   }
 
   searchFilterHandler() {
@@ -91,9 +101,9 @@ class ShipmentsControllerImpl extends WebcController {
     this.onTagClick('filters-changed', async (model, target) => {
       const selectedFilter = target.getAttribute('data-custom') || null;
       if (selectedFilter) {
-        document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
+        this.querySelector(`#filter-${this.model.filter}`).classList.remove('selected');
         this.model.filter = selectedFilter;
-        document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
+        this.querySelector(`#filter-${this.model.filter}`).classList.add('selected');
         this.filterData();
       }
     });
@@ -101,9 +111,9 @@ class ShipmentsControllerImpl extends WebcController {
 
   filterClearedHandler() {
     this.onTagClick('filters-cleared', async () => {
-      document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
+      this.querySelector(`#filter-${this.model.filter}`).classList.remove('selected');
       this.model.filter = '';
-      document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
+      this.querySelector(`#filter-${this.model.filter}`).classList.add('selected');
       this.model.search.value = null;
       this.filterData();
     });
@@ -128,12 +138,13 @@ class ShipmentsControllerImpl extends WebcController {
   }
 
   getShipmentsViewModel() {
+    const tableHeaders = this.getTableHeaders();
     return {
       filter: '',
       search: this.getSearchViewModel(),
       pagination: this.getPaginationViewModel(),
-      headers: shipmentTableHeaders,
-      tableLength: shipmentTableHeaders.length,
+      headers: tableHeaders,
+      tableLength: tableHeaders.length,
       shipmentsArrayNotEmpty: false,
       shipments: []
     };
@@ -166,7 +177,32 @@ class ShipmentsControllerImpl extends WebcController {
       }
     };
   }
+
+  getPickupDateTime(scheduledPickupDate) {
+    if (scheduledPickupDate) {
+      const timestamp = new Date(`${scheduledPickupDate.date} ${scheduledPickupDate.time}`).getTime();
+      return momentService(timestamp).format(Commons.DateTimeFormatPattern);
+    }
+
+    return '-';
+  }
+
+  getTableHeaders() {
+    switch (this.role) {
+      case Roles.CMO: {
+        return shipmentCMOTableHeaders;
+      }
+      case Roles.Site: {
+        return shipmentSiteTableHeaders;
+      }
+      case Roles.Sponsor: {
+        return shipmentSponsorTableHeaders;
+      }
+    }
+
+    return [];
+  }
 }
 
-const controllersRegistry = require("../ControllersRegistry").getControllersRegistry();
-controllersRegistry.registerController("ShipmentsController", ShipmentsControllerImpl);
+const controllersRegistry = require('../ControllersRegistry').getControllersRegistry();
+controllersRegistry.registerController('ShipmentsController', ShipmentsControllerImpl);
