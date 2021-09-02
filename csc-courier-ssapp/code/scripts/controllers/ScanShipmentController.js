@@ -1,18 +1,36 @@
 const { WebcController } = WebCardinal.controllers;
 
 export default class ScanShipmentController extends WebcController {
+
   constructor(...props) {
     super(...props);
 
     this.model = {};
 
-    this.init();
-    this.attachAll();
+    this.onEvents();
   }
 
-  init() {
+
+  onEvents(){
+    this.onTagEvent('scan-shipment-button', 'click', (e) => {
+      this.onModalOpen();
+    });
   }
 
-  attachAll() {
+  onModalOpen(){
+    this.createWebcModal({
+      template: 'scanShipmentModal',
+      controller: 'ScanShipmentModalController',
+      disableBackdropClosing: false,
+      disableFooter: true,
+      disableHeader: true,
+      disableExpanding: true,
+      disableClosing: true,
+      disableCancelButton: true,
+      expanded: false,
+      centered: true,
+    });
   }
+
+
 }

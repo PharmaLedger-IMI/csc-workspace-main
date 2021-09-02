@@ -1,0 +1,29 @@
+<div class="grid-column-wrapper">
+  <!-- Shipper ID -->
+  <label>{{@form.inputs.shipperId.label}}</label>
+  <input class="form-control form-control-sm" disabled="@form.inputs.shipperId.disabled"
+         name="@form.inputs.shipperId.name" placeholder="@form.inputs.shipperId.placeholder" type="text"
+         value="@shipment.shipperId"/>
+
+  <!-- Origin -->
+  <label>{{@form.inputs.origin.label}}</label>
+  <input class="form-control form-control-sm" disabled="@form.inputs.origin.disabled"
+         name="@form.inputs.origin.name" placeholder="@form.inputs.origin.placeholder" type="text"
+         value="@shipment.origin"/>
+
+  <!-- Type -->
+  <label>{{@form.inputs.typeShipment.label}}</label>
+  <input class="form-control form-control-sm" disabled="@form.inputs.typeShipment.disabled"
+         name="@form.inputs.typeShipment.name" placeholder="@form.inputs.typeShipment.placeholder"
+         type="text" value="@shipment.typeShipment"/>
+
+  <!-- Scheduled Pickup Date/Time -->
+  <label>Scheduled Pickup Date/Time</label>
+  <div>
+    <input class="form-control form-control-sm" disabled="@form.inputs.delivery_date.disabled"
+           name="@form.inputs.delivery_date.name" type="text" value="@order.delivery_date.date"/>
+    <input class="form-control form-control-sm" disabled="@form.inputs.delivery_time.disabled"
+           name="@form.inputs.delivery_time.name" type="text" value="@order.delivery_date.time"/>
+  </div>
+
+</div>

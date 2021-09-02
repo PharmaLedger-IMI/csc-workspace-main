@@ -26,6 +26,13 @@
       "src": "notifications.html",
       "indexed": false,
       "tag": "notifications"
+    },
+    {
+      "name": "Single Shipment",
+      "path": "./shipment",
+      "src": "shipment.html",
+      "indexed": false,
+      "tag": "shipment"
     }
   ],
   "skin": "default"
