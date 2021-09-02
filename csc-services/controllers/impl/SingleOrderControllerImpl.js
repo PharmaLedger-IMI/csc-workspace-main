@@ -279,7 +279,7 @@ class SingleOrderControllerImpl extends WebcController {
             keySSI: this.model.order.keySSI,
             role: Roles.Sponsor,
             did: order.sponsorId,
-            date: new Date().toISOString(),
+            date: new Date().toLocaleString(),
           };
           await this.notificationsService.insertNotification(notification);
           eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
