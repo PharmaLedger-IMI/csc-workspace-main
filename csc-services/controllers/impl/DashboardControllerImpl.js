@@ -69,12 +69,12 @@ class DashboardControllerImpl extends WebcController {
 	async handleOrderMessages(data) {
 		data = JSON.parse(data);
 		console.log('message received', data);
-		const [orderData, orderStatus, notificationRole] = await this.getNotificationDataForOrderStatus(data);
+		const [orderData, orderStatus, notificationRole] = await this.processOrderMessage(data);
 		if (!orderData || !orderStatus || !notificationRole) {
 			return;
 		}
 
-		console.log('getNotificationDataForOrderStatus received', orderData, orderStatus, notificationRole);
+		console.log('order message received', orderData, orderStatus, notificationRole);
 		const notification = {
 			operation: NotificationTypes.UpdateOrderStatus,
 			orderId: orderData.orderId,
@@ -83,7 +83,7 @@ class DashboardControllerImpl extends WebcController {
 			keySSI: data.message.data.orderSSI,
 			role: notificationRole,
 			did: orderData.sponsorId,
-			date: new Date().toISOString()
+			date: new Date().toLocaleString()
 		};
 
 		const notificationResult = await this.notificationsService.insertNotification(notification);
@@ -95,12 +95,12 @@ class DashboardControllerImpl extends WebcController {
 	async handleShipmentMessages(data) {
 		data = JSON.parse(data);
 		console.log('message received', data);
-		const [shipmentData, shipmentStatus, notificationRole] = await this.getNotificationDataForShipmentStatus(data);
+		const [shipmentData, shipmentStatus, notificationRole] = await this.processShipmentMessage(data);
 		if (!shipmentData || !shipmentStatus || !notificationRole) {
 			return;
 		}
 
-		console.log('getNotificationDataForShipmentStatus received', shipmentData, shipmentStatus, notificationRole);
+		console.log('shipment message received', shipmentData, shipmentStatus, notificationRole);
 		const notification = {
 			operation: NotificationTypes.UpdateShipmentStatus,
 			shipmentId: shipmentData.shipmentId,
@@ -118,7 +118,7 @@ class DashboardControllerImpl extends WebcController {
 		console.log('notification added', notification, notificationResult);
 	}
 
-	async getNotificationDataForOrderStatus(data) {
+	async processOrderMessage(data) {
 		let orderData;
 		let orderStatus;
 		let notificationRole;
@@ -185,7 +185,7 @@ class DashboardControllerImpl extends WebcController {
 		return [orderData, orderStatus, notificationRole];
 	}
 
-	async getNotificationDataForShipmentStatus(data) {
+	async processShipmentMessage(data) {
 		let shipmentData;
 		let shipmentStatus;
 		let notificationRole;
@@ -197,10 +197,10 @@ class DashboardControllerImpl extends WebcController {
 
 				const {
 					shipmentSSI,
-					statusKeySSI
+					statusSSI
 				} = data.message.data;
 
-				shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusKeySSI);
+				shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusSSI);
 				break;
 			}
 		}

@@ -153,14 +153,14 @@ class SingleOrderControllerImpl extends WebcController {
     const order = await this.ordersService.getOrder(this.model.keySSI);
     this.model.order = order;
     this.model.order = { ...this.transformData(this.model.order) };
-
     this.model.order.delivery_date = {
       date: this.getDate(this.model.order.deliveryDate),
       time: this.getTime(this.model.order.deliveryDate),
     };
+    
 
     this.model.order.actions = this.setOrderActions();
-    console.log(this.model.order);
+    //console.log("SingleOrderController" +  JSON.stringify(this.model.order));
     this.prepareDocumentsDownloads(JSON.parse(JSON.stringify(this.model.order.documents)), this.model.order.cmoDocumentsKeySSI, this.model.order.sponsorDocumentsKeySSI);
     this.prepareKitsFileDownload(this.model.order.kitsFilename, this.model.order.kitsSSI);
   }
@@ -279,7 +279,7 @@ class SingleOrderControllerImpl extends WebcController {
             keySSI: this.model.order.keySSI,
             role: Roles.Sponsor,
             did: order.sponsorId,
-            date: new Date().toISOString(),
+            date: new Date().toLocaleString(),
           };
           await this.notificationsService.insertNotification(notification);
           eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
@@ -297,7 +297,7 @@ class SingleOrderControllerImpl extends WebcController {
             keySSI: this.model.order.keySSI,
             role: Roles.Sponsor,
             did: order.sponsorId,
-            date: new Date().toISOString(),
+            date: new Date().toLocaleString(),
           };
           await this.notificationsService.insertNotification(notification);
           eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
@@ -324,7 +324,7 @@ class SingleOrderControllerImpl extends WebcController {
           const result = await this.shipmentsService.createShipment(this.model.order);
           const notification = {
             operation: NotificationTypes.UpdateShipmentStatus,
-            orderId: this.model.order.orderId,
+            shipmentId:"1234",
             read: false,
             status: shipmentStatusesEnum.InPreparation,
             keySSI: result.keySSI,
@@ -334,7 +334,7 @@ class SingleOrderControllerImpl extends WebcController {
           };
           await this.notificationsService.insertNotification(notification);
           eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-          eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+          eventBusService.emitEventListeners(Topics.RefreshShipments, null);
           this.showErrorModalAndRedirect('Shipment Initiated, redirecting to dashboard...', 'Shipment Initiated', '/', 2000);
         };
         break;

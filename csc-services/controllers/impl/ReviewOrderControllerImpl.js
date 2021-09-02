@@ -9,6 +9,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const { Topics, Roles, NotificationTypes, order, FoldersEnum } = cscServices.constants;
 const { orderStatusesEnum } = order;
 const FileDownloaderService = cscServices.FileDownloaderService;
+const { uuidv4 } = cscServices.utils;
 
 const csIdentities = {};
 csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
@@ -76,18 +77,18 @@ class ReviewOrderControllerImpl extends WebcController {
             link: '',
             canRemove: true,
             file: file,
+            uuid: uuidv4(),
           });
         });
       }
     });
 
-    this.onTagClick('remove-file', (event) => {
-      this.model.form.documents.forEach((document) => {
-        if (document.canRemove === true) {
-          let idx = this.model.form.documents.indexOf(document);
-          this.model.form.documents.splice(idx, 1);
-        }
-      });
+    this.onTagClick('remove-file', (document) => {
+      if (document.canRemove === true) {
+        let doc = this.model.form.documents.find(item => item.uuid === document.uuid);
+        let idx = this.model.form.documents.indexOf(doc);
+        this.model.form.documents.splice(idx, 1);
+      }
     });
 
     this.onTagClick('download-file', (model, target, event) => {
@@ -132,7 +133,7 @@ class ReviewOrderControllerImpl extends WebcController {
       keySSI: this.model.order.keySSI,
       role: this.role,
       did: this.model.order.sponsorId,
-      date: new Date().toISOString(),
+      date: new Date().toLocaleString(),
     };
 
     await this.notificationsService.insertNotification(notification);
@@ -251,7 +252,7 @@ class ReviewOrderControllerImpl extends WebcController {
           validated: false,
         },
         { id: 'step-3', holder_id: 'step-3-wrapper', name: 'Comments', visible: false, validated: false },
-        { id: 'step-4', holder_id: 'step-4-wrapper', name: 'Confirmation', visible: false, validated: false },
+        { id: 'step-4', holder_id: 'step-4-wrapper', name: 'Summary', visible: false, validated: false },
       ],
       wizard_form_navigation: [
         { id: 'from_step_1_to_2', name: 'Next', visible: true, validated: false },

@@ -23,10 +23,7 @@ class OrdersService extends DSUService {
 
   async getOrders() {
     const result = await this.storageService.filter(this.ORDERS_TABLE);
-    // return demoData;
-    if (result) {
-      return result.filter((x) => !x.deleted);
-    } else return [];
+    return result ? result : [];
   }
 
   async getOrder(keySSI) {
@@ -282,6 +279,7 @@ class OrdersService extends DSUService {
     };
 
     const order = await this.saveEntityAsync(orderModel);
+    //console.log("orderServiceData " + JSON.stringify(order));
 
     const orderDb = await this.addOrderToDB(
       {
@@ -310,7 +308,7 @@ class OrdersService extends DSUService {
       keySSI: order.uid,
       role: Roles.Sponsor,
       did: '123-56',
-      date: new Date().toISOString(),
+      date: new Date().toLocaleString(),
     };
 
     const resultNotification = await this.notificationsService.insertNotification(notification);
@@ -629,7 +627,6 @@ class OrdersService extends DSUService {
         }
         break;
     }
-
     const result = await this.updateOrderToDB(orderDB, orderKeySSI);
     return result;
   }

@@ -7,6 +7,7 @@ const OrdersService = cscServices.OrderService;
 const CommunicationService = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
 const FileDownloaderService = cscServices.FileDownloaderService;
+const { uuidv4 } = cscServices.utils;
 
 export default class NewOrderController extends WebcController {
   constructor(...props) {
@@ -20,7 +21,7 @@ export default class NewOrderController extends WebcController {
         { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Order Details', visible: true, validated: false },
         { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Attach Documents', visible: false, validated: false },
         { id: 'step-3', holder_id: 'step-3-wrapper', name: 'Comments', visible: false, validated: false },
-        { id: 'step-4', holder_id: 'step-4-wrapper', name: 'Confirmation', visible: false, validated: false },
+        { id: 'step-4', holder_id: 'step-4-wrapper', name: 'Summary', visible: false, validated: false },
       ],
       wizard_form_navigation: [
         { id: 'from_step_1_to_2', name: 'Next', visible: true, validated: false },
@@ -39,7 +40,15 @@ export default class NewOrderController extends WebcController {
       if (files) {
         files.forEach((file) => {
           this.FileDownloaderService.prepareDownloadFromBrowser(file);
-          this.model.form.documents.push({ name: file.name, attached_by: Roles.Sponsor, date: new Date().toLocaleString(), link: '', canRemove: true, file: file });
+          this.model.form.documents.push({
+            name: file.name,
+            attached_by: Roles.Sponsor,
+            date: new Date().toLocaleString(),
+            link: '',
+            canRemove: true,
+            file: file,
+            uuid: uuidv4(),
+          });
         });
       }
 
@@ -65,13 +74,12 @@ export default class NewOrderController extends WebcController {
       }
     });
 
-    this.onTagClick('remove-file', (event) => {
-      this.model.form.documents.forEach((document) => {
-        if (document.canRemove === true) {
-          let idx = this.model.form.documents.indexOf(document);
-          this.model.form.documents.splice(idx, 1);
-        }
-      });
+    this.onTagClick('remove-file', (document) => {
+      if (document.canRemove === true) {
+        let doc = this.model.form.documents.find(item => item.uuid === document.uuid);
+        let idx = this.model.form.documents.indexOf(doc);
+        this.model.form.documents.splice(idx, 1);
+      }
     });
 
     this.onTagClick('download-file', (model, target, event) => {
