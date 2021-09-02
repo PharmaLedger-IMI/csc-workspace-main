@@ -279,6 +279,7 @@ class OrdersService extends DSUService {
     };
 
     const order = await this.saveEntityAsync(orderModel);
+    //console.log("orderServiceData " + JSON.stringify(order));
 
     const orderDb = await this.addOrderToDB(
       {
@@ -626,7 +627,6 @@ class OrdersService extends DSUService {
         }
         break;
     }
-
     const result = await this.updateOrderToDB(orderDB, orderKeySSI);
     return result;
   }
