@@ -21,17 +21,20 @@ module.exports = class FileDownloaderService extends DSUService {
     }
   }
 
-  async prepareDownloadFromBrowser(file) {
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      let blob = new Blob([new Uint8Array(e.target.result)], { type: file.type });
-      this.files.push({
-        filename: file.name,
-        rawBlob: blob,
-        mimeType: blob.type,
-      });
-    };
-    reader.readAsArrayBuffer(file);
+  prepareDownloadFromBrowser(file) {
+    return new Promise((resolve) => {
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        let blob = new Blob([new Uint8Array(e.target.result)], { type: file.type });
+        this.files.push({
+          filename: file.name,
+          rawBlob: blob,
+          mimeType: blob.type,
+        });
+        resolve();
+      };
+      reader.readAsArrayBuffer(file);
+    });
   }
 
   downloadFileToDevice = (filename) => {

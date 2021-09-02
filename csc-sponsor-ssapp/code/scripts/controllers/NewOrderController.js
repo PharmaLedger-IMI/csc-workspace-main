@@ -10,6 +10,8 @@ const FileDownloaderService = cscServices.FileDownloaderService;
 const { uuidv4 } = cscServices.utils;
 
 export default class NewOrderController extends WebcController {
+  files = [];
+
   constructor(...props) {
     super(...props);
     let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
@@ -32,6 +34,7 @@ export default class NewOrderController extends WebcController {
       ],
       form: viewModelResolver('order').form,
       orderCreatedKeySSI: '',
+      isLoading: false,
     };
 
     this.on('add-file', (event) => {
@@ -39,7 +42,7 @@ export default class NewOrderController extends WebcController {
 
       if (files) {
         files.forEach((file) => {
-          this.FileDownloaderService.prepareDownloadFromBrowser(file);
+          this.files.push(file);
           this.model.form.documents.push({
             name: file.name,
             attached_by: Roles.Sponsor,
@@ -59,9 +62,8 @@ export default class NewOrderController extends WebcController {
       const files = event.data;
 
       if (files && files.length > 0) {
-        console.log(files);
         try {
-          this.FileDownloaderService.prepareDownloadFromBrowser(files[0]);
+          this.files.push(files[0]);
           const ids = await this.readFile(files[0]);
           this.model.form.inputs.kit_ids_attachment.name = files[0].name;
           this.model.form.inputs.kit_ids_attachment.ids = ids;
@@ -76,15 +78,21 @@ export default class NewOrderController extends WebcController {
 
     this.onTagClick('remove-file', (document) => {
       if (document.canRemove === true) {
-        let doc = this.model.form.documents.find(item => item.uuid === document.uuid);
+        const fileIdx = this.files.findIndex((x) => x.name === document.name);
+        this.files.splice(fileIdx, 1);
+        let doc = this.model.form.documents.find((item) => item.uuid === document.uuid);
         let idx = this.model.form.documents.indexOf(doc);
         this.model.form.documents.splice(idx, 1);
       }
     });
 
-    this.onTagClick('download-file', (model, target, event) => {
+    this.onTagClick('download-file', async (model, target, event) => {
       const filename = target.getAttribute('data-custom') || null;
       if (filename) {
+        this.model.isLoading = true;
+        const file = this.files.find((x) => x.name === filename);
+        await this.FileDownloaderService.prepareDownloadFromBrowser(file);
+        this.model.isLoading = false;
         this.FileDownloaderService.downloadFileToDevice(filename);
       }
     });
@@ -252,7 +260,6 @@ export default class NewOrderController extends WebcController {
 
   // TODO: Copy below functions to utils
   readFile(file) {
-    console.log(file);
     return new Promise((resolve, reject) => {
       var reader = new FileReader();
       reader.onload = () => {
