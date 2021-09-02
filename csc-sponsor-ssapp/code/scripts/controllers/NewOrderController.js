@@ -2,7 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService;
-const { Topics, Roles } = cscServices.constants;
+const { Topics, Roles, DocumentTypes } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
 const CommunicationService = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
@@ -34,7 +34,6 @@ export default class NewOrderController extends WebcController {
       ],
       form: viewModelResolver('order').form,
       orderCreatedKeySSI: '',
-      isLoading: false,
     };
 
     this.on('add-file', (event) => {
@@ -42,14 +41,13 @@ export default class NewOrderController extends WebcController {
 
       if (files) {
         files.forEach((file) => {
-          this.files.push(file);
+          this.files.push({ fileContent: file, type: DocumentTypes.Document });
           this.model.form.documents.push({
             name: file.name,
             attached_by: Roles.Sponsor,
             date: new Date().toLocaleString(),
             link: '',
             canRemove: true,
-            file: file,
             uuid: uuidv4(),
           });
         });
@@ -63,11 +61,10 @@ export default class NewOrderController extends WebcController {
 
       if (files && files.length > 0) {
         try {
-          this.files.push(files[0]);
+          this.files.push({ fileContent: files[0], type: DocumentTypes.Kit });
           const ids = await this.readFile(files[0]);
           this.model.form.inputs.kit_ids_attachment.name = files[0].name;
           this.model.form.inputs.kit_ids_attachment.ids = ids;
-          this.model.form.inputs.kit_ids_attachment.file = files[0];
         } catch (err) {
           console.log(err);
           this.model.form.inputs.kit_ids_attachment.name = 'No File';
@@ -78,7 +75,7 @@ export default class NewOrderController extends WebcController {
 
     this.onTagClick('remove-file', (document) => {
       if (document.canRemove === true) {
-        const fileIdx = this.files.findIndex((x) => x.name === document.name);
+        const fileIdx = this.files.findIndex((x) => x.fileContent.name === document.name);
         this.files.splice(fileIdx, 1);
         let doc = this.model.form.documents.find((item) => item.uuid === document.uuid);
         let idx = this.model.form.documents.indexOf(doc);
@@ -89,11 +86,11 @@ export default class NewOrderController extends WebcController {
     this.onTagClick('download-file', async (model, target, event) => {
       const filename = target.getAttribute('data-custom') || null;
       if (filename) {
-        this.model.isLoading = true;
-        const file = this.files.find((x) => x.name === filename);
-        await this.FileDownloaderService.prepareDownloadFromBrowser(file);
-        this.model.isLoading = false;
+        window.WebCardinal.loader.hidden = false;
+        const file = this.files.find((x) => x.fileContent.name === filename);
+        await this.FileDownloaderService.prepareDownloadFromBrowser(file.fileContent);
         this.FileDownloaderService.downloadFileToDevice(filename);
+        window.WebCardinal.loader.hidden = true;
       }
     });
 
@@ -181,13 +178,15 @@ export default class NewOrderController extends WebcController {
 
         if (this.model.form.documents) {
           payload['files'] = [];
-          this.model.form.documents.forEach((doc) => {
-            payload['files'].push(doc.file);
+          this.files.forEach((file) => {
+            if (file.type === DocumentTypes.Document) {
+              payload['files'].push(file.fileContent);
+            }
           });
         }
 
         payload['kitIds'] = JSON.parse(JSON.stringify(this.model.form.inputs.kit_ids_attachment.ids));
-        payload['kitIdsFile'] = this.model.form.inputs.kit_ids_attachment.file;
+        payload['kitIdsFile'] = this.files.find((x) => x.type === DocumentTypes.Kit).fileContent;
 
         console.log('SUBMIT : Payload: ', payload);
 
@@ -220,6 +219,7 @@ export default class NewOrderController extends WebcController {
     //When you reset form
     this.onTagEvent('form_reset', 'click', (e) => {
       this.model.form = viewModelResolver('order').form;
+      this.files = [];
     });
 
     //Add active menu class to element

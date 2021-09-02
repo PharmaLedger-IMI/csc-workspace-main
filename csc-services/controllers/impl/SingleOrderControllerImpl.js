@@ -37,7 +37,6 @@ class SingleOrderControllerImpl extends WebcController {
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
 
     this.model.keySSI = keySSI;
-    this.model.isLoading = false;
 
     this.init();
 
@@ -167,9 +166,6 @@ class SingleOrderControllerImpl extends WebcController {
     };
 
     this.model.order.actions = this.setOrderActions();
-    //console.log("SingleOrderController" +  JSON.stringify(this.model.order));
-    // this.prepareDocumentsDownloads(JSON.parse(JSON.stringify(this.model.order.documents)), this.model.order.cmoDocumentsKeySSI, this.model.order.sponsorDocumentsKeySSI);
-    // this.prepareKitsFileDownload(this.model.order.kitsFilename, this.model.order.kitsSSI);
   }
 
   transformData(data) {
@@ -358,11 +354,11 @@ class SingleOrderControllerImpl extends WebcController {
   }
 
   async downloadFile(filename, rootFolder, keySSI) {
-    this.model.isLoading = true;
+    window.WebCardinal.loader.hidden = false;
     const path = rootFolder + '/' + keySSI + '/' + 'files';
     await this.FileDownloaderService.prepareDownloadFromDsu(path, filename);
     this.FileDownloaderService.downloadFileToDevice(filename);
-    this.model.isLoading = false;
+    window.WebCardinal.loader.hidden = true;
   }
 }
 const controllersRegistry = require('../ControllersRegistry').getControllersRegistry();

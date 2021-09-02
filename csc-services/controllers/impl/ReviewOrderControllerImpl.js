@@ -16,6 +16,8 @@ csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTI
 csIdentities[Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
 
 class ReviewOrderControllerImpl extends WebcController {
+  files = [];
+
   constructor(role, ...props) {
     super(...props);
 
@@ -69,14 +71,13 @@ class ReviewOrderControllerImpl extends WebcController {
 
       if (files) {
         files.forEach((file) => {
-          this.FileDownloaderService.prepareDownloadFromBrowser(file);
+          this.files.push(file);
           this.model.form.documents.push({
             name: file.name,
             attached_by: this.role,
             date: new Date().toLocaleString(),
             link: '',
             canRemove: true,
-            file: file,
             uuid: uuidv4(),
           });
         });
@@ -85,16 +86,30 @@ class ReviewOrderControllerImpl extends WebcController {
 
     this.onTagClick('remove-file', (document) => {
       if (document.canRemove === true) {
-        let doc = this.model.form.documents.find(item => item.uuid === document.uuid);
+        const fileIdx = this.files.findIndex((x) => x.name === document.name);
+        this.files.splice(fileIdx, 1);
+        let doc = this.model.form.documents.find((item) => item.uuid === document.uuid);
         let idx = this.model.form.documents.indexOf(doc);
         this.model.form.documents.splice(idx, 1);
       }
     });
 
-    this.onTagClick('download-file', (model, target, event) => {
+    this.onTagClick('download-file', async (model, target, event) => {
       const filename = target.getAttribute('data-custom') || null;
       if (filename) {
-        this.FileDownloaderService.downloadFileToDevice(filename);
+        if (model.canRemove) {
+          window.WebCardinal.loader.hidden = false;
+          const file = this.files.find((x) => x.name === filename);
+          await this.FileDownloaderService.prepareDownloadFromBrowser(file);
+          this.FileDownloaderService.downloadFileToDevice(filename);
+          window.WebCardinal.loader.hidden = true;
+        } else if (model.name && model.name === filename) {
+          const document = this.model.order.documents.find((x) => x.name === filename);
+          const keySSI = document.attached_by === Roles.Sponsor ? this.model.order.sponsorDocumentsKeySSI : this.model.order.cmoDocumentsKeySSI;
+          await this.downloadFile(filename, FoldersEnum.Documents, keySSI);
+        } else {
+          await this.downloadFile(filename, FoldersEnum.Kits, model.order.kitsSSI);
+        }
       }
     });
   }
@@ -118,7 +133,7 @@ class ReviewOrderControllerImpl extends WebcController {
 
   async onSubmitYesResponse() {
     const orderStatus = this.role === Roles.Sponsor ? orderStatusesEnum.ReviewedBySponsor : orderStatusesEnum.ReviewedByCMO;
-    const newFiles = this.model.form.documents.filter((doc) => typeof doc.file !== 'undefined').map((document) => document.file);
+    const newFiles = this.files;
     const reviewComment = {
       entity: this.role,
       comment: this.model.form.inputs.add_comment.value,
@@ -162,6 +177,7 @@ class ReviewOrderControllerImpl extends WebcController {
   formResetHandler() {
     this.onTagEvent('form_reset', 'click', () => {
       this.model = this.getReviewOrderViewModel();
+      this.files = [];
     });
   }
 
@@ -282,31 +298,15 @@ class ReviewOrderControllerImpl extends WebcController {
 
   setDocuments(model) {
     model.form.documents = JSON.parse(JSON.stringify(this.originalOrder.documents));
-    this.prepareDocumentsDownloads(JSON.parse(JSON.stringify(model.order.documents)), model.order.cmoDocumentsKeySSI, model.order.sponsorDocumentsKeySSI);
-    this.prepareKitsFileDownload(model.order.kitsFilename, model.order.kitsSSI);
     return model;
   }
 
-  prepareKitsFileDownload(filename, keySSI) {
-    let path = FoldersEnum.Kits + '/' + keySSI + '/' + 'files';
-    this.FileDownloaderService.prepareDownloadFromDsu(path, filename);
-  }
-
-  prepareDocumentsDownloads(documents, cmoDocumentsKeySSI, sponsorDocumentsKeySSI) {
-    if (documents && documents.length > 0) {
-      documents.forEach((x) => {
-        let path = null;
-        if (x.attached_by === Roles.Sponsor) {
-          path = FoldersEnum.Documents + '/' + sponsorDocumentsKeySSI + '/' + 'files';
-        } else if (x.attached_by === Roles.CMO) {
-          path = FoldersEnum.Documents + '/' + cmoDocumentsKeySSI + '/' + 'files';
-        }
-
-        if (path) {
-          this.FileDownloaderService.prepareDownloadFromDsu(path, x.name);
-        }
-      });
-    }
+  async downloadFile(filename, rootFolder, keySSI) {
+    window.WebCardinal.loader.hidden = false;
+    const path = rootFolder + '/' + keySSI + '/' + 'files';
+    await this.FileDownloaderService.prepareDownloadFromDsu(path, filename);
+    this.FileDownloaderService.downloadFileToDevice(filename);
+    window.WebCardinal.loader.hidden = true;
   }
 }
 
