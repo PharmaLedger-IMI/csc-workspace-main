@@ -73,12 +73,12 @@ class ReviewOrderControllerImpl extends WebcController {
           this.FileDownloaderService.prepareDownloadFromBrowser(file);
           this.model.form.documents.push({
             name: file.name,
-            uuid: uuidv4(),
             attached_by: this.role,
             date: new Date().toLocaleString(),
             link: '',
             canRemove: true,
             file: file,
+            uuid: uuidv4(),
           });
         });
       }
@@ -86,7 +86,7 @@ class ReviewOrderControllerImpl extends WebcController {
 
     this.onTagClick('remove-file', (document) => {
       if (document.canRemove === true) {
-        let doc = this.model.form.documents.find(item => item.uuid == document.uuid);
+        let doc = this.model.form.documents.find(item => item.uuid === document.uuid);
         let idx = this.model.form.documents.indexOf(doc);
         this.model.form.documents.splice(idx, 1);
       }
