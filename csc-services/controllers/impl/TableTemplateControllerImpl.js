@@ -18,14 +18,6 @@ class TableTemplateControllerImpl extends WebcController {
       this.paginateData(this.model.data);
     });
 
-    this.model.addExpression(
-      'isOrdersTable',
-      () => {
-        return this.model.type === 'orders';
-      },
-      'type'
-    );
-
     this.onTagClick('navigate-to-page', async (model) => {
       this.paginateData(this.model.data, model.value ? parseInt(model.value) : model.data);
     });

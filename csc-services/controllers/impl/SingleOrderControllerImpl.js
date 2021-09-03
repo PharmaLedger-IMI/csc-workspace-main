@@ -71,10 +71,23 @@ class SingleOrderControllerImpl extends WebcController {
       this.onShowHistoryClick();
     });
 
-    this.onTagClick('download-file', (model, target, event) => {
+    this.onTagClick('download-file', async (model, target, event) => {
       const filename = target.getAttribute('data-custom') || null;
       if (filename) {
-        this.FileDownloaderService.downloadFileToDevice(filename);
+        if (model.name && model.name === filename) {
+          const document = this.model.order.documents.find((x) => x.name === filename);
+          const keySSI = document.attached_by === Roles.Sponsor ? this.model.order.sponsorDocumentsKeySSI : this.model.order.cmoDocumentsKeySSI;
+          await this.downloadFile(filename, FoldersEnum.Documents, keySSI);
+        } else {
+          await this.downloadFile(filename, FoldersEnum.Kits, model.order.kitsSSI);
+        }
+      }
+    });
+
+    this.onTagClick('download-kits-file', async (model, target, event) => {
+      const filename = target.getAttribute('data-custom') || null;
+      if (filename) {
+        await this.downloadFile(filename, FoldersEnum.Kits, model.order.kitsSSI);
       }
     });
   }
@@ -160,9 +173,6 @@ class SingleOrderControllerImpl extends WebcController {
     
 
     this.model.order.actions = this.setOrderActions();
-    //console.log("SingleOrderController" +  JSON.stringify(this.model.order));
-    this.prepareDocumentsDownloads(JSON.parse(JSON.stringify(this.model.order.documents)), this.model.order.cmoDocumentsKeySSI, this.model.order.sponsorDocumentsKeySSI);
-    this.prepareKitsFileDownload(this.model.order.kitsFilename, this.model.order.kitsSSI);
   }
 
   transformData(data) {
@@ -324,7 +334,7 @@ class SingleOrderControllerImpl extends WebcController {
           const result = await this.shipmentsService.createShipment(this.model.order);
           const notification = {
             operation: NotificationTypes.UpdateShipmentStatus,
-            shipmentId:"1234",
+            shipmentId: '1234',
             read: false,
             status: shipmentStatusesEnum.InPreparation,
             keySSI: result.keySSI,
@@ -350,26 +360,12 @@ class SingleOrderControllerImpl extends WebcController {
     return str.split(' ')[1];
   }
 
-  prepareKitsFileDownload(filename, keySSI) {
-    let path = FoldersEnum.Kits + '/' + keySSI + '/' + 'files';
-    this.FileDownloaderService.prepareDownloadFromDsu(path, filename);
-  }
-
-  prepareDocumentsDownloads(documents, cmoDocumentsKeySSI, sponsorDocumentsKeySSI) {
-    if (documents && documents.length > 0) {
-      documents.forEach((x) => {
-        let path = null;
-        if (x.attached_by === Roles.Sponsor) {
-          path = FoldersEnum.Documents + '/' + sponsorDocumentsKeySSI + '/' + 'files';
-        } else if (x.attached_by === Roles.CMO) {
-          path = FoldersEnum.Documents + '/' + cmoDocumentsKeySSI + '/' + 'files';
-        }
-
-        if (path) {
-          this.FileDownloaderService.prepareDownloadFromDsu(path, x.name);
-        }
-      });
-    }
+  async downloadFile(filename, rootFolder, keySSI) {
+    window.WebCardinal.loader.hidden = false;
+    const path = rootFolder + '/' + keySSI + '/' + 'files';
+    await this.FileDownloaderService.prepareDownloadFromDsu(path, filename);
+    this.FileDownloaderService.downloadFileToDevice(filename);
+    window.WebCardinal.loader.hidden = true;
   }
 }
 const controllersRegistry = require('../ControllersRegistry').getControllersRegistry();

@@ -9,29 +9,35 @@ module.exports = class FileDownloaderService extends DSUService {
   }
 
   async prepareDownloadFromDsu(path, filename) {
-    let file = this.files.find((x) => x.filename === filename);
-    if (!file) {
-      file = {
-        path: path === '/' ? '' : path,
-        filename,
-      };
-      this.files.push(file);
+    return new Promise(async (resolve) => {
+      let file = this.files.find((x) => x.filename === filename);
+      if (!file) {
+        file = {
+          path: path === '/' ? '' : path,
+          filename,
+        };
+        this.files.push(file);
 
-      await this._getFileBlob(file.path, file.filename);
-    }
+        await this._getFileBlob(file.path, file.filename);
+        resolve();
+      } else resolve();
+    });
   }
 
-  async prepareDownloadFromBrowser(file) {
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      let blob = new Blob([new Uint8Array(e.target.result)], { type: file.type });
-      this.files.push({
-        filename: file.name,
-        rawBlob: blob,
-        mimeType: blob.type,
-      });
-    };
-    reader.readAsArrayBuffer(file);
+  prepareDownloadFromBrowser(file) {
+    return new Promise((resolve) => {
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        let blob = new Blob([new Uint8Array(e.target.result)], { type: file.type });
+        this.files.push({
+          filename: file.name,
+          rawBlob: blob,
+          mimeType: blob.type,
+        });
+        resolve();
+      };
+      reader.readAsArrayBuffer(file);
+    });
   }
 
   downloadFileToDevice = (filename) => {

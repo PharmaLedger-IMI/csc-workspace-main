@@ -7,15 +7,17 @@ const topics = require('./topics');
 const folders = require('./folders');
 const buttons = require('./buttons');
 const commons = require('./commons');
+const documentTypes = require('./documentTypes');
 
 module.exports = {
-	...messages,
-	...notifications,
-	order,
+  ...messages,
+  ...notifications,
+  order,
   shipment,
-	...roles,
-	...topics,
-	...folders,
-	...buttons,
-	...commons
+  ...roles,
+  ...topics,
+  ...folders,
+  ...buttons,
+  ...commons,
+  ...documentTypes,
 };
