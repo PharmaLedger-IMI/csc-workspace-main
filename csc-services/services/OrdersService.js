@@ -57,7 +57,6 @@ class OrdersService extends DSUService {
       temperature_comments: data.temperature_comments,
       requestDate: new Date().toISOString(),
       deliveryDate: data.delivery_date,
-      lastModified: new Date().toISOString(),
       statusSSI: statusDsu.uid,
     };
 
@@ -75,8 +74,7 @@ class OrdersService extends DSUService {
       deliveryDate: model.deliveryDate,
       status: statusDsu.status,
       statusSSI: statusDsu.uid,
-      orderSSI: order.uid,
-      lastModified: model.lastModified,
+      orderSSI: order.uid
     });
 
     let notification = {
@@ -274,8 +272,7 @@ class OrdersService extends DSUService {
       temperatures: data.keep_between_temperature,
       temperature_comments: data.temperature_comments,
       requestDate: new Date().getTime(),
-      deliveryDate: data.delivery_date,
-      lastModified: new Date().getTime(),
+      deliveryDate: data.delivery_date
     };
 
     const order = await this.saveEntityAsync(orderModel);
