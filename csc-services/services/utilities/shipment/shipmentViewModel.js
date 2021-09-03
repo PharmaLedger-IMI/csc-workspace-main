@@ -1,139 +1,95 @@
-const orderViewModel = {
-    accordion: {
-        shipment_details: {
-            name: 'Shipment Details',
-            tag: 'shipment_details_accordion',
-            id: 'shipment_details_accordion',
-            isOpened: true,
-        },
-        attached_documents: {
-            name: 'Attached Documents',
-            tag: 'attached_documents_accordion',
-            id: 'attached_documents_accordion',
-            isOpened: false,
-        },
-        shipment_comments: {
-            name: 'Shipment Comments',
-            tag: 'shipment_comments_accordion',
-            id: 'shipment_comments_accordion',
-            isOpened: false,
-        },
-    },
-    form: {
-        inputs: {
-            shipperId: {
-                label: 'Shipper ID',
-                name: 'shipperId',
-                required: true,
-                placeholder: 'Shipper ID...',
-                disabled:false,
-                value: '',
-            },
-            shipment_date: {
-                label: 'Shipment Date/Time',
-                name: 'shipment_date',
-                required: true,
-                disabled: false,
-                value: '',
-            },
-            shipment_time: {
-                name: 'shipment_time',
-                required: true,
-                disabled: false,
-                value: '',
-            },
-            specialInstructions: {
-                label: 'Special Instructions',
-                name: 'specialInstructions',
-                required: true,
-                placeholder: 'e.g You should do this...',
-                disabled:false,
-                value: '',
-            },
-            typeShipment: {
-                label: 'Shipment Type',
-                name: 'typeShipment',
-                required: true,
-                placeholder: 'e.g air',
-                disabled:false,
-                value: '',
-            },
-            dimensionHeight: {
-                label: 'Height',
-                name: 'dimensionHeight',
-                required: true,
-                placeholder: 'Fill in the height.',
-                disabled:false,
-                value: '',
-            },
-            dimensionWidth: {
-                label: 'Width',
-                name: 'dimensionWidth',
-                required: true,
-                placeholder: 'Fill in the width.',
-                disabled:false,
-                value: '',
-            },
-            dimensionLength: {
-                label: 'Length',
-                name: 'dimensionLength',
-                required: true,
-                placeholder: 'Fill in the length.',
-                disabled:false,
-                value: '',
-            },
-            origin: {
-                label: 'Origin',
-                name: 'origin',
-                required: true,
-                placeholder: 'Fill in the origin.',
-                disabled:false,
-                value: '',
-            },
-            shippingCondition: {
-                label: 'Shipping Condition',
-                name: 'shippingCondition',
-                required: true,
-                placeholder: 'The condition of the shipping.',
-                disabled:false,
-                value: '',
-            },
-            scheduledPickupDate: {
-                label: 'Scheduled Pickup Date',
-                name: 'scheduledPickupDate',
-                required: true,
-                placeholder: 'The date of the scheduled pickup.',
-                disabled:false,
-                value: '',
-            },
-            scheduledPickupTime: {
-                label: 'Scheduled Pickup Time',
-                name: 'scheduledPickupTime',
-                required: true,
-                placeholder: 'The time of the scheduled pickup.',
-                disabled:false,
-                value: '',
-            },
-            signature: {
-                label: 'Signature',
-                name: 'signature',
-                required: true,
-                placeholder: 'Signature',
-                disabled:false,
-                value: '',
-            },
-        },
-        docs: {},
-        attachment: {
-            label: 'Select files',
-            listFiles: true,
-            filesAppend: false,
-            files: [],
-        },
-        documents: [],
-        comments: [],
-    },
+const shipmentViewModel = {
+	form: {
+		shipperId: {
+			label: 'Shipper ID',
+			name: 'shipper-id',
+			required: true,
+			placeholder: 'Shipper ID',
+			disabled: false,
+			type: 'text',
+			value: ''
+		},
+		origin: {
+			label: 'Origin',
+			name: 'origin',
+			required: true,
+			placeholder: 'Origin',
+			disabled: false,
+			type: 'text',
+			value: ''
+		},
+		type: {
+			label: 'Type',
+			name: 'type',
+			id: 'type',
+			required: true,
+			disabled: false,
+			options: [
+				{ label: 'air', value: 'air' },
+				{ label: 'road', value: 'road' },
+				{ label: 'ocean', value: 'ocean' }
+			],
+			value: 'air'
+		},
+		pickupDate: {
+			label: 'Scheduled Pickup Date/Time',
+			name: 'pickup-date',
+			required: true,
+			disabled: false,
+			type: 'date',
+			value: ''
+		},
+		pickupTime: {
+			name: 'pickup-time',
+			required: true,
+			disabled: false,
+			type: 'time',
+			value: ''
+		},
+		dimension: {
+			label: 'Dimension (m)',
+			height: {
+				label: 'H',
+				name: 'height',
+				required: true,
+				disabled: false,
+				type: 'number',
+				value: ''
+			},
+			length: {
+				label: 'L',
+				name: 'length',
+				required: true,
+				disabled: false,
+				type: 'number',
+				value: ''
+			},
+			width: {
+				label: 'W',
+				name: 'width',
+				required: true,
+				disabled: false,
+				type: 'number',
+				value: ''
+			}
+		},
+		specialInstructions: {
+			label: 'Special Instructions',
+			name: 'special-instructions',
+			required: true,
+			placeholder: 'These are the special instructions',
+			disabled: false,
+			value: ''
+		},
+		shippingConditions: {
+			label: 'Shipping/Handling Conditions',
+			name: 'shipping-conditions',
+			required: true,
+			placeholder: 'These are the Shipping/Handling Conditions',
+			disabled: false,
+			value: ''
+		}
+	}
+};
 
-}
-
-module.exports = orderViewModel;
+module.exports = shipmentViewModel;
