@@ -33,6 +33,13 @@
       "src": "order.html",
       "tag": "order",
       "indexed": false
+    },
+    {
+      "name": "Shipment",
+      "path": "/shipment",
+      "src": "shipment.html",
+      "tag": "shipment",
+      "indexed": false
     }
   ],
   "skin" : "default"
