@@ -3,7 +3,8 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
-const { Topics } = cscServices.constants;
+const momentService = cscServices.momentService;
+const { Topics, Commons } = cscServices.constants;
 const { NotificationTypesEnum, NotificationTypes } = cscServices.constants.notifications;
 
 class NotificationsControllerImpl extends WebcController {
@@ -33,7 +34,7 @@ class NotificationsControllerImpl extends WebcController {
 		return notifications.map(notification => {
 			const details = {
 				status: notification.status,
-				date: notification.date
+				date: momentService(notification.date).format(Commons.DateTimeFormatPattern)
 			};
 
 			switch (notification.operation) {
