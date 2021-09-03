@@ -273,7 +273,7 @@ class SingleOrderControllerImpl extends WebcController {
   attachSponsorEventHandlers() {
     this.onTagEvent('review-order', 'click', () => {
       this.navigateToPageTag('review-order', {
-        order: this.model.order
+        order: this.model.toObject('order')
       });
     });
 
