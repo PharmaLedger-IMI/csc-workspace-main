@@ -308,7 +308,7 @@ class OrdersService extends DSUService {
       keySSI: order.uid,
       role: Roles.Sponsor,
       did: '123-56',
-      date: new Date().toLocaleString(),
+      date: new Date().getTime(),
     };
 
     const resultNotification = await this.notificationsService.insertNotification(notification);

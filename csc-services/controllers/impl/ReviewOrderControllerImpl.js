@@ -133,7 +133,7 @@ class ReviewOrderControllerImpl extends WebcController {
       keySSI: this.model.order.keySSI,
       role: this.role,
       did: this.model.order.sponsorId,
-      date: new Date().toLocaleString(),
+      date: new Date().getTime(),
     };
 
     await this.notificationsService.insertNotification(notification);
