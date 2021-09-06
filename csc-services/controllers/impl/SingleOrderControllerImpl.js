@@ -304,7 +304,7 @@ class SingleOrderControllerImpl extends WebcController {
             keySSI: this.model.order.keySSI,
             role: Roles.Sponsor,
             did: order.sponsorId,
-            date: new Date().toLocaleString(),
+            date: new Date().getTime(),
           };
           await this.notificationsService.insertNotification(notification);
           eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
@@ -322,7 +322,7 @@ class SingleOrderControllerImpl extends WebcController {
             keySSI: this.model.order.keySSI,
             role: Roles.Sponsor,
             did: order.sponsorId,
-            date: new Date().toLocaleString(),
+            date: new Date().getTime(),
           };
           await this.notificationsService.insertNotification(notification);
           eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
@@ -355,7 +355,7 @@ class SingleOrderControllerImpl extends WebcController {
             keySSI: result.keySSI,
             role: Roles.CMO,
             did: order.sponsorId,
-            date: new Date().toISOString(),
+            date: new Date().getTime(),
           };
           await this.notificationsService.insertNotification(notification);
           eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
