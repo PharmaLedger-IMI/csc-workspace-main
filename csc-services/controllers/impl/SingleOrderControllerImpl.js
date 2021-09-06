@@ -262,11 +262,20 @@ class SingleOrderControllerImpl extends WebcController {
         });
 
         this.onTagEvent('cancel-order', 'click', (e) => {
-          this.showErrorModal(new Error(`Are you sure you want to cancel this order?`), 'Cancel Order', cancelOrder, () => {}, {
+          this.model.cancelOrderModal = {
+            comment: {
+              placeholder:"Enter cancellation reason",
+              value: '',
+              label: 'Cancellation Reason:'
+            },
+            commentIsEmpty: true
+          };
+          this.showModalFromTemplate('cancelOrderModal', cancelOrder, () => {
+          },{
+            controller: 'CancelOrderController',
             disableExpanding: true,
-            cancelButtonText: 'No',
-            confirmButtonText: 'Yes',
-            id: 'error-modal',
+            disableBackdropClosing: true,
+            model: this.model
           });
         });
 
@@ -280,7 +289,13 @@ class SingleOrderControllerImpl extends WebcController {
         });
 
         const cancelOrder = async () => {
-          const result = await this.ordersService.updateOrderNew(this.model.order.keySSI, null, null, Roles.Sponsor, orderStatusesEnum.Canceled);
+          let comment = this.model.cancelOrderModal.comment.value ? {
+              entity: this.role,
+              comment: this.model.cancelOrderModal.comment.value,
+              date: new Date().getTime()
+            }
+            : null;
+          await this.ordersService.updateOrderNew(this.model.order.keySSI, null, comment, Roles.Sponsor, orderStatusesEnum.Canceled);
           const notification = {
             operation: NotificationTypes.UpdateOrderStatus,
             orderId: this.model.order.orderId,
