@@ -1,0 +1,35 @@
+<div class="custom-modal-header header-color" slot="header">
+  <h5>Cancel Order</h5>
+</div>
+<main>
+  <p>Are you sure you want to cancel this order?</p>
+
+  <div class='form-group'>
+    <label class='col-form-label'>Cancellation Reason:</label>
+    <textarea class='form-control' id='order_cancellation_comment' data-view-model='@cancelOrderModal.comment'></textarea>
+  </div>
+</main>
+<footer class="modal-action-menu" slot="footer">
+  <button class='cancel' data-close >No</button>
+  <button class='confirm' disabled='@cancelOrderModal.commentIsEmpty' data-confirm>Cancel Order</button>
+</footer>
+<style>
+    button.cancel,button.confirm{
+        border-radius: 3px;
+        padding: 0.5rem 1.1rem;
+        margin:0 0.5rem;
+        border: none;
+        font-size: 1rem;
+    }
+    button.cancel {
+        color: #222;
+        background-color: #EFEFEF;
+    }
+    button.confirm[disabled]{
+        opacity: 0.5;
+    }
+    button.confirm {
+        color: #FAFAFA;
+        background-color: #5e7fe1
+    }
+</style>

@@ -177,7 +177,7 @@
                     <th>{{@name}}</th>
                     <td>{{@attached_by}}</td>
                     <td>{{@date}}</td>
-                    <td class="text-center" data-tag="download-file" data-custom="@name">
+                    <td class="text-center" data-tag="download-file" data-custom="@uuid">
                       <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200" height="200px" id="Layer_1" version="1.1" viewBox="0 0 200 200" width="200px" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
                         <path
                           d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
@@ -272,7 +272,7 @@
                 <!-- Request Delivery Date/Time -->
                 <label>Requested Delivery Date/Time</label>
                 <div>
-                  <input class="form-control form-control-sm" readonly type="date" value="@form.inputs.delivery_date.value" />
+                  <input class="form-control form-control-sm" readonly type="date" min='@form.inputs.delivery_date.min' value="@form.inputs.delivery_date.value" />
                   <input class="form-control form-control-sm" readonly type="time" value="@form.inputs.delivery_time.value" />
                 </div>
 
@@ -292,7 +292,7 @@
                 <label>{{@form.inputs.kit_id_list.label}}</label>
                 <div>
                   <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.kit_ids_attachment.name" />
-                  <button class="btn-download-small" data-tag="download-file" data-custom="@form.inputs.kit_ids_attachment.name">
+                  <button class="btn-download-small" data-tag="download-file" data-custom="@form.inputs.kit_ids_attachment.uuid">
                     <svg version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
                       <path
                         d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
@@ -342,7 +342,7 @@
                 <label>Attached Document</label>
                 <div>
                   <input class="form-control form-control-sm" disabled type="text" value="@name" />
-                  <button class="btn-download-small" data-tag="download-file" data-custom="@name">
+                  <button class="btn-download-small" data-tag="download-file" data-custom="@uuid">
                     <svg version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
                       <path
                         d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814

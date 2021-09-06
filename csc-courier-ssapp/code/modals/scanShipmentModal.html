@@ -1,0 +1,168 @@
+<style xmlns='http://www.w3.org/1999/html'>
+    webc-modal {
+        --max-width: calc( 100% - 40px);
+    }
+</style>
+
+<div slot="header">
+    <div class="new-order-created-title">Scan Shipment</div>
+</div>
+
+<div class="row">
+
+    <p style='width: 100%;text-align: center;'>Please proceed to scanning process to change the shipment status to <b>"In Transit"</b></p>
+
+    <div class='stepper-container'>
+        <div id='step-1' data-tag='step-1' class='step-element step-active'>1 - Scan Shipment</div>
+        <div id='step-2' data-tag='step-2' class='step-element'>2 - Add Details</div>
+        <div id='step-3' data-tag='step-3' class='step-element'>3 - Sign</div>
+    </div>
+
+    <div class="step-holder " id="step-1-wrapper">
+
+        <psk-condition condition="@scanSuccess">
+            <div slot="condition-true">
+                Shipment Scan Successfull!
+            </div>
+        </psk-condition>
+
+        <psk-condition condition="@scanError">
+            <div slot="condition-true">
+                Wrong Shipment Code!
+            </div>
+        </psk-condition>
+
+        <psk-condition condition="@isScannerActive">
+            <psk-barcode-scanner title="Barcode Scanner" data="@scannedData"></psk-barcode-scanner>
+            <label>Scanned Data:</label>
+            <psk-echo value="@scannedData"></psk-echo>
+        </psk-condition>
+
+        <!-- Navigation Between Steps-->
+        <div class="row-wrapper button-wrapper">
+            <!-- Next Button -->
+            <button class="btn-default" data-tag="from_step_1_to_2" id="from_step_1_to_2">
+                Next
+                <i class="fas fa-angle-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="step-holder step-hidden" id="step-2-wrapper">
+        <div class="grid-column-wrapper">
+            <!-- Shipment ID -->
+            <label>{{@form.inputs.shipmentId.label}}</label>
+            <input class="form-control form-control-sm" disabled="@form.inputs.shipmentId.disabled" name="@form.inputs.shipmentId.name" placeholder="@form.inputs.shipmentId.placeholder" type="text" value="@form.inputs.shipmentId.value" />
+        </div>
+
+        <!-- Navigation Between Steps-->
+        <div class="row-wrapper button-wrapper">
+            <button class="btn-default" data-tag="from_step_2_to_1" id="from_step_2_to_1">
+                <i class="fas fa-angle-left"></i>
+                Previous
+            </button>
+            <!-- Next Button -->
+            <button class="btn-default" data-tag="from_step_2_to_3" id="from_step_2_to_3">
+                Next
+                <i class="fas fa-angle-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="step-holder step-hidden" id="step-3-wrapper">
+        <div class='row'>
+            <div class='col-12'>
+                <!-- Shipment ID -->
+                <label>{{@form.inputs.shipmentId.label}}</label>
+                <input class="form-control form-control-sm" disabled="@form.inputs.shipmentId.disabled" name="@form.inputs.shipmentId.name" placeholder="@form.inputs.shipmentId.placeholder" type="text" value="@form.inputs.shipmentId.value" />
+            </div>
+
+            <div class='col-12'>
+                <!-- Shipment ID -->
+                <label>{{@form.inputs.shipperId.label}}</label>
+                <input class="form-control form-control-sm" disabled="@form.inputs.shipperId.disabled" name="@form.inputs.shipperId.name" placeholder="@form.inputs.shipperId.placeholder" type="text" value="@form.inputs.shipperId.value" />
+            </div>
+
+            <div class='col-12'>
+                <!-- Shipment ID -->
+                <label>{{@form.inputs.origin.label}}</label>
+                <input class="form-control form-control-sm" disabled="@form.inputs.origin.disabled" name="@form.inputs.origin.name" placeholder="@form.inputs.origin.placeholder" type="text" value="@form.inputs.origin.value" />
+            </div>
+
+            <div class='col-12'>
+                <!-- Shipment Type -->
+                <label>{{@form.inputs.typeShipment.label}}</label>
+                <input class="form-control form-control-sm" disabled="@form.inputs.typeShipment.disabled" name="@form.inputs.typeShipment.name" placeholder="@form.inputs.typeShipment.placeholder" type="text" value="@form.inputs.typeShipment.value" />
+            </div>
+
+            <div class='col-12'>
+                <!-- Delivery Date/Time -->
+                <div class="form-group">
+                    <!--Label -->
+                    <label>{{@form.inputs.shipment_date.label}}</label>
+                    <div class="row">
+                        <div class="col-8">
+                            <!-- Input -->
+                            <input class="form-control" value="@form.inputs.shipment_date.value" type="date" />
+                        </div>
+                        <div class="col-4">
+                            <!-- Input -->
+                            <input class="form-control" value="@form.inputs.shipment_time.value" type="time" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class='col-12'>
+                <div class='row'>
+                    <div class='col-4'>
+                        <label>{{@form.inputs.dimensionHeight.label}}</label>
+                        <input class="form-control form-control-sm" disabled="@form.inputs.dimensionHeight.disabled" name="@form.inputs.dimensionHeight.name" placeholder="@form.inputs.dimensionHeight.placeholder" type="text" value="@form.inputs.dimensionHeight.value" />
+                    </div>
+
+                    <div class='col-4'>
+                        <label>{{@form.inputs.dimensionLength.label}}</label>
+                        <input class="form-control form-control-sm" disabled="@form.inputs.dimensionLength.disabled" name="@form.inputs.dimensionLength.name" placeholder="@form.inputs.dimensionLength.placeholder" type="text" value="@form.inputs.dimensionLength.value" />
+                    </div>
+
+                    <div class='col-4'>
+                        <label>{{@form.inputs.dimensionWidth.label}}</label>
+                        <input class="form-control form-control-sm" disabled="@form.inputs.dimensionWidth.disabled" name="@form.inputs.dimensionWidth.name" placeholder="@form.inputs.dimensionWidth.placeholder" type="text" value="@form.inputs.dimensionWidth.value" />
+                    </div>
+                </div>
+
+            </div>
+
+            <div class='col-12'>
+                <!-- Special Instructions -->
+                <label>{{@form.inputs.specialInstructions.label}}</label>
+                <textarea class="form-control form-control-sm" disabled="@form.inputs.specialInstructions.disabled" name="@form.inputs.specialInstructions.name" placeholder="@form.inputs.specialInstructions.placeholder" />{{@form.inputs.specialInstructions.value}}</textarea>
+            </div>
+
+            <div class='col-12'>
+                <!-- Shipment ID -->
+                <label>{{@form.inputs.shippingCondition.label}}</label>
+                <textarea class="form-control form-control-sm" disabled="@form.inputs.shippingCondition.disabled" name="@form.inputs.shippingCondition.name" placeholder="@form.inputs.shippingCondition.placeholder" />{{@form.inputs.shippingCondition.value}}</textarea>
+            </div>
+        </div>
+
+        <!-- Navigation Between Steps-->
+        <div class="row-wrapper button-wrapper">
+            <button class="btn-default" data-tag="from_step_3_to_2" id="from_step_3_to_2">
+                <i class="fas fa-angle-left"></i>
+                Previous
+            </button>
+            <button class="btn-default" data-tag="sign_button" id="sign_button">
+                <i class="fas fa-check"></i>
+                Sign
+            </button>
+        </div>
+    </div>
+
+
+
+</div>
+<div slot="footer">
+
+</div>
+
