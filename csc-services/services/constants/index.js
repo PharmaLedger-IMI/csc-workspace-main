@@ -7,6 +7,7 @@ const topics = require('./topics');
 const folders = require('./folders');
 const buttons = require('./buttons');
 const commons = require('./commons');
+const documentTypes = require('./documentTypes');
 
 module.exports = {
   ...messages,
@@ -17,5 +18,6 @@ module.exports = {
 	...topics,
 	...folders,
 	...buttons,
-	...commons
+	...commons,
+	...documentTypes
 };
