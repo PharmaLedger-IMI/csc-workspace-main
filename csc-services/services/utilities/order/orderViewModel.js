@@ -95,7 +95,7 @@ const orderViewModel = {
                 id: 'site_id',
                 placeholder: 'Select Site ID...',
                 required: true,
-                disabled:false,
+                disabled: false,
                 options: [
                     {label: 'Site ID 1', value: '1'},
                     {label: 'Site ID 2', value: '2'},
@@ -108,7 +108,7 @@ const orderViewModel = {
                 name: 'site_region_id',
                 required: true,
                 placeholder: '',
-                disabled:false,
+                disabled: true,
                 value: '',
             },
             site_country: {
@@ -116,7 +116,7 @@ const orderViewModel = {
                 name: 'site_country',
                 required: true,
                 placeholder: '',
-                disabled:false,
+                disabled: true,
                 value: '',
             },
             temperature_comments: {
