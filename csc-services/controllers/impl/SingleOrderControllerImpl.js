@@ -3,15 +3,12 @@ const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
-const NotificationsService = cscServices.NotificationsService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
 const momentService = cscServices.momentService;
 const { Roles, Topics, ButtonsEnum, Commons, FoldersEnum } = cscServices.constants;
-const { NotificationTypes } = cscServices.constants.notifications;
 const { orderStatusesEnum, orderPendingActionEnum } = cscServices.constants.order;
-const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
 const csIdentities = {};
 csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
@@ -31,7 +28,6 @@ class SingleOrderControllerImpl extends WebcController {
     this.model = model;
 
     let { keySSI } = this.history.location.state;
-    this.notificationsService = new NotificationsService(this.DSUStorage);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     let communicationService = CommunicationService.getInstance(csIdentities[role]);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
@@ -134,7 +130,6 @@ class SingleOrderControllerImpl extends WebcController {
   }
 
   closeAllExcept(el) {
-    const element = document.getElementById(el);
 
     if (el === 'order_details_accordion') {
       this.closeAccordionItem('order_comments_accordion');
@@ -319,25 +314,12 @@ class SingleOrderControllerImpl extends WebcController {
   async cancelOrder() {
     const {orderId, sponsorId, keySSI} = this.model.order;
     let comment = this.model.cancelOrderModal.comment.value ? {
-              entity: this.role,
-              comment: this.model.cancelOrderModal.comment.value,
-              date: new Date().getTime()
-            }
-            : null;
+        entity: this.role,
+        comment: this.model.cancelOrderModal.comment.value,
+        date: new Date().getTime()
+      }
+      : null;
     await this.ordersService.updateOrderNew(keySSI, null, comment, Roles.Sponsor, orderStatusesEnum.Canceled);
-    const notification = {
-      operation: NotificationTypes.UpdateOrderStatus,
-      orderId: orderId,
-      read: false,
-      status: orderStatusesEnum.Canceled,
-      keySSI: keySSI,
-      role: Roles.Sponsor,
-      did: sponsorId,
-      date: Date.now()
-    };
-
-    await this.notificationsService.insertNotification(notification);
-    eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     this.showErrorModalAndRedirect('Order was canceled, redirecting to dashboard...', 'Order Cancelled', '/', 2000);
   }
@@ -345,19 +327,6 @@ class SingleOrderControllerImpl extends WebcController {
   async approveOrder() {
     const {orderId, sponsorId, keySSI} = this.model.order;
     const result = await this.ordersService.updateOrderNew(keySSI, null, null, Roles.Sponsor, orderStatusesEnum.Approved);
-    const notification = {
-      operation: NotificationTypes.UpdateOrderStatus,
-      orderId: orderId,
-      read: false,
-      status: orderStatusesEnum.Approved,
-      keySSI: keySSI,
-      role: Roles.Sponsor,
-      did: sponsorId,
-      date: Date.now()
-    };
-
-    await this.notificationsService.insertNotification(notification);
-    eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     this.showErrorModalAndRedirect('Order was approved, redirecting to dashboard...', 'Order Approved', '/', 2000);
   }
@@ -391,31 +360,6 @@ class SingleOrderControllerImpl extends WebcController {
     };
     const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, orderStatusesEnum.InPreparation, otherOrderDetails);
 
-    const orderNotification = {
-      operation: NotificationTypes.UpdateOrderStatus,
-      orderId: order.orderId,
-      read: false,
-      status: shipmentStatusesEnum.InPreparation,
-      keySSI: order.keySSI,
-      role: Roles.CMO,
-      did: order.sponsorId,
-      date: Date.now()
-    };
-    await this.notificationsService.insertNotification(orderNotification);
-
-    const shipmentNotification = {
-      operation: NotificationTypes.UpdateShipmentStatus,
-      shipmentId: order.orderId,
-      read: false,
-      status: shipmentStatusesEnum.InPreparation,
-      keySSI: shipmentResult.keySSI,
-      role: Roles.CMO,
-      did: order.sponsorId,
-      date: Date.now()
-    };
-    await this.notificationsService.insertNotification(shipmentNotification);
-
-    eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     this.showErrorModalAndRedirect('Shipment Initiated, redirecting to dashboard...', 'Shipment Initiated', '/', 2000);

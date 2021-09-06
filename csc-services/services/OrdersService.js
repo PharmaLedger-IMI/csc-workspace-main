@@ -1,10 +1,7 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
-const { Roles, Topics, messagesEnum, order, notifications, FoldersEnum } = require('./constants');
-const { NotificationTypes } = notifications;
+const { Roles, messagesEnum, order, FoldersEnum } = require('./constants');
 const orderStatusesEnum = order.orderStatusesEnum;
-const NotificationsService = require('./lib/NotificationService.js');
-const eventBusService = require('./lib/EventBusService.js');
 const CommunicationService = require('./lib/CommunicationService.js');
 const moment = require('./lib/moment.min');
 
@@ -18,7 +15,6 @@ class OrdersService extends DSUService {
       this.communicationService = communicationService;
     }
     this.storageService = getSharedStorage(DSUStorage);
-    this.notificationsService = new NotificationsService(DSUStorage);
     this.DSUStorage = DSUStorage;
   }
 
@@ -128,20 +124,6 @@ class OrdersService extends DSUService {
       },
       order.uid
     );
-
-    let notification = {
-      operation: NotificationTypes.UpdateOrderStatus,
-      orderId: orderModel.orderId,
-      read: false,
-      status: orderStatusesEnum.Initiated,
-      keySSI: order.uid,
-      role: Roles.Sponsor,
-      did: '123-56',
-      date: new Date().getTime(),
-    };
-
-    const resultNotification = await this.notificationsService.insertNotification(notification);
-    console.log('notification:', resultNotification, this.notificationsService);
 
     // TODO: send correct type of SSIs (sread, keySSI, etc)
     this.sendMessageToEntity(

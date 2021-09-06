@@ -3,11 +3,9 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const CommunicationService = cscServices.CommunicationService;
-const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { Topics, Roles, order, FoldersEnum } = cscServices.constants;
-const { NotificationTypes } = cscServices.constants.notifications;
 const { orderStatusesEnum } = order;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const { uuidv4 } = cscServices.utils;
@@ -27,7 +25,6 @@ class ReviewOrderControllerImpl extends WebcController {
     let communicationService = CommunicationService.getInstance(csIdentities[role]);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
-    this.notificationsService = new NotificationsService(this.DSUStorage);
 
     this.model = this.getReviewOrderViewModel(order);
     this.attachEventHandlers();
@@ -147,19 +144,6 @@ class ReviewOrderControllerImpl extends WebcController {
       date: new Date().getTime(),
     };
     const result = await this.ordersService.updateOrderNew(this.model.order.keySSI, newFiles, reviewComment, this.role, orderStatus);
-    const notification = {
-      operation: NotificationTypes.UpdateOrderStatus,
-      orderId: this.model.order.orderId,
-      read: false,
-      status: orderStatus,
-      keySSI: this.model.order.keySSI,
-      role: this.role,
-      did: this.model.order.sponsorId,
-      date: new Date().getTime(),
-    };
-
-    await this.notificationsService.insertNotification(notification);
-    eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
 
     this.createWebcModal({
