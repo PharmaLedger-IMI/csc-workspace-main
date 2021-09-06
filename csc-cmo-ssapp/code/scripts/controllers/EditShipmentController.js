@@ -3,7 +3,9 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const OrderService = cscServices.OrderService;
 const ShipmentService = cscServices.ShipmentService;
+const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
+const { FoldersEnum } = cscServices.constants;
 
 export default class EditShipmentController extends WebcController {
 
@@ -12,14 +14,27 @@ export default class EditShipmentController extends WebcController {
 
 		this.ordersService = new OrderService(this.DSUStorage);
 		this.shipmentsService = new ShipmentService(this.DSUStorage);
+		this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
 
 		this.attachEventHandlers();
 		this.initViewModel();
 	}
 
 	attachEventHandlers() {
+		this.downloadKitListHandler();
 		this.attachNavigationHandlers();
 		this.attachFormActions();
+	}
+
+	downloadKitListHandler() {
+		this.onTagClick('download-kits-file', async (model) => {
+			window.WebCardinal.loader.hidden = false;
+			const fileName = model.order.kitsFilename;
+			const path = FoldersEnum.Kits + '/' + model.order.kitsSSI + '/' + 'files';
+			await this.FileDownloaderService.prepareDownloadFromDsu(path, fileName);
+			this.FileDownloaderService.downloadFileToDevice(fileName);
+			window.WebCardinal.loader.hidden = true;
+		});
 	}
 
 	attachFormActions() {
