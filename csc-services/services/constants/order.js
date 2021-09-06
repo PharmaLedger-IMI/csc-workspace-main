@@ -4,16 +4,17 @@ const orderStatusesEnum = {
 	ReviewedBySponsor: 'Reviewed by Sponsor',
 	Approved: 'Approved',
 	Canceled: 'Canceled',
-	InPreparation: 'In Preparation'
+	InPreparation: 'In Preparation',
+	ReadyForDispatch: 'Shipment Ready For Dispatch'
 };
 
 const orderPendingActionEnum = {
 	PendingReviewByCMO: 'Pending Review by CMO',
 	SponsorReviewOrApprove: 'Sponsor Review or Approve',
-	CMOReviewOrApprove: 'Cmo Review or Approve',
 	NoPendingActions: 'There are no any further pending actions',
 	PendingShipmentPreparation: 'Pending Shipment Preparation',
-	PendingShipmentDispatch: 'Pending Shipment Ready for Dispatch'
+	PendingShipmentDispatch: 'Pending Shipment Ready for Dispatch',
+	PendingPickUp: 'Pending Pick-Up'
 };
 
 const orderTableHeaders = [

@@ -11,13 +11,13 @@ const documentTypes = require('./documentTypes');
 
 module.exports = {
   ...messages,
-  ...notifications,
-  order,
+	notifications,
+	order,
   shipment,
-  ...roles,
-  ...topics,
-  ...folders,
-  ...buttons,
-  ...commons,
-  ...documentTypes,
+	...roles,
+	...topics,
+	...folders,
+	...buttons,
+	...commons,
+	...documentTypes
 };

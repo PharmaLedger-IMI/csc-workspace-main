@@ -1,6 +1,7 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
-const { Roles, NotificationTypes, Topics, messagesEnum, order, FoldersEnum } = require('./constants');
+const { Roles, Topics, messagesEnum, order, notifications, FoldersEnum } = require('./constants');
+const { NotificationTypes } = notifications;
 const orderStatusesEnum = order.orderStatusesEnum;
 const NotificationsService = require('./lib/NotificationService.js');
 const eventBusService = require('./lib/EventBusService.js');
@@ -344,7 +345,7 @@ class OrdersService extends DSUService {
 
   // -> Function for reviewing, canceling, approving orders.
 
-  async updateOrderNew(orderKeySSI, files, comment, role, newStatus) {
+  async updateOrderNew(orderKeySSI, files, comment, role, newStatus, otherDetails) {
     let documents = null;
     let comments = null;
 
@@ -365,49 +366,30 @@ class OrdersService extends DSUService {
       comments = await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
       orderDB.comments = comments.comments;
     }
+
+    if (otherDetails) {
+      Object.keys(otherDetails).forEach(key => {
+        orderDB[key] = otherDetails[key];
+      });
+    }
+
     const result = await this.updateOrderToDB(orderDB, orderKeySSI);
-
-    let operation;
-    switch (newStatus) {
-      case orderStatusesEnum.ReviewedByCMO:
-        operation = messagesEnum.StatusReviewedByCMO;
-        break;
-      case orderStatusesEnum.ReviewedBySponsor:
-        operation = messagesEnum.StatusReviewedBySponsor;
-        break;
-      case orderStatusesEnum.Approved:
-        operation = messagesEnum.StatusApproved;
-        break;
-      case orderStatusesEnum.Canceled:
-        operation = messagesEnum.StatusCanceled;
-        break;
-    }
-
-    this.communicationService.sendMessage(CommunicationService.identities.CSC.SITE_IDENTITY, {
-      operation,
-      data: {
-        orderSSI: orderKeySSI,
-      },
-      shortDescription: 'Order Updated',
-    });
-
+    const identitiesArray = [CommunicationService.identities.CSC.SITE_IDENTITY];
     if (role === Roles.CMO) {
-      this.communicationService.sendMessage(CommunicationService.identities.CSC.SPONSOR_IDENTITY, {
-        operation,
-        data: {
-          orderSSI: orderKeySSI,
-        },
-        shortDescription: 'Order Updated',
-      });
+      identitiesArray.push(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
     } else {
-      this.communicationService.sendMessage(CommunicationService.identities.CSC.CMO_IDENTITY, {
-        operation,
-        data: {
-          orderSSI: orderKeySSI,
-        },
-        shortDescription: 'Order Updated',
-      });
+      identitiesArray.push(CommunicationService.identities.CSC.CMO_IDENTITY)
     }
+
+    identitiesArray.forEach(identity => {
+      this.communicationService.sendMessage(identity, {
+        operation: newStatus,
+        data: {
+          orderSSI: orderKeySSI
+        },
+        shortDescription: 'Order Updated'
+      });
+    });
 
     return result;
   }
