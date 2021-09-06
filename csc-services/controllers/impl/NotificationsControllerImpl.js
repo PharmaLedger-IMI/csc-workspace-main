@@ -3,7 +3,8 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
-const { Topics, NotificationTypes } = cscServices.constants;
+const momentService = cscServices.momentService;
+const { Topics, Commons, NotificationTypes } = cscServices.constants;
 
 class NotificationsControllerImpl extends WebcController {
 	constructor(role, ...props) {
@@ -19,7 +20,18 @@ class NotificationsControllerImpl extends WebcController {
 
 	async getNotifications() {
 		let notifications = await this.notificationsService.getNotifications();
+		notifications = this.transformData(notifications);
 		this.model.setChainValue('notifications', notifications);
+		console.log("notifications " + JSON.stringify(notifications));
+	}
+
+	transformData(data) {
+		if (data) {
+			data.forEach((item) => {
+				item.date = item.date ? momentService(item.date).format(Commons.DateTimeFormatPattern) : '-';
+			});
+		}
+		return data;
 	}
 
 	attachAll() {
