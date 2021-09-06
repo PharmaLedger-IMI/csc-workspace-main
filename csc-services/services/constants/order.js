@@ -90,8 +90,16 @@ const orderTableHeaders = [
 	}
 ];
 
-module.exports = {
+const orderBusinessRequirements = {
+	DeliveryDateDaysAhead:2,
+	MinTemperature:-100,
+	MaxTemperature:100,
+	TemperatureUnits:"°C"
+}
+
+	module.exports = {
 	orderStatusesEnum,
 	orderTableHeaders,
-	orderPendingActionEnum
+	orderPendingActionEnum,
+	orderBusinessRequirements
 };

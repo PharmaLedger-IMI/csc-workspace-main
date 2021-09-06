@@ -72,10 +72,23 @@ class SingleOrderControllerImpl extends WebcController {
       this.onShowHistoryClick();
     });
 
-    this.onTagClick('download-file', (model, target, event) => {
+    this.onTagClick('download-file', async (model, target, event) => {
       const filename = target.getAttribute('data-custom') || null;
       if (filename) {
-        this.FileDownloaderService.downloadFileToDevice(filename);
+        if (model.name && model.name === filename) {
+          const document = this.model.order.documents.find((x) => x.name === filename);
+          const keySSI = document.attached_by === Roles.Sponsor ? this.model.order.sponsorDocumentsKeySSI : this.model.order.cmoDocumentsKeySSI;
+          await this.downloadFile(filename, FoldersEnum.Documents, keySSI);
+        } else {
+          await this.downloadFile(filename, FoldersEnum.Kits, model.order.kitsSSI);
+        }
+      }
+    });
+
+    this.onTagClick('download-kits-file', async (model, target, event) => {
+      const filename = target.getAttribute('data-custom') || null;
+      if (filename) {
+        await this.downloadFile(filename, FoldersEnum.Kits, model.order.kitsSSI);
       }
     });
   }
@@ -161,8 +174,6 @@ class SingleOrderControllerImpl extends WebcController {
 
 
     this.model.order.actions = this.setOrderActions();
-    this.prepareDocumentsDownloads(JSON.parse(JSON.stringify(this.model.order.documents)), this.model.order.cmoDocumentsKeySSI, this.model.order.sponsorDocumentsKeySSI);
-    this.prepareKitsFileDownload(this.model.order.kitsFilename, this.model.order.kitsSSI);
   }
 
   transformData(data) {
@@ -266,7 +277,6 @@ class SingleOrderControllerImpl extends WebcController {
     }
 
     this.attachCommonEventHandlers();
-
     return actions;
   }
 
@@ -277,15 +287,23 @@ class SingleOrderControllerImpl extends WebcController {
       });
     });
 
-    this.onTagEvent('cancel-order', 'click', () => {
-      this.showErrorModal(new Error(`Are you sure you want to cancel this order?`), 'Cancel Order', this.cancelOrder.bind(this), () => {
-      }, {
-        disableExpanding: true,
-        cancelButtonText: 'No',
-        confirmButtonText: 'Yes',
-        id: 'error-modal'
-      });
-    });
+    this.onTagEvent('cancel-order', 'click', (e) => {
+          this.model.cancelOrderModal = {
+            comment: {
+              placeholder:"Enter cancellation reason",
+              value: '',
+              label: 'Cancellation Reason:'
+            },
+            commentIsEmpty: true
+          };
+          this.showModalFromTemplate('cancelOrderModal',  this.cancelOrder.bind(this), () => {
+          },{
+            controller: 'CancelOrderController',
+            disableExpanding: true,
+            disableBackdropClosing: true,
+            model: this.model
+          });
+        });
 
     this.onTagEvent('approve-order', 'click', () => {
       this.showErrorModal(new Error(`Are you sure you want to approve the order?`), 'Approve Order', this.approveOrder.bind(this), () => {
@@ -300,7 +318,13 @@ class SingleOrderControllerImpl extends WebcController {
 
   async cancelOrder() {
     const {orderId, sponsorId, keySSI} = this.model.order;
-    const result = await this.ordersService.updateOrderNew(keySSI, null, null, Roles.Sponsor, orderStatusesEnum.Canceled);
+    let comment = this.model.cancelOrderModal.comment.value ? {
+              entity: this.role,
+              comment: this.model.cancelOrderModal.comment.value,
+              date: new Date().getTime()
+            }
+            : null;
+    await this.ordersService.updateOrderNew(keySSI, null, comment, Roles.Sponsor, orderStatusesEnum.Canceled);
     const notification = {
       operation: NotificationTypes.UpdateOrderStatus,
       orderId: orderId,
@@ -413,26 +437,12 @@ class SingleOrderControllerImpl extends WebcController {
     return str.split(' ')[1];
   }
 
-  prepareKitsFileDownload(filename, keySSI) {
-    let path = FoldersEnum.Kits + '/' + keySSI + '/' + 'files';
-    this.FileDownloaderService.prepareDownloadFromDsu(path, filename);
-  }
-
-  prepareDocumentsDownloads(documents, cmoDocumentsKeySSI, sponsorDocumentsKeySSI) {
-    if (documents && documents.length > 0) {
-      documents.forEach((x) => {
-        let path = null;
-        if (x.attached_by === Roles.Sponsor) {
-          path = FoldersEnum.Documents + '/' + sponsorDocumentsKeySSI + '/' + 'files';
-        } else if (x.attached_by === Roles.CMO) {
-          path = FoldersEnum.Documents + '/' + cmoDocumentsKeySSI + '/' + 'files';
-        }
-
-        if (path) {
-          this.FileDownloaderService.prepareDownloadFromDsu(path, x.name);
-        }
-      });
-    }
+  async downloadFile(filename, rootFolder, keySSI) {
+    window.WebCardinal.loader.hidden = false;
+    const path = rootFolder + '/' + keySSI + '/' + 'files';
+    await this.FileDownloaderService.prepareDownloadFromDsu(path, filename);
+    this.FileDownloaderService.downloadFileToDevice(filename);
+    window.WebCardinal.loader.hidden = true;
   }
 }
 

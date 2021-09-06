@@ -59,3 +59,5 @@ testReport.html
 latest-change-set.txt
 builds
 tmp
+
+.prettierignore

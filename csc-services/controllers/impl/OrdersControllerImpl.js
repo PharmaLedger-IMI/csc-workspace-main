@@ -40,7 +40,6 @@ class OrdersControllerImpl extends WebcController {
 		if (data) {
 			data.forEach((item) => {
 				item.requestDate_value = momentService(item.requestDate).format(Commons.DateTimeFormatPattern);
-				item.lastModified_value = momentService(item.lastModified).format(Commons.DateTimeFormatPattern);
 
 				const latestStatus = item.status.sort(function(a, b) {
 					return new Date(b.date) - new Date(a.date);

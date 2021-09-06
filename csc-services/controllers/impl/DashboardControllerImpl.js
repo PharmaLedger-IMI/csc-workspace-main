@@ -84,7 +84,7 @@ class DashboardControllerImpl extends WebcController {
 			keySSI: data.message.data.orderSSI,
 			role: notificationRole,
 			did: orderData.sponsorId,
-			date: new Date().toISOString()
+			date: new Date().getTime()
 		};
 
 		const notificationResult = await this.notificationsService.insertNotification(notification);
@@ -110,7 +110,7 @@ class DashboardControllerImpl extends WebcController {
 			keySSI: data.message.data.shipmentSSI,
 			role: notificationRole,
 			did: shipmentData.sponsorId,
-			date: new Date().toISOString()
+			date: new Date().getTime()
 		};
 
 		const notificationResult = await this.notificationsService.insertNotification(notification);
@@ -136,9 +136,8 @@ class DashboardControllerImpl extends WebcController {
 					commentsKeySSI,
 					statusKeySSI
 				} = data.message.data;
-				// TODO: Issue #21 - Refactor
 				orderData = await this.ordersService.mountAndReceiveOrder(orderSSI, this.role,
-					sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsKeySSI, commentsKeySSI, statusKeySSI);
+					{ sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsKeySSI, commentsKeySSI, statusKeySSI });
 
 				break;
 			}

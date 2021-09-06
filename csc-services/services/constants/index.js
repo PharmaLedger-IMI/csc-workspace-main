@@ -9,10 +9,10 @@ const buttons = require('./buttons');
 const commons = require('./commons');
 
 module.exports = {
-	...messages,
+  ...messages,
 	notifications,
 	order,
-    shipment,
+  shipment,
 	...roles,
 	...topics,
 	...folders,

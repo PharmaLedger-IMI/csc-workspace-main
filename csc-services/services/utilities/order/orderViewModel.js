@@ -1,3 +1,8 @@
+const constants = require("csc-services").constants
+const orderBusinessRequirements = constants.order.orderBusinessRequirements;
+const DAYS_AHEAD = orderBusinessRequirements.DeliveryDateDaysAhead;
+const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
+const momentService = require("csc-services").momentService;
 const orderViewModel = {
     accordion: {
         order_details: {
@@ -35,6 +40,7 @@ const orderViewModel = {
                 required: true,
                 disabled: false,
                 value: '',
+                min: momentService(new Date()).add(DAYS_AHEAD,'days').format(constants.Commons.YearMonthDayPattern)
             },
             delivery_time: {
                 name: 'delivery_time',
@@ -129,7 +135,7 @@ const orderViewModel = {
             },
             keep_between_temperature: {
                 andLabel: "and",
-                label: 'Keep between (°C)',
+                label: 'Keep between ('+TEMPERATURE_UNITS+')',
                 name: 'keep_between_temperature',
                 required: true,
                 placeholder: '',
@@ -137,7 +143,7 @@ const orderViewModel = {
                 value: '',
             },
             keep_between_temperature_min: {
-                label: 'Min Temperature (°C)',
+                label: 'Min Temperature ('+TEMPERATURE_UNITS+')',
                 name: 'keep_between_temperature_min',
                 required: true,
                 placeholder: '',
