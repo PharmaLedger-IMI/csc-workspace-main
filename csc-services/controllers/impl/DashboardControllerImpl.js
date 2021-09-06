@@ -6,7 +6,7 @@ const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
-const { messagesEnum, order, shipment, Roles, Topics } = cscServices.constants;
+const { order, shipment, Roles, Topics } = cscServices.constants;
 const { NotificationTypes } = cscServices.constants.notifications;
 const { orderStatusesEnum } = order;
 const { shipmentStatusesEnum } = shipment;
@@ -121,13 +121,12 @@ class DashboardControllerImpl extends WebcController {
 
 	async processOrderMessage(data) {
 		let orderData;
-		let orderStatus;
+		let orderStatus = data.message.operation;
 		let notificationRole;
 
-		switch (data.message.operation) {
-			case messagesEnum.StatusInitiated: {
+		switch (orderStatus) {
+			case orderStatusesEnum.Initiated: {
 				notificationRole = Roles.Sponsor;
-				orderStatus = orderStatusesEnum.Initiated;
 
 				const {
 					orderSSI,
@@ -150,33 +149,43 @@ class DashboardControllerImpl extends WebcController {
 			//   1. the order of the events may not be the same
 			//   2. the communicationService is not waiting, it will provide the next message ASAP
 
-			case messagesEnum.StatusReviewedByCMO: {
+			case orderStatusesEnum.ReviewedByCMO: {
 				notificationRole = Roles.CMO;
-				orderStatus = orderStatusesEnum.ReviewedByCMO;
 				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
 
 				break;
 			}
 
-			case messagesEnum.StatusReviewedBySponsor: {
+			case orderStatusesEnum.ReviewedBySponsor: {
 				notificationRole = Roles.Sponsor;
-				orderStatus = orderStatusesEnum.ReviewedBySponsor;
 				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
 
 				break;
 			}
 
-			case messagesEnum.StatusCanceled: {
+			case orderStatusesEnum.Canceled: {
 				notificationRole = Roles.Sponsor;
-				orderStatus = orderStatusesEnum.Canceled;
 				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
 
 				break;
 			}
 
-			case messagesEnum.StatusApproved: {
+			case orderStatusesEnum.Approved: {
 				notificationRole = Roles.Sponsor;
-				orderStatus = orderStatusesEnum.Approved;
+				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
+
+				break;
+			}
+
+			case orderStatusesEnum.InPreparation: {
+				notificationRole = Roles.CMO;
+				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
+
+				break;
+			}
+
+			case orderStatusesEnum.ReadyForDispatch: {
+				notificationRole = Roles.CMO;
 				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
 
 				break;
@@ -188,13 +197,12 @@ class DashboardControllerImpl extends WebcController {
 
 	async processShipmentMessage(data) {
 		let shipmentData;
-		let shipmentStatus;
+		let shipmentStatus = data.message.operation;
 		let notificationRole;
 
-		switch (data.message.operation) {
-			case messagesEnum.ShipmentInPreparation: {
+		switch (shipmentStatus) {
+			case shipmentStatusesEnum.InPreparation: {
 				notificationRole = Roles.CMO;
-				shipmentStatus = shipmentStatusesEnum.InPreparation;
 
 				const {
 					shipmentSSI,

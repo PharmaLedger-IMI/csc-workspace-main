@@ -366,7 +366,20 @@ class SingleOrderControllerImpl extends WebcController {
       shipmentSSI: shipmentResult.keySSI
     };
     const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, orderStatusesEnum.InPreparation, otherOrderDetails);
-    const notification = {
+
+    const orderNotification = {
+      operation: NotificationTypes.UpdateOrderStatus,
+      orderId: order.orderId,
+      read: false,
+      status: shipmentStatusesEnum.InPreparation,
+      keySSI: order.keySSI,
+      role: Roles.CMO,
+      did: order.sponsorId,
+      date: Date.now()
+    };
+    await this.notificationsService.insertNotification(orderNotification);
+
+    const shipmentNotification = {
       operation: NotificationTypes.UpdateShipmentStatus,
       shipmentId: order.orderId,
       read: false,
@@ -376,15 +389,11 @@ class SingleOrderControllerImpl extends WebcController {
       did: order.sponsorId,
       date: Date.now()
     };
-
-    await this.notificationsService.insertNotification(notification);
-    notification.operation = NotificationTypes.UpdateOrderStatus;
-    notification.keySSI = order.keySSI;
-    await this.notificationsService.insertNotification(notification);
+    await this.notificationsService.insertNotification(shipmentNotification);
 
     eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     this.showErrorModalAndRedirect('Shipment Initiated, redirecting to dashboard...', 'Shipment Initiated', '/', 2000);
   };
 
