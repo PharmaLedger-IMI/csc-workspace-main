@@ -9,6 +9,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const momentService = cscServices.momentService;
 const { Roles, Topics, ButtonsEnum, Commons, FoldersEnum } = cscServices.constants;
 const { orderStatusesEnum, orderPendingActionEnum } = cscServices.constants.order;
+const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
 const csIdentities = {};
 csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
@@ -164,9 +165,13 @@ class SingleOrderControllerImpl extends WebcController {
     this.model.order = { ...this.transformData(this.model.order) };
     this.model.order.delivery_date = {
       date: this.getDate(this.model.order.deliveryDate),
-      time: this.getTime(this.model.order.deliveryDate),
+      time: this.getTime(this.model.order.deliveryDate)
     };
 
+    if (this.model.order.shipmentSSI) {
+      const shipment = await this.shipmentsService.getShipment(this.model.order.shipmentSSI);
+      this.model.shipment = this.transformShipmentData(shipment);
+    }
 
     this.model.order.actions = this.setOrderActions();
   }
@@ -218,7 +223,22 @@ class SingleOrderControllerImpl extends WebcController {
 
       return data;
     }
+
+    return {};
   }
+
+  transformShipmentData(shipment) {
+    if (shipment) {
+      shipment.status_value = shipment.status.sort(function (a, b) {
+        return new Date(b.date) - new Date(a.date);
+      })[0].status;
+
+      return shipment;
+    }
+
+    return null;
+  }
+
 
   getPendingAction(status_value) {
     switch (status_value) {
@@ -234,12 +254,6 @@ class SingleOrderControllerImpl extends WebcController {
 
       case orderStatusesEnum.Approved:
         return orderPendingActionEnum.PendingShipmentPreparation;
-
-      case orderStatusesEnum.InPreparation:
-        return orderPendingActionEnum.PendingShipmentDispatch;
-
-      case orderStatusesEnum.ReadyForDispatch:
-        return orderPendingActionEnum.PendingPickUp;
     }
 
     return '';
@@ -247,25 +261,25 @@ class SingleOrderControllerImpl extends WebcController {
 
   setOrderActions() {
     const order = this.model.order;
-    const canViewShipmentStatuses = [orderStatusesEnum.InPreparation, orderStatusesEnum.ReadyForDispatch];
+    const shipment = this.model.shipment;
     const canCMOReviewStatuses = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedBySponsor];
     const canSponsorReviewStatuses = [orderStatusesEnum.ReviewedByCMO];
-    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, orderStatusesEnum.InPreparation];
+    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
     const actions = {
-      canViewShipment: canViewShipmentStatuses.indexOf(order.status_value) !== -1
+      canViewShipment: order.hasOwnProperty('shipmentSSI')
     };
 
     switch (this.role) {
       case Roles.Sponsor:
-        actions.canBeReviewed = canSponsorReviewStatuses.indexOf(order.status_value) !== -1
-        actions.canBeCancelled = cancellableOrderStatus.indexOf(order.status_value) !== -1;
+        actions.canBeReviewed = canSponsorReviewStatuses.indexOf(order.status_value) !== -1;
+        actions.canBeCancelled = cancellableOrderStatus.indexOf(order.status_value) !== -1 || cancellableOrderStatus.indexOf(shipment.status_value) !== -1;
         actions.canBeApproved = actions.canBeReviewed;
-        actions.orderCancelButtonText = order.pending_action === orderPendingActionEnum.PendingShipmentDispatch ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
+        actions.orderCancelButtonText = actions.canViewShipment ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
         this.attachSponsorEventHandlers();
         break;
 
       case Roles.CMO:
-        actions.canPrepareShipment = orderStatusesEnum.Approved === order.status_value;
+        actions.canPrepareShipment = !actions.canViewShipment && orderStatusesEnum.Approved === order.status_value;
         actions.canBeReviewed = canCMOReviewStatuses.indexOf(order.status_value) !== -1;
         this.attachCmoEventHandlers();
         break;
@@ -285,7 +299,7 @@ class SingleOrderControllerImpl extends WebcController {
     this.onTagEvent('cancel-order', 'click', (e) => {
           this.model.cancelOrderModal = {
             comment: {
-              placeholder:"Enter cancellation reason",
+          placeholder: 'Enter cancellation reason',
               value: '',
               label: 'Cancellation Reason:'
             },
@@ -312,20 +326,20 @@ class SingleOrderControllerImpl extends WebcController {
   }
 
   async cancelOrder() {
-    const {orderId, sponsorId, keySSI} = this.model.order;
+    const {keySSI} = this.model.order;
     let comment = this.model.cancelOrderModal.comment.value ? {
-        entity: this.role,
-        comment: this.model.cancelOrderModal.comment.value,
-        date: new Date().getTime()
-      }
-      : null;
+          entity: this.role,
+          comment: this.model.cancelOrderModal.comment.value,
+          date: new Date().getTime()
+        }
+        : null;
     await this.ordersService.updateOrderNew(keySSI, null, comment, Roles.Sponsor, orderStatusesEnum.Canceled);
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     this.showErrorModalAndRedirect('Order was canceled, redirecting to dashboard...', 'Order Cancelled', '/', 2000);
   }
 
   async approveOrder() {
-    const {orderId, sponsorId, keySSI} = this.model.order;
+    const {keySSI} = this.model.order;
     const result = await this.ordersService.updateOrderNew(keySSI, null, null, Roles.Sponsor, orderStatusesEnum.Approved);
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     this.showErrorModalAndRedirect('Order was approved, redirecting to dashboard...', 'Order Approved', '/', 2000);
@@ -355,10 +369,11 @@ class SingleOrderControllerImpl extends WebcController {
   async prepareShipment() {
     const order = this.model.order;
     const shipmentResult = await this.shipmentsService.createShipment(order);
+
     const otherOrderDetails = {
       shipmentSSI: shipmentResult.keySSI
     };
-    const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, orderStatusesEnum.InPreparation, otherOrderDetails);
+    const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
 
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
