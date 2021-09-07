@@ -1,9 +1,7 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
-const { Roles, NotificationTypes, Topics, messagesEnum, order, FoldersEnum } = require('./constants');
+const { Roles, messagesEnum, order, FoldersEnum } = require('./constants');
 const orderStatusesEnum = order.orderStatusesEnum;
-const NotificationsService = require('./lib/NotificationService.js');
-const eventBusService = require('./lib/EventBusService.js');
 const CommunicationService = require('./lib/CommunicationService.js');
 const moment = require('./lib/moment.min');
 
@@ -17,7 +15,6 @@ class OrdersService extends DSUService {
       this.communicationService = communicationService;
     }
     this.storageService = getSharedStorage(DSUStorage);
-    this.notificationsService = new NotificationsService(DSUStorage);
     this.DSUStorage = DSUStorage;
   }
 
@@ -127,20 +124,6 @@ class OrdersService extends DSUService {
       },
       order.uid
     );
-
-    let notification = {
-      operation: NotificationTypes.UpdateOrderStatus,
-      orderId: orderModel.orderId,
-      read: false,
-      status: orderStatusesEnum.Initiated,
-      keySSI: order.uid,
-      role: Roles.Sponsor,
-      did: '123-56',
-      date: new Date().getTime(),
-    };
-
-    const resultNotification = await this.notificationsService.insertNotification(notification);
-    console.log('notification:', resultNotification, this.notificationsService);
 
     // TODO: send correct type of SSIs (sread, keySSI, etc)
     this.sendMessageToEntity(
@@ -344,7 +327,7 @@ class OrdersService extends DSUService {
 
   // -> Function for reviewing, canceling, approving orders.
 
-  async updateOrderNew(orderKeySSI, files, comment, role, newStatus) {
+  async updateOrderNew(orderKeySSI, files, comment, role, newStatus, otherDetails) {
     let documents = null;
     let comments = null;
 
@@ -365,49 +348,30 @@ class OrdersService extends DSUService {
       comments = await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
       orderDB.comments = comments.comments;
     }
+
+    if (otherDetails) {
+      Object.keys(otherDetails).forEach(key => {
+        orderDB[key] = otherDetails[key];
+      });
+    }
+
     const result = await this.updateOrderToDB(orderDB, orderKeySSI);
-
-    let operation;
-    switch (newStatus) {
-      case orderStatusesEnum.ReviewedByCMO:
-        operation = messagesEnum.StatusReviewedByCMO;
-        break;
-      case orderStatusesEnum.ReviewedBySponsor:
-        operation = messagesEnum.StatusReviewedBySponsor;
-        break;
-      case orderStatusesEnum.Approved:
-        operation = messagesEnum.StatusApproved;
-        break;
-      case orderStatusesEnum.Canceled:
-        operation = messagesEnum.StatusCanceled;
-        break;
-    }
-
-    this.communicationService.sendMessage(CommunicationService.identities.CSC.SITE_IDENTITY, {
-      operation,
-      data: {
-        orderSSI: orderKeySSI,
-      },
-      shortDescription: 'Order Updated',
-    });
-
+    const identitiesArray = [CommunicationService.identities.CSC.SITE_IDENTITY];
     if (role === Roles.CMO) {
-      this.communicationService.sendMessage(CommunicationService.identities.CSC.SPONSOR_IDENTITY, {
-        operation,
-        data: {
-          orderSSI: orderKeySSI,
-        },
-        shortDescription: 'Order Updated',
-      });
+      identitiesArray.push(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
     } else {
-      this.communicationService.sendMessage(CommunicationService.identities.CSC.CMO_IDENTITY, {
-        operation,
-        data: {
-          orderSSI: orderKeySSI,
-        },
-        shortDescription: 'Order Updated',
-      });
+      identitiesArray.push(CommunicationService.identities.CSC.CMO_IDENTITY)
     }
+
+    identitiesArray.forEach(identity => {
+      this.communicationService.sendMessage(identity, {
+        operation: newStatus,
+        data: {
+          orderSSI: orderKeySSI
+        },
+        shortDescription: 'Order Updated'
+      });
+    });
 
     return result;
   }

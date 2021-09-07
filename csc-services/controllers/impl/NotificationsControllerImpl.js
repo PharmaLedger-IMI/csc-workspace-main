@@ -4,7 +4,8 @@ const cscServices = require('csc-services');
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
-const { Topics, Commons, NotificationTypes } = cscServices.constants;
+const { Topics, Commons } = cscServices.constants;
+const { NotificationTypesEnum, NotificationTypes } = cscServices.constants.notifications;
 
 class NotificationsControllerImpl extends WebcController {
 	constructor(role, ...props) {
@@ -16,6 +17,11 @@ class NotificationsControllerImpl extends WebcController {
 
 		this.getNotifications();
 		this.attachAll();
+	}
+
+	attachAll() {
+		this.viewNotificationHandler();
+		this.markNotificationHandler();
 	}
 
 	async getNotifications() {
@@ -34,7 +40,37 @@ class NotificationsControllerImpl extends WebcController {
 		return data;
 	}
 
-	attachAll() {
+	transformData(notifications) {
+		return notifications.map(notification => {
+			const details = {
+				status: notification.status,
+				date: momentService(notification.date).format(Commons.DateTimeFormatPattern)
+			};
+
+			switch (notification.operation) {
+				case NotificationTypes.UpdateOrderStatus: {
+					details.type = NotificationTypesEnum.Order;
+					details.id = notification.orderId;
+					break;
+				}
+				case NotificationTypes.UpdateShipmentStatus: {
+					details.type = NotificationTypesEnum.Shipment;
+					details.id = notification.shipmentId;
+					break;
+				}
+				case NotificationTypes.UpdateKitStatus: {
+					details.type = NotificationTypesEnum.Kit;
+					details.id = notification.kitId;
+					break;
+				}
+			}
+
+			notification.details = details;
+			return notification;
+		});
+	}
+
+	viewNotificationHandler() {
 		this.onTagClick('view-notification', (model) => {
 			const { keySSI, operation } = model;
 			if (keySSI && operation) {
@@ -49,6 +85,11 @@ class NotificationsControllerImpl extends WebcController {
 						pageTag = 'shipment';
 						break;
 					}
+
+					case NotificationTypes.UpdateKitStatus: {
+						pageTag = 'kit';
+						break;
+					}
 				}
 
 				if (pageTag) {
@@ -58,7 +99,9 @@ class NotificationsControllerImpl extends WebcController {
 				}
 			}
 		});
+	}
 
+	markNotificationHandler() {
 		this.onTagClick('mark-notification', async (model) => {
 			await this.notificationsService.changeNotificationStatus(model.pk);
 			await this.getNotifications();
