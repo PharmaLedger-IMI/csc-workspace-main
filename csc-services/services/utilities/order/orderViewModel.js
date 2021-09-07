@@ -2,6 +2,8 @@ const constants = require("csc-services").constants
 const orderBusinessRequirements = constants.order.orderBusinessRequirements;
 const DAYS_AHEAD = orderBusinessRequirements.DeliveryDateDaysAhead;
 const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
+const MIN_TEMPERATURE = orderBusinessRequirements.MinTemperature;
+const MAX_TEMPERATURE = orderBusinessRequirements.MaxTemperature;
 const momentService = require("csc-services").momentService;
 const orderViewModel = {
     accordion: {
@@ -149,6 +151,8 @@ const orderViewModel = {
                 placeholder: '',
                 disabled:false,
                 value: '',
+                min: MIN_TEMPERATURE,
+                max: MAX_TEMPERATURE,
             },
             keep_between_temperature_max: {
                 label: 'Max Temperature (°C)',
@@ -157,6 +161,8 @@ const orderViewModel = {
                 placeholder: '',
                 disabled:false,
                 value: '',
+                min: MIN_TEMPERATURE,
+                max: MAX_TEMPERATURE,
             },
             add_comment: {
                 label: 'Add a Comment',
