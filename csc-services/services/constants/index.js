@@ -10,10 +10,10 @@ const commons = require('./commons');
 const documentTypes = require('./documentTypes');
 
 module.exports = {
-  ...messages,
+	...messages,
 	notifications,
 	order,
-  shipment,
+	shipment,
 	...roles,
 	...topics,
 	...folders,
