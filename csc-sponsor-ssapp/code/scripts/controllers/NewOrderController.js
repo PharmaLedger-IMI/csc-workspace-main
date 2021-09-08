@@ -245,29 +245,28 @@ export default class NewOrderController extends WebcController {
     }
 
     function hideStep(item) {
-      var el = document.getElementById(item);
+      let el = document.getElementById(item);
       el.classList.add('step-hidden');
     }
 
     function showStep(item) {
-      var el = document.getElementById(item);
+      let el = document.getElementById(item);
       el.classList.remove('step-hidden');
     }
 
-    let tempChangehandler = () => {
-      let temperature_min_value = parseInt(this.model.form.inputs.keep_between_temperature_min.value);
-      let temperature_max_value = parseInt(this.model.form.inputs.keep_between_temperature_max.value);
-      if ((temperature_min_value > temperature_max_value) && temperature_min_value && temperature_max_value) {
-        this.model.temperatureError = true;
-      }
-      else {
-        this.model.temperatureError = false;
+    let tempChangeHandler = () => {
+      let minTempValue = this.model.form.inputs.keep_between_temperature_min.value;
+      let maxTempValue = this.model.form.inputs.keep_between_temperature_max.value;
+
+      if(minTempValue && maxTempValue){
+        minTempValue = parseInt(minTempValue);
+        maxTempValue = parseInt(maxTempValue);
+        this.model.temperatureError = minTempValue > maxTempValue;
       }
     }
 
-    this.model.onChange('form.inputs.keep_between_temperature_max.value',tempChangehandler)
-
-    this.model.onChange('form.inputs.keep_between_temperature_max.value', tempChangehandler)
+    this.model.onChange('form.inputs.keep_between_temperature_min.value',tempChangeHandler)
+    this.model.onChange('form.inputs.keep_between_temperature_max.value', tempChangeHandler)
   }
 
   getDateTime() {

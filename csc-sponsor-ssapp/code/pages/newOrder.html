@@ -131,11 +131,9 @@
                 <!--Input -->
                 <input class="form-control" data-view-model="@form.inputs.keep_between_temperature_max" type="number" min="@form.inputs.keep_between_temperature_max.min" max="@form.inputs.keep_between_temperature_max.max"/>
               </div>
-              <psk-condition condition="@temperatureError">
-                <div slot="condition-true" style="color: red;">
-                 Min temperature should be less than Max temperature!
+                <div data-if='@temperatureError' style="color: red;">
+                  Min temperature should be less than Max temperature!
                 </div>
-              </psk-condition>
               <!-- Temperature Comments -->
               <div class="form-group">
                 <!--Label -->
