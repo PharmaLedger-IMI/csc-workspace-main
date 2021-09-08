@@ -123,15 +123,19 @@
                 <!-- Label -->
                 <label>{{@form.inputs.keep_between_temperature_min.label}}</label>
                 <!--Input -->
-                <input class="form-control" data-view-model="@form.inputs.keep_between_temperature_min" type="text" />
+                <input class="form-control" data-view-model="@form.inputs.keep_between_temperature_min" type="number" min="@form.inputs.keep_between_temperature_min.min" max="@form.inputs.keep_between_temperature_min.max"/>
               </div>
               <div class="form-group">
                 <!-- Label -->
                 <label>{{@form.inputs.keep_between_temperature_max.label}}</label>
                 <!--Input -->
-                <input class="form-control" data-view-model="@form.inputs.keep_between_temperature_max" type="text" />
+                <input class="form-control" data-view-model="@form.inputs.keep_between_temperature_max" type="number" min="@form.inputs.keep_between_temperature_max.min" max="@form.inputs.keep_between_temperature_max.max"/>
               </div>
-
+              <psk-condition condition="@temperatureError">
+                <div slot="condition-true" style="color: red;">
+                 Min temperature should be less than Max temperature!
+                </div>
+              </psk-condition>
               <!-- Temperature Comments -->
               <div class="form-group">
                 <!--Label -->
@@ -146,7 +150,7 @@
           <div class="row-wrapper button-wrapper">
             <div></div>
             <!-- Next Button -->
-            <button class="btn-default" data-tag="from_step_1_to_2" id="from_step_1_to_2">
+            <button class="btn-default" data-tag="from_step_1_to_2" id="from_step_1_to_2" disabled="@temperatureError" >
               Next
               <i class="fas fa-angle-right"></i>
             </button>
