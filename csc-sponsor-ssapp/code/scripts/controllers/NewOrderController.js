@@ -8,6 +8,7 @@ const CommunicationService = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const { uuidv4 } = cscServices.utils;
+const sites = cscServices.constants.order.orderBusinessRequirements.sites;
 
 export default class NewOrderController extends WebcController {
   files = [];
@@ -57,6 +58,16 @@ export default class NewOrderController extends WebcController {
 
       if (event.data) this.docs = event.data;
     });
+
+    let siteChangeHandler = () => {
+      const siteIndex = parseInt(this.model.form.inputs.site_id.value);
+      this.model.form.inputs.site_region_id.value = sites[siteIndex].siteRegionID;
+      this.model.form.inputs.site_country.value = sites[siteIndex].siteCountry;
+    }
+
+    this.model.onChange('form.inputs.site_id', siteChangeHandler);
+    //trigger the first selection
+    siteChangeHandler();
 
     this.on('add-kit-ids-file', async (event) => {
       const files = event.data;
@@ -245,29 +256,28 @@ export default class NewOrderController extends WebcController {
     }
 
     function hideStep(item) {
-      var el = document.getElementById(item);
+      let el = document.getElementById(item);
       el.classList.add('step-hidden');
     }
 
     function showStep(item) {
-      var el = document.getElementById(item);
+      let el = document.getElementById(item);
       el.classList.remove('step-hidden');
     }
 
-    let tempChangehandler = () => {
-      let temperature_min_value = parseInt(this.model.form.inputs.keep_between_temperature_min.value);
-      let temperature_max_value = parseInt(this.model.form.inputs.keep_between_temperature_max.value);
-      if ((temperature_min_value > temperature_max_value) && temperature_min_value && temperature_max_value) {
-        this.model.temperatureError = true;
-      }
-      else {
-        this.model.temperatureError = false;
+    let tempChangeHandler = () => {
+      let minTempValue = this.model.form.inputs.keep_between_temperature_min.value;
+      let maxTempValue = this.model.form.inputs.keep_between_temperature_max.value;
+
+      if(minTempValue && maxTempValue){
+        minTempValue = parseInt(minTempValue);
+        maxTempValue = parseInt(maxTempValue);
+        this.model.temperatureError = minTempValue > maxTempValue;
       }
     }
 
-    this.model.onChange('form.inputs.keep_between_temperature_max.value',tempChangehandler)
-
-    this.model.onChange('form.inputs.keep_between_temperature_max.value', tempChangehandler)
+    this.model.onChange('form.inputs.keep_between_temperature_min.value',tempChangeHandler)
+    this.model.onChange('form.inputs.keep_between_temperature_max.value', tempChangeHandler)
   }
 
   getDateTime() {

@@ -5,6 +5,7 @@ const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
 const MIN_TEMPERATURE = orderBusinessRequirements.MinTemperature;
 const MAX_TEMPERATURE = orderBusinessRequirements.MaxTemperature;
 const momentService = require("csc-services").momentService;
+const sites = orderBusinessRequirements.sites;
 const orderViewModel = {
     accordion: {
         order_details: {
@@ -33,7 +34,7 @@ const orderViewModel = {
                 name: 'sponsor_id',
                 required: true,
                 placeholder: 'Sponsor ID...',
-                disabled:false,
+                disabled: false,
                 value: '',
             },
             delivery_date: {
@@ -42,7 +43,7 @@ const orderViewModel = {
                 required: true,
                 disabled: false,
                 value: '',
-                min: momentService(new Date()).add(DAYS_AHEAD,'days').format(constants.Commons.YearMonthDayPattern)
+                min: momentService(new Date()).add(DAYS_AHEAD, 'days').format(constants.Commons.YearMonthDayPattern)
             },
             delivery_time: {
                 name: 'delivery_time',
@@ -56,11 +57,11 @@ const orderViewModel = {
                 id: 'target_cmo_id',
                 placeholder: 'Select Target CMO ID...',
                 required: true,
-                disabled:false,
+                disabled: false,
                 options: [
-                    {label: 'ID 1', value: '1'},
-                    {label: 'ID 2', value: '2'},
-                    {label: 'ID 3', value: '3'},
+                    { label: 'ID 1', value: '1' },
+                    { label: 'ID 2', value: '2' },
+                    { label: 'ID 3', value: '3' },
                 ],
                 value: '1'
             },
@@ -69,7 +70,7 @@ const orderViewModel = {
                 name: 'study_id',
                 required: true,
                 placeholder: 'e.g ABC123X56789',
-                disabled:false,
+                disabled: false,
                 value: '',
             },
             order_id: {
@@ -77,7 +78,7 @@ const orderViewModel = {
                 name: 'order_id',
                 required: true,
                 placeholder: 'e.g O-000001234',
-                disabled:false,
+                disabled: false,
                 value: '',
             },
             kit_id_list: {
@@ -85,7 +86,7 @@ const orderViewModel = {
                 name: 'kit_id_list',
                 required: true,
                 placeholder: 'No File',
-                disabled:false,
+                disabled: false,
                 value: '',
             },
             kit_ids_attachment: {
@@ -103,20 +104,16 @@ const orderViewModel = {
                 id: 'site_id',
                 placeholder: 'Select Site ID...',
                 required: true,
-                disabled:false,
-                options: [
-                    {label: 'Site ID 1', value: '1'},
-                    {label: 'Site ID 2', value: '2'},
-                    {label: 'Site ID 3', value: '3'},
-                ],
-                value: '1'
+                disabled: false,
+                options: sites.map((x,index) => {return {label:x.name, value:index}}),
+                value: '0',
             },
             site_region_id: {
                 label: 'Site Region ID (Autofilled)',
                 name: 'site_region_id',
                 required: true,
                 placeholder: '',
-                disabled:false,
+                disabled: true,
                 value: '',
             },
             site_country: {
@@ -124,7 +121,7 @@ const orderViewModel = {
                 name: 'site_country',
                 required: true,
                 placeholder: '',
-                disabled:false,
+                disabled: true,
                 value: '',
             },
             temperature_comments: {
@@ -132,24 +129,24 @@ const orderViewModel = {
                 name: 'temperature_comments',
                 required: true,
                 placeholder: 'e.g Do not freeze',
-                disabled:false,
+                disabled: false,
                 value: '',
             },
             keep_between_temperature: {
                 andLabel: "and",
-                label: 'Keep between ('+TEMPERATURE_UNITS+')',
+                label: 'Keep between (' + TEMPERATURE_UNITS + ')',
                 name: 'keep_between_temperature',
                 required: true,
                 placeholder: '',
-                disabled:false,
+                disabled: false,
                 value: '',
             },
             keep_between_temperature_min: {
-                label: 'Min Temperature ('+TEMPERATURE_UNITS+')',
+                label: 'Min Temperature (' + TEMPERATURE_UNITS + ')',
                 name: 'keep_between_temperature_min',
                 required: true,
                 placeholder: '',
-                disabled:false,
+                disabled: false,
                 value: '',
                 min: MIN_TEMPERATURE,
                 max: MAX_TEMPERATURE,
@@ -159,7 +156,7 @@ const orderViewModel = {
                 name: 'keep_between_temperature_max',
                 required: true,
                 placeholder: '',
-                disabled:false,
+                disabled: false,
                 value: '',
                 min: MIN_TEMPERATURE,
                 max: MAX_TEMPERATURE,
@@ -169,7 +166,7 @@ const orderViewModel = {
                 name: 'add_comment',
                 required: true,
                 placeholder: 'Add a comment....',
-                disabled:false,
+                disabled: false,
                 value: '',
             },
         },
