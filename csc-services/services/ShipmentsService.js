@@ -82,11 +82,13 @@ class ShipmentsService extends DSUService {
 	async updateShipment(shipmentKeySSI, newShipmentData, newStatus, role) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
 		const status = await this.updateStatusDsu(newStatus, shipmentDB.statusSSI);
+
 		shipmentDB = {
 			...shipmentDB,
 			...newShipmentData,
 			status: status.history
 		};
+		const shipmentPreparationDSU = await this.updateEntityAsync(shipmentDB);
 		const result = await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentKeySSI, shipmentDB);
 
 		let notifyIdentities = [];
@@ -156,6 +158,19 @@ class ShipmentsService extends DSUService {
 			FoldersEnum.ShipmentsStatuses
 		);
 		return result;
+	}
+
+	async updateLocalShipment(shipmentSSI) {
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
+		const loadedShipmentDSU = await this.getEntityAsync(shipmentDB.shipmentSSI, FoldersEnum.Shipments);
+		const status = await this.getEntityAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
+
+		shipmentDB = {
+			...shipmentDB,
+			...loadedShipmentDSU,
+			status: status.history
+		};
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
 	}
 }
 
