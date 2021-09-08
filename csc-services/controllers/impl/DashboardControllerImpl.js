@@ -143,7 +143,7 @@ class DashboardControllerImpl extends WebcController {
 			}
 
 			//TODO are you sure that the order was mounted previously?
-			// if user is offline and an order will pass through many states: Initated, Reviewed by CMO, Accepted,
+			// if user is offline and an order will pass through many states: Initiated, Reviewed by CMO, Accepted,
 			// the communication system will raise 3 different events and
 			//   1. the order of the events may not be the same
 			//   2. the communicationService is not waiting, it will provide the next message ASAP
@@ -175,20 +175,6 @@ class DashboardControllerImpl extends WebcController {
 
 				break;
 			}
-
-			case orderStatusesEnum.InPreparation: {
-				notificationRole = Roles.CMO;
-				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
-
-				break;
-			}
-
-			case orderStatusesEnum.ReadyForDispatch: {
-				notificationRole = Roles.CMO;
-				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
-
-				break;
-			}
 		}
 
 		return [orderData, orderStatus, notificationRole];
@@ -208,7 +194,11 @@ class DashboardControllerImpl extends WebcController {
 					statusSSI
 				} = data.message.data;
 
+				// TODO: Update local order using shipment details
 				shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusSSI);
+				const orderData = await this.ordersService.updateLocalOrder(shipmentData.orderSSI, { shipmentSSI: shipmentSSI });
+
+				console.log('[UPDATE LOCAL ORDER]', JSON.stringify(orderData, null, 2));
 				break;
 			}
 		}

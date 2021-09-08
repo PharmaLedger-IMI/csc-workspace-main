@@ -333,8 +333,10 @@ class OrdersService extends DSUService {
 
     const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderKeySSI);
 
+    if (newStatus) {
     const status = await this.updateStatusDsu(newStatus, orderDB.statusSSI);
     orderDB.status = status.history;
+    }
 
     if (files) {
       documents = await this.addDocumentsToDsu(files, role === Roles.CMO ? orderDB.cmoDocumentsKeySSI : orderDB.sponsorDocumentsKeySSI, role);
@@ -363,6 +365,7 @@ class OrdersService extends DSUService {
       identitiesArray.push(CommunicationService.identities.CSC.CMO_IDENTITY)
     }
 
+    if(newStatus) {
     identitiesArray.forEach(identity => {
       this.communicationService.sendMessage(identity, {
         operation: newStatus,
@@ -372,13 +375,14 @@ class OrdersService extends DSUService {
         shortDescription: 'Order Updated'
       });
     });
+    }
 
     return result;
   }
 
   // -> Function for updating changed order locally
 
-  async updateLocalOrder(orderKeySSI) {
+  async updateLocalOrder(orderKeySSI, otherDetails) {
     const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderKeySSI);
     const status = await this.getEntityAsync(orderDB.statusSSI, FoldersEnum.Statuses);
     orderDB.status = status.history;
@@ -415,6 +419,13 @@ class OrdersService extends DSUService {
         }
         break;
     }
+
+    if (otherDetails) {
+      Object.keys(otherDetails).forEach(key => {
+        orderDB[key] = otherDetails[key];
+      });
+    }
+
     const result = await this.updateOrderToDB(orderDB, orderKeySSI);
     return result;
   }

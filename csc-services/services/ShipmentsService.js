@@ -47,6 +47,7 @@ class ShipmentsService extends DSUService {
 			orderSSI: data.orderSSI,
 			requestDate: data.requestDate,
 			orderId: data.orderId,
+			sponsorId: data.sponsorId,
 			// Shipment Id will be replaced when courier scans the shipment and will generate another shipment id
 			shipmentId: data.orderId,
 			status: status.history
