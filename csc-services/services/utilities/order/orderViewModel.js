@@ -6,6 +6,14 @@ const MIN_TEMPERATURE = orderBusinessRequirements.MinTemperature;
 const MAX_TEMPERATURE = orderBusinessRequirements.MaxTemperature;
 const momentService = require("csc-services").momentService;
 const orderViewModel = {
+    cancelOrderModal: {
+        comment: {
+            placeholder: 'Enter cancellation reason',
+            value: '',
+            label: 'Cancellation Reason:'
+        },
+        commentIsEmpty: true
+    },
     accordion: {
         order_details: {
             name: 'Order Details',
