@@ -77,8 +77,6 @@ class OrdersControllerImpl extends WebcController {
 					2
 				)
 			);
-			console.log(JSON.stringify(this.orders, null, 2));
-			console.log(orderId);
 			this.navigateToPageTag('order', {
 				id: orderId,
 				keySSI: this.orders.find((x) => x.orderId === orderId).orderSSI,

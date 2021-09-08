@@ -83,12 +83,9 @@ class SingleShipmentControllerImpl extends WebcController {
   }
 
   confirmEditShipmentCallback = async (event) => {
-    console.log('[EDIT Shipment] Confirm', event);
     const shipmentDetails = event.detail;
     const result = await this.shipmentsService.updateShipment(this.model.keySSI,
       shipmentDetails, shipmentStatusesEnum.ReadyForDispatch, this.role);
-
-    console.log('\n\n[UPDATE SHIPMENT AFTER EDIT]\n\n', JSON.stringify(result, null, 2));
   };
 
   downloadKitListHandler() {

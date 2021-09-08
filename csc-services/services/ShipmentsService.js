@@ -48,7 +48,6 @@ class ShipmentsService extends DSUService {
 			requestDate: data.requestDate,
 			orderId: data.orderId,
 			sponsorId: data.sponsorId,
-			// Shipment Id will be replaced when courier scans the shipment and will generate another shipment id
 			shipmentId: data.orderId,
 			status: status.history
 		};
@@ -58,16 +57,6 @@ class ShipmentsService extends DSUService {
 
 		this.sendMessageToEntity(
 			CommunicationService.identities.CSC.SPONSOR_IDENTITY,
-			shipmentStatusesEnum.InPreparation,
-			{
-				shipmentSSI: shipmentDSU.keySSI,
-				statusSSI: statusDSU.keySSI
-			},
-			shipmentStatusesEnum.InPreparation
-		);
-
-		this.sendMessageToEntity(
-			CommunicationService.identities.CSC.SITE_IDENTITY,
 			shipmentStatusesEnum.InPreparation,
 			{
 				shipmentSSI: shipmentDSU.keySSI,
