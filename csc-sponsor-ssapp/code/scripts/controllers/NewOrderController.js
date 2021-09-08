@@ -59,13 +59,15 @@ export default class NewOrderController extends WebcController {
       if (event.data) this.docs = event.data;
     });
 
-    this.model.onChange('form.inputs.site_id', (event) => {
+    let siteChangeHandler = () => {
       const siteIndex = parseInt(this.model.form.inputs.site_id.value);
-
       this.model.form.inputs.site_region_id.value = sites[siteIndex].siteRegionID;
       this.model.form.inputs.site_country.value = sites[siteIndex].siteCountry;
+    }
 
-    });
+    this.model.onChange('form.inputs.site_id', siteChangeHandler);
+    //trigger the first selection
+    siteChangeHandler();
 
     this.on('add-kit-ids-file', async (event) => {
       const files = event.data;
