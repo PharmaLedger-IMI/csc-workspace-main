@@ -31,15 +31,6 @@ class NotificationsControllerImpl extends WebcController {
 		console.log("notifications " + JSON.stringify(notifications));
 	}
 
-	transformData(data) {
-		if (data) {
-			data.forEach((item) => {
-				item.date = item.date ? momentService(item.date).format(Commons.DateTimeFormatPattern) : '-';
-			});
-		}
-		return data;
-	}
-
 	transformData(notifications) {
 		return notifications.map(notification => {
 			const details = {
