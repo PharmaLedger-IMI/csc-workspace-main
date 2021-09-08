@@ -34,6 +34,7 @@ export default class NewOrderController extends WebcController {
       ],
       form: viewModelResolver('order').form,
       orderCreatedKeySSI: '',
+      temperatureError:false,
     };
 
     this.on('add-file', (event) => {
@@ -252,6 +253,21 @@ export default class NewOrderController extends WebcController {
       var el = document.getElementById(item);
       el.classList.remove('step-hidden');
     }
+
+    let tempChangehandler = () => {
+      let temperature_min_value = parseInt(this.model.form.inputs.keep_between_temperature_min.value);
+      let temperature_max_value = parseInt(this.model.form.inputs.keep_between_temperature_max.value);
+      if ((temperature_min_value > temperature_max_value) && temperature_min_value && temperature_max_value) {
+        this.model.temperatureError = true;
+      }
+      else {
+        this.model.temperatureError = false;
+      }
+    }
+
+    this.model.onChange('form.inputs.keep_between_temperature_max.value',tempChangehandler)
+
+    this.model.onChange('form.inputs.keep_between_temperature_max.value', tempChangehandler)
   }
 
   getDateTime() {
