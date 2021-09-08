@@ -86,6 +86,7 @@ class SingleShipmentControllerImpl extends WebcController {
     const shipmentDetails = event.detail;
     const result = await this.shipmentsService.updateShipment(this.model.keySSI,
       shipmentDetails, shipmentStatusesEnum.ReadyForDispatch, this.role);
+    this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', '/', 2000);
   };
 
   downloadKitListHandler() {
