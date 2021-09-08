@@ -5,9 +5,10 @@ const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
+const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
 const momentService = cscServices.momentService;
-const { Roles, Commons } = cscServices.constants;
+const { Roles, Commons, FoldersEnum } = cscServices.constants;
 const { shipmentStatusesEnum, shipmentPendingActionEnum } = cscServices.constants.shipment;
 
 const csIdentities = {};
@@ -24,6 +25,7 @@ class SingleShipmentControllerImpl extends WebcController {
 
     let communicationService = CommunicationService.getInstance(csIdentities[role]);
     this.notificationsService = new NotificationsService(this.DSUStorage);
+    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
 
@@ -90,8 +92,13 @@ class SingleShipmentControllerImpl extends WebcController {
   };
 
   downloadKitListHandler() {
-    this.onTagEvent('download-kit-list', 'click', (model, target, event) => {
-      console.log('[EVENT] download-kit-list');
+    this.onTagClick('download-kits-file', async (model) => {
+      window.WebCardinal.loader.hidden = false;
+      const fileName = model.order.kitsFilename;
+      const path = FoldersEnum.Kits + '/' + model.order.kitsSSI + '/' + 'files';
+      await this.FileDownloaderService.prepareDownloadFromDsu(path, fileName);
+      this.FileDownloaderService.downloadFileToDevice(fileName);
+      window.WebCardinal.loader.hidden = true;
     });
   }
 

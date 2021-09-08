@@ -3,12 +3,11 @@ const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
-const NotificationsService = cscServices.NotificationsService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
 const momentService = cscServices.momentService;
-const { Roles, Topics, NotificationTypes, ButtonsEnum, Commons, FoldersEnum } = cscServices.constants;
+const { Roles, Topics, ButtonsEnum, Commons, FoldersEnum } = cscServices.constants;
 const { orderStatusesEnum, orderPendingActionEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
@@ -30,7 +29,6 @@ class SingleOrderControllerImpl extends WebcController {
     this.model = model;
 
     let { keySSI } = this.history.location.state;
-    this.notificationsService = new NotificationsService(this.DSUStorage);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     let communicationService = CommunicationService.getInstance(csIdentities[role]);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
@@ -133,7 +131,6 @@ class SingleOrderControllerImpl extends WebcController {
   }
 
   closeAllExcept(el) {
-    const element = document.getElementById(el);
 
     if (el === 'order_details_accordion') {
       this.closeAccordionItem('order_comments_accordion');
@@ -168,9 +165,13 @@ class SingleOrderControllerImpl extends WebcController {
     this.model.order = { ...this.transformData(this.model.order) };
     this.model.order.delivery_date = {
       date: this.getDate(this.model.order.deliveryDate),
-      time: this.getTime(this.model.order.deliveryDate),
+      time: this.getTime(this.model.order.deliveryDate)
     };
-    
+
+    if (this.model.order.shipmentSSI) {
+      const shipment = await this.shipmentsService.getShipment(this.model.order.shipmentSSI);
+      this.model.shipment = this.transformShipmentData(shipment);
+    }
 
     this.model.order.actions = this.setOrderActions();
   }
@@ -222,18 +223,31 @@ class SingleOrderControllerImpl extends WebcController {
 
       return data;
     }
+
+    return {};
   }
+
+  transformShipmentData(shipment) {
+    if (shipment) {
+      shipment.status_value = shipment.status.sort(function (a, b) {
+        return new Date(b.date) - new Date(a.date);
+      })[0].status;
+
+      return shipment;
+    }
+
+    return null;
+  }
+
 
   getPendingAction(status_value) {
     switch (status_value) {
       case orderStatusesEnum.Initiated:
+      case orderStatusesEnum.ReviewedBySponsor:
         return orderPendingActionEnum.PendingReviewByCMO;
 
       case orderStatusesEnum.ReviewedByCMO:
         return orderPendingActionEnum.SponsorReviewOrApprove;
-
-      case orderStatusesEnum.ReviewedBySponsor:
-        return orderPendingActionEnum.CMOReviewOrApprove;
 
       case orderStatusesEnum.Canceled:
         return orderPendingActionEnum.NoPendingActions;
@@ -246,31 +260,52 @@ class SingleOrderControllerImpl extends WebcController {
   }
 
   setOrderActions() {
-    const actions = {};
-    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, orderStatusesEnum.InPreparation];
     const order = this.model.order;
+    const shipment = this.model.shipment;
+    const canCMOReviewStatuses = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedBySponsor];
+    const canSponsorReviewStatuses = [orderStatusesEnum.ReviewedByCMO];
+    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
+    const actions = {
+      canViewShipment: order.hasOwnProperty('shipmentSSI')
+    };
+
     switch (this.role) {
       case Roles.Sponsor:
-        actions.couldNotBeReviewed = orderStatusesEnum.ReviewedByCMO !== order.status_value;
-        actions.couldNotBeCancelled = cancellableOrderStatus.indexOf(order.status_value) === -1;
-        actions.couldNotBeApproved = order.status.map((status) => status.status).indexOf(orderStatusesEnum.ReviewedByCMO) === -1 || orderStatusesEnum.Canceled === order.status_value || orderStatusesEnum.Approved === order.status_value;
-        actions.orderCancelButtonText = order.pending_action === orderPendingActionEnum.PendingShipmentDispatch ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
-        this.onTagEvent('review-order', 'click', (e) => {
-          this.navigateToPageTag('review-order', {
-            order: JSON.parse(JSON.stringify(this.model.order)),
-          });
-        });
+        actions.canBeReviewed = canSponsorReviewStatuses.indexOf(order.status_value) !== -1;
+        actions.canBeCancelled = cancellableOrderStatus.indexOf(order.status_value) !== -1 || cancellableOrderStatus.indexOf(shipment.status_value) !== -1;
+        actions.canBeApproved = actions.canBeReviewed;
+        actions.orderCancelButtonText = actions.canViewShipment ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
+        this.attachSponsorEventHandlers();
+        break;
 
-        this.onTagEvent('cancel-order', 'click', (e) => {
+      case Roles.CMO:
+        actions.canPrepareShipment = !actions.canViewShipment && orderStatusesEnum.Approved === order.status_value;
+        actions.canBeReviewed = canCMOReviewStatuses.indexOf(order.status_value) !== -1;
+        this.attachCmoEventHandlers();
+        break;
+    }
+
+    this.attachCommonEventHandlers();
+    return actions;
+  }
+
+  attachSponsorEventHandlers() {
+    this.onTagEvent('review-order', 'click', () => {
+      this.navigateToPageTag('review-order', {
+        order: this.model.toObject('order')
+      });
+    });
+
+    this.onTagEvent('cancel-order', 'click', (e) => {
           this.model.cancelOrderModal = {
             comment: {
-              placeholder:"Enter cancellation reason",
+          placeholder: 'Enter cancellation reason',
               value: '',
               label: 'Cancellation Reason:'
             },
             commentIsEmpty: true
           };
-          this.showModalFromTemplate('cancelOrderModal', cancelOrder, () => {
+          this.showModalFromTemplate('cancelOrderModal',  this.cancelOrder.bind(this), () => {
           },{
             controller: 'CancelOrderController',
             disableExpanding: true,
@@ -279,92 +314,78 @@ class SingleOrderControllerImpl extends WebcController {
           });
         });
 
-        this.onTagEvent('approve-order', 'click', () => {
-          this.showErrorModal(new Error(`Are you sure you want to approve the order?`), 'Approve Order', approveOrder, () => {}, {
+    this.onTagEvent('approve-order', 'click', () => {
+      this.showErrorModal(new Error(`Are you sure you want to approve the order?`), 'Approve Order', this.approveOrder.bind(this), () => {
+      }, {
+        disableExpanding: true,
+        cancelButtonText: 'No',
+        confirmButtonText: 'Yes',
+        id: 'error-modal'
+      });
+    });
+  }
+
+  async cancelOrder() {
+    const {keySSI} = this.model.order;
+    let comment = this.model.cancelOrderModal.comment.value ? {
+          entity: this.role,
+          comment: this.model.cancelOrderModal.comment.value,
+          date: new Date().getTime()
+        }
+        : null;
+    await this.ordersService.updateOrderNew(keySSI, null, comment, Roles.Sponsor, orderStatusesEnum.Canceled);
+    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+    this.showErrorModalAndRedirect('Order was canceled, redirecting to dashboard...', 'Order Cancelled', '/', 2000);
+  }
+
+  async approveOrder() {
+    const {keySSI} = this.model.order;
+    const result = await this.ordersService.updateOrderNew(keySSI, null, null, Roles.Sponsor, orderStatusesEnum.Approved);
+    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+    this.showErrorModalAndRedirect('Order was approved, redirecting to dashboard...', 'Order Approved', '/', 2000);
+  }
+
+  attachCmoEventHandlers() {
+    this.onTagEvent('review-order', 'click', () => {
+      this.navigateToPageTag('review-order', {
+        order: this.model.toObject('order')
+      });
+    });
+
+    this.onTagEvent('prepare-shipment', 'click', () => {
+      this.showErrorModal(new Error(`Are you sure you want to prepare the shipment?`),
+          'Prepare Shipment',
+          this.prepareShipment.bind(this),
+          () => {
+          }, {
             disableExpanding: true,
             cancelButtonText: 'No',
             confirmButtonText: 'Yes',
-            id: 'error-modal',
+            id: 'error-modal'
           });
-        });
+    });
+  }
 
-        const cancelOrder = async () => {
-          let comment = this.model.cancelOrderModal.comment.value ? {
-              entity: this.role,
-              comment: this.model.cancelOrderModal.comment.value,
-              date: new Date().getTime()
-            }
-            : null;
-          await this.ordersService.updateOrderNew(this.model.order.keySSI, null, comment, Roles.Sponsor, orderStatusesEnum.Canceled);
-          const notification = {
-            operation: NotificationTypes.UpdateOrderStatus,
-            orderId: this.model.order.orderId,
-            read: false,
-            status: orderStatusesEnum.Canceled,
-            keySSI: this.model.order.keySSI,
-            role: Roles.Sponsor,
-            did: order.sponsorId,
-            date: new Date().getTime(),
-          };
-          await this.notificationsService.insertNotification(notification);
-          eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-          eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-          this.showErrorModalAndRedirect('Order was canceled, redirecting to dashboard...', 'Order Cancelled', '/', 2000);
-        };
+  async prepareShipment() {
+    const order = this.model.order;
+    const shipmentResult = await this.shipmentsService.createShipment(order);
 
-        const approveOrder = async () => {
-          const result = await this.ordersService.updateOrderNew(this.model.order.keySSI, null, null, Roles.Sponsor, orderStatusesEnum.Approved);
-          const notification = {
-            operation: NotificationTypes.UpdateOrderStatus,
-            orderId: this.model.order.orderId,
-            read: false,
-            status: orderStatusesEnum.Approved,
-            keySSI: this.model.order.keySSI,
-            role: Roles.Sponsor,
-            did: order.sponsorId,
-            date: new Date().getTime(),
-          };
-          await this.notificationsService.insertNotification(notification);
-          eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-          eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-          this.showErrorModalAndRedirect('Order was approved, redirecting to dashboard...', 'Order Approved', '/', 2000);
-        };
-        break;
-      case Roles.CMO:
-        actions.couldNotBeReviewed = [orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.Approved, orderStatusesEnum.Canceled].indexOf(order.status_value) !== -1;
-        this.onTagEvent('review-order', 'click', (e) => {
-          this.navigateToPageTag('review-order', {
-            order: JSON.parse(JSON.stringify(this.model.order)),
-          });
-        });
-        this.onTagEvent('prepare-shipment', 'click', () => {
-          this.showErrorModal(new Error(`Are you sure you want to prepare the shipment?`), 'Prepare Shipment', prepareShipment, () => {}, {
-            disableExpanding: true,
-            cancelButtonText: 'No',
-            confirmButtonText: 'Yes',
-            id: 'error-modal',
-          });
-        });
-        const prepareShipment = async () => {
-          const result = await this.shipmentsService.createShipment(this.model.order);
-          const notification = {
-            operation: NotificationTypes.UpdateShipmentStatus,
-            shipmentId: '1234',
-            read: false,
-            status: shipmentStatusesEnum.InPreparation,
-            keySSI: result.keySSI,
-            role: Roles.CMO,
-            did: order.sponsorId,
-            date: new Date().getTime(),
-          };
-          await this.notificationsService.insertNotification(notification);
-          eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-          eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-          this.showErrorModalAndRedirect('Shipment Initiated, redirecting to dashboard...', 'Shipment Initiated', '/', 2000);
-        };
-        break;
-    }
-    return actions;
+    const otherOrderDetails = {
+      shipmentSSI: shipmentResult.keySSI
+    };
+    const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
+
+    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+    this.showErrorModalAndRedirect('Shipment Initiated, redirecting to dashboard...', 'Shipment Initiated', '/', 2000);
+  };
+
+  attachCommonEventHandlers() {
+    this.onTagClick('view-shipment', () => {
+      this.navigateToPageTag('shipment', {
+        keySSI: this.model.order.shipmentSSI
+      });
+    });
   }
 
   getDate(str) {
@@ -383,5 +404,6 @@ class SingleOrderControllerImpl extends WebcController {
     window.WebCardinal.loader.hidden = true;
   }
 }
+
 const controllersRegistry = require('../ControllersRegistry').getControllersRegistry();
 controllersRegistry.registerController('SingleOrderController', SingleOrderControllerImpl);

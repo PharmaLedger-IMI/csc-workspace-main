@@ -2,7 +2,6 @@ const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedSto
 const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum } = require('./constants');
 const { shipmentStatusesEnum } = require('./constants/shipment');
-const NotificationsService = require('./lib/NotificationService.js');
 const CommunicationService = require('./lib/CommunicationService.js');
 
 class ShipmentsService extends DSUService {
@@ -14,7 +13,6 @@ class ShipmentsService extends DSUService {
 			this.communicationService = communicationService;
 		}
 		this.storageService = getSharedStorage(DSUStorage);
-		this.notificationsService = new NotificationsService(DSUStorage);
 		this.DSUStorage = DSUStorage;
 	}
 
@@ -49,6 +47,7 @@ class ShipmentsService extends DSUService {
 			orderSSI: data.orderSSI,
 			requestDate: data.requestDate,
 			orderId: data.orderId,
+			sponsorId: data.sponsorId,
 			// Shipment Id will be replaced when courier scans the shipment and will generate another shipment id
 			shipmentId: data.orderId,
 			status: status.history

@@ -1,4 +1,5 @@
 const getSharedStorage = require('./SharedDBStorageService.js').getSharedStorage;
+const { uuidv4 } = require("../lib/utils");
 
 module.exports = class NotificationsService {
 	NOTIFICATIONS_TABLE = 'notifications';
@@ -19,8 +20,7 @@ module.exports = class NotificationsService {
 	}
 
 	async insertNotification(notification) {
-		const notifications = await this.storageService.filter(this.NOTIFICATIONS_TABLE);
-		const id = notifications.length || 0;
+		const id = uuidv4();
 		const newRecord = await this.storageService.insertRecord(this.NOTIFICATIONS_TABLE, id, notification);
 		return newRecord;
 	}

@@ -26,20 +26,12 @@
 	                    </button>
                     </td>
                     <td class="d-flex flex-column">
-                    <div data-if="@orderId">
-                    <container slot="true">
-                        <label>Order [{{@orderId}}]: {{@status}}</label>
-                        <label class="d-lg-none">{{ @date }}</label>
-                    </container>
-                    <container slot="false">
-	                    <label>Shipment [{{@shipmentId}}]: {{@status}}</label>
-                        <label class="d-lg-none">{{ @date }}</label>
-                    </container>
-                    </div>
+	                    <label>{{@details.type}} [{{@details.id}}]: {{@details.status}}</label>
+	                    <label class="d-lg-none">{{ @details.date }}</label>
                     </td>
                     <td>{{ @did}}</td>
                     <td>{{ @role }}</td>
-                    <td class="d-none d-lg-table-cell">{{ @date }}</td>
+                    <td class="d-none d-lg-table-cell">{{ @details.date }}</td>
                     <td>
                         <button class="btn-bare" data-tag="view-notification">
 	                        <svg class='view-more-icon' enable-background='new 0 0 200 200' height='200px' id='Layer_1'
