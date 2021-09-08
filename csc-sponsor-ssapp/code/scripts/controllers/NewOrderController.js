@@ -8,6 +8,7 @@ const CommunicationService = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const { uuidv4 } = cscServices.utils;
+const sites = cscServices.constants.order.orderBusinessRequirements.sites;
 
 export default class NewOrderController extends WebcController {
   files = [];
@@ -58,15 +59,11 @@ export default class NewOrderController extends WebcController {
     });
 
     this.model.onChange('form.inputs.site_id', (event) => {
-      const siteOptions = this.model.form.inputs.site_id.list;
+      const siteIndex = parseInt(this.model.form.inputs.site_id.value);
 
-      for (let i = 0; i < siteOptions.length; i++) {
-        if (this.model.form.inputs.site_id.value == siteOptions[i].name) {
-          this.model.form.inputs.site_region_id.value = siteOptions[i].siteRegionID;
-          this.model.form.inputs.site_country.value = siteOptions[i].siteCountry;
-          break;
-        }
-      }
+      this.model.form.inputs.site_region_id.value = sites[siteIndex].siteRegionID;
+      this.model.form.inputs.site_country.value = sites[siteIndex].siteCountry;
+
     });
 
     this.on('add-kit-ids-file', async (event) => {

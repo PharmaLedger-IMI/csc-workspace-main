@@ -3,6 +3,7 @@ const orderBusinessRequirements = constants.order.orderBusinessRequirements;
 const DAYS_AHEAD = orderBusinessRequirements.DeliveryDateDaysAhead;
 const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
 const momentService = require("csc-services").momentService;
+const sites = orderBusinessRequirements.sites;
 const orderViewModel = {
     accordion: {
         order_details: {
@@ -102,25 +103,8 @@ const orderViewModel = {
                 placeholder: 'Select Site ID...',
                 required: true,
                 disabled: false,
-                options: [
-                    { label: 'Site ID 1', value: 'Site ID 1' },
-                    { label: 'Site ID 2', value: 'Site ID 2' },
-                    { label: 'Site ID 3', value: 'Site ID 3' },
-                ],
-                list: [{
-                    name: "Site ID 1",
-                    siteRegionID: "001",
-                    siteCountry: "Greece"
-                }, {
-                    name: "Site ID 2",
-                    siteRegionID: "002",
-                    siteCountry: "Italy"
-                }, {
-                    name: "Site ID 3",
-                    siteRegionID: "003",
-                    siteCountry: "Germany"
-                }]
-                // value: '1',
+                options: sites.map((x,index) => {return {label:x.name, value:index}}),
+                value: '0',
             },
             site_region_id: {
                 label: 'Site Region ID (Autofilled)',
