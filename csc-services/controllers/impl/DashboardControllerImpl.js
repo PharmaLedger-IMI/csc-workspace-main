@@ -189,16 +189,18 @@ class DashboardControllerImpl extends WebcController {
 			case shipmentStatusesEnum.InPreparation: {
 				notificationRole = Roles.CMO;
 
-				const {
-					shipmentSSI,
-					statusSSI
-				} = data.message.data;
+				const { shipmentSSI, statusSSI } = data.message.data;
 
-				// TODO: Update local order using shipment details
 				shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusSSI);
-				const orderData = await this.ordersService.updateLocalOrder(shipmentData.orderSSI, { shipmentSSI: shipmentSSI });
+				await this.ordersService.updateLocalOrder(shipmentData.orderSSI, { shipmentSSI: shipmentSSI });
+				break;
+			}
 
-				console.log('[UPDATE LOCAL ORDER]', JSON.stringify(orderData, null, 2));
+			case shipmentStatusesEnum.ReadyForDispatch: {
+				notificationRole = Roles.CMO;
+
+				const { shipmentSSI } = data.message.data;
+				shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
 				break;
 			}
 		}

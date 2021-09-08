@@ -3,6 +3,7 @@ const resolver = opendsu.loadAPI('resolver');
 const keySSISpace = opendsu.loadAPI('keyssi');
 class DSUService {
   PATH = '/';
+  DATA_FILE = 'data.json';
   dsuServiceIsReady = false;
   onReadyCallbacks = [];
 
@@ -154,7 +155,7 @@ class DSUService {
   }
 
   _getDsuStoragePath(keySSI, path = this.PATH) {
-    return path + '/' + keySSI + '/data.json';
+    return `${path}/${keySSI}/${this.DATA_FILE}`;
   }
 
   swapParamsIfPathIsMissing(path, callback) {
