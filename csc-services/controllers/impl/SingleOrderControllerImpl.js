@@ -265,25 +265,23 @@ class SingleOrderControllerImpl extends WebcController {
   setOrderActions() {
     const order = this.model.order;
     const shipment = this.model.shipment;
+    const isShipmentCreated = typeof shipment !== 'undefined';
     const canCMOReviewStatuses = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedBySponsor];
     const canSponsorReviewStatuses = [orderStatusesEnum.ReviewedByCMO];
     const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
-    const actions = {
-    	// TODO: to be validated if view shipment button is hidden when order&shipment are cancelled
-      canViewShipment: order.hasOwnProperty('shipmentSSI') && orderStatusesEnum.Canceled !== order.status_value
-    };
+    const actions = {};
 
     switch (this.role) {
       case Roles.Sponsor:
         actions.canBeReviewed = canSponsorReviewStatuses.indexOf(order.status_value) !== -1;
         actions.canBeCancelled = cancellableOrderStatus.indexOf(order.status_value) !== -1 || cancellableOrderStatus.indexOf(shipment.status_value) !== -1;
         actions.canBeApproved = actions.canBeReviewed;
-        actions.orderCancelButtonText = actions.canViewShipment ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
+        actions.orderCancelButtonText = isShipmentCreated ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
         this.attachSponsorEventHandlers();
         break;
 
       case Roles.CMO:
-        actions.canPrepareShipment = !actions.canViewShipment && orderStatusesEnum.Approved === order.status_value;
+        actions.canPrepareShipment = !isShipmentCreated && orderStatusesEnum.Approved === order.status_value;
         actions.canBeReviewed = canCMOReviewStatuses.indexOf(order.status_value) !== -1;
         this.attachCmoEventHandlers();
         break;
