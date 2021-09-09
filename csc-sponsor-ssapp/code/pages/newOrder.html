@@ -31,7 +31,7 @@
               <!-- Sponsor ID -->
               <div class="form-group">
                 <!--Label -->
-                <label>{{@form.inputs.sponsor_id.label}}</label>
+                <label>{{@form.inputs.sponsor_id.label}} <span class='required'>*</span></label>
                 <!-- Input -->
                 <input class="form-control" data-view-model="@form.inputs.sponsor_id" type="text" />
               </div>
@@ -39,7 +39,7 @@
               <!-- Delivery Date/Time -->
               <div class="form-group">
                 <!--Label -->
-                <label>{{@form.inputs.delivery_date.label}}</label>
+                <label>{{@form.inputs.delivery_date.label}} <span class='required'>*</span></label>
                 <div class="row">
                   <div class="col-8">
                     <!-- Input -->
@@ -55,7 +55,7 @@
               <!-- Target CMO ID -->
               <div class="form-group">
                 <!--Label -->
-                <label>{{@form.inputs.target_cmo_id.label}}</label>
+                <label>{{@form.inputs.target_cmo_id.label}} <span class='required'>*</span></label>
                 <!-- Select -->
                 <select class="form-control" data-for="@form.inputs.target_cmo_id.options" id="@form.inputs.target_cmo_id.name" name="@form.inputs.target_cmo_id.name" value="@form.inputs.target_cmo_id.value">
                   <option value="@value">{{@label}}</option>
@@ -65,7 +65,7 @@
               <!-- Study ID -->
               <div class="form-group">
                 <!--Label -->
-                <label>{{@form.inputs.study_id.label}}</label>
+                <label>{{@form.inputs.study_id.label}} <span class='required'>*</span></label>
                 <!-- Input -->
                 <input class="form-control" data-view-model="@form.inputs.study_id" type="text" />
               </div>
@@ -73,7 +73,7 @@
               <!-- Order ID -->
               <div class="form-group">
                 <!--Label -->
-                <label>{{@form.inputs.order_id.label}}</label>
+                <label>{{@form.inputs.order_id.label}} <span class='required'>*</span></label>
                 <!-- Input -->
                 <input class="form-control" data-view-model="@form.inputs.order_id" type="text" />
               </div>
@@ -81,7 +81,7 @@
               <!-- Kit ID List -->
               <div class="form-group">
                 <!-- Label -->
-                <label>{{@form.inputs.kit_id_list.label}}</label>
+                <label>{{@form.inputs.kit_id_list.label}} <span class='required'>*</span></label>
                 <div class="input-group d-flex flex-column">
                   <div class="input-group d-flex justify-content-between align-items-center">
                     <input class="form-control" disabled value="@form.inputs.kit_ids_attachment.name" />
@@ -95,7 +95,7 @@
               <!-- Site Id -->
               <div class="form-group">
                 <!--Label -->
-                <label>{{@form.inputs.site_id.label}}</label>
+                <label>{{@form.inputs.site_id.label}} <span class='required'>*</span></label>
                 <!-- Select -->
                 <select class="form-control" data-for="@form.inputs.site_id.options" id="@form.inputs.site_id.name" name="@form.inputs.site_id.name" value="@form.inputs.site_id.value">
                   <option value="@value">{{@label}}</option>

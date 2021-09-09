@@ -88,8 +88,8 @@ const orderTableHeaders = [
 
 const orderBusinessRequirements = {
 	DeliveryDateDaysAhead: 2,
-	MinTemperature: -100,
-	MaxTemperature: 100,
+	MinTemperature: "-100",
+	MaxTemperature: "100",
 	TemperatureUnits: "°C",
 	sites: [{
 		name: "Site ID 1",
