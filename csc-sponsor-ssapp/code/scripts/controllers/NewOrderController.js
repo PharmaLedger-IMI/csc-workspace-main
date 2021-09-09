@@ -36,6 +36,7 @@ export default class NewOrderController extends WebcController {
       form: viewModelResolver('order').form,
       orderCreatedKeySSI: '',
       temperatureError:false,
+      formIsInvalid:true,
     };
 
     this.on('add-file', (event) => {
@@ -275,11 +276,33 @@ export default class NewOrderController extends WebcController {
         minTempValue = parseInt(minTempValue);
         maxTempValue = parseInt(maxTempValue);
         this.model.temperatureError = minTempValue > maxTempValue;
+        this.checkFormValidity();
       }
     }
 
     this.model.onChange('form.inputs.keep_between_temperature_min.value',tempChangeHandler)
     this.model.onChange('form.inputs.keep_between_temperature_max.value', tempChangeHandler)
+    this.model.onChange('form.inputs', this.checkFormValidity.bind(this));
+  }
+
+  checkFormValidity(){
+    //To be refactored according with current step
+    const requiredInputs = [
+      this.model.form.inputs.order_id.value,
+      this.model.form.inputs.study_id.value,
+      this.model.form.inputs.delivery_date.value
+    ]
+
+    let validationConstraints = [
+      typeof this.model.form.inputs.kit_ids_attachment.ids !== 'undefined' && this.model.form.inputs.kit_ids_attachment.ids.length > 0,
+      this.model.temperatureError === false,
+      ...requiredInputs.map(input => this.isInputFilled(input))
+    ];
+    this.model.formIsInvalid = typeof (validationConstraints.find(val => val !== true)) !== 'undefined';
+  }
+
+  isInputFilled(field){
+    return typeof field !== 'undefined' && field.trim()!==""
   }
 
   getDateTime() {
