@@ -38,6 +38,13 @@
 					</div>
 				</div>
 
+				<div data-if='@cancelledAfterApproval'>
+					<div slot='true' class='history-status-element background-cancelled-after-approval'>
+						<div class='history-date'>{{@date}}</div>
+						<div><b>{{@status}}</b></div>
+					</div>
+				</div>
+
 				<div data-if='@cancelled'>
 					<div slot='true' class='history-status-element background-cancelled'>
 						<div class='history-date'>{{@date}}</div>
@@ -78,6 +85,13 @@
 
 					<div data-if='@approved'>
 						<div slot='true' class='history-status-element background-approved'>
+							<div class='history-date'>{{@date}}</div>
+							<div><b>{{@status}}</b></div>
+						</div>
+					</div>
+
+					<div data-if='@cancelled'>
+						<div slot='true' class='history-status-element background-cancelled'>
 							<div class='history-date'>{{@date}}</div>
 							<div><b>{{@status}}</b></div>
 						</div>

@@ -11,7 +11,6 @@ class HistoryModalControllerImpl extends WebcController {
 	constructor(role, ...props) {
 		super(...props);
 
-		// this.controllerElement = props[0];
 		this.model = this.transformData();
 		this.attachEventHandlers();
 	}
@@ -46,10 +45,6 @@ class HistoryModalControllerImpl extends WebcController {
 		});
 	}
 
-	// onReady() {
-	// 	this.controllerElement.shadowRoot.querySelector('.webc-modal-dialog').style.maxWidth = '1000px';
-	// }
-
 	transformData() {
 		return {
 			order: this.transformOrderData(),
@@ -68,8 +63,10 @@ class HistoryModalControllerImpl extends WebcController {
 				return new Date(a.date) - new Date(b.date);
 			}))];
 
-			order.status.forEach((item) => {
-				item.approved = item.status === orderStatusesEnum.Approved;
+			const lastIndex = order.status.length - 1;
+			order.status.forEach((item, index) => {
+				item.approved = item.status === orderStatusesEnum.Approved && index === lastIndex;
+				item.cancelledAfterApproval = item.status === orderStatusesEnum.Approved && (index === lastIndex - 1);
 				item.cancelled = item.status === orderStatusesEnum.Canceled;
 				item.normal = item.status !== orderStatusesEnum.Canceled && item.status !== orderStatusesEnum.Approved;
 				item.date = momentService(item.date).format(Commons.DateTimeFormatPattern);
@@ -90,10 +87,12 @@ class HistoryModalControllerImpl extends WebcController {
 				return new Date(a.date) - new Date(b.date);
 			}))];
 
+			const normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
 			const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
 			shipment.status.forEach(item => {
 				item.approved = approvedStatuses.indexOf(item.status) !== -1;
-				item.normal = !item.approved;
+				item.cancelled = item.status === shipmentStatusesEnum.ShipmentCancelled;
+				item.normal = normalStatuses.indexOf(item.status) !== -1;
 				item.date = momentService(item.date).format(Commons.DateTimeFormatPattern);
 			});
 		} else {
