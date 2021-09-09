@@ -142,21 +142,25 @@ class SingleOrderControllerImpl extends WebcController {
   }
 
   onShowHistoryClick() {
+    let { order, shipment } = this.model.toObject();
+    const historyModel = {
+      order: order,
+      shipment: shipment,
+      currentPage: Topics.Order
+    };
+
     this.createWebcModal({
       template: 'historyModal',
       controller: 'HistoryModalController',
-      model: { order: this.model.order },
+      model: historyModel,
       disableBackdropClosing: false,
       disableFooter: true,
-      disableHeader: true,
       disableExpanding: true,
       disableClosing: false,
       disableCancelButton: true,
       expanded: false,
       centered: true
     });
-
-    console.log('Show History Clicked');
   }
 
   async init() {
@@ -239,7 +243,6 @@ class SingleOrderControllerImpl extends WebcController {
     return null;
   }
 
-
   getPendingAction(status_value) {
     switch (status_value) {
       case orderStatusesEnum.Initiated:
@@ -266,7 +269,8 @@ class SingleOrderControllerImpl extends WebcController {
     const canSponsorReviewStatuses = [orderStatusesEnum.ReviewedByCMO];
     const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
     const actions = {
-      canViewShipment: order.hasOwnProperty('shipmentSSI')
+    	// TODO: to be validated if view shipment button is hidden when order&shipment are cancelled
+      canViewShipment: order.hasOwnProperty('shipmentSSI') && orderStatusesEnum.Canceled !== order.status_value
     };
 
     switch (this.role) {
@@ -285,7 +289,6 @@ class SingleOrderControllerImpl extends WebcController {
         break;
     }
 
-    this.attachCommonEventHandlers();
     return actions;
   }
 
@@ -296,15 +299,8 @@ class SingleOrderControllerImpl extends WebcController {
       });
     });
 
-    this.onTagEvent('cancel-order', 'click', (e) => {
-      this.model.cancelOrderModal = {
-        comment: {
-          placeholder: 'Enter cancellation reason',
-          value: '',
-          label: 'Cancellation Reason:'
-        },
-        commentIsEmpty: true
-      };
+    this.onTagEvent('cancel-order', 'click', () => {
+      this.model.cancelOrderModal = viewModelResolver('order').cancelOrderModal;
       this.showModalFromTemplate('cancelOrderModal', this.cancelOrder.bind(this), () => {
       }, {
         controller: 'CancelOrderController',
@@ -333,14 +329,22 @@ class SingleOrderControllerImpl extends WebcController {
         date: new Date().getTime()
       }
       : null;
-    await this.ordersService.updateOrderNew(keySSI, null, comment, Roles.Sponsor, orderStatusesEnum.Canceled);
+    await this.ordersService.updateOrderNew(keySSI, null, comment, this.role, orderStatusesEnum.Canceled);
+    const shipment = this.model.shipment;
+    let orderLabel = 'Order';
+    if (shipment) {
+      orderLabel = 'Order and Shipment';
+      await this.shipmentsService.updateShipment(shipment.keySSI, { shipmentCancelled: true }, orderStatusesEnum.Canceled, this.role);
+      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+    }
+
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-    this.showErrorModalAndRedirect('Order was canceled, redirecting to dashboard...', 'Order Cancelled', '/', 2000);
+    this.showErrorModalAndRedirect(orderLabel + ' was canceled, redirecting to dashboard...', orderLabel + ' Cancelled', '/', 2000);
   }
 
   async approveOrder() {
-    const { keySSI } = this.model.order;
-    const result = await this.ordersService.updateOrderNew(keySSI, null, null, Roles.Sponsor, orderStatusesEnum.Approved);
+    const {keySSI} = this.model.order;
+    const result = await this.ordersService.updateOrderNew(keySSI, null, null, this.role, orderStatusesEnum.Approved);
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     this.showErrorModalAndRedirect('Order was approved, redirecting to dashboard...', 'Order Approved', '/', 2000);
   }
@@ -379,14 +383,6 @@ class SingleOrderControllerImpl extends WebcController {
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     this.showErrorModalAndRedirect('Shipment Initiated, redirecting to dashboard...', 'Shipment Initiated', '/', 2000);
   };
-
-  attachCommonEventHandlers() {
-    this.onTagClick('view-shipment', () => {
-      this.navigateToPageTag('shipment', {
-        keySSI: this.model.order.shipmentSSI
-      });
-    });
-  }
 
   getDate(str) {
     return str.split(' ')[0];
