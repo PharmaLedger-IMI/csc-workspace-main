@@ -88,19 +88,19 @@ class ShipmentsService extends DSUService {
 				notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
 				break;
 			}
-        
-      case shipmentStatusesEnum.InTransit: {
+
+			case shipmentStatusesEnum.InTransit: {
 				notifyIdentities.push(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
 				notifyIdentities.push(CommunicationService.identities.CSC.SITE_IDENTITY);
 				notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
 				break;
 			}
-        
-      case shipmentStatusesEnum.ShipmentCancelled: {
+
+			case shipmentStatusesEnum.ShipmentCancelled: {
 				notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
-        notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
-        break;
-      }
+				notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
+				break;
+			}
 		}
 
 		const notificationData = {
