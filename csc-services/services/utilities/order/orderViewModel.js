@@ -6,6 +6,7 @@ const MIN_TEMPERATURE = orderBusinessRequirements.MinTemperature;
 const MAX_TEMPERATURE = orderBusinessRequirements.MaxTemperature;
 const momentService = require("csc-services").momentService;
 const sites = orderBusinessRequirements.sites;
+const SPONSOR_DID = orderBusinessRequirements.sponsorId;
 const orderViewModel = {
     accordion: {
         order_details: {
@@ -33,9 +34,8 @@ const orderViewModel = {
                 label: 'Sponsor ID',
                 name: 'sponsor_id',
                 required: true,
-                placeholder: 'Sponsor ID...',
-                disabled: false,
-                value: '',
+                disabled: true,
+                value: SPONSOR_DID,
             },
             delivery_date: {
                 label: 'Delivery Date/Time',
