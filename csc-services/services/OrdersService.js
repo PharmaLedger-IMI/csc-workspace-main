@@ -140,18 +140,6 @@ class OrdersService extends DSUService {
       'Order Initiated'
     );
 
-    this.sendMessageToEntity(
-      CommunicationService.identities.CSC.SITE_IDENTITY,
-      messagesEnum.StatusInitiated,
-      {
-        orderSSI: order.uid,
-        kitIdsKeySSI: kitIdsDsu.uid,
-        commentsKeySSI: commentsDsu.uid,
-        statusKeySSI: statusDsu.uid,
-      },
-      'Order Initiated'
-    );
-
     return orderDb;
   }
 
@@ -334,8 +322,8 @@ class OrdersService extends DSUService {
     const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderKeySSI);
 
     if (newStatus) {
-    const status = await this.updateStatusDsu(newStatus, orderDB.statusSSI);
-    orderDB.status = status.history;
+      const status = await this.updateStatusDsu(newStatus, orderDB.statusSSI);
+      orderDB.status = status.history;
     }
 
     if (files) {
@@ -352,29 +340,22 @@ class OrdersService extends DSUService {
     }
 
     if (otherDetails) {
-      Object.keys(otherDetails).forEach(key => {
+      Object.keys(otherDetails).forEach((key) => {
         orderDB[key] = otherDetails[key];
       });
     }
 
     const result = await this.updateOrderToDB(orderDB, orderKeySSI);
-    const identitiesArray = [CommunicationService.identities.CSC.SITE_IDENTITY];
-    if (role === Roles.CMO) {
-      identitiesArray.push(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
-    } else {
-      identitiesArray.push(CommunicationService.identities.CSC.CMO_IDENTITY)
-    }
+    let identity = role === Roles.CMO ? CommunicationService.identities.CSC.SPONSOR_IDENTITY : CommunicationService.identities.CSC.CMO_IDENTITY;
 
-    if(newStatus) {
-    identitiesArray.forEach(identity => {
+    if (newStatus) {
       this.communicationService.sendMessage(identity, {
         operation: newStatus,
         data: {
-          orderSSI: orderKeySSI
+          orderSSI: orderKeySSI,
         },
-        shortDescription: 'Order Updated'
+        shortDescription: 'Order Updated',
       });
-    });
     }
 
     return result;
@@ -421,7 +402,7 @@ class OrdersService extends DSUService {
     }
 
     if (otherDetails) {
-      Object.keys(otherDetails).forEach(key => {
+      Object.keys(otherDetails).forEach((key) => {
         orderDB[key] = otherDetails[key];
       });
     }
