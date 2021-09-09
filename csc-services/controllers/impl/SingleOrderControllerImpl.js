@@ -153,7 +153,7 @@ class SingleOrderControllerImpl extends WebcController {
       disableClosing: false,
       disableCancelButton: true,
       expanded: false,
-      centered: true,
+      centered: true
     });
 
     console.log('Show History Clicked');
@@ -186,12 +186,12 @@ class SingleOrderControllerImpl extends WebcController {
         });
       }
 
-      data.status_value = data.status.sort(function (a, b) {
+      data.status_value = data.status.sort(function(a, b) {
         return new Date(b.date) - new Date(a.date);
       })[0].status;
 
       data.status_date = momentService(
-        data.status.sort(function (a, b) {
+        data.status.sort(function(a, b) {
           return new Date(b.date) - new Date(a.date);
         })[0].date
       ).format(Commons.DateTimeFormatPattern);
@@ -229,7 +229,7 @@ class SingleOrderControllerImpl extends WebcController {
 
   transformShipmentData(shipment) {
     if (shipment) {
-      shipment.status_value = shipment.status.sort(function (a, b) {
+      shipment.status_value = shipment.status.sort(function(a, b) {
         return new Date(b.date) - new Date(a.date);
       })[0].status;
 
@@ -297,22 +297,22 @@ class SingleOrderControllerImpl extends WebcController {
     });
 
     this.onTagEvent('cancel-order', 'click', (e) => {
-          this.model.cancelOrderModal = {
-            comment: {
+      this.model.cancelOrderModal = {
+        comment: {
           placeholder: 'Enter cancellation reason',
-              value: '',
-              label: 'Cancellation Reason:'
-            },
-            commentIsEmpty: true
-          };
-          this.showModalFromTemplate('cancelOrderModal',  this.cancelOrder.bind(this), () => {
-          },{
-            controller: 'CancelOrderController',
-            disableExpanding: true,
-            disableBackdropClosing: true,
-            model: this.model
-          });
-        });
+          value: '',
+          label: 'Cancellation Reason:'
+        },
+        commentIsEmpty: true
+      };
+      this.showModalFromTemplate('cancelOrderModal', this.cancelOrder.bind(this), () => {
+      }, {
+        controller: 'CancelOrderController',
+        disableExpanding: true,
+        disableBackdropClosing: true,
+        model: this.model
+      });
+    });
 
     this.onTagEvent('approve-order', 'click', () => {
       this.showErrorModal(new Error(`Are you sure you want to approve the order?`), 'Approve Order', this.approveOrder.bind(this), () => {
@@ -326,20 +326,20 @@ class SingleOrderControllerImpl extends WebcController {
   }
 
   async cancelOrder() {
-    const {keySSI} = this.model.order;
+    const { keySSI } = this.model.order;
     let comment = this.model.cancelOrderModal.comment.value ? {
-          entity: this.role,
-          comment: this.model.cancelOrderModal.comment.value,
-          date: new Date().getTime()
-        }
-        : null;
+        entity: this.role,
+        comment: this.model.cancelOrderModal.comment.value,
+        date: new Date().getTime()
+      }
+      : null;
     await this.ordersService.updateOrderNew(keySSI, null, comment, Roles.Sponsor, orderStatusesEnum.Canceled);
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     this.showErrorModalAndRedirect('Order was canceled, redirecting to dashboard...', 'Order Cancelled', '/', 2000);
   }
 
   async approveOrder() {
-    const {keySSI} = this.model.order;
+    const { keySSI } = this.model.order;
     const result = await this.ordersService.updateOrderNew(keySSI, null, null, Roles.Sponsor, orderStatusesEnum.Approved);
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     this.showErrorModalAndRedirect('Order was approved, redirecting to dashboard...', 'Order Approved', '/', 2000);
@@ -354,15 +354,15 @@ class SingleOrderControllerImpl extends WebcController {
 
     this.onTagEvent('prepare-shipment', 'click', () => {
       this.showErrorModal(new Error(`Are you sure you want to prepare the shipment?`),
-          'Prepare Shipment',
-          this.prepareShipment.bind(this),
-          () => {
-          }, {
-            disableExpanding: true,
-            cancelButtonText: 'No',
-            confirmButtonText: 'Yes',
-            id: 'error-modal'
-          });
+        'Prepare Shipment',
+        this.prepareShipment.bind(this),
+        () => {
+        }, {
+          disableExpanding: true,
+          cancelButtonText: 'No',
+          confirmButtonText: 'Yes',
+          id: 'error-modal'
+        });
     });
   }
 
