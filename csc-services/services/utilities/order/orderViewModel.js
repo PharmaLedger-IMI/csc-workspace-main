@@ -8,6 +8,14 @@ const momentService = require("csc-services").momentService;
 const sites = orderBusinessRequirements.sites;
 const SPONSOR_DID = orderBusinessRequirements.sponsorId;
 const orderViewModel = {
+    cancelOrderModal: {
+        comment: {
+            placeholder: 'Enter cancellation reason',
+            value: '',
+            label: 'Cancellation Reason:'
+        },
+        commentIsEmpty: true
+    },
     accordion: {
         order_details: {
             name: 'Order Details',

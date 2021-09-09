@@ -6,9 +6,11 @@ const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const FileDownloaderService = cscServices.FileDownloaderService;
+const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
 const momentService = cscServices.momentService;
-const { Roles, Commons, FoldersEnum } = cscServices.constants;
+const { Roles, Commons, FoldersEnum, Topics } = cscServices.constants;
+const { orderStatusesEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum, shipmentPendingActionEnum } = cscServices.constants.shipment;
 
 const csIdentities = {};
@@ -40,6 +42,7 @@ class SingleShipmentControllerImpl extends WebcController {
     this.toggleAccordionItemHandler();
 
     this.editShipmentHandler();
+    this.cancelOrderHandler();
   }
 
   toggleAccordionItemHandler() {
@@ -89,6 +92,35 @@ class SingleShipmentControllerImpl extends WebcController {
     this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', '/', 2000);
   };
 
+  cancelOrderHandler() {
+    this.onTagEvent('cancel-order', 'click', () => {
+      this.model.cancelOrderModal = viewModelResolver('order').cancelOrderModal;
+      this.showModalFromTemplate('cancelOrderModal', this.cancelOrder.bind(this), () => {
+      }, {
+        controller: 'CancelOrderController',
+        disableExpanding: true,
+        disableBackdropClosing: true,
+        model: this.model
+      });
+    });
+  }
+
+  async cancelOrder() {
+    const {keySSI} = this.model.order;
+    let comment = this.model.cancelOrderModal.comment.value ? {
+          entity: this.role,
+          comment: this.model.cancelOrderModal.comment.value,
+          date: new Date().getTime()
+        }
+        : null;
+    await this.ordersService.updateOrderNew(keySSI, null, comment, this.role, orderStatusesEnum.Canceled);
+    await this.shipmentsService.updateShipment(this.model.keySSI, { shipmentCancelled: true }, orderStatusesEnum.Canceled, this.role);
+
+    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+    this.showErrorModalAndRedirect('Order and Shipment were canceled, redirecting to dashboard...', 'Order and Shipment Cancelled', '/', 2000);
+  }
+
   downloadKitListHandler() {
     this.onTagClick('download-kits-file', async (model) => {
       window.WebCardinal.loader.hidden = false;
@@ -101,29 +133,31 @@ class SingleShipmentControllerImpl extends WebcController {
   }
 
   showHistoryHandler() {
-    this.onTagEvent('history-button', 'click', (model, target, event) => {
-      console.log('[EVENT] history-button');
-      // this.onShowHistoryClick();
+    this.onTagEvent('history-button', 'click', () => {
+      this.onShowHistoryClick();
     });
   }
 
-  // TODO: Show Shipment History
   onShowHistoryClick() {
+    let { order, shipment } = this.model.toObject();
+    const historyModel = {
+      order: order,
+      shipment: shipment,
+      currentPage: Topics.Shipment
+    };
+
     this.createWebcModal({
       template: 'historyModal',
       controller: 'HistoryModalController',
-      model: { order: this.model.order },
+      model: historyModel,
       disableBackdropClosing: false,
       disableFooter: true,
-      disableHeader: true,
       disableExpanding: true,
       disableClosing: false,
       disableCancelButton: true,
       expanded: false,
-      centered: true
+      centered: true,
     });
-
-    console.log('Show History Clicked');
   }
 
   transformOrderData(data) {
