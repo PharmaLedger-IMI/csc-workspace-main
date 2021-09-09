@@ -258,6 +258,24 @@ export default class NewOrderController extends WebcController {
     });
 
     const onCancelYesResponse = async () => {
+      
+      if (this.model.form) {
+        if (this.model.form.inputs) {
+          let keys = Object.keys(this.model.form.inputs);
+          if (keys) {
+            keys.forEach((key) => {
+              this.model.form.inputs[key].value = '';
+            });
+          }
+          this.model.form.inputs.kit_ids_attachment.name = null;
+          if (this.model.form.documents) {
+            this.files.forEach((file) => {
+              this.files.splice(0, 1);
+              this.model.form.documents.splice(0,1);
+            });
+          }
+        }
+      }
       makeStepActive('step-1', 'step-1-wrapper', this.e);
     }
 
