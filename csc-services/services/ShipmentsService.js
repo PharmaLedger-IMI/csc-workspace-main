@@ -69,7 +69,7 @@ class ShipmentsService extends DSUService {
 		return shipmentDb;
 	}
 
-	async updateShipment(shipmentKeySSI, newShipmentData = {}, newStatus) {
+	async updateShipment(shipmentKeySSI, newStatus, newShipmentData) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
 		const status = await this.updateStatusDsu(newStatus, shipmentDB.statusSSI);
 		shipmentDB = {

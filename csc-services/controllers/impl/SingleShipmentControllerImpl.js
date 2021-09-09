@@ -87,8 +87,7 @@ class SingleShipmentControllerImpl extends WebcController {
 
   confirmEditShipmentCallback = async (event) => {
     const shipmentDetails = event.detail;
-    const result = await this.shipmentsService.updateShipment(this.model.keySSI,
-      shipmentDetails, shipmentStatusesEnum.ReadyForDispatch, this.role);
+    const result = await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ReadyForDispatch, shipmentDetails);
     this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', '/', 2000);
   };
 
@@ -239,7 +238,7 @@ class SingleShipmentControllerImpl extends WebcController {
         }
         : null;
     await this.ordersService.updateOrderNew(keySSI, null, comment, this.role, orderStatusesEnum.Canceled);
-    await this.shipmentsService.updateShipment(this.model.keySSI, { shipmentCancelled: true }, shipmentStatusesEnum.ShipmentCancelled, this.role);
+    await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ShipmentCancelled);
 
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);

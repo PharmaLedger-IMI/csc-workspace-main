@@ -332,7 +332,7 @@ class SingleOrderControllerImpl extends WebcController {
     let orderLabel = 'Order';
     if (shipment) {
       orderLabel = 'Order and Shipment';
-      await this.shipmentsService.updateShipment(shipment.keySSI, { shipmentCancelled: true }, shipmentStatusesEnum.ShipmentCancelled, this.role);
+      await this.shipmentsService.updateShipment(shipment.keySSI, shipmentStatusesEnum.ShipmentCancelled);
       eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     }
 
