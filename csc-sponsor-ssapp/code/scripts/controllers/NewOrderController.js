@@ -239,9 +239,29 @@ export default class NewOrderController extends WebcController {
 
     //When you reset form
     this.onTagEvent('form_reset', 'click', (e) => {
-      this.model.form = viewModelResolver('order').form;
-      this.files = [];
+      console.log("Cancel Button");
+      this.e = e;
+      // this.model.form = viewModelResolver('order').form;
+      // this.files = [];
+      this.showErrorModal(
+        new Error(`All entered data will be cleared and you will start over with Order Details`), // An error or a string, it's your choice
+        'Cancel Changes',
+        onCancelYesResponse,
+        onCancelNoResponse,
+        {
+          disableExpanding: true,
+          cancelButtonText: 'No',
+          confirmButtonText: 'Yes',
+          id: 'error-modal',
+        }
+      );
     });
+
+    const onCancelYesResponse = async () => {
+      makeStepActive('step-1', 'step-1-wrapper', this.e);
+    }
+
+    const onCancelNoResponse = () => console.log('Why not?');
 
     //Add active menu class to element
     function makeStepActive(step_id, step_holder_id, e) {
