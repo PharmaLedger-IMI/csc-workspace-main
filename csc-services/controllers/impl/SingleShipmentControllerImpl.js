@@ -87,39 +87,9 @@ class SingleShipmentControllerImpl extends WebcController {
 
   confirmEditShipmentCallback = async (event) => {
     const shipmentDetails = event.detail;
-    const result = await this.shipmentsService.updateShipment(this.model.keySSI,
-      shipmentDetails, shipmentStatusesEnum.ReadyForDispatch, this.role);
+    const result = await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ReadyForDispatch, shipmentDetails);
     this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', '/', 2000);
   };
-
-  cancelOrderHandler() {
-    this.onTagEvent('cancel-order', 'click', () => {
-      this.model.cancelOrderModal = viewModelResolver('order').cancelOrderModal;
-      this.showModalFromTemplate('cancelOrderModal', this.cancelOrder.bind(this), () => {
-      }, {
-        controller: 'CancelOrderController',
-        disableExpanding: true,
-        disableBackdropClosing: true,
-        model: this.model
-      });
-    });
-  }
-
-  async cancelOrder() {
-    const {keySSI} = this.model.order;
-    let comment = this.model.cancelOrderModal.comment.value ? {
-          entity: this.role,
-          comment: this.model.cancelOrderModal.comment.value,
-          date: new Date().getTime()
-        }
-        : null;
-    await this.ordersService.updateOrderNew(keySSI, null, comment, this.role, orderStatusesEnum.Canceled);
-    await this.shipmentsService.updateShipment(this.model.keySSI, { shipmentCancelled: true }, orderStatusesEnum.Canceled, this.role);
-
-    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-    this.showErrorModalAndRedirect('Order and Shipment were canceled, redirecting to dashboard...', 'Order and Shipment Cancelled', '/', 2000);
-  }
 
   downloadKitListHandler() {
     this.onTagClick('download-kits-file', async (model) => {
@@ -188,9 +158,11 @@ class SingleShipmentControllerImpl extends WebcController {
         return new Date(b.date) - new Date(a.date);
       }))[0].date).format(Commons.DateTimeFormatPattern);
 
+      const normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
       const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
       data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
-      data.status_normal = !(data.status_approved);
+      data.status_cancelled = data.status_value === shipmentStatusesEnum.ShipmentCancelled;
+      data.status_normal = normalStatuses.indexOf(data.status_value) !== -1;
       data.pending_action = this.getPendingAction(data.status_value);
 
       return data;
@@ -220,14 +192,57 @@ class SingleShipmentControllerImpl extends WebcController {
     return '-';
   }
 
-  setShipmentActions() {
+  setShipmentActions(shipment) {
     const actions = {};
+    const cancelShipmentStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
+    switch(this.role) {
+      case Roles.Sponsor: {
+        actions.canCancelOrderAndShipment = cancelShipmentStatuses.indexOf(shipment.status_value) !== -1;
+        this.attachSponsorEventHandlers();
+
+        break;
+      }
+
+    }
 
     // TODO: Update the logic according to statuses after #61 is completed
     actions.canScanShipment = false;
     actions.canEditShipment = true;
 
     return actions;
+  }
+
+  attachSponsorEventHandlers() {
+    this.cancelOrderHandler();
+  }
+
+  cancelOrderHandler() {
+    this.onTagEvent('cancel-order-shipment', 'click', () => {
+      this.model.cancelOrderModal = viewModelResolver('order').cancelOrderModal;
+      this.showModalFromTemplate('cancelOrderModal', this.cancelOrder.bind(this), () => {
+      }, {
+        controller: 'CancelOrderController',
+        disableExpanding: true,
+        disableBackdropClosing: true,
+        model: this.model
+      });
+    });
+  }
+
+  async cancelOrder() {
+    const {keySSI} = this.model.order;
+    let comment = this.model.cancelOrderModal.comment.value ? {
+          entity: this.role,
+          comment: this.model.cancelOrderModal.comment.value,
+          date: new Date().getTime()
+        }
+        : null;
+    await this.ordersService.updateOrderNew(keySSI, null, comment, this.role, orderStatusesEnum.Canceled);
+    await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ShipmentCancelled);
+
+    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+    this.showErrorModalAndRedirect('Order and Shipment were canceled, redirecting to dashboard...', 'Order and Shipment Cancelled', '/', 2000);
   }
 
   async initViewModel() {
@@ -242,7 +257,7 @@ class SingleShipmentControllerImpl extends WebcController {
 
     model.shipment = await this.shipmentsService.getShipment(model.keySSI);
     model.shipment = { ...this.transformShipmentData(model.shipment) };
-    model.actions = this.setShipmentActions();
+    model.actions = this.setShipmentActions(model.shipment);
 
     model.order = await this.ordersService.getOrder(model.shipment.orderSSI);
     model.order = { ...this.transformOrderData(model.order) };

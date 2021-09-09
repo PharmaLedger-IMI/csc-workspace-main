@@ -32,6 +32,13 @@
 								<div>{{@shipment.status_date}}</div>
 							</div>
 						</div>
+						<div data-if="@shipment.status_cancelled">
+							<div class="order-status-box background-cancelled">
+								<div>Shipment Status:</div>
+								<div><b>{{@shipment.status_value}}</b></div>
+								<div>{{@shipment.status_date}}</div>
+							</div>
+						</div>
 						<div data-if='@shipment.status_normal'>
 							<div class='order-status-box background-primary'>
 								<div>Shipment Status:</div>

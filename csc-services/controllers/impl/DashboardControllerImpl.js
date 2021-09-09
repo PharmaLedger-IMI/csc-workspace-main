@@ -203,6 +203,14 @@ class DashboardControllerImpl extends WebcController {
 				shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
 				break;
 			}
+
+			case shipmentStatusesEnum.ShipmentCancelled: {
+				notificationRole = Roles.Sponsor;
+
+				const { shipmentSSI } = data.message.data;
+				shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
+				break;
+			}
 		}
 
 		return [shipmentData, shipmentStatus, notificationRole];

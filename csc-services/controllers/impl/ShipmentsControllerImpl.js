@@ -62,6 +62,9 @@ class ShipmentsControllerImpl extends WebcController {
 
   transformData(data) {
     if (data) {
+      const normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
+      const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
+
       data.forEach((item) => {
         item.orderId = item.orderId || '-';
         item.shipmentId = item.shipmentId || '-';
@@ -74,6 +77,10 @@ class ShipmentsControllerImpl extends WebcController {
           return new Date(b.date) - new Date(a.date);
         })[0];
         item.status_value = latestStatus.status;
+        item.status_approved = approvedStatuses.indexOf(item.status_value) !== -1;
+        item.status_cancelled = item.status_value === shipmentStatusesEnum.ShipmentCancelled;
+        item.status_normal = normalStatuses.indexOf(item.status_value) !== -1;
+
         item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateFormatPattern) : '-';
         item.requestDate = item.requestDate ? momentService(item.requestDate).format(Commons.DateTimeFormatPattern) : '-';
         item.scheduledPickupDate = this.getPickupDateTime(item.scheduledPickupDate);
