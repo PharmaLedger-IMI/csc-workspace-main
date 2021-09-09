@@ -103,7 +103,8 @@ const orderBusinessRequirements = {
 		name: "Site ID 3",
 		siteRegionID: "003",
 		siteCountry: "Germany"
-	}]
+	}],
+	sponsorId:"did:spo:123456789abcdefghi#Novartis"
 }
 
 module.exports = {

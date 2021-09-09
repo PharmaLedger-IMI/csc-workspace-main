@@ -177,6 +177,7 @@ export default class NewOrderController extends WebcController {
     });
 
     const onSubmitYesResponse = async () => {
+      window.WebCardinal.loader.hidden=false;
       const payload = {};
 
       if (this.model.form) {
@@ -231,6 +232,7 @@ export default class NewOrderController extends WebcController {
           centered: true,
         });
       }
+      window.WebCardinal.loader.hidden=true;
     };
 
     const onNoResponse = () => console.log('Why not?');

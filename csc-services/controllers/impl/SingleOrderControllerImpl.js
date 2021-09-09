@@ -159,7 +159,7 @@ class SingleOrderControllerImpl extends WebcController {
       disableClosing: false,
       disableCancelButton: true,
       expanded: false,
-      centered: true,
+      centered: true
     });
   }
 
@@ -190,12 +190,12 @@ class SingleOrderControllerImpl extends WebcController {
         });
       }
 
-      data.status_value = data.status.sort(function (a, b) {
+      data.status_value = data.status.sort(function(a, b) {
         return new Date(b.date) - new Date(a.date);
       })[0].status;
 
       data.status_date = momentService(
-        data.status.sort(function (a, b) {
+        data.status.sort(function(a, b) {
           return new Date(b.date) - new Date(a.date);
         })[0].date
       ).format(Commons.DateTimeFormatPattern);
@@ -233,7 +233,7 @@ class SingleOrderControllerImpl extends WebcController {
 
   transformShipmentData(shipment) {
     if (shipment) {
-      shipment.status_value = shipment.status.sort(function (a, b) {
+      shipment.status_value = shipment.status.sort(function(a, b) {
         return new Date(b.date) - new Date(a.date);
       })[0].status;
 
@@ -324,11 +324,11 @@ class SingleOrderControllerImpl extends WebcController {
   async cancelOrder() {
     const { keySSI } = this.model.order;
     let comment = this.model.cancelOrderModal.comment.value ? {
-          entity: this.role,
-          comment: this.model.cancelOrderModal.comment.value,
-          date: new Date().getTime()
-        }
-        : null;
+        entity: this.role,
+        comment: this.model.cancelOrderModal.comment.value,
+        date: new Date().getTime()
+      }
+      : null;
     await this.ordersService.updateOrderNew(keySSI, null, comment, this.role, orderStatusesEnum.Canceled);
     const shipment = this.model.shipment;
     let orderLabel = 'Order';
@@ -358,15 +358,15 @@ class SingleOrderControllerImpl extends WebcController {
 
     this.onTagEvent('prepare-shipment', 'click', () => {
       this.showErrorModal(new Error(`Are you sure you want to prepare the shipment?`),
-          'Prepare Shipment',
-          this.prepareShipment.bind(this),
-          () => {
-          }, {
-            disableExpanding: true,
-            cancelButtonText: 'No',
-            confirmButtonText: 'Yes',
-            id: 'error-modal'
-          });
+        'Prepare Shipment',
+        this.prepareShipment.bind(this),
+        () => {
+        }, {
+          disableExpanding: true,
+          cancelButtonText: 'No',
+          confirmButtonText: 'Yes',
+          id: 'error-modal'
+        });
     });
   }
 

@@ -25,7 +25,7 @@ export default class ScanShipmentController extends WebcController {
       disableFooter: true,
       disableHeader: true,
       disableExpanding: true,
-      disableClosing: true,
+      disableClosing: false,
       disableCancelButton: true,
       expanded: false,
       centered: true,
