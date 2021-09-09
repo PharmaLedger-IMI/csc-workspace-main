@@ -54,7 +54,17 @@
                 <td><label>{{@siteId}}</label></td>
                 <td><label>{{@requestDate_value}}</label></td>
                 <td><label>{{@deliveryDate}}</label></td>
-                <td><label data-status="@status_value">{{@status_value}}</label></td>
+	            <td>
+		            <div data-if='@status_approved'>
+			            <label class='status background-approved'>{{@status_value}}</label>
+		            </div>
+		            <div data-if='@status_cancelled'>
+			            <label class='status background-cancelled'>{{@status_value}}</label>
+		            </div>
+		            <div data-if='@status_normal'>
+			            <label class='status background-primary'>{{@status_value}}</label>
+		            </div>
+	            </td>
                 <td><label>{{@status_date}}</label></td>
                 <td>
                     <button class="btn-bare table-cell" data-tag="view-order">

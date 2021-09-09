@@ -3,7 +3,8 @@ const shipmentStatusesEnum = {
 	ReadyForDispatch: 'Shipment Ready For Dispatch',
 	InTransit: 'Shipment In Transit',
 	Delivered: 'Delivered',
-	Received: 'Received'
+	Received: 'Received',
+	ShipmentCancelled: 'Order & Shipment Cancelled'
 };
 
 const shipmentPendingActionEnum = {
