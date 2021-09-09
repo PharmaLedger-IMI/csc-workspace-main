@@ -193,22 +193,22 @@ class SingleShipmentControllerImpl extends WebcController {
     return '-';
   }
 
-  setShipmentActions() {
+  setShipmentActions(shipment) {
     const actions = {};
-    const shipment = this.model.toObject('shipment');
-
     const cancelShipmentStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
     switch(this.role) {
       case Roles.Sponsor: {
-        actions.canCancelShipment = cancelShipmentStatuses.indexOf(shipment.status_value) !== -1;
+        actions.canCancelOrderAndShipment = cancelShipmentStatuses.indexOf(shipment.status_value) !== -1;
         this.attachSponsorEventHandlers();
+
+        break;
       }
+
     }
 
     // TODO: Update the logic according to statuses after #61 is completed
     actions.canScanShipment = false;
     actions.canEditShipment = true;
-    actions.canCancelShipment = true;
 
     return actions;
   }
@@ -258,7 +258,7 @@ class SingleShipmentControllerImpl extends WebcController {
 
     model.shipment = await this.shipmentsService.getShipment(model.keySSI);
     model.shipment = { ...this.transformShipmentData(model.shipment) };
-    model.actions = this.setShipmentActions();
+    model.actions = this.setShipmentActions(model.shipment);
 
     model.order = await this.ordersService.getOrder(model.shipment.orderSSI);
     model.order = { ...this.transformOrderData(model.order) };
