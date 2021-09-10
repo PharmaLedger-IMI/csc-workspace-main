@@ -150,7 +150,7 @@ class ReviewOrderControllerImpl extends WebcController {
     this.createWebcModal({
       template: 'orderCreatedModal',
       controller: 'OrderCreatedModalController',
-      model: result,
+      model: {modalTitle:"Review Order", ...result},
       disableBackdropClosing: false,
       disableFooter: true,
       disableHeader: true,
