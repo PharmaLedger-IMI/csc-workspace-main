@@ -225,7 +225,7 @@ export default class NewOrderController extends WebcController {
         this.createWebcModal({
           template: 'orderCreatedModal',
           controller: 'OrderCreatedModalController',
-          model: result,
+          model: {modalTitle:"New Order", ...result},
           disableBackdropClosing: false,
           disableFooter: true,
           disableHeader: true,
