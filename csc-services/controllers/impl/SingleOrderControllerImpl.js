@@ -355,7 +355,7 @@ class SingleOrderControllerImpl extends WebcController {
     });
 
     this.onTagEvent('prepare-shipment', 'click', () => {
-      this.showErrorModal(new Error(`Are you sure you want to prepare the shipment?`),
+      this.showModal("Are you sure you want to prepare the shipment?",
         'Prepare Shipment',
         this.prepareShipment.bind(this),
         () => {
@@ -363,7 +363,7 @@ class SingleOrderControllerImpl extends WebcController {
           disableExpanding: true,
           cancelButtonText: 'No',
           confirmButtonText: 'Yes',
-          id: 'error-modal'
+          id: 'confirm-modal'
         });
     });
   }
