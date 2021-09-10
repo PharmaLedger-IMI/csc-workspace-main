@@ -91,9 +91,12 @@ class HistoryModalControllerImpl extends WebcController {
 			const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
 			shipment.status.forEach(item => {
 				item.approved = approvedStatuses.indexOf(item.status) !== -1;
-				item.cancelled = item.status === shipmentStatusesEnum.ShipmentCancelled;
 				item.normal = normalStatuses.indexOf(item.status) !== -1;
 				item.date = momentService(item.date).format(Commons.DateTimeFormatPattern);
+				if (item.status === shipmentStatusesEnum.ShipmentCancelled) {
+					item.status = shipmentStatusesEnum.Cancelled;
+					item.cancelled = true;
+				}
 			});
 		} else {
 			shipment.shipmentId = '-';

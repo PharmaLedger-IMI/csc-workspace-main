@@ -153,6 +153,9 @@ class SingleShipmentControllerImpl extends WebcController {
       data.status_value = data.status.sort((function(a, b) {
         return new Date(b.date) - new Date(a.date);
       }))[0].status;
+      if (data.status_value === shipmentStatusesEnum.ShipmentCancelled) {
+        data.status_value = shipmentStatusesEnum.Cancelled;
+      }
 
       data.status_date = momentService(data.status.sort((function(a, b) {
         return new Date(b.date) - new Date(a.date);
@@ -161,7 +164,7 @@ class SingleShipmentControllerImpl extends WebcController {
       const normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
       const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
       data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
-      data.status_cancelled = data.status_value === shipmentStatusesEnum.ShipmentCancelled;
+      data.status_cancelled = data.status_value === shipmentStatusesEnum.Cancelled;
       data.status_normal = normalStatuses.indexOf(data.status_value) !== -1;
       data.pending_action = this.getPendingAction(data.status_value);
 
