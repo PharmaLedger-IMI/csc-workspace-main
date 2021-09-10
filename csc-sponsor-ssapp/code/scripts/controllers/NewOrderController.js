@@ -39,6 +39,7 @@ export default class NewOrderController extends WebcController {
       temperatureError:false,
       formIsInvalid:true,
     };
+    this.model.form.isSubmitting = false;
 
     this.on('add-file', (event) => {
       const files = event.data;
@@ -180,6 +181,7 @@ export default class NewOrderController extends WebcController {
 
     const onSubmitYesResponse = async () => {
       window.WebCardinal.loader.hidden=false;
+      this.model.form.isSubmitting  = true;
       const payload = {};
 
       if (this.model.form) {
