@@ -29,7 +29,7 @@ class DashboardControllerImpl extends WebcController {
 
 		let selectedTab;
 
-		if (this.history.location && this.history.location.state && this.history.location.state.tab) {
+		if (this.history.location.state && this.history.location.state.tab) {
 			selectedTab = this.history.location.state.tab;
 		} else {
 			selectedTab = Topics.Order;
