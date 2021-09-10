@@ -167,7 +167,7 @@ export default class NewOrderController extends WebcController {
         new Error(`Are you sure you want to submit the order?`), // An error or a string, it's your choice
         'Submit Order',
         onSubmitYesResponse,
-        onNoResponse,
+        ()=>{},
         {
           disableExpanding: true,
           cancelButtonText: 'No',
@@ -236,12 +236,24 @@ export default class NewOrderController extends WebcController {
       window.WebCardinal.loader.hidden=true;
     };
 
-    const onNoResponse = () => console.log('Why not?');
-
     //When you reset form
     this.onTagEvent('form_reset', 'click', (e) => {
-      this.model.form = viewModelResolver('order').form;
-      this.files = [];
+      this.showErrorModal(
+        new Error(`All newly entered data will be removed. This will require you to start over the process of entering the details again`),
+        'Cancel Changes',
+        ()=>{
+          this.model.form = viewModelResolver('order').form;
+          this.files = [];
+          makeStepActive('step-1', 'step-1-wrapper', e);
+        },
+        ()=>{},
+        {
+          disableExpanding: true,
+          cancelButtonText: 'Cancel',
+          confirmButtonText: "Ok, let's start over",
+          id: 'error-modal',
+        }
+      )
     });
 
     //Add active menu class to element
