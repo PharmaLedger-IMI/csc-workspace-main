@@ -1,79 +1,189 @@
+<style>
+	webc-modal {
+		--max-width: 90%;
+	}
 
-<div slot="header">
-    <div class="new-order-created-title">History</div>
+	webc-modal::part(dialog) {
+		align-items: unset;
+	}
+</style>
+
+<div slot='header'>
+	<div class='new-order-created-title'>History</div>
 </div>
 
-<div class="row" style="width:1000px;">
-    <div class="col-4 text-center">
-        <div class="history-orders">
-            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                 width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
-            <path fill="#231F20" d="M94.027,70.143h35.826v11.944H94.027V70.143z M94.027,94.029h35.826v11.94H94.027V94.029z M94.027,117.913
+<main class='full-flex-column justify-content-between'>
+	<div class='row'>
+		<div class='col-4 text-center'>
+			<div class='history-orders'>
+				<svg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' x='0px' y='0px'
+				     width='200px' height='200px' viewBox='0 0 200 200' enable-background='new 0 0 200 200'
+				     xml:space='preserve'>
+            <path fill='#231F20' d='M94.027,70.143h35.826v11.944H94.027V70.143z M94.027,94.029h35.826v11.94H94.027V94.029z M94.027,117.913
                 h35.826v11.943H94.027V117.913z M70.146,70.143h11.94v11.944h-11.94V70.143z M70.146,94.029h11.94v11.94h-11.94V94.029z
                  M70.146,117.913h11.94v11.943h-11.94V117.913z M148.364,46.26H51.637c-2.984,0-5.376,2.39-5.376,5.375v96.729
                 c0,2.391,2.392,5.376,5.376,5.376h96.728c2.391,0,5.375-2.985,5.375-5.376V51.635C153.739,48.65,150.755,46.26,148.364,46.26z
-                 M141.799,141.798H58.202V58.203h83.597V141.798z"/>
+                 M141.799,141.798H58.202V58.203h83.597V141.798z' />
             </svg>
-            <span><b>Orders</b></span>
-        </div>
+				<strong>Order: {{@order.orderId}}</strong>
+			</div>
 
-        <div data-for="@order.status">
-            <div class="history-connector"></div>
+			<div data-for='@order.status'>
+				<div class='history-connector'></div>
 
-            <div data-if="@approved">
-                <div slot="true" class="history-status-element background-approved" >
-                    <div class="history-date">{{@date}}</div>
-                    <div><b>{{@status}}</b></div>
-                </div>
-            </div>
+				<div data-if='@approved'>
+					<div slot='true' class='history-status-element background-approved'>
+						<div class='history-date'>{{@date}}</div>
+						<div><b>{{@status}}</b></div>
+					</div>
+				</div>
 
-            <div data-if="@cancelled">
-                <div slot="true" class="history-status-element background-cancelled" >
-                    <div class="history-date">{{@date}}</div>
-                    <div><b>{{@status}}</b></div>
-                </div>
-            </div>
+				<div data-if='@cancelledAfterApproval'>
+					<div slot='true' class='history-status-element background-cancelled-after-approval'>
+						<div class='history-date'>{{@date}}</div>
+						<div><b>{{@status}}</b></div>
+					</div>
+				</div>
 
-            <div data-if="@normal">
-                <div slot="true" class="history-status-element background-primary" >
-                    <div class="history-date">{{@date}}</div>
-                    <div><b>{{@status}}</b></div>
-                </div>
-            </div>
+				<div data-if='@cancelled'>
+					<div slot='true' class='history-status-element background-cancelled'>
+						<div class='history-date'>{{@date}}</div>
+						<div><b>{{@status}}</b></div>
+					</div>
+				</div>
 
-        </div>
+				<div data-if='@normal'>
+					<div slot='true' class='history-status-element background-primary'>
+						<div class='history-date'>{{@date}}</div>
+						<div><b>{{@status}}</b></div>
+					</div>
+				</div>
+			</div>
 
-    </div>
-    <div class="col-4 text-center">
-        <div class="history-orders">
-            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                 width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
-            <path fill="#231F20" d="M156.457,71.777h-21.152V43.549H36.488c-7.756,0-14.113,6.343-14.113,14.11v77.625h14.113
-                c0,11.714,9.457,21.167,21.188,21.167c11.709,0,21.155-9.453,21.155-21.167h42.354c0,11.714,9.458,21.167,21.16,21.167
-                c11.709,0,21.165-9.453,21.165-21.167h14.113V100L156.457,71.777z M152.925,82.36L166.758,100h-31.453V82.36H152.925z
-                 M57.677,142.334c-3.895,0-7.066-3.167-7.066-7.05c0-3.884,3.172-7.055,7.066-7.055c3.861,0,7.046,3.171,7.046,7.055
-                C64.723,139.167,61.538,142.334,57.677,142.334z M73.342,121.173c-3.897-4.305-9.372-7.056-15.665-7.056
-                c-6.299,0-11.801,2.75-15.682,7.056h-5.507V57.659h84.698v63.514H73.342z M142.347,142.334c-3.886,0-7.042-3.167-7.042-7.05
-                c0-3.884,3.156-7.055,7.042-7.055c3.901,0,7.057,3.171,7.057,7.055C149.403,139.167,146.248,142.334,142.347,142.334z"/>
-            </svg>
-            <span><b>Shipments</b></span>
-        </div>
+		</div>
+		<div class='col-4 text-center'>
+			<div class='history-orders'>
+				<svg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='200px'
+				     height='200px' viewBox='0 0 200 200' enable-background='new 0 0 200 200'
+				     xml:space='preserve'>
+	            <path
+		            fill='#231F20'
+		            d='M156.457,71.777h-21.152V43.549H36.488c-7.756,0-14.113,6.343-14.113,14.11v77.625h14.113
+	                    c0,11.714,9.457,21.167,21.188,21.167c11.709,0,21.155-9.453,21.155-21.167h42.354c0,11.714,9.458,21.167,21.16,21.167
+	                    c11.709,0,21.165-9.453,21.165-21.167h14.113V100L156.457,71.777z M152.925,82.36L166.758,100h-31.453V82.36H152.925z
+	                     M57.677,142.334c-3.895,0-7.066-3.167-7.066-7.05c0-3.884,3.172-7.055,7.066-7.055c3.861,0,7.046,3.171,7.046,7.055
+	                    C64.723,139.167,61.538,142.334,57.677,142.334z M73.342,121.173c-3.897-4.305-9.372-7.056-15.665-7.056
+	                    c-6.299,0-11.801,2.75-15.682,7.056h-5.507V57.659h84.698v63.514H73.342z M142.347,142.334c-3.886,0-7.042-3.167-7.042-7.05
+	                    c0-3.884,3.156-7.055,7.042-7.055c3.901,0,7.057,3.171,7.057,7.055C149.403,139.167,146.248,142.334,142.347,142.334z'></path>
+	          </svg>
+				<strong>Shipment: {{@shipment.shipmentId}}</strong>
+			</div>
 
-    </div>
-    <div class="col-4 text-center">
-        <div class="history-orders">
-            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                 width="200px" height="200px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
-            <path fill="#231F20" d="M92.5,122.386H78v-15h14.5v-14.5h15v14.5H122v15h-14.5v14.5h-15V122.386z M159.712,52.231v17.965
+			<div data-if='@shipment'>
+				<div data-for='@shipment.status'>
+					<div class='history-connector'></div>
+
+					<div data-if='@approved'>
+						<div slot='true' class='history-status-element background-approved'>
+							<div class='history-date'>{{@date}}</div>
+							<div><b>{{@status}}</b></div>
+						</div>
+					</div>
+
+					<div data-if='@cancelled'>
+						<div slot='true' class='history-status-element background-cancelled'>
+							<div class='history-date'>{{@date}}</div>
+							<div><b>{{@status}}</b></div>
+						</div>
+					</div>
+
+					<div data-if='@normal'>
+						<div slot='true' class='history-status-element background-primary'>
+							<div class='history-date'>{{@date}}</div>
+							<div><b>{{@status}}</b></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class='col-4 text-center'>
+			<div class='history-orders'>
+				<svg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' x='0px' y='0px'
+				     width='200px' height='200px' viewBox='0 0 200 200' enable-background='new 0 0 200 200'
+				     xml:space='preserve'>
+            <path fill='#231F20' d='M92.5,122.386H78v-15h14.5v-14.5h15v14.5H122v15h-14.5v14.5h-15V122.386z M159.712,52.231v17.965
                 c0,4.298-2.567,8.001-5.972,10.094v67.479c0,6.566-6.565,11.942-11.943,11.942H58.201c-5.378,0-11.942-5.376-11.942-11.942V80.29
                 c-3.404-2.093-5.971-5.796-5.971-10.094V52.231c0-6.576,5.971-11.942,11.944-11.942h95.537
                 C153.74,40.289,159.712,45.655,159.712,52.231z M141.797,82.087H58.201v65.682h83.596V82.087z M147.77,52.231H52.232v17.913h95.537
-                V52.231z"/>
+                V52.231z' />
             </svg>
-            <span><b>Kits</b></span>
-        </div>
-    </div>
-</div>
-<div slot="footer">
+				<span><b>Kits</b></span>
+			</div>
 
-</div>
+			<div data-if='@kits'>
+				<div data-for='@kits.status'>
+					<div class='history-connector'></div>
+
+					<div data-if='@approved'>
+						<div slot='true' class='history-status-element background-approved'>
+							<div class='history-date'>{{@date}}</div>
+							<div><b>{{@status}}</b></div>
+						</div>
+					</div>
+
+					<div data-if='@normal'>
+						<div slot='true' class='history-status-element background-primary'>
+							<div class='history-date'>{{@date}}</div>
+							<div><b>{{@status}}</b></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class='row-wrapper button-wrapper'>
+		<div class="col-4 d-flex justify-content-center" data-if='@displayViewOrderButton'>
+			<button class='btn-default' data-tag='view-order'>
+				<svg class='view-more-icon' enable-background='new 0 0 200 200' height='200px' id='Layer_1'
+				     version='1.1' viewBox='0 0 200 200' width='200px' x='0px' xml:space='preserve'
+				     xmlns='http://www.w3.org/2000/svg'
+				     y='0px'>
+			            <path d='M107.5,62.462h67.57v15.021H107.5V62.462z M107.5,137.538h67.57v-15.021H107.5V137.538z M130.02,107.51
+			                h45.051V92.493H130.02V107.51z M107.5,99.999L69.961,62.462v30.031H24.93v15.017h45.031v30.028L107.5,99.999z'
+			                  fill='#231F20'></path>
+			          </svg>
+				View Order
+			</button>
+		</div>
+
+		<div class="col-4 d-flex justify-content-center" data-if='@displayViewShipmentButton'>
+			<button class='btn-default' data-tag='view-shipment'>
+				<svg class='view-more-icon' enable-background='new 0 0 200 200' height='200px' id='Layer_1'
+				     version='1.1' viewBox='0 0 200 200' width='200px' x='0px' xml:space='preserve'
+				     xmlns='http://www.w3.org/2000/svg'
+				     y='0px'>
+			            <path d='M107.5,62.462h67.57v15.021H107.5V62.462z M107.5,137.538h67.57v-15.021H107.5V137.538z M130.02,107.51
+			                h45.051V92.493H130.02V107.51z M107.5,99.999L69.961,62.462v30.031H24.93v15.017h45.031v30.028L107.5,99.999z'
+			                  fill='#231F20'></path>
+			          </svg>
+				View Shipment
+			</button>
+		</div>
+
+		<div class="col-4 d-flex justify-content-center" data-if='@displayViewKitsButton'>
+			<button class='btn-default' data-tag='view-kits'>
+				<svg class='view-more-icon' enable-background='new 0 0 200 200' height='200px' id='Layer_1'
+				     version='1.1' viewBox='0 0 200 200' width='200px' x='0px' xml:space='preserve'
+				     xmlns='http://www.w3.org/2000/svg'
+				     y='0px'>
+			            <path d='M107.5,62.462h67.57v15.021H107.5V62.462z M107.5,137.538h67.57v-15.021H107.5V137.538z M130.02,107.51
+			                h45.051V92.493H130.02V107.51z M107.5,99.999L69.961,62.462v30.031H24.93v15.017h45.031v30.028L107.5,99.999z'
+			                  fill='#231F20'></path>
+			          </svg>
+				View Kits
+			</button>
+		</div>
+	</div>
+</main>

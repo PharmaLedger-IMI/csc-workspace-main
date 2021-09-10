@@ -16,6 +16,7 @@ csIdentities[Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
 
 class ReviewOrderControllerImpl extends WebcController {
   files = [];
+  modalCancelHandler = ()=>{};
 
   constructor(role, ...props) {
     super(...props);
@@ -124,7 +125,7 @@ class ReviewOrderControllerImpl extends WebcController {
         new Error(`Are you sure you want to submit the review?`), // An error or a string, it's your choice
         'Submit Review',
         this.onSubmitYesResponse.bind(this),
-        this.onSubmitNoResponse.bind(this),
+        this.modalCancelHandler,
         {
           disableExpanding: true,
           cancelButtonText: 'No',
@@ -161,14 +162,24 @@ class ReviewOrderControllerImpl extends WebcController {
     });
   }
 
-  onSubmitNoResponse() {
-    console.log('Why not?');
-  }
-
   formResetHandler() {
-    this.onTagEvent('form_reset', 'click', () => {
-      this.model = this.getReviewOrderViewModel();
-      this.files = [];
+    this.onTagEvent('form_reset', 'click', (e) => {
+
+      let title = 'Cancel Changes';
+      let content = 'All newly entered data will be removed. You will have to start the review process again';
+      let confirmHandler = () => {
+        this.model = this.getReviewOrderViewModel();
+        this.files = [];
+        this.makeStepActive('step-1', 'step-1-wrapper', e);
+      };
+      let modalOptions = {
+        disableExpanding: true,
+        cancelButtonText: 'Cancel',
+        confirmButtonText: 'Ok, let\'s start over',
+        id: 'confirm-modal'
+      };
+
+      this.showModal(content, title, confirmHandler, this.modalCancelHandler, modalOptions);
     });
   }
 
