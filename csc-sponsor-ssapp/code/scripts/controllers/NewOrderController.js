@@ -36,6 +36,7 @@ export default class NewOrderController extends WebcController {
       form: viewModelResolver('order').form,
       orderCreatedKeySSI: '',
       temperatureError:false,
+      formIsInvalid:true,
     };
 
     this.on('add-file', (event) => {
@@ -166,7 +167,7 @@ export default class NewOrderController extends WebcController {
         new Error(`Are you sure you want to submit the order?`), // An error or a string, it's your choice
         'Submit Order',
         onSubmitYesResponse,
-        onNoResponse,
+        ()=>{},
         {
           disableExpanding: true,
           cancelButtonText: 'No',
@@ -235,51 +236,25 @@ export default class NewOrderController extends WebcController {
       window.WebCardinal.loader.hidden=true;
     };
 
-    const onNoResponse = () => console.log('Why not?');
-
     //When you reset form
     this.onTagEvent('form_reset', 'click', (e) => {
-      console.log("Cancel Button");
-      this.e = e;
-      // this.model.form = viewModelResolver('order').form;
-      // this.files = [];
       this.showErrorModal(
-        new Error(`All entered data will be cleared and you will start over with Order Details`), // An error or a string, it's your choice
+        new Error(`All newly entered data will be removed. This will require you to start over the process of entering the details again`),
         'Cancel Changes',
-        onCancelYesResponse,
-        onCancelNoResponse,
+        ()=>{
+          this.model.form = viewModelResolver('order').form;
+          this.files = [];
+          makeStepActive('step-1', 'step-1-wrapper', e);
+        },
+        ()=>{},
         {
           disableExpanding: true,
-          cancelButtonText: 'No',
-          confirmButtonText: 'Yes',
+          cancelButtonText: 'Cancel',
+          confirmButtonText: "Ok, let's start over",
           id: 'error-modal',
         }
-      );
+      )
     });
-
-    const onCancelYesResponse = async () => {
-      
-      if (this.model.form) {
-        if (this.model.form.inputs) {
-          let keys = Object.keys(this.model.form.inputs);
-          if (keys) {
-            keys.forEach((key) => {
-              this.model.form.inputs[key].value = '';
-            });
-          }
-          this.model.form.inputs.kit_ids_attachment.name = null;
-          if (this.model.form.documents) {
-            this.files.forEach((file) => {
-              this.files.splice(0, 1);
-              this.model.form.documents.splice(0,1);
-            });
-          }
-        }
-      }
-      makeStepActive('step-1', 'step-1-wrapper', this.e);
-    }
-
-    const onCancelNoResponse = () => console.log('Why not?');
 
     //Add active menu class to element
     function makeStepActive(step_id, step_holder_id, e) {
@@ -313,11 +288,33 @@ export default class NewOrderController extends WebcController {
         minTempValue = parseInt(minTempValue);
         maxTempValue = parseInt(maxTempValue);
         this.model.temperatureError = minTempValue > maxTempValue;
+        this.checkFormValidity();
       }
     }
 
     this.model.onChange('form.inputs.keep_between_temperature_min.value',tempChangeHandler)
     this.model.onChange('form.inputs.keep_between_temperature_max.value', tempChangeHandler)
+    this.model.onChange('form.inputs', this.checkFormValidity.bind(this));
+  }
+
+  checkFormValidity(){
+    //To be refactored according with current step
+    const requiredInputs = [
+      this.model.form.inputs.order_id.value,
+      this.model.form.inputs.study_id.value,
+      this.model.form.inputs.delivery_date.value
+    ]
+
+    let validationConstraints = [
+      typeof this.model.form.inputs.kit_ids_attachment.ids !== 'undefined' && this.model.form.inputs.kit_ids_attachment.ids.length > 0,
+      this.model.temperatureError === false,
+      ...requiredInputs.map(input => this.isInputFilled(input))
+    ];
+    this.model.formIsInvalid = typeof (validationConstraints.find(val => val !== true)) !== 'undefined';
+  }
+
+  isInputFilled(field){
+    return typeof field !== 'undefined' && field.trim()!==""
   }
 
   getDateTime() {
