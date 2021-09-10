@@ -76,9 +76,9 @@ class ShipmentsControllerImpl extends WebcController {
         const latestStatus = item.status.sort(function(a, b) {
           return new Date(b.date) - new Date(a.date);
         })[0];
-        item.status_value = latestStatus.status;
+        item.status_value = latestStatus.status === shipmentStatusesEnum.ShipmentCancelled ? shipmentStatusesEnum.Cancelled : latestStatus.status;
         item.status_approved = approvedStatuses.indexOf(item.status_value) !== -1;
-        item.status_cancelled = item.status_value === shipmentStatusesEnum.ShipmentCancelled;
+        item.status_cancelled = item.status_value === shipmentStatusesEnum.Cancelled;
         item.status_normal = normalStatuses.indexOf(item.status_value) !== -1;
 
         item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateFormatPattern) : '-';
