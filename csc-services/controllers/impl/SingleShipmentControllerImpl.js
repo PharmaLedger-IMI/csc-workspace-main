@@ -43,6 +43,17 @@ class SingleShipmentControllerImpl extends WebcController {
 
     this.editShipmentHandler();
     this.cancelOrderHandler();
+    this.navigationHandlers();
+  }
+
+  navigationHandlers() {
+    this.onTagClick('nav-back', () => {
+      this.history.goBack();
+    });
+
+    this.onTagClick('dashboard', () => {
+      this.navigateToPageTag('dashboard', { tab: Topics.Shipment });
+    });
   }
 
   toggleAccordionItemHandler() {

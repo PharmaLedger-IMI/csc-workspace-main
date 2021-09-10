@@ -34,10 +34,25 @@ class ReviewOrderControllerImpl extends WebcController {
   attachEventHandlers() {
     this.attachExpressionHandlers();
     this.attachModelChangeHandlers();
+    this.navigationHandlers();
     this.addFileHandler();
     this.formSubmitHandler();
     this.formResetHandler();
     this.initStepperNavigationHandlers();
+  }
+
+  navigationHandlers() {
+    this.onTagClick('nav-back', () => {
+      this.history.goBack();
+    });
+
+    this.onTagClick('dashboard', () => {
+      this.navigateToPageTag('dashboard', { tab: Topics.Order });
+    });
+
+    this.onTagClick('view-order', () => {
+      this.navigateToPageTag('order', { keySSI: this.model.order.keySSI });
+    });
   }
 
   attachExpressionHandlers() {

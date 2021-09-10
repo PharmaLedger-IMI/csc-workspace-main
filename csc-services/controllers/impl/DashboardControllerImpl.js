@@ -27,9 +27,10 @@ class DashboardControllerImpl extends WebcController {
 		this.communicationService = CommunicationService.getInstance(csIdentities[role]);
 		this.notificationsService = new NotificationsService(this.DSUStorage, this.communicationService);
 
+		const selectedTab = this.history.location.state.tab || Topics.Order;
 		this.model = {
 			tabNavigator: {
-				selected: Topics.Order
+				selected: selectedTab
 			}
 		};
 

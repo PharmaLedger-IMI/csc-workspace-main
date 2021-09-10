@@ -88,6 +88,18 @@ class SingleOrderControllerImpl extends WebcController {
         await this.downloadFile(filename, FoldersEnum.Kits, model.order.kitsSSI);
       }
     });
+
+    this.navigationHandlers();
+  }
+
+  navigationHandlers() {
+    this.onTagClick('nav-back', () => {
+      this.history.goBack();
+    });
+
+    this.onTagClick('dashboard', () => {
+      this.navigateToPageTag('dashboard', { tab: Topics.Order });
+    });
   }
 
   toggleAccordionItem(el) {
