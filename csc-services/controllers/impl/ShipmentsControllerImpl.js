@@ -152,7 +152,7 @@ class ShipmentsControllerImpl extends WebcController {
       pagination: this.getPaginationViewModel(),
       headers: tableHeaders,
       tableLength: tableHeaders.length,
-      shipmentsArrayNotEmpty: false,
+      shipmentsArrayNotEmpty: true,
       shipments: []
     };
   }
