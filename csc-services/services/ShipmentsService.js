@@ -92,7 +92,7 @@ class ShipmentsService extends DSUService {
 			case shipmentStatusesEnum.InTransit: {
 				notifyIdentities.push(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
 				notifyIdentities.push(CommunicationService.identities.CSC.SITE_IDENTITY);
-				notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
+				notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
 				break;
 			}
 

@@ -20,6 +20,7 @@ apihub-root/external-volume/domains
 apihub-root/fgt-mah-wallet/apps-patch
 apihub-root/csc-sponsor-wallet/apps-patch
 apihub-root/csc-site-wallet/apps-patch
+apihub-root/csc-courier-wallet/apps-patch/csc-courier-ssapp/readme
 apihub-root/csc-courier-wallet/apps-patch
 apihub-root/csc-cmo-wallet/apps-patch
 apihub-root/dossier-explorer/**

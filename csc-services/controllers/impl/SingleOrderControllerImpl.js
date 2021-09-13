@@ -321,13 +321,16 @@ class SingleOrderControllerImpl extends WebcController {
     });
 
     this.onTagEvent('approve-order', 'click', () => {
-      this.showErrorModal(new Error(`Are you sure you want to approve the order?`), 'Approve Order', this.approveOrder.bind(this), () => {
-      }, {
+      let title = 'Approve Order';
+      let content = 'Are you sure you want to approve the order?';
+      let modalOptions = {
         disableExpanding: true,
         cancelButtonText: 'No',
         confirmButtonText: 'Yes',
-        id: 'error-modal'
-      });
+        id: 'confirm-modal'
+      };
+
+      this.showModal(content, title, this.approveOrder.bind(this), () => {}, modalOptions);
     });
   }
 
