@@ -27,9 +27,17 @@ class DashboardControllerImpl extends WebcController {
 		this.communicationService = CommunicationService.getInstance(csIdentities[role]);
 		this.notificationsService = new NotificationsService(this.DSUStorage, this.communicationService);
 
+		let selectedTab;
+
+		if (this.history.location.state && this.history.location.state.tab) {
+			selectedTab = this.history.location.state.tab;
+		} else {
+			selectedTab = Topics.Order;
+		}
+
 		this.model = {
 			tabNavigator: {
-				selected: '0'
+				selected: selectedTab
 			}
 		};
 
@@ -37,22 +45,28 @@ class DashboardControllerImpl extends WebcController {
 	}
 
 	attachHandlers() {
+		this.modelExpressionsHandler();
+		this.serviceReadyHandler();
+		this.changeTabHandler();
+	}
+
+	modelExpressionsHandler() {
+		this.model.addExpression('isOrdersSelected', () => this.model.tabNavigator.selected === Topics.Order, 'tabNavigator.selected');
+		this.model.addExpression('isShipmentsSelected', () => this.model.tabNavigator.selected === Topics.Shipment, 'tabNavigator.selected');
+		this.model.addExpression('isKitsSelected', () => this.model.tabNavigator.selected === Topics.Kits, 'tabNavigator.selected');
+	}
+
+	serviceReadyHandler() {
 		this.ordersService.onReady(() => {
-			this.handleMessages();
+			this.shipmentService.onReady(() => {
+				this.handleMessages();
+			});
 		});
+	}
 
-		this.shipmentService.onReady(() => {
-			this.handleMessages();
-		});
-
-		this.model.addExpression('isOrdersSelected', () => this.model.tabNavigator.selected === '0', 'tabNavigator.selected');
-		this.model.addExpression('isShipmentsSelected', () => this.model.tabNavigator.selected === '1', 'tabNavigator.selected');
-		this.model.addExpression('isKitsSelected', () => this.model.tabNavigator.selected === '2', 'tabNavigator.selected');
-
+	changeTabHandler() {
 		this.onTagClick('change-tab', async (model, target) => {
-			document.getElementById(`tab-${this.model.tabNavigator.selected}`).classList.remove('active');
 			this.model.tabNavigator.selected = target.getAttribute('data-custom');
-			document.getElementById(`tab-${this.model.tabNavigator.selected}`).classList.add('active');
 		});
 	}
 
@@ -62,8 +76,8 @@ class DashboardControllerImpl extends WebcController {
 				return console.error(err);
 			}
 
-			this.handleOrderMessages(data);
-			this.handleShipmentMessages(data);
+			await this.handleOrderMessages(data);
+			await this.handleShipmentMessages(data);
 		});
 	}
 

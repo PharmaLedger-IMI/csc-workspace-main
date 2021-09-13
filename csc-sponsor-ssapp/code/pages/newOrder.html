@@ -360,11 +360,11 @@
           </div>
 
           <div class="row-wrapper button-wrapper">
-            <button class="btn-reset" data-tag="form_reset">
+            <button class="btn-reset" data-tag="form_reset" disabled='@form.isSubmitting'>
               <i class="fas fa-times"></i>
               Cancel Changes
             </button>
-            <button class="btn-default" data-tag="form_submit">
+            <button class="btn-default" data-tag="form_submit" disabled='@form.isSubmitting'>
               <i class="fas fa-check"></i>
               Submit
             </button>
