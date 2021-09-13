@@ -243,10 +243,78 @@ const shipmentSponsorTableHeaders = [
 	}
 ];
 
+
+const shipmentCourierTableHeaders = [
+	{
+		column: 'orderId',
+		label: 'Order ID',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'shipmentId',
+		label: 'Shipment ID',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'origin',
+		label: 'Origin',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'type',
+		label: 'Type',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'schedulePickupDate',
+		label: 'Schedule Pickup Date/Time',
+		notSortable: false,
+		type: 'date',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'status',
+		label: 'Shipment Status',
+		notSortable: false,
+		type: 'string',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'lastModified',
+		label: 'Last Modified',
+		type: 'date',
+		notSortable: false,
+		asc: null,
+		desc: null
+	},
+	{
+		column: null,
+		label: 'View',
+		notSortable: true,
+		desc: null
+	}
+];
+
+
 module.exports = {
 	shipmentStatusesEnum,
 	shipmentCMOTableHeaders,
 	shipmentSiteTableHeaders,
 	shipmentSponsorTableHeaders,
+	shipmentCourierTableHeaders,
 	shipmentPendingActionEnum
 };

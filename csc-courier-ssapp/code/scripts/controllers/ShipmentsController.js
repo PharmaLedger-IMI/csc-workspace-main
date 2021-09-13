@@ -11,7 +11,8 @@ const {
   shipmentStatusesEnum,
   shipmentCMOTableHeaders,
   shipmentSiteTableHeaders,
-  shipmentSponsorTableHeaders
+  shipmentSponsorTableHeaders,
+  shipmentCourierTableHeaders
 } = cscServices.constants.shipment;
 
 
@@ -31,25 +32,16 @@ export default class ShipmentsController extends WebcController {
 
   async init() {
     await this.getShipments();
-    // eventBusService.addEventListener(Topics.RefreshShipments, async (data) => {
-    //   await this.getShipments();
-    // });
+    eventBusService.addEventListener(Topics.RefreshShipments, async (data) => {
+      await this.getShipments();
+    });
   }
 
   async getShipments() {
     try {
 
       // edit ot play normal
-      // const shipmentsList = await this.shipmentService.getShipments();
-
-
-      // DUMMY DATA
-      const shipmentsList = [];
-      for( let i=0; i<10; i++){
-        shipmentsList.push(this.generateFakeShipment())
-      }
-      // DUMMY DATA
-
+      const shipmentsList = await this.shipmentService.getShipments();
       this.shipments = this.transformData(shipmentsList);
       this.setShipmentsModel(this.shipments);
     } catch (error) {
@@ -211,36 +203,12 @@ export default class ShipmentsController extends WebcController {
       case Roles.Sponsor: {
         return shipmentSponsorTableHeaders;
       }
+      case Roles.Courier: {
+        return shipmentCourierTableHeaders;
+      }
     }
 
     return [];
-  }
-
-
-  generateFakeShipment(){
-    return {
-     shipmentDate: new Date().getTime(),
-     shipperId: this.getRandomInt(20, 5),
-     specialInstructions: " Some Instructions",
-     typeShipment: "air",
-     dimension: {
-       dimensionHeight: this.getRandomInt(100, 1),
-       dimensionLength: this.getRandomInt(100, 1),
-       dimensionWidth: this.getRandomInt(100, 1)
-      },
-     origin: "Origin Data",
-     scheduledPickupDateTime: new Date().getTime(),
-     shippingCondition: "Condition of the shipping",
-     signature : ""
-   }
-  }
-
-   getRandomInt(max, digits) {
-    let final = "";
-    for(let i = 0; i< digits; i++){
-      final += Math.floor(Math.random() * max);
-    }
-    return final;
   }
 
 }
