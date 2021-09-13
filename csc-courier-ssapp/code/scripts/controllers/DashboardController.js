@@ -6,15 +6,9 @@ const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
-const { messagesEnum, order, shipment, NotificationTypes, Roles, Topics } = cscServices.constants;
-const { orderStatusesEnum } = order;
+const { shipment, notifications, Roles, Topics } = cscServices.constants;
+const {NotificationTypes} = notifications;
 const { shipmentStatusesEnum } = shipment;
-
-const csIdentities = {};
-csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
-csIdentities[Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
-csIdentities[Roles.Site] = CommunicationService.identities.CSC.SITE_IDENTITY;
-csIdentities[Roles.Courier] = CommunicationService.identities.CSC.COU_IDENTITY;
 
 class DashboardController extends WebcController {
   constructor(...props) {
@@ -24,7 +18,7 @@ class DashboardController extends WebcController {
 
     this.ordersService = new OrdersService(this.DSUStorage);
     this.shipmentService = new ShipmentsService(this.DSUStorage);
-    this.communicationService = CommunicationService.getInstance(csIdentities[this.role]);
+    this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.COU_IDENTITY);
     this.notificationsService = new NotificationsService(this.DSUStorage, this.communicationService);
 
     this.model = {
@@ -77,7 +71,7 @@ class DashboardController extends WebcController {
       keySSI: data.message.data.shipmentSSI,
       role: notificationRole,
       did: shipmentData.sponsorId,
-      date: new Date().toISOString()
+      date: new Date().getTime()
     };
 
     const notificationResult = await this.notificationsService.insertNotification(notification);
@@ -93,9 +87,9 @@ class DashboardController extends WebcController {
     let notificationRole;
 
     switch (data.message.operation) {
-      case messagesEnum.ShipmentInPreparation: {
+      case shipmentStatusesEnum.ReadyForDispatch: {
         notificationRole = Roles.CMO;
-        shipmentStatus = shipmentStatusesEnum.InPreparation;
+        shipmentStatus = data.message.operation;
 
         const {
           shipmentSSI,

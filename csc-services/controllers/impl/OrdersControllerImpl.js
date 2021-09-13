@@ -144,6 +144,7 @@ class OrdersControllerImpl extends WebcController {
 			filter: '',
 			search: this.getSearchViewModel(),
 			orders: [],
+			ordersListNotEmpty: true,
 			pagination: this.getPaginationViewModel(),
 			headers: orderTableHeaders,
 			tableLength: orderTableHeaders.length

@@ -92,7 +92,7 @@ class ShipmentsService extends DSUService {
 			case shipmentStatusesEnum.InTransit: {
 				notifyIdentities.push(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
 				notifyIdentities.push(CommunicationService.identities.CSC.SITE_IDENTITY);
-				notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
+				notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
 				break;
 			}
 
@@ -119,21 +119,8 @@ class ShipmentsService extends DSUService {
 		let shipment, shipmentDb, status;
 		switch (role) {
 			case Roles.Sponsor:
-				shipment = await this.mountEntityAsync(shipmentSSI, FoldersEnum.Shipments);
-				status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.ShipmentsStatuses);
-
-				shipmentDb = await this.addShipmentToDB(
-					{
-						...shipment,
-						shipmentSSI: shipment.uid,
-						status: status.history,
-						statusSSI: status.uid
-					},
-					shipment.uid
-				);
-
-				return shipmentDb;
 			case Roles.Site:
+			case Roles.Courier:
 				shipment = await this.mountEntityAsync(shipmentSSI, FoldersEnum.Shipments);
 				status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.ShipmentsStatuses);
 
@@ -146,7 +133,6 @@ class ShipmentsService extends DSUService {
 					},
 					shipment.uid
 				);
-
 				return shipmentDb;
 		}
 	}

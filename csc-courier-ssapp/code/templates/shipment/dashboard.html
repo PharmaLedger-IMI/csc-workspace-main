@@ -7,19 +7,28 @@
 				<span class="fas fa-filter"></span>
 				<label>Status: </label>
 			</div>
-			<button class="btn-filter selected" data-custom="" data-tag="filters-cleared" id="filter-">
+			<button class='btn-filter selected' data-custom='AllShipments' data-tag='filters-cleared' id='filter-'>
 				All Shipments
 			</button>
-			<button class="btn-filter" data-custom="ReadyForDispatch" data-tag="filters-changed" id="filter-ReadyForDispatch">
+			<button class='btn-filter' data-custom='ReadyForDispatch' data-tag='filters-changed'
+			        id='filter-ReadyForDispatch'>
 				Ready for Dispatch
 			</button>
-			<button class="btn-filter" data-custom="InTransit" data-tag="filters-changed"
-			        id="filter-InTransit">
+			<button class='btn-filter' data-custom='InTransit' data-tag='filters-changed'
+			        id='filter-InTransit'>
 				In Transit
 			</button>
-			<button class="btn-filter" data-custom="Delivered" data-tag="filters-changed"
-			        id="filter-Delivered">
+			<button class='btn-filter' data-custom='Delivered' data-tag='filters-changed'
+			        id='filter-Delivered'>
 				Delivered
+			</button>
+			<button class='btn-filter' data-custom='Received' data-tag='filters-changed'
+			        id='filter-Received'>
+				Received
+			</button>
+			<button class='btn-filter' data-custom='Cancelled' data-tag='filters-changed'
+			        id='filter-Cancelled'>
+				Cancelled
 			</button>
 		</div>
 	</div>
@@ -27,7 +36,7 @@
 	<div class="row-wrapper full-flex-column">
 		<div class="table-container-wrapper full-flex-column" data-if="@shipments">
 			<!-- Table area -->
-			<webc-template data-view-model="@" slot="true" template="table-template"></webc-template>
+			<webc-template data-view-model="@" slot="true" template="shipment/table-template-shipment"></webc-template>
 			<div slot="false">No shipments available.</div>
 		</div>
 	</div>
