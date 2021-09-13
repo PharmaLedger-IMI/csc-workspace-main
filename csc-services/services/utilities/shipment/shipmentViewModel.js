@@ -1,13 +1,17 @@
+const constants = require("csc-services").constants
+const shipmentBusinessRequirements = constants.shipment.shipmentBusinessRequirements;
+const shippers = shipmentBusinessRequirements.shippers;
 const shipmentViewModel = {
 	form: {
 		shipperId: {
 			label: 'Shipper ID',
 			name: 'shipper-id',
+			id: 'shipper-id',
 			required: true,
-			placeholder: 'Shipper ID',
+			placeholder: 'Select Shipper ID',
 			disabled: false,
-			type: 'text',
-			value: ''
+			options: shippers.map((x,index) => {return {label:x.name, value:index}}),
+			value: 0
 		},
 		origin: {
 			label: 'Origin',
