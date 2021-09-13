@@ -10,8 +10,8 @@ const shipmentViewModel = {
 			required: true,
 			placeholder: 'Select Shipper ID',
 			disabled: false,
-			options: shippers.map((x,index) => {return {label:x.name, value:index}}),
-			value: 0
+			options: shippers.map(x => {return {label:x.name, value:x.name}}),
+			value: shippers[0].name
 		},
 		origin: {
 			label: 'Origin',
