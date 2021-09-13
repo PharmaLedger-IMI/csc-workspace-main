@@ -136,18 +136,16 @@ class ReviewOrderControllerImpl extends WebcController {
 
   formSubmitHandler() {
     this.onTagEvent('form_submit', 'click', (e) => {
-      this.showErrorModal(
-        new Error(`Are you sure you want to submit the review?`), // An error or a string, it's your choice
-        'Submit Review',
-        this.onSubmitYesResponse.bind(this),
-        this.modalCancelHandler,
-        {
-          disableExpanding: true,
-          cancelButtonText: 'No',
-          confirmButtonText: 'Yes',
-          id: 'error-modal',
-        }
-      );
+      let title = 'Submit review';
+      let content = 'Are you sure you want to submit the review?';
+      let modalOptions = {
+        disableExpanding: true,
+        cancelButtonText: 'No',
+        confirmButtonText: 'Yes',
+        id: 'confirm-modal'
+      };
+
+      this.showModal(content, title, this.onSubmitYesResponse.bind(this), this.modalCancelHandler, modalOptions);
     });
   }
 
