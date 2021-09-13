@@ -28,7 +28,10 @@
 					<!-- Shipper ID -->
 					<div class='form-group'>
 						<label>{{@shipmentModel.form.shipperId.label}}</label>
-						<input class='form-control' data-view-model='@shipmentModel.form.shipperId' />
+						<!-- Select -->
+						<select class="form-control" data-for="@shipmentModel.form.shipperId.options" id="@shipmentModel.form.shipperId.name" name="@shipmentModel.form.shipperId.name" value="@shipmentModel.form.shipperId.value">
+							<option value="@value">{{@label}}</option>
+						  </select>
 					</div>
 					<!-- Origin -->
 					<div class='form-group'>
