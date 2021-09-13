@@ -309,6 +309,15 @@ const shipmentCourierTableHeaders = [
 	}
 ];
 
+const shipmentBusinessRequirements = {
+	shippers : [{
+		name: "Shipper ID 1"
+	}, {
+		name: "Shipper ID 2"
+	}, {
+		name: "Shipper ID 3"
+	}]
+}
 
 module.exports = {
 	shipmentStatusesEnum,
@@ -316,5 +325,6 @@ module.exports = {
 	shipmentSiteTableHeaders,
 	shipmentSponsorTableHeaders,
 	shipmentCourierTableHeaders,
-	shipmentPendingActionEnum
+	shipmentPendingActionEnum,
+	shipmentBusinessRequirements
 };
