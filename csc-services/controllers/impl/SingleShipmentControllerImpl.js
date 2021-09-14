@@ -120,10 +120,10 @@ class SingleShipmentControllerImpl extends WebcController {
   }
 
   onShowHistoryClick() {
-    let { order, shipment } = this.model.toObject();
+    let { orderModel, shipmentModel } = this.model.toObject();
     const historyModel = {
-      order: order,
-      shipment: shipment,
+      order: orderModel.order,
+      shipment: shipmentModel.shipment,
       currentPage: Topics.Shipment
     };
 
