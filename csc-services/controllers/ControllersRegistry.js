@@ -23,7 +23,8 @@ function ControllersRegistry(){
 
         return class extends controller{
             constructor(...props) {
-                super(role, ...props);
+                const constructorParams = role ? [role, ...props] : [...props];
+                super(...constructorParams);
             }
         }
     }
