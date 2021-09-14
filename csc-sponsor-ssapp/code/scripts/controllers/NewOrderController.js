@@ -193,7 +193,7 @@ export default class NewOrderController extends WebcController {
                 payload['delivery_date'] = this.getDateTime();
               } else if (key.indexOf('keep_between_temperature') !== -1) {
                 payload['keep_between_temperature'] = this.getTemperature();
-              } else {
+              } else if (key !== "site_id"){
                 payload[key] = this.model.form.inputs[key].value;
               }
             });
@@ -208,7 +208,8 @@ export default class NewOrderController extends WebcController {
             }
           });
         }
-
+        const siteIndex = parseInt(this.model.form.inputs.site_id.value);
+        payload['site_id'] = sites[siteIndex].name;
         payload['kitIds'] = JSON.parse(JSON.stringify(this.model.form.inputs.kit_ids_attachment.ids));
         payload['kitIdsFile'] = this.files.find((x) => x.type === DocumentTypes.Kit).fileContent;
 
