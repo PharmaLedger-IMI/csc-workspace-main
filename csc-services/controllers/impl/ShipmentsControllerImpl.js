@@ -70,7 +70,7 @@ class ShipmentsControllerImpl extends WebcController {
         item.shipmentId = item.shipmentId || '-';
         item.shipperId = item.shipperId || '-';
         item.origin = item.origin || '-';
-        item.type = item.type || '-';
+        item.type = item.typeShipment || '-';
         item.recipientName = item.recipientName || '-';
 
         const latestStatus = item.status.sort(function(a, b) {
@@ -83,7 +83,7 @@ class ShipmentsControllerImpl extends WebcController {
 
         item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateFormatPattern) : '-';
         item.requestDate = item.requestDate ? momentService(item.requestDate).format(Commons.DateTimeFormatPattern) : '-';
-        item.scheduledPickupDate = this.getPickupDateTime(item.scheduledPickupDate);
+        item.scheduledPickupDate = this.getPickupDateTime(item.scheduledPickupDateTime);
       });
     }
 
