@@ -113,8 +113,8 @@ const orderViewModel = {
                 placeholder: 'Select Site ID...',
                 required: true,
                 disabled: false,
-                options: sites.map((x,index) => {return {label:x.name, value:index}}),
-                value: '0',
+                options: sites.map((x) => {return {label:x.name, value:x.name}}),
+                value: sites[0].name,
             },
             site_region_id: {
                 label: 'Site Region ID (Autofilled)',
