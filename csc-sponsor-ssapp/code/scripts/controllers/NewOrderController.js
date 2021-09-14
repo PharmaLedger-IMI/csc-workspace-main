@@ -213,7 +213,7 @@ export default class NewOrderController extends WebcController {
         payload['kitIds'] = JSON.parse(JSON.stringify(this.model.form.inputs.kit_ids_attachment.ids));
         payload['kitIdsFile'] = this.files.find((x) => x.type === DocumentTypes.Kit).fileContent;
 
-        console.log('SUBMIT : Payload: ', JSON.stringify(payload));
+        console.log('SUBMIT : Payload: ', payload);
 
         const result = await this.ordersService.createOrder(payload);
 
