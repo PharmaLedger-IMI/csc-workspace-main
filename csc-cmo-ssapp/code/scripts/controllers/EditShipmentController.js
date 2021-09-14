@@ -150,7 +150,7 @@ export default class EditShipmentController extends WebcController {
 				dimensionLength: shipmentFormData.dimension.length.value
 			},
 			specialInstructions: shipmentFormData.specialInstructions.value,
-			shippingCondition: shipmentFormData.shippingConditions.value
+			shippingConditions: shipmentFormData.shippingConditions.value
 		};
 	}
 }

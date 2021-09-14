@@ -1,29 +1,29 @@
 <div class="grid-column-wrapper">
   <!-- Shipper ID -->
   <label>{{@form.shipperId.label}}</label>
-  <input class="form-control form-control-sm" disabled="@form.shipperId.disabled"
+  <input class="form-control form-control-sm" readonly='readonly'
          name="@form.shipperId.name" placeholder="@form.shipperId.placeholder" type="text"
          value="@shipment.shipperId"/>
 
   <!-- Origin -->
   <label>{{@form.origin.label}}</label>
-  <input class="form-control form-control-sm" disabled="@form.origin.disabled"
+  <input class="form-control form-control-sm" readonly='readonly'
          name="@form.origin.name" placeholder="@form.origin.placeholder" type="text"
          value="@shipment.origin"/>
 
   <!-- Type -->
   <label>{{@form.type.label}}</label>
-  <input class="form-control form-control-sm" disabled="@form.typeShipment.disabled"
+  <input class="form-control form-control-sm" readonly='readonly'
          name="@form.typeShipment.name" placeholder="@form.type.placeholder"
          type="text" value="@shipment.type"/>
 
   <!-- Scheduled Pickup Date/Time -->
   <label>Scheduled Pickup Date/Time</label>
   <div>
-    <input class="form-control form-control-sm" disabled="@form.pickupDate.disabled"
-           name="@form.pickupDate.name" type="text" value="@shipment.scheduledPickupDate.date"/>
-    <input class="form-control form-control-sm" disabled="@form.pickupTime.disabled"
-           name="@form.pickupTime.name" type="text" value="@shipment.scheduledPickupDate.time"/>
+    <input class='form-control form-control-sm' readonly='readonly' type='date'
+           value='@shipment.scheduledPickupDateTime.date' />
+    <input class='form-control form-control-sm' readonly='readonly' type='time'
+           value='@shipment.scheduledPickupDateTime.time' />
   </div>
 
     <label>{{@form.dimension.label}}</label>
@@ -31,32 +31,32 @@
       <div class='form-control-sm'>
         <div class='form-inline'>
           <label class='m-1'>{{@form.dimension.height.label}}</label>
-          <input class='form-control'  disabled="@form.dimension.disabled"
-                 value='@shipment.dimension.height' />
+          <input class='form-control'  readonly='readonly'
+                 value='@shipment.dimension.dimensionHeight' />
         </div>
       </div>
       <div class='form-control-sm'>
         <div class='form-inline'>
           <label class='m-1'>{{@form.dimension.length.label}}</label>
-          <input class='form-control'  disabled="@form.dimension.disabled"
-                 value='@shipment.dimension.length' />
+          <input class='form-control'  readonly='readonly'
+                 value='@shipment.dimension.dimensionLength' />
         </div>
       </div>
       <div class='form-control-sm'>
         <div class='form-inline'>
           <label class='m-1'>{{@form.dimension.width.label}}</label>
-          <input class='form-control'  disabled="@form.dimension.disabled"
-                 value='@shipment.dimension.width' />
+          <input class='form-control'  readonly='readonly'
+                 value='@shipment.dimension.dimensionWidth' />
         </div>
       </div>
     </div>
 
     <label>{{@form.specialInstructions.label}}</label>
     <textarea class='form-control form-control-sm'
-              disabled='@form.specialInstructions.disabled' value='@shipment.specialInstructions'></textarea>
+              readonly='readonly' value='@shipment.specialInstructions'></textarea>
   <!-- Shipping/Handling Conditions -->
     <label>{{@form.shippingConditions.label}}</label>
     <textarea class='form-control form-control-sm'
-              disabled='@form.shippingConditions.disabled' value='@shipment.shippingConditions'></textarea>
+              readonly='readonly' value='@shipment.shippingConditions'></textarea>
 
 </div>
