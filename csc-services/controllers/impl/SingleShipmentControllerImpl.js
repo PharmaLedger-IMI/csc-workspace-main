@@ -178,6 +178,12 @@ class SingleShipmentControllerImpl extends WebcController {
       data.status_cancelled = data.status_value === shipmentStatusesEnum.Cancelled;
       data.status_normal = normalStatuses.indexOf(data.status_value) !== -1;
       data.pending_action = this.getPendingAction(data.status_value);
+      data.contextualContent = {
+        afterReadyForDispatch: data.status.findIndex(el => el.status === shipmentStatusesEnum.ReadyForDispatch) !== -1,
+        afterInTransit: data.status.findIndex(el => el.status === shipmentStatusesEnum.InTransit) !== -1,
+        afterDelivered: data.status.findIndex(el => el.status === shipmentStatusesEnum.Delivered) !== -1,
+        afterReceived: data.status.findIndex(el => el.status === shipmentStatusesEnum.Received) !== -1
+      };
 
       return data;
     }
@@ -260,21 +266,27 @@ class SingleShipmentControllerImpl extends WebcController {
   }
 
   async initViewModel() {
-    const model = viewModelResolver('order');
+    const model = {
+      orderModel: viewModelResolver('order'),
+      shipmentModel: viewModelResolver('shipment')
+    };
     //all fields are disabled
-    for (let prop in model.form.inputs) {
-      model.form.inputs[prop].disabled = true;
+    for (let prop in model.orderModel.form.inputs) {
+      model.orderModel.form.inputs[prop].disabled = true;
+    }
+    for (let prop in model.shipmentModel.form.inputs) {
+      model.shipmentModel.form.inputs[prop].disabled = true;
     }
 
     let { keySSI } = this.history.location.state;
     model.keySSI = keySSI;
 
-    model.shipment = await this.shipmentsService.getShipment(model.keySSI);
-    model.shipment = { ...this.transformShipmentData(model.shipment) };
-    model.actions = this.setShipmentActions(model.shipment);
+    model.shipmentModel.shipment = await this.shipmentsService.getShipment(model.keySSI);
+    model.shipmentModel.shipment = { ...this.transformShipmentData(model.shipmentModel.shipment) };
+    model.actions = this.setShipmentActions(model.shipmentModel);
 
-    model.order = await this.ordersService.getOrder(model.shipment.orderSSI);
-    model.order = { ...this.transformOrderData(model.order) };
+    model.orderModel.order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
+    model.orderModel.order = { ...this.transformOrderData(model.orderModel.order) };
 
     this.model = model;
   }
