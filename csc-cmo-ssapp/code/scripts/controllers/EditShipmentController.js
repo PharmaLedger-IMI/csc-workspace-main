@@ -139,18 +139,18 @@ export default class EditShipmentController extends WebcController {
 		return {
 			shipperId: shipmentFormData.shipperId.value,
 			origin: shipmentFormData.origin.value,
-			type: shipmentFormData.type.value,
-			scheduledPickupDate: {
+			typeShipment: shipmentFormData.type.value,
+			scheduledPickupDateTime: {
 				date: shipmentFormData.pickupDate.value,
 				time: shipmentFormData.pickupTime.value
 			},
 			dimension: {
-				width: shipmentFormData.dimension.width.value,
-				height: shipmentFormData.dimension.height.value,
-				length: shipmentFormData.dimension.length.value
+				dimensionWidth: shipmentFormData.dimension.width.value,
+				dimensionHeight: shipmentFormData.dimension.height.value,
+				dimensionLength: shipmentFormData.dimension.length.value
 			},
 			specialInstructions: shipmentFormData.specialInstructions.value,
-			shippingConditions: shipmentFormData.shippingConditions.value
+			shippingCondition: shipmentFormData.shippingConditions.value
 		};
 	}
 }
