@@ -109,7 +109,7 @@
 						<span>Attached Documents</span>
 					</div>
 					<div class='accordion-item-holder'>
-						<div class='container d-flex' data-if='@shipment.documents'>
+						<div class='container d-flex' data-if='@documents'>
 							<span class='py-3 text-muted' slot='false'>No Available documents</span>
 							<table class='table table-borderless attach-documents-table' slot='true'>
 								<thead>
@@ -120,12 +120,12 @@
 									<th class='text-center' scope='col'>Open/Download</th>
 								</tr>
 								</thead>
-								<tbody data-for='@order.documents'>
+								<tbody data-for='@documents'>
 								<tr>
 									<th>{{@name}}</th>
 									<td>{{@attached_by}}</td>
 									<td>{{@date}}</td>
-									<td class='text-center' data-tag='download-file' data-custom='@name'>
+									<td class='text-center' data-tag='download-file'>
 										<svg class='attach-documents-table-icon' enable-background='new 0 0 200 200'
 										     id='Layer_1' version='1.1' viewBox='0 0 200 200' x='0px'
 										     xml:space='preserve' xmlns='http://www.w3.org/2000/svg'
@@ -156,9 +156,9 @@
 						<span>Shipment Comments</span>
 					</div>
 					<div class='accordion-item-holder'>
-						<div class='container d-flex' data-if='@shipment.comments'>
+						<div class='container d-flex' data-if='@shipmentModel.shipment.comments'>
 							<span class='py-3 text-muted' slot='false'>There is no comment added.</span>
-							<div class="comments-container py-5 flex-column" data-for="@shipment.comments" slot='true'>
+							<div class="comments-container py-5 flex-column" data-for="@shipmentModel.shipment.comments" slot='true'>
 								<div class="comment">
 									<div class="identity"><small>{{@entity}}</small>, <small>{{@date}}</small></div>
 									<div>{{@comment}}</div>
@@ -179,7 +179,7 @@
 						<span>Kits</span>
 					</div>
 					<div class='accordion-item-holder'>
-						<div class='container d-flex' data-if='@shipment.kits'>
+						<div class='container d-flex' data-if='@shipmentModel.shipment.kits'>
 							<span class='py-3 text-muted' slot='false'>No kit scanned yet</span>
 						</div>
 					</div>

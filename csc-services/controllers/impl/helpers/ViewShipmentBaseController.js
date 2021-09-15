@@ -1,13 +1,16 @@
 const cscServices = require('csc-services');
+const FileDownloaderService = cscServices.FileDownloaderService;
 const { WebcController } = WebCardinal.controllers;
 const { shipmentStatusesEnum, shipmentPendingActionEnum } = cscServices.constants.shipment;
 const momentService = cscServices.momentService;
-const { Commons, Topics } = cscServices.constants;
+const { Commons, FoldersEnum, Topics, Roles } = cscServices.constants;
 
 class ViewShipmentBaseControllerImpl extends WebcController{
 
   constructor(...props) {
-    super(...props)
+    super(...props);
+
+    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
   }
 
   navigationHandlers() {
@@ -18,6 +21,44 @@ class ViewShipmentBaseControllerImpl extends WebcController{
     this.onTagClick('dashboard', () => {
       this.navigateToPageTag('dashboard', { tab: Topics.Shipment });
     });
+  }
+
+  downloadAttachmentHandler() {
+    this.onTagClick('download-file', async (model) => {
+      const { name, attached_by } = model;
+      let keySSI;
+      switch (attached_by) {
+        case Roles.Sponsor: {
+          keySSI = this.model.orderModel.order.sponsorDocumentsKeySSI;
+          break;
+        }
+        case Roles.CMO: {
+          keySSI = this.model.orderModel.order.cmoDocumentsKeySSI;
+          break;
+        }
+        case Roles.Courier: {
+          keySSI = this.model.shipmentModel.shipment.courierDocumentsKeySSI;
+          break;
+        }
+      }
+
+      await this.downloadFile(name, FoldersEnum.Documents, keySSI);
+    });
+  }
+
+  downloadKitListHandler() {
+    this.onTagClick('download-kits-file', async (model) => {
+      const { kitsFilename, kitsSSI } = model.order;
+      await this.downloadFile(kitsFilename, FoldersEnum.Kits, kitsSSI);
+    });
+  }
+
+  async downloadFile(filename, rootFolder, keySSI) {
+    window.WebCardinal.loader.hidden = false;
+    const path = rootFolder + '/' + keySSI + '/' + 'files';
+    await this.FileDownloaderService.prepareDownloadFromDsu(path, filename);
+    this.FileDownloaderService.downloadFileToDevice(filename);
+    window.WebCardinal.loader.hidden = true;
   }
 
   toggleAccordionItemHandler() {
@@ -109,6 +150,20 @@ class ViewShipmentBaseControllerImpl extends WebcController{
         afterDelivered: data.status.findIndex(el => el.status === shipmentStatusesEnum.Delivered) !== -1,
         afterReceived: data.status.findIndex(el => el.status === shipmentStatusesEnum.Received) !== -1
       };
+
+      if (data.comments) {
+        data.comments.forEach((comment) => {
+          comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
+        });
+      }
+
+      data.documents = [];
+      if (data.courierDocuments) {
+        data.courierDocuments.forEach((doc) => {
+          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
+          data.documents.push(doc);
+        });
+      }
 
       return data;
     }
