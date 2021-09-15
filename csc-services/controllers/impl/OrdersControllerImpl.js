@@ -14,7 +14,7 @@ class OrdersControllerImpl extends WebcController {
 
 		this.ordersService = new OrdersService(this.DSUStorage);
 		this.model = this.getOrdersViewModel();
-
+		this.model.ordersListIsReady = false;
 		this.attachEvents();
 		this.init();
 	}
@@ -28,9 +28,11 @@ class OrdersControllerImpl extends WebcController {
 
 	async getOrders() {
 		try {
+			this.model.ordersListIsReady = false;
 			const ordersTemp = await this.ordersService.getOrders();
 			this.orders = this.transformData(ordersTemp);
 			this.setOrdersModel(this.orders);
+			this.model.ordersListIsReady = true;
 		} catch (error) {
 			console.log(error);
 		}
@@ -45,6 +47,9 @@ class OrdersControllerImpl extends WebcController {
 					return new Date(b.date) - new Date(a.date);
 				})[0];
 				item.status_value = latestStatus.status;
+				item.status_approved = item.status_value === orderStatusesEnum.Approved;
+				item.status_cancelled = item.status_value === orderStatusesEnum.Canceled;
+				item.status_normal = !item.status_approved && !item.status_cancelled;
 				item.status_date = momentService(latestStatus.date).format(Commons.DateTimeFormatPattern);
 			});
 		}
@@ -62,7 +67,7 @@ class OrdersControllerImpl extends WebcController {
 	}
 
 	attachExpressionHandlers() {
-		this.model.addExpression('ordersArrayNotEmpty', () => {
+		this.model.addExpression('ordersListNotEmpty', () => {
 			return this.model.orders && Array.isArray(this.model.orders) && this.model.orders.length > 0;
 		}, 'orders');
 	}
@@ -139,6 +144,7 @@ class OrdersControllerImpl extends WebcController {
 			filter: '',
 			search: this.getSearchViewModel(),
 			orders: [],
+			ordersListNotEmpty: true,
 			pagination: this.getPaginationViewModel(),
 			headers: orderTableHeaders,
 			tableLength: orderTableHeaders.length

@@ -2,6 +2,7 @@ const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedSto
 const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum } = require('./constants');
 const { shipmentStatusesEnum } = require('./constants/shipment');
+const { orderStatusesEnum } = require('./constants/order');
 const CommunicationService = require('./lib/CommunicationService.js');
 
 class ShipmentsService extends DSUService {
@@ -68,15 +69,15 @@ class ShipmentsService extends DSUService {
 		return shipmentDb;
 	}
 
-	async updateShipment(shipmentKeySSI, newShipmentData, newStatus, role) {
+	async updateShipment(shipmentKeySSI, newStatus, newShipmentData) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
 		const status = await this.updateStatusDsu(newStatus, shipmentDB.statusSSI);
-
 		shipmentDB = {
 			...shipmentDB,
 			...newShipmentData,
 			status: status.history
 		};
+
 		const shipmentPreparationDSU = await this.updateEntityAsync(shipmentDB);
 		const result = await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentKeySSI, shipmentDB);
 
@@ -84,6 +85,19 @@ class ShipmentsService extends DSUService {
 		switch (newStatus) {
 			case shipmentStatusesEnum.ReadyForDispatch: {
 				notifyIdentities.push(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
+				notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
+				break;
+			}
+
+			case shipmentStatusesEnum.InTransit: {
+				notifyIdentities.push(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
+				notifyIdentities.push(CommunicationService.identities.CSC.SITE_IDENTITY);
+				notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
+				break;
+			}
+
+			case shipmentStatusesEnum.ShipmentCancelled: {
+				notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
 				notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
 				break;
 			}
@@ -105,21 +119,8 @@ class ShipmentsService extends DSUService {
 		let shipment, shipmentDb, status;
 		switch (role) {
 			case Roles.Sponsor:
-				shipment = await this.mountEntityAsync(shipmentSSI, FoldersEnum.Shipments);
-				status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.ShipmentsStatuses);
-
-				shipmentDb = await this.addShipmentToDB(
-					{
-						...shipment,
-						shipmentSSI: shipment.uid,
-						status: status.history,
-						statusSSI: status.uid
-					},
-					shipment.uid
-				);
-
-				return shipmentDb;
 			case Roles.Site:
+			case Roles.Courier:
 				shipment = await this.mountEntityAsync(shipmentSSI, FoldersEnum.Shipments);
 				status = await this.mountEntityAsync(statusKeySSI, FoldersEnum.ShipmentsStatuses);
 
@@ -132,7 +133,6 @@ class ShipmentsService extends DSUService {
 					},
 					shipment.uid
 				);
-
 				return shipmentDb;
 		}
 	}

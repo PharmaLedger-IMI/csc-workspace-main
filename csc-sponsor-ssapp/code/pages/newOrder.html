@@ -13,15 +13,15 @@
           <!-- Line -->
           <div class="step-break-line"></div>
           <!--Second Step -->
-          <div class="step-element" data-tag="step-2" id="step-2">2 - Attach Documents</div>
+          <div class="step-element" data-tag="step-2" id="step-2" step-inactive='@formIsInvalid'>2 - Attach Documents</div>
           <!-- Line -->
           <div class="step-break-line"></div>
           <!-- Comments -->
-          <div class="step-element" data-tag="step-3" id="step-3">3 - Comments</div>
+          <div class="step-element" data-tag="step-3" id="step-3" step-inactive='@formIsInvalid'>3 - Comments</div>
           <!-- Line -->
           <div class="step-break-line"></div>
           <!-- Confirmation -->
-          <div class="step-element" data-tag="step-4" id="step-4">4 - Summary</div>
+          <div class="step-element" data-tag="step-4" id="step-4" step-inactive='@formIsInvalid'>4 - Summary</div>
         </div>
 
         <!-- 1 - Order Details -->
@@ -31,7 +31,7 @@
               <!-- Sponsor ID -->
               <div class="form-group">
                 <!--Label -->
-                <label>{{@form.inputs.sponsor_id.label}}</label>
+                <label>{{@form.inputs.sponsor_id.label}} <span class='required'>*</span></label>
                 <!-- Input -->
                 <input class="form-control" data-view-model="@form.inputs.sponsor_id" type="text" />
               </div>
@@ -39,7 +39,7 @@
               <!-- Delivery Date/Time -->
               <div class="form-group">
                 <!--Label -->
-                <label>{{@form.inputs.delivery_date.label}}</label>
+                <label>{{@form.inputs.delivery_date.label}} <span class='required'>*</span></label>
                 <div class="row">
                   <div class="col-8">
                     <!-- Input -->
@@ -55,7 +55,7 @@
               <!-- Target CMO ID -->
               <div class="form-group">
                 <!--Label -->
-                <label>{{@form.inputs.target_cmo_id.label}}</label>
+                <label>{{@form.inputs.target_cmo_id.label}} <span class='required'>*</span></label>
                 <!-- Select -->
                 <select class="form-control" data-for="@form.inputs.target_cmo_id.options" id="@form.inputs.target_cmo_id.name" name="@form.inputs.target_cmo_id.name" value="@form.inputs.target_cmo_id.value">
                   <option value="@value">{{@label}}</option>
@@ -65,7 +65,7 @@
               <!-- Study ID -->
               <div class="form-group">
                 <!--Label -->
-                <label>{{@form.inputs.study_id.label}}</label>
+                <label>{{@form.inputs.study_id.label}} <span class='required'>*</span></label>
                 <!-- Input -->
                 <input class="form-control" data-view-model="@form.inputs.study_id" type="text" />
               </div>
@@ -73,7 +73,7 @@
               <!-- Order ID -->
               <div class="form-group">
                 <!--Label -->
-                <label>{{@form.inputs.order_id.label}}</label>
+                <label>{{@form.inputs.order_id.label}} <span class='required'>*</span></label>
                 <!-- Input -->
                 <input class="form-control" data-view-model="@form.inputs.order_id" type="text" />
               </div>
@@ -81,11 +81,11 @@
               <!-- Kit ID List -->
               <div class="form-group">
                 <!-- Label -->
-                <label>{{@form.inputs.kit_id_list.label}}</label>
+                <label>{{@form.inputs.kit_id_list.label}} <span class='required'>*</span></label>
                 <div class="input-group d-flex flex-column">
                   <div class="input-group d-flex justify-content-between align-items-center">
                     <input class="form-control" disabled value="@form.inputs.kit_ids_attachment.name" />
-                    <psk-files-chooser class="pl-3" data-view-model="@form.inputs.kit_ids_attachment" event-name="add-kit-ids-file"></psk-files-chooser>
+                    <psk-files-chooser class="pl-3" data-view-model="@form.inputs.kit_ids_attachment" accept='.csv' event-name="add-kit-ids-file"></psk-files-chooser>
                   </div>
                   <small style="color: red">{{ @form.inputs.kit_ids_attachment.error }}</small>
                 </div>
@@ -95,7 +95,7 @@
               <!-- Site Id -->
               <div class="form-group">
                 <!--Label -->
-                <label>{{@form.inputs.site_id.label}}</label>
+                <label>{{@form.inputs.site_id.label}} <span class='required'>*</span></label>
                 <!-- Select -->
                 <select class="form-control" data-for="@form.inputs.site_id.options" id="@form.inputs.site_id.name" name="@form.inputs.site_id.name" value="@form.inputs.site_id.value">
                   <option value="@value">{{@label}}</option>
@@ -148,7 +148,7 @@
           <div class="row-wrapper button-wrapper">
             <div></div>
             <!-- Next Button -->
-            <button class="btn-default" data-tag="from_step_1_to_2" id="from_step_1_to_2" disabled="@temperatureError" >
+            <button class="btn-default" data-tag="from_step_1_to_2" id="from_step_1_to_2" disabled="@formIsInvalid" >
               Next
               <i class="fas fa-angle-right"></i>
             </button>
@@ -360,11 +360,11 @@
           </div>
 
           <div class="row-wrapper button-wrapper">
-            <button class="btn-reset" data-tag="form_reset">
+            <button class="btn-reset" data-tag="form_reset" disabled='@form.isSubmitting'>
               <i class="fas fa-times"></i>
               Cancel Changes
             </button>
-            <button class="btn-default" data-tag="form_submit">
+            <button class="btn-default" data-tag="form_submit" disabled='@form.isSubmitting'>
               <i class="fas fa-check"></i>
               Submit
             </button>

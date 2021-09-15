@@ -88,6 +88,18 @@ class SingleOrderControllerImpl extends WebcController {
         await this.downloadFile(filename, FoldersEnum.Kits, model.order.kitsSSI);
       }
     });
+
+    this.navigationHandlers();
+  }
+
+  navigationHandlers() {
+    this.onTagClick('nav-back', () => {
+      this.history.goBack();
+    });
+
+    this.onTagClick('dashboard', () => {
+      this.navigateToPageTag('dashboard', { tab: Topics.Order });
+    });
   }
 
   toggleAccordionItem(el) {
@@ -142,21 +154,25 @@ class SingleOrderControllerImpl extends WebcController {
   }
 
   onShowHistoryClick() {
+    let { order, shipment } = this.model.toObject();
+    const historyModel = {
+      order: order,
+      shipment: shipment,
+      currentPage: Topics.Order
+    };
+
     this.createWebcModal({
       template: 'historyModal',
       controller: 'HistoryModalController',
-      model: { order: this.model.order },
+      model: historyModel,
       disableBackdropClosing: false,
       disableFooter: true,
-      disableHeader: true,
       disableExpanding: true,
       disableClosing: false,
       disableCancelButton: true,
       expanded: false,
-      centered: true,
+      centered: true
     });
-
-    console.log('Show History Clicked');
   }
 
   async init() {
@@ -186,12 +202,12 @@ class SingleOrderControllerImpl extends WebcController {
         });
       }
 
-      data.status_value = data.status.sort(function (a, b) {
+      data.status_value = data.status.sort(function(a, b) {
         return new Date(b.date) - new Date(a.date);
       })[0].status;
 
       data.status_date = momentService(
-        data.status.sort(function (a, b) {
+        data.status.sort(function(a, b) {
           return new Date(b.date) - new Date(a.date);
         })[0].date
       ).format(Commons.DateTimeFormatPattern);
@@ -229,7 +245,7 @@ class SingleOrderControllerImpl extends WebcController {
 
   transformShipmentData(shipment) {
     if (shipment) {
-      shipment.status_value = shipment.status.sort(function (a, b) {
+      shipment.status_value = shipment.status.sort(function(a, b) {
         return new Date(b.date) - new Date(a.date);
       })[0].status;
 
@@ -238,7 +254,6 @@ class SingleOrderControllerImpl extends WebcController {
 
     return null;
   }
-
 
   getPendingAction(status_value) {
     switch (status_value) {
@@ -262,30 +277,28 @@ class SingleOrderControllerImpl extends WebcController {
   setOrderActions() {
     const order = this.model.order;
     const shipment = this.model.shipment;
+    const isShipmentCreated = typeof shipment !== 'undefined';
     const canCMOReviewStatuses = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedBySponsor];
     const canSponsorReviewStatuses = [orderStatusesEnum.ReviewedByCMO];
     const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
-    const actions = {
-      canViewShipment: order.hasOwnProperty('shipmentSSI')
-    };
+    const actions = {};
 
     switch (this.role) {
       case Roles.Sponsor:
         actions.canBeReviewed = canSponsorReviewStatuses.indexOf(order.status_value) !== -1;
         actions.canBeCancelled = cancellableOrderStatus.indexOf(order.status_value) !== -1 || cancellableOrderStatus.indexOf(shipment.status_value) !== -1;
         actions.canBeApproved = actions.canBeReviewed;
-        actions.orderCancelButtonText = actions.canViewShipment ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
+        actions.orderCancelButtonText = isShipmentCreated ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
         this.attachSponsorEventHandlers();
         break;
 
       case Roles.CMO:
-        actions.canPrepareShipment = !actions.canViewShipment && orderStatusesEnum.Approved === order.status_value;
+        actions.canPrepareShipment = !isShipmentCreated && orderStatusesEnum.Approved === order.status_value;
         actions.canBeReviewed = canCMOReviewStatuses.indexOf(order.status_value) !== -1;
         this.attachCmoEventHandlers();
         break;
     }
 
-    this.attachCommonEventHandlers();
     return actions;
   }
 
@@ -296,51 +309,55 @@ class SingleOrderControllerImpl extends WebcController {
       });
     });
 
-    this.onTagEvent('cancel-order', 'click', (e) => {
-          this.model.cancelOrderModal = {
-            comment: {
-          placeholder: 'Enter cancellation reason',
-              value: '',
-              label: 'Cancellation Reason:'
-            },
-            commentIsEmpty: true
-          };
-          this.showModalFromTemplate('cancelOrderModal',  this.cancelOrder.bind(this), () => {
-          },{
-            controller: 'CancelOrderController',
-            disableExpanding: true,
-            disableBackdropClosing: true,
-            model: this.model
-          });
-        });
+    this.onTagEvent('cancel-order', 'click', () => {
+      this.model.cancelOrderModal = viewModelResolver('order').cancelOrderModal;
+      this.showModalFromTemplate('cancelOrderModal', this.cancelOrder.bind(this), () => {
+      }, {
+        controller: 'CancelOrderController',
+        disableExpanding: true,
+        disableBackdropClosing: true,
+        model: this.model
+      });
+    });
 
     this.onTagEvent('approve-order', 'click', () => {
-      this.showErrorModal(new Error(`Are you sure you want to approve the order?`), 'Approve Order', this.approveOrder.bind(this), () => {
-      }, {
+      let title = 'Approve Order';
+      let content = 'Are you sure you want to approve the order?';
+      let modalOptions = {
         disableExpanding: true,
         cancelButtonText: 'No',
         confirmButtonText: 'Yes',
-        id: 'error-modal'
-      });
+        id: 'confirm-modal'
+      };
+
+      this.showModal(content, title, this.approveOrder.bind(this), () => {}, modalOptions);
     });
   }
 
   async cancelOrder() {
-    const {keySSI} = this.model.order;
+    const { keySSI } = this.model.order;
     let comment = this.model.cancelOrderModal.comment.value ? {
-          entity: this.role,
-          comment: this.model.cancelOrderModal.comment.value,
-          date: new Date().getTime()
-        }
-        : null;
-    await this.ordersService.updateOrderNew(keySSI, null, comment, Roles.Sponsor, orderStatusesEnum.Canceled);
+        entity: this.role,
+        comment: this.model.cancelOrderModal.comment.value,
+        date: new Date().getTime()
+      }
+      : null;
+    await this.ordersService.updateOrderNew(keySSI, null, comment, this.role, orderStatusesEnum.Canceled);
+    const shipment = this.model.shipment;
+    let orderLabel = 'Order';
+    if (shipment) {
+      orderLabel = 'Order and Shipment';
+      await this.shipmentsService.updateShipment(shipment.keySSI, shipmentStatusesEnum.ShipmentCancelled);
+      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+    }
+
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-    this.showErrorModalAndRedirect('Order was canceled, redirecting to dashboard...', 'Order Cancelled', '/', 2000);
+    this.showErrorModalAndRedirect(orderLabel + ' was canceled, redirecting to dashboard...', orderLabel + ' Cancelled', '/', 2000);
   }
 
   async approveOrder() {
     const {keySSI} = this.model.order;
-    const result = await this.ordersService.updateOrderNew(keySSI, null, null, Roles.Sponsor, orderStatusesEnum.Approved);
+    const result = await this.ordersService.updateOrderNew(keySSI, null, null, this.role, orderStatusesEnum.Approved);
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     this.showErrorModalAndRedirect('Order was approved, redirecting to dashboard...', 'Order Approved', '/', 2000);
   }
@@ -353,16 +370,16 @@ class SingleOrderControllerImpl extends WebcController {
     });
 
     this.onTagEvent('prepare-shipment', 'click', () => {
-      this.showErrorModal(new Error(`Are you sure you want to prepare the shipment?`),
-          'Prepare Shipment',
-          this.prepareShipment.bind(this),
-          () => {
-          }, {
-            disableExpanding: true,
-            cancelButtonText: 'No',
-            confirmButtonText: 'Yes',
-            id: 'error-modal'
-          });
+      this.showModal("Are you sure you want to prepare the shipment?",
+        'Prepare Shipment',
+        this.prepareShipment.bind(this),
+        () => {
+        }, {
+          disableExpanding: true,
+          cancelButtonText: 'No',
+          confirmButtonText: 'Yes',
+          id: 'confirm-modal'
+        });
     });
   }
 
@@ -379,14 +396,6 @@ class SingleOrderControllerImpl extends WebcController {
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     this.showErrorModalAndRedirect('Shipment Initiated, redirecting to dashboard...', 'Shipment Initiated', '/', 2000);
   };
-
-  attachCommonEventHandlers() {
-    this.onTagClick('view-shipment', () => {
-      this.navigateToPageTag('shipment', {
-        keySSI: this.model.order.shipmentSSI
-      });
-    });
-  }
 
   getDate(str) {
     return str.split(' ')[0];

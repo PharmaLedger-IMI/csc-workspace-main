@@ -16,6 +16,7 @@ csIdentities[Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
 
 class ReviewOrderControllerImpl extends WebcController {
   files = [];
+  modalCancelHandler = ()=>{};
 
   constructor(role, ...props) {
     super(...props);
@@ -33,10 +34,25 @@ class ReviewOrderControllerImpl extends WebcController {
   attachEventHandlers() {
     this.attachExpressionHandlers();
     this.attachModelChangeHandlers();
+    this.navigationHandlers();
     this.addFileHandler();
     this.formSubmitHandler();
     this.formResetHandler();
     this.initStepperNavigationHandlers();
+  }
+
+  navigationHandlers() {
+    this.onTagClick('nav-back', () => {
+      this.history.goBack();
+    });
+
+    this.onTagClick('dashboard', () => {
+      this.navigateToPageTag('dashboard', { tab: Topics.Order });
+    });
+
+    this.onTagClick('view-order', () => {
+      this.navigateToPageTag('order', { keySSI: this.model.order.keySSI });
+    });
   }
 
   attachExpressionHandlers() {
@@ -120,18 +136,16 @@ class ReviewOrderControllerImpl extends WebcController {
 
   formSubmitHandler() {
     this.onTagEvent('form_submit', 'click', (e) => {
-      this.showErrorModal(
-        new Error(`Are you sure you want to submit the review?`), // An error or a string, it's your choice
-        'Submit Review',
-        this.onSubmitYesResponse.bind(this),
-        this.onSubmitNoResponse.bind(this),
-        {
-          disableExpanding: true,
-          cancelButtonText: 'No',
-          confirmButtonText: 'Yes',
-          id: 'error-modal',
-        }
-      );
+      let title = 'Submit review';
+      let content = 'Are you sure you want to submit the review?';
+      let modalOptions = {
+        disableExpanding: true,
+        cancelButtonText: 'No',
+        confirmButtonText: 'Yes',
+        id: 'confirm-modal'
+      };
+
+      this.showModal(content, title, this.onSubmitYesResponse.bind(this), this.modalCancelHandler, modalOptions);
     });
   }
 
@@ -149,7 +163,7 @@ class ReviewOrderControllerImpl extends WebcController {
     this.createWebcModal({
       template: 'orderCreatedModal',
       controller: 'OrderCreatedModalController',
-      model: result,
+      model: {modalTitle:"Review Order", ...result},
       disableBackdropClosing: false,
       disableFooter: true,
       disableHeader: true,
@@ -161,14 +175,24 @@ class ReviewOrderControllerImpl extends WebcController {
     });
   }
 
-  onSubmitNoResponse() {
-    console.log('Why not?');
-  }
-
   formResetHandler() {
-    this.onTagEvent('form_reset', 'click', () => {
-      this.model = this.getReviewOrderViewModel();
-      this.files = [];
+    this.onTagEvent('form_reset', 'click', (e) => {
+
+      let title = 'Cancel Changes';
+      let content = 'All newly entered data will be removed. You will have to start the review process again';
+      let confirmHandler = () => {
+        this.model = this.getReviewOrderViewModel();
+        this.files = [];
+        this.makeStepActive('step-1', 'step-1-wrapper', e);
+      };
+      let modalOptions = {
+        disableExpanding: true,
+        cancelButtonText: 'Cancel',
+        confirmButtonText: 'Ok, let\'s start over',
+        id: 'confirm-modal'
+      };
+
+      this.showModal(content, title, confirmHandler, this.modalCancelHandler, modalOptions);
     });
   }
 

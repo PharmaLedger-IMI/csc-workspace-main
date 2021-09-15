@@ -12,6 +12,7 @@ const sites = cscServices.constants.order.orderBusinessRequirements.sites;
 
 export default class NewOrderController extends WebcController {
   files = [];
+  cancelModalHandler = ()=>{};
 
   constructor(...props) {
     super(...props);
@@ -36,7 +37,9 @@ export default class NewOrderController extends WebcController {
       form: viewModelResolver('order').form,
       orderCreatedKeySSI: '',
       temperatureError:false,
+      formIsInvalid:true,
     };
+    this.model.form.isSubmitting = false;
 
     this.on('add-file', (event) => {
       const files = event.data;
@@ -60,9 +63,9 @@ export default class NewOrderController extends WebcController {
     });
 
     let siteChangeHandler = () => {
-      const siteIndex = parseInt(this.model.form.inputs.site_id.value);
-      this.model.form.inputs.site_region_id.value = sites[siteIndex].siteRegionID;
-      this.model.form.inputs.site_country.value = sites[siteIndex].siteCountry;
+      let siteObject = sites.find((site) => site.name === this.model.form.inputs.site_id.value);
+      this.model.form.inputs.site_region_id.value = siteObject.siteRegionID;
+      this.model.form.inputs.site_country.value = siteObject.siteCountry;
     }
 
     this.model.onChange('form.inputs.site_id', siteChangeHandler);
@@ -162,21 +165,23 @@ export default class NewOrderController extends WebcController {
 
     //When you submit form
     this.onTagEvent('form_submit', 'click', (e) => {
-      this.showErrorModal(
-        new Error(`Are you sure you want to submit the order?`), // An error or a string, it's your choice
+      this.showModal(
+        "Are you sure you want to submit the order?",
         'Submit Order',
         onSubmitYesResponse,
-        onNoResponse,
+        this.cancelModalHandler,
         {
           disableExpanding: true,
           cancelButtonText: 'No',
           confirmButtonText: 'Yes',
-          id: 'error-modal',
+          id: 'confirm-modal',
         }
       );
     });
 
     const onSubmitYesResponse = async () => {
+      window.WebCardinal.loader.hidden=false;
+      this.model.form.isSubmitting  = true;
       const payload = {};
 
       if (this.model.form) {
@@ -220,7 +225,7 @@ export default class NewOrderController extends WebcController {
         this.createWebcModal({
           template: 'orderCreatedModal',
           controller: 'OrderCreatedModalController',
-          model: result,
+          model: {modalTitle:"New Order", ...result},
           disableBackdropClosing: false,
           disableFooter: true,
           disableHeader: true,
@@ -231,14 +236,27 @@ export default class NewOrderController extends WebcController {
           centered: true,
         });
       }
+      window.WebCardinal.loader.hidden=true;
     };
-
-    const onNoResponse = () => console.log('Why not?');
 
     //When you reset form
     this.onTagEvent('form_reset', 'click', (e) => {
-      this.model.form = viewModelResolver('order').form;
-      this.files = [];
+      this.showModal(
+        'All newly entered data will be removed. This will require you to start over the process of entering the details again',
+        'Cancel Changes',
+        () => {
+          this.model.form = viewModelResolver('order').form;
+          this.files = [];
+          makeStepActive('step-1', 'step-1-wrapper', e);
+        },
+        this.cancelModalHandler,
+        {
+          disableExpanding: true,
+          cancelButtonText: 'Cancel',
+          confirmButtonText: 'Ok, let\'s start over',
+          id: 'confirm-modal'
+        }
+      );
     });
 
     //Add active menu class to element
@@ -273,11 +291,33 @@ export default class NewOrderController extends WebcController {
         minTempValue = parseInt(minTempValue);
         maxTempValue = parseInt(maxTempValue);
         this.model.temperatureError = minTempValue > maxTempValue;
+        this.checkFormValidity();
       }
     }
 
     this.model.onChange('form.inputs.keep_between_temperature_min.value',tempChangeHandler)
     this.model.onChange('form.inputs.keep_between_temperature_max.value', tempChangeHandler)
+    this.model.onChange('form.inputs', this.checkFormValidity.bind(this));
+  }
+
+  checkFormValidity(){
+    //To be refactored according with current step
+    const requiredInputs = [
+      this.model.form.inputs.order_id.value,
+      this.model.form.inputs.study_id.value,
+      this.model.form.inputs.delivery_date.value
+    ]
+
+    let validationConstraints = [
+      typeof this.model.form.inputs.kit_ids_attachment.ids !== 'undefined' && this.model.form.inputs.kit_ids_attachment.ids.length > 0,
+      this.model.temperatureError === false,
+      ...requiredInputs.map(input => this.isInputFilled(input))
+    ];
+    this.model.formIsInvalid = typeof (validationConstraints.find(val => val !== true)) !== 'undefined';
+  }
+
+  isInputFilled(field){
+    return typeof field !== 'undefined' && field.trim()!==""
   }
 
   getDateTime() {

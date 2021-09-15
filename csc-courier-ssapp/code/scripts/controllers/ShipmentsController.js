@@ -1,20 +1,45 @@
-const { WebcController } = WebCardinal.controllers;
+const { BaseShipmentsController } = WebCardinal.controllers;
 
-export default class ShipmentsController extends WebcController {
+const cscServices = require('csc-services');
+
+const eventBusService = cscServices.EventBusService;
+const momentService = cscServices.momentService;
+const ShipmentService = cscServices.ShipmentService;
+
+const { Topics, Commons, Roles } = cscServices.constants;
+const {
+  shipmentStatusesEnum,
+  shipmentCMOTableHeaders,
+  shipmentSiteTableHeaders,
+  shipmentSponsorTableHeaders,
+  shipmentCourierTableHeaders
+} = cscServices.constants.shipment;
+
+
+export default class ShipmentsController extends BaseShipmentsController {
+
   constructor(...props) {
+
+    let role = Roles.Courier;
+
     super(...props);
 
-    this.model = {
-      aris: "aris"
-    };
+    this.role = role;
+    // this.model = this.getShipmentsViewModel();
+    // this.shipmentService = new ShipmentService(this.DSUStorage);
+    //
+    // this.init();
+    // this.attachEvents();
+    // this.attachEventHandlers();
 
-    this.init();
-    this.attachAll();
+    setTimeout( () => {
+      console.log(this.shipments);
+    }, 2000);
+
   }
 
-  init() {
+  getTableHeaders() {
+    return shipmentCourierTableHeaders;
   }
 
-  attachAll() {
-  }
 }

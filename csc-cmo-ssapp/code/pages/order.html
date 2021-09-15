@@ -7,18 +7,14 @@
 
     <section class="order-section">
       <div class="single-order-navigation-holder">
-        <webc-link class="nav-back" tag="dashboard">
+        <span class="nav-back" data-tag='nav-back'>
           <svg viewBox="0 0 52 52" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
             <path
               d="M50,24H6.83L27.41,3.41a2,2,0,0,0,0-2.82,2,2,0,0,0-2.82,0l-24,24a1.79,1.79,0,0,0-.25.31A1.19,1.19,0,0,0,.25,25c0,.07-.07.13-.1.2l-.06.2a.84.84,0,0,0,0,.17,2,2,0,0,0,0,.78.84.84,0,0,0,0,.17l.06.2c0,.07.07.13.1.2a1.19,1.19,0,0,0,.09.15,1.79,1.79,0,0,0,.25.31l24,24a2,2,0,1,0,2.82-2.82L6.83,28H50a2,2,0,0,0,0-4Z"
             />
           </svg>
-        </webc-link>
-        <webc-link tag="dashboard">Dashboard</webc-link>
-        /
-        <webc-link tag="dashboard">Orders</webc-link>
-        /
-        <strong>{{@order.orderId}}</strong>
+        </span>
+	      <span data-tag='dashboard'>Dashboard</span> / <span data-tag='dashboard'>Orders</span> / <strong>{{@order.orderId}}</strong>
       </div>
 
       <div class="single-order-main-holder">
@@ -195,19 +191,6 @@
 			                    c0-3.884,3.156-7.055,7.042-7.055c3.901,0,7.057,3.171,7.057,7.055C149.403,139.167,146.248,142.334,142.347,142.334z'></path>
 			          </svg>
 				      Prepare Shipment
-			      </button>
-		      </div>
-		      <div data-if='@order.actions.canViewShipment'>
-			      <button class='btn-default' data-tag='view-shipment'>
-				      <svg class='view-more-icon' enable-background='new 0 0 200 200' height='200px' id='Layer_1'
-				           version='1.1' viewBox='0 0 200 200' width='200px' x='0px' xml:space='preserve'
-				           xmlns='http://www.w3.org/2000/svg'
-				           y='0px'>
-			            <path d='M107.5,62.462h67.57v15.021H107.5V62.462z M107.5,137.538h67.57v-15.021H107.5V137.538z M130.02,107.51
-			                h45.051V92.493H130.02V107.51z M107.5,99.999L69.961,62.462v30.031H24.93v15.017h45.031v30.028L107.5,99.999z'
-			                  fill='#231F20'></path>
-			          </svg>
-				      View Shipment
 			      </button>
 		      </div>
 	      </div>

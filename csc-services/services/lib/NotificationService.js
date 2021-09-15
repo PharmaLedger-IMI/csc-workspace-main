@@ -15,7 +15,7 @@ module.exports = class NotificationsService {
 
 	async getNotifications() {
 		let notifications = await this.storageService.filter(this.NOTIFICATIONS_TABLE);
-		notifications = notifications.sort((a, b) => b.pk - a.pk);
+		notifications = notifications.sort((a, b) => b.date - a.date);
 		return notifications;
 	}
 

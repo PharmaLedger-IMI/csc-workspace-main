@@ -88,8 +88,8 @@ const orderTableHeaders = [
 
 const orderBusinessRequirements = {
 	DeliveryDateDaysAhead: 2,
-	MinTemperature: -100,
-	MaxTemperature: 100,
+	MinTemperature: "-100",
+	MaxTemperature: "100",
 	TemperatureUnits: "°C",
 	sites: [{
 		name: "Site ID 1",
@@ -103,7 +103,8 @@ const orderBusinessRequirements = {
 		name: "Site ID 3",
 		siteRegionID: "003",
 		siteCountry: "Germany"
-	}]
+	}],
+	sponsorId:"did:spo:123456789abcdefghi#Novartis"
 }
 
 module.exports = {

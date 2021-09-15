@@ -7,5 +7,6 @@ require("./DashboardMenuControllerImpl");
 require("./DashboardControllerImpl")
 require("./OrdersControllerImpl");
 require("./ReviewOrderControllerImpl");
+require("./helpers/ViewShipmentBaseController");
 require("./SingleShipmentControllerImpl");
 require("./ShipmentsControllerImpl");

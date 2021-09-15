@@ -6,7 +6,16 @@ const MIN_TEMPERATURE = orderBusinessRequirements.MinTemperature;
 const MAX_TEMPERATURE = orderBusinessRequirements.MaxTemperature;
 const momentService = require("csc-services").momentService;
 const sites = orderBusinessRequirements.sites;
+const SPONSOR_DID = orderBusinessRequirements.sponsorId;
 const orderViewModel = {
+    cancelOrderModal: {
+        comment: {
+            placeholder: 'Enter cancellation reason',
+            value: '',
+            label: 'Cancellation Reason:'
+        },
+        commentIsEmpty: true
+    },
     accordion: {
         order_details: {
             name: 'Order Details',
@@ -33,9 +42,8 @@ const orderViewModel = {
                 label: 'Sponsor ID',
                 name: 'sponsor_id',
                 required: true,
-                placeholder: 'Sponsor ID...',
-                disabled: false,
-                value: '',
+                disabled: true,
+                value: SPONSOR_DID,
             },
             delivery_date: {
                 label: 'Delivery Date/Time',
@@ -105,8 +113,8 @@ const orderViewModel = {
                 placeholder: 'Select Site ID...',
                 required: true,
                 disabled: false,
-                options: sites.map((x,index) => {return {label:x.name, value:index}}),
-                value: '0',
+                options: sites.map((x) => {return {label:x.name, value:x.name}}),
+                value: sites[0].name,
             },
             site_region_id: {
                 label: 'Site Region ID (Autofilled)',
