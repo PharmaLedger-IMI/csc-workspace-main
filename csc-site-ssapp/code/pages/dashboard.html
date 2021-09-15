@@ -6,13 +6,7 @@
         </section>
 
         <section class="content-section">
-            <div data-if="@isOrdersSelected">
-                <webc-template data-if="@isOrdersSelected" template="order/dashboard"></webc-template>
-            </div>
-
-            <div data-if="@isShipmentsSelected">
-	            <webc-template data-if="@isShipmentsSelected" template="shipment/dashboard-shipment"></webc-template>
-            </div>
+	        <webc-template template="shipment/dashboard-shipment"></webc-template>
 
             <div data-if="@isKitsSelected">
                 <webc-template data-if="@isKitsSelected" template="order/kits"></webc-template>
