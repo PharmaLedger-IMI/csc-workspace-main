@@ -35,13 +35,16 @@
 	<div class='row-wrapper full-flex-column'>
 		<div class='table-container-wrapper full-flex-column'>
 			<!-- Tab navigator area -->
-			<webc-template template='shipment/tab-navigator'></webc-template>
-
 			<!-- Table area -->
-			<psk-condition condition='@shipmentsArrayNotEmpty'>
-				<webc-template data-view-model='@' slot='condition-true' template='shipment/table-template-shipment'></webc-template>
-				<div slot='condition-false'>No shipments available.</div>
-			</psk-condition>
+
+			<div class="full-flex-column" data-if='@shipmentsListIsReady'>
+				<div class="full-flex-column" slot="true" data-if="@shipmentsListNotEmpty">
+					<webc-template data-view-model="@" slot="true" template="shipment/table-template-shipment"></webc-template>
+					<div slot="false" class='no-data-info full-flex-column'>No shipments available.</div>
+				</div>
+				<webc-spinner slot='false'></webc-spinner>
+			</div>
+
 		</div>
 	</div>
 </webc-container>
