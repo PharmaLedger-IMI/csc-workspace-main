@@ -1,5 +1,4 @@
 <webc-container class="full-flex-column" controller="ShipmentsController">
-
 	<div class="row-wrapper">
 		<!-- Filters area -->
 		<div class="filters-wrapper">
@@ -33,11 +32,16 @@
 		</div>
 	</div>
 	<!--Test Scan Shipment -->
-	<div class="row-wrapper full-flex-column">
-		<div class="table-container-wrapper full-flex-column" data-if="@shipments">
+	<div class='row-wrapper full-flex-column'>
+		<div class='table-container-wrapper full-flex-column'>
+			<!-- Tab navigator area -->
+			<webc-template template='shipment/tab-navigator'></webc-template>
+
 			<!-- Table area -->
-			<webc-template data-view-model="@" slot="true" template="shipment/table-template-shipment"></webc-template>
-			<div slot="false">No shipments available.</div>
+			<psk-condition condition='@shipmentsArrayNotEmpty'>
+				<webc-template data-view-model='@' slot='condition-true' template='shipment/table-template-shipment'></webc-template>
+				<div slot='condition-false'>No shipments available.</div>
+			</psk-condition>
 		</div>
 	</div>
 </webc-container>
