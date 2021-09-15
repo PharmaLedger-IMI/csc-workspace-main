@@ -35,10 +35,10 @@
             <webc-template template="order/tab-navigator"></webc-template>
 
             <!-- Table area -->
-            <div data-if='@ordersListIsReady'>
-                <div slot="true" data-if="@ordersListNotEmpty">
+            <div class="full-flex-column" data-if='@ordersListIsReady'>
+                <div class="full-flex-column" slot="true" data-if="@ordersListNotEmpty">
                     <webc-template data-view-model="@" slot="true" template="table-template"></webc-template>
-                    <div slot="false">No orders available.</div>
+                    <div slot="false" class='no-data-info full-flex-column'>No orders available.</div>
                 </div>
                 <webc-spinner slot='false'></webc-spinner>
             </div>
