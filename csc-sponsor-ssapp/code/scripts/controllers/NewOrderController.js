@@ -63,9 +63,9 @@ export default class NewOrderController extends WebcController {
     });
 
     let siteChangeHandler = () => {
-      const siteIndex = parseInt(this.model.form.inputs.site_id.value);
-      this.model.form.inputs.site_region_id.value = sites[siteIndex].siteRegionID;
-      this.model.form.inputs.site_country.value = sites[siteIndex].siteCountry;
+      let siteObject = sites.find((site) => site.name === this.model.form.inputs.site_id.value);
+      this.model.form.inputs.site_region_id.value = siteObject.siteRegionID;
+      this.model.form.inputs.site_country.value = siteObject.siteCountry;
     }
 
     this.model.onChange('form.inputs.site_id', siteChangeHandler);
@@ -193,7 +193,7 @@ export default class NewOrderController extends WebcController {
                 payload['delivery_date'] = this.getDateTime();
               } else if (key.indexOf('keep_between_temperature') !== -1) {
                 payload['keep_between_temperature'] = this.getTemperature();
-              } else if (key !== "site_id"){
+              } else {
                 payload[key] = this.model.form.inputs[key].value;
               }
             });
@@ -208,8 +208,7 @@ export default class NewOrderController extends WebcController {
             }
           });
         }
-        const siteIndex = parseInt(this.model.form.inputs.site_id.value);
-        payload['site_id'] = sites[siteIndex].name;
+
         payload['kitIds'] = JSON.parse(JSON.stringify(this.model.form.inputs.kit_ids_attachment.ids));
         payload['kitIdsFile'] = this.files.find((x) => x.type === DocumentTypes.Kit).fileContent;
 

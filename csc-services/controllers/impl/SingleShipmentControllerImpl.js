@@ -1,5 +1,3 @@
-const { WebcController } = WebCardinal.controllers;
-
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
@@ -8,21 +6,19 @@ const NotificationsService = cscServices.NotificationsService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
-const momentService = cscServices.momentService;
-const { Roles, Commons, FoldersEnum, Topics } = cscServices.constants;
+const { Roles, FoldersEnum, Topics } = cscServices.constants;
 const { orderStatusesEnum } = cscServices.constants.order;
-const { shipmentStatusesEnum, shipmentPendingActionEnum } = cscServices.constants.shipment;
-
+const { shipmentStatusesEnum } = cscServices.constants.shipment;
+const ViewShipmentBaseController  = require("./helpers/ViewShipmentBaseController");
 const csIdentities = {};
 csIdentities [Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
 csIdentities [Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
 csIdentities [Roles.Site] = CommunicationService.identities.CSC.SITE_IDENTITY;
 csIdentities [Roles.Courier] = CommunicationService.identities.CSC.COU_IDENTITY;
 
-class SingleShipmentControllerImpl extends WebcController {
+class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   constructor(role, ...props) {
     super(...props);
-
     this.role = role;
 
     let communicationService = CommunicationService.getInstance(csIdentities[role]);
@@ -46,40 +42,6 @@ class SingleShipmentControllerImpl extends WebcController {
     this.navigationHandlers();
   }
 
-  navigationHandlers() {
-    this.onTagClick('nav-back', () => {
-      this.history.goBack();
-    });
-
-    this.onTagClick('dashboard', () => {
-      this.navigateToPageTag('dashboard', { tab: Topics.Shipment });
-    });
-  }
-
-  toggleAccordionItemHandler() {
-    this.onTagEvent('toggle-accordion', 'click', (model, target) => {
-      const targetIcon = target.querySelector('.accordion-icon');
-      target.classList.toggle('accordion-item-active');
-      targetIcon.classList.toggle('rotate-icon');
-
-      const panel = target.nextElementSibling;
-      if (panel.style.maxHeight === '1000px') {
-        panel.style.maxHeight = '0px';
-      } else {
-        panel.style.maxHeight = '1000px';
-      }
-    });
-  }
-
-  openFirstAccordion() {
-    const accordion = this.querySelector('.accordion-item');
-    const targetIcon = accordion.querySelector('.accordion-icon');
-    const panel = accordion.nextElementSibling;
-
-    accordion.classList.toggle('accordion-item-active');
-    targetIcon.classList.toggle('rotate-icon');
-    panel.style.maxHeight = '1000px';
-  }
 
   editShipmentHandler() {
     this.onTagClick('edit-shipment', () => {
@@ -98,7 +60,7 @@ class SingleShipmentControllerImpl extends WebcController {
 
   confirmEditShipmentCallback = async (event) => {
     const shipmentDetails = event.detail;
-    const result = await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ReadyForDispatch, shipmentDetails);
+    await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ReadyForDispatch, shipmentDetails);
     this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', '/', 2000);
   };
 
@@ -113,34 +75,6 @@ class SingleShipmentControllerImpl extends WebcController {
     });
   }
 
-  showHistoryHandler() {
-    this.onTagEvent('history-button', 'click', () => {
-      this.onShowHistoryClick();
-    });
-  }
-
-  onShowHistoryClick() {
-    let { order, shipment } = this.model.toObject();
-    const historyModel = {
-      order: order,
-      shipment: shipment,
-      currentPage: Topics.Shipment
-    };
-
-    this.createWebcModal({
-      template: 'historyModal',
-      controller: 'HistoryModalController',
-      model: historyModel,
-      disableBackdropClosing: false,
-      disableFooter: true,
-      disableExpanding: true,
-      disableClosing: false,
-      disableCancelButton: true,
-      expanded: false,
-      centered: true,
-    });
-  }
-
   transformOrderData(data) {
     if (data) {
       data.delivery_date = this.getDateTime(data.deliveryDate);
@@ -149,61 +83,6 @@ class SingleShipmentControllerImpl extends WebcController {
     }
 
     return {};
-  }
-
-  getDateTime(str) {
-    const dateTime = str.split(' ');
-    return {
-      date: dateTime[0],
-      time: dateTime[1]
-    };
-  }
-
-  transformShipmentData(data) {
-    if (data) {
-      data.status_value = data.status.sort((function(a, b) {
-        return new Date(b.date) - new Date(a.date);
-      }))[0].status;
-      if (data.status_value === shipmentStatusesEnum.ShipmentCancelled) {
-        data.status_value = shipmentStatusesEnum.Cancelled;
-      }
-
-      data.status_date = momentService(data.status.sort((function(a, b) {
-        return new Date(b.date) - new Date(a.date);
-      }))[0].date).format(Commons.DateTimeFormatPattern);
-
-      const normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
-      const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
-      data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
-      data.status_cancelled = data.status_value === shipmentStatusesEnum.Cancelled;
-      data.status_normal = normalStatuses.indexOf(data.status_value) !== -1;
-      data.pending_action = this.getPendingAction(data.status_value);
-
-      return data;
-    }
-
-    return {};
-  }
-
-  getPendingAction(status_value) {
-    switch (status_value) {
-      case shipmentStatusesEnum.InPreparation:
-        return shipmentPendingActionEnum.PendingReadyForDispatch;
-
-      case shipmentStatusesEnum.ReadyForDispatch:
-        return shipmentPendingActionEnum.PendingPickUp;
-
-      case shipmentStatusesEnum.InTransit:
-        return shipmentPendingActionEnum.PendingDelivery;
-
-      case shipmentStatusesEnum.Delivered:
-        return shipmentPendingActionEnum.PendingReception;
-
-      case shipmentStatusesEnum.Received:
-        return shipmentPendingActionEnum.ManageKits;
-    }
-
-    return '-';
   }
 
   setShipmentActions(shipment) {
@@ -260,21 +139,27 @@ class SingleShipmentControllerImpl extends WebcController {
   }
 
   async initViewModel() {
-    const model = viewModelResolver('order');
+    const model = {
+      orderModel: viewModelResolver('order'),
+      shipmentModel: viewModelResolver('shipment')
+    };
     //all fields are disabled
-    for (let prop in model.form.inputs) {
-      model.form.inputs[prop].disabled = true;
+    for (let prop in model.orderModel.form.inputs) {
+      model.orderModel.form.inputs[prop].disabled = true;
+    }
+    for (let prop in model.shipmentModel.form.inputs) {
+      model.shipmentModel.form.inputs[prop].disabled = true;
     }
 
     let { keySSI } = this.history.location.state;
     model.keySSI = keySSI;
 
-    model.shipment = await this.shipmentsService.getShipment(model.keySSI);
-    model.shipment = { ...this.transformShipmentData(model.shipment) };
-    model.actions = this.setShipmentActions(model.shipment);
+    model.shipmentModel.shipment = await this.shipmentsService.getShipment(model.keySSI);
+    model.shipmentModel.shipment = { ...this.transformShipmentData(model.shipmentModel.shipment) };
+    model.actions = this.setShipmentActions(model.shipmentModel);
 
-    model.order = await this.ordersService.getOrder(model.shipment.orderSSI);
-    model.order = { ...this.transformOrderData(model.order) };
+    model.orderModel.order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
+    model.orderModel.order = { ...this.transformOrderData(model.orderModel.order) };
 
     this.model = model;
   }

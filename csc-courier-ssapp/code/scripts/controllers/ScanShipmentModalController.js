@@ -89,7 +89,7 @@ class ScanShipmentModalController extends WebcController {
       dimensionWidth : this.model.form.inputs.dimensionWidth.value,
       dimensionLength : this.model.form.inputs.dimensionLength.value,
       origin : this.model.form.inputs.origin.value,
-      shippingCondition : this.model.form.inputs.shippingCondition.value,
+      shippingConditions : this.model.form.inputs.shippingConditions.value,
     }
 
     console.log(payload);
@@ -220,9 +220,9 @@ class ScanShipmentModalController extends WebcController {
             disabled:false,
             value: '',
           },
-          shippingCondition: {
-            label: 'Shipping Condition',
-            name: 'shippingCondition',
+          shippingConditions: {
+            label: 'Shipping Conditions',
+            name: 'shippingConditions',
             required: true,
             placeholder: 'The condition of the shipping.',
             disabled:false,
