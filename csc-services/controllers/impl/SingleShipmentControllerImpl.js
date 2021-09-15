@@ -3,10 +3,10 @@ const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
-const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
-const { Roles, FoldersEnum, Topics } = cscServices.constants;
+const momentService = cscServices.momentService;
+const { Roles, Commons, Topics } = cscServices.constants;
 const { orderStatusesEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const ViewShipmentBaseController  = require("./helpers/ViewShipmentBaseController");
@@ -23,7 +23,6 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     let communicationService = CommunicationService.getInstance(csIdentities[role]);
     this.notificationsService = new NotificationsService(this.DSUStorage);
-    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
 
@@ -35,6 +34,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   attachEventListeners() {
     this.showHistoryHandler();
     this.downloadKitListHandler();
+    this.downloadAttachmentHandler();
     this.toggleAccordionItemHandler();
 
     this.editShipmentHandler();
@@ -64,20 +64,24 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', '/', 2000);
   };
 
-  downloadKitListHandler() {
-    this.onTagClick('download-kits-file', async (model) => {
-      window.WebCardinal.loader.hidden = false;
-      const fileName = model.order.kitsFilename;
-      const path = FoldersEnum.Kits + '/' + model.order.kitsSSI + '/' + 'files';
-      await this.FileDownloaderService.prepareDownloadFromDsu(path, fileName);
-      this.FileDownloaderService.downloadFileToDevice(fileName);
-      window.WebCardinal.loader.hidden = true;
-    });
-  }
-
   transformOrderData(data) {
     if (data) {
       data.delivery_date = this.getDateTime(data.deliveryDate);
+
+      data.documents = [];
+      if (data.sponsorDocuments) {
+        data.sponsorDocuments.forEach((doc) => {
+          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
+          data.documents.push(doc);
+        });
+      }
+
+      if (data.cmoDocuments) {
+        data.cmoDocuments.forEach((doc) => {
+          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
+          data.documents.push(doc);
+        });
+      }
 
       return data;
     }
@@ -160,6 +164,14 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     model.orderModel.order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
     model.orderModel.order = { ...this.transformOrderData(model.orderModel.order) };
+
+    model.documents = [];
+    if (model.orderModel.order.documents) {
+      model.documents = model.documents.concat(model.orderModel.order.documents);
+    }
+    if (model.shipmentModel.shipment.documents) {
+      model.documents = model.documents.concat(model.shipmentModel.shipment.documents);
+    }
 
     this.model = model;
   }
