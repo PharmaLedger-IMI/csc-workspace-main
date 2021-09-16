@@ -3,10 +3,10 @@ const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
-const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
-const { Roles, FoldersEnum, Topics } = cscServices.constants;
+const momentService = cscServices.momentService;
+const { Roles, Commons, Topics } = cscServices.constants;
 const { orderStatusesEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const ViewShipmentBaseController  = require("./helpers/ViewShipmentBaseController");
@@ -23,7 +23,6 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     let communicationService = CommunicationService.getInstance(csIdentities[role]);
     this.notificationsService = new NotificationsService(this.DSUStorage);
-    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
 
@@ -35,11 +34,13 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   attachEventListeners() {
     this.showHistoryHandler();
     this.downloadKitListHandler();
+    this.downloadAttachmentHandler();
     this.toggleAccordionItemHandler();
 
     this.editShipmentHandler();
     this.cancelOrderHandler();
     this.navigationHandlers();
+    this.scanShipmentHandler();
   }
 
 
@@ -64,20 +65,24 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', '/', 2000);
   };
 
-  downloadKitListHandler() {
-    this.onTagClick('download-kits-file', async (model) => {
-      window.WebCardinal.loader.hidden = false;
-      const fileName = model.order.kitsFilename;
-      const path = FoldersEnum.Kits + '/' + model.order.kitsSSI + '/' + 'files';
-      await this.FileDownloaderService.prepareDownloadFromDsu(path, fileName);
-      this.FileDownloaderService.downloadFileToDevice(fileName);
-      window.WebCardinal.loader.hidden = true;
-    });
-  }
-
   transformOrderData(data) {
     if (data) {
       data.delivery_date = this.getDateTime(data.deliveryDate);
+
+      data.documents = [];
+      if (data.sponsorDocuments) {
+        data.sponsorDocuments.forEach((doc) => {
+          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
+          data.documents.push(doc);
+        });
+      }
+
+      if (data.cmoDocuments) {
+        data.cmoDocuments.forEach((doc) => {
+          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
+          data.documents.push(doc);
+        });
+      }
 
       return data;
     }
@@ -98,9 +103,20 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     }
 
-    // TODO: Update the logic according to statuses after #61 is completed
-    actions.canScanShipment = false;
-    actions.canEditShipment = true;
+    //Updates for #61
+    if (shipment.status[0].status === shipmentStatusesEnum.InPreparation && !shipment.isShipmentScanSuccessful){
+      actions.canScanShipment = true;
+      actions.canEditShipment = false;
+      actions.showDefaultKitsAccordianText = true;
+    } else if(shipment.isShipmentScanSuccessful) {
+      actions.canEditShipment = true;
+      actions.canScanShipment = false;
+      actions.showDefaultKitsAccordianText = false;
+    } else {
+      actions.canEditShipment = false;
+      actions.canScanShipment = false;
+      actions.showDefaultKitsAccordianText = true;
+    }
 
     return actions;
   }
@@ -138,6 +154,40 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     this.showErrorModalAndRedirect('Order and Shipment were canceled, redirecting to dashboard...', 'Order and Shipment Cancelled', '/', 2000);
   }
 
+  scanShipmentHandler() {
+    this.onTagClick('scan-shipment', () => {
+        const modalConfiguration = {
+          controller: 'ScanShipmentModalController',
+          disableExpanding: true,
+          disableBackdropClosing: false,
+          disableFooter: true,
+          model: {
+            "shipmentId" : this.model.orderModel.order.orderId,
+            "sponsorId" : this.model.orderModel.order.sponsorId,
+            "studyId" : this.model.orderModel.order.studyId, 
+            //"medicationListVersion" : "1.0",  // Source under discussion
+            "kitsFilename": this.model.orderModel.order.kitsFilename,
+            "kitsSSI" : this.model.orderModel.order.kitsSSI,              
+            "kits" : this.model.orderModel.order.kits
+          }
+        }
+        this.showModalFromTemplate('scanShipmentModal', this.confirmScanShipmentCallback, () => {}, modalConfiguration);
+    })
+  }
+
+  confirmScanShipmentCallback = async(event) => {
+
+    this.model.shipmentModel.shipment.isShipmentScanSuccessful = true;
+    this.model.actions.canEditShipment = true;
+    this.model.actions.canScanShipment = false;
+    this.model.actions.showDefaultKitsAccordianText = false;
+
+    const result = await this.shipmentsService.updateShipment(this.model.keySSI,
+      shipmentStatusesEnum.InPreparation, this.model.shipmentModel.shipment);
+
+    console.log('\n\n[UPDATE SHIPMENT AFTER SCAN]\n\n', JSON.stringify(result, null, 2));
+  }
+
   async initViewModel() {
     const model = {
       orderModel: viewModelResolver('order'),
@@ -156,10 +206,21 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     model.shipmentModel.shipment = await this.shipmentsService.getShipment(model.keySSI);
     model.shipmentModel.shipment = { ...this.transformShipmentData(model.shipmentModel.shipment) };
-    model.actions = this.setShipmentActions(model.shipmentModel);
+    if(!('isShipmentScanSuccessful' in model.shipmentModel.shipment)) {
+      model.shipmentModel.shipment.isShipmentScanSuccessful = false;
+    }
+    model.actions = this.setShipmentActions(model.shipmentModel.shipment);
 
     model.orderModel.order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
     model.orderModel.order = { ...this.transformOrderData(model.orderModel.order) };
+
+    model.documents = [];
+    if (model.orderModel.order.documents) {
+      model.documents = model.documents.concat(model.orderModel.order.documents);
+    }
+    if (model.shipmentModel.shipment.documents) {
+      model.documents = model.documents.concat(model.shipmentModel.shipment.documents);
+    }
 
     this.model = model;
   }

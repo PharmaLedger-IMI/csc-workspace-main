@@ -18,9 +18,6 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     this.showHistoryHandler();
     this.toggleAccordionItemHandler();
     this.navigationHandlers();
-    this.onTagClick('scan-pickup-shipment', () => {
-      alert('Not implemented');
-    });
   }
 
   async initViewModel() {

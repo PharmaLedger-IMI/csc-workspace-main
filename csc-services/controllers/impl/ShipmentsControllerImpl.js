@@ -21,6 +21,7 @@ class ShipmentsControllerImpl extends WebcController {
 
     this.role = role;
     this.model = this.getShipmentsViewModel();
+    this.model.shipmentsListIsReady = false;
     this.shipmentService = new ShipmentService(this.DSUStorage);
 
     this.init();
@@ -37,9 +38,11 @@ class ShipmentsControllerImpl extends WebcController {
 
   async getShipments() {
     try {
+      this.model.shipmentsListIsReady = false;
       const shipmentsList = await this.shipmentService.getShipments();
       this.shipments = this.transformData(shipmentsList);
       this.setShipmentsModel(this.shipments);
+      this.model.shipmentsListIsReady = true;
     } catch (error) {
       console.log(error);
     }
@@ -139,7 +142,7 @@ class ShipmentsControllerImpl extends WebcController {
   }
 
   attachEventHandlers() {
-    this.model.addExpression('shipmentsArrayNotEmpty', () => {
+    this.model.addExpression('shipmentsListNotEmpty', () => {
       return this.model.shipments && Array.isArray(this.model.shipments) && this.model.shipments.length > 0;
     }, 'shipments');
   }
