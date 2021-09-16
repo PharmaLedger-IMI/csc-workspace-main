@@ -6,7 +6,7 @@
     </section>
 
     <section class="order-section">
-      <div class="single-order-navigation-holder">
+      <div class="order-navigation-section">
         <span class="nav-back" data-tag='nav-back'>
           <svg viewBox="0 0 52 52" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
             <path
@@ -17,7 +17,7 @@
 	      <span data-tag='dashboard'>Dashboard</span> / <span data-tag='dashboard'>Orders</span> / <strong>{{@order.orderId}}</strong>
       </div>
 
-      <div class="single-order-main-holder">
+      <div class="order-main-section">
         <div class="row-wrapper">
           <div class="col-4 text-left">
             <div data-if="@order.status_approved">
@@ -44,9 +44,9 @@
           </div>
 
           <div class="col-4 text-center">
-            <div class="single-order-title"><b>Order</b></div>
-            <div class="single-order-subtitle"><b>Pending Action:</b></div>
-            <div class="single-order-disclaimer">{{@order.pending_action}}</div>
+            <div class="order-title"><b>Order</b></div>
+            <div class="order-subtitle"><b>Pending Action:</b></div>
+            <div class="order-disclaimer">{{@order.pending_action}}</div>
           </div>
 
           <div class="col-4 text-right">
@@ -75,7 +75,7 @@
           </div>
         </div>
 
-        <div class="row-wrapper single-order-data-holder">
+        <div class="row-wrapper order-data-section">
           <!-- Order Details -->
           <div class="accordion-item" data-tag="order_details_accordion" id="order_details_accordion">
             <svg enable-background="new 0 0 200 200" id="order_details_accordion_icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">

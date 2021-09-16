@@ -9,7 +9,7 @@
 </style>
 
 <div slot='header'>
-	<div class='new-order-created-title'>History</div>
+	<div class='modal-main-title'>History</div>
 </div>
 
 <main class='full-flex-column justify-content-between'>
@@ -32,28 +32,28 @@
 				<div class='history-connector'></div>
 
 				<div data-if='@approved'>
-					<div slot='true' class='history-status-element background-approved'>
+					<div slot='true' class='history-status background-approved'>
 						<div class='history-date'>{{@date}}</div>
 						<div><b>{{@status}}</b></div>
 					</div>
 				</div>
 
 				<div data-if='@cancelledAfterApproval'>
-					<div slot='true' class='history-status-element background-cancelled-after-approval'>
+					<div slot='true' class='history-status background-cancelled-after-approval'>
 						<div class='history-date'>{{@date}}</div>
 						<div><b>{{@status}}</b></div>
 					</div>
 				</div>
 
 				<div data-if='@cancelled'>
-					<div slot='true' class='history-status-element background-cancelled'>
+					<div slot='true' class='history-status background-cancelled'>
 						<div class='history-date'>{{@date}}</div>
 						<div><b>{{@status}}</b></div>
 					</div>
 				</div>
 
 				<div data-if='@normal'>
-					<div slot='true' class='history-status-element background-primary'>
+					<div slot='true' class='history-status background-primary'>
 						<div class='history-date'>{{@date}}</div>
 						<div><b>{{@status}}</b></div>
 					</div>
@@ -84,21 +84,21 @@
 					<div class='history-connector'></div>
 
 					<div data-if='@approved'>
-						<div slot='true' class='history-status-element background-approved'>
+						<div slot='true' class='history-status background-approved'>
 							<div class='history-date'>{{@date}}</div>
 							<div><b>{{@status}}</b></div>
 						</div>
 					</div>
 
 					<div data-if='@cancelled'>
-						<div slot='true' class='history-status-element background-cancelled'>
+						<div slot='true' class='history-status background-cancelled'>
 							<div class='history-date'>{{@date}}</div>
 							<div><b>{{@status}}</b></div>
 						</div>
 					</div>
 
 					<div data-if='@normal'>
-						<div slot='true' class='history-status-element background-primary'>
+						<div slot='true' class='history-status background-primary'>
 							<div class='history-date'>{{@date}}</div>
 							<div><b>{{@status}}</b></div>
 						</div>
@@ -126,14 +126,14 @@
 					<div class='history-connector'></div>
 
 					<div data-if='@approved'>
-						<div slot='true' class='history-status-element background-approved'>
+						<div slot='true' class='history-status background-approved'>
 							<div class='history-date'>{{@date}}</div>
 							<div><b>{{@status}}</b></div>
 						</div>
 					</div>
 
 					<div data-if='@normal'>
-						<div slot='true' class='history-status-element background-primary'>
+						<div slot='true' class='history-status background-primary'>
 							<div class='history-date'>{{@date}}</div>
 							<div><b>{{@status}}</b></div>
 						</div>
