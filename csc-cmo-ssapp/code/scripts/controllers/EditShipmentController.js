@@ -139,7 +139,7 @@ export default class EditShipmentController extends WebcController {
 		return {
 			shipperId: shipmentFormData.shipperId.value,
 			origin: shipmentFormData.origin.value,
-			typeShipment: shipmentFormData.type.value,
+			shipmentType: shipmentFormData.type.value,
 			scheduledPickupDateTime: {
 				date: shipmentFormData.pickupDate.value,
 				time: shipmentFormData.pickupTime.value
