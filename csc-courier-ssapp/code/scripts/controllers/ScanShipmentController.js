@@ -5,8 +5,6 @@ export default class ScanShipmentController extends WebcController {
   constructor(...props) {
     super(...props);
 
-    this.model = {};
-
     this.onEvents();
   }
 
@@ -20,6 +18,7 @@ export default class ScanShipmentController extends WebcController {
   onModalOpen(){
     this.createWebcModal({
       template: 'scanShipmentModal',
+      model:this.model,
       controller: 'ScanShipmentModalController',
       disableBackdropClosing: false,
       disableFooter: true,

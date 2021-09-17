@@ -10,8 +10,11 @@ class ScanShipmentModalController extends WebcController {
   constructor(...props) {
     super(...props);
 
+    console.log("Shipment" , this.model.shipmentModel.shipment);
+
     this.model = this.getReviewOrderViewModel(shipment);
 
+    this.loadShipmentDataToModel();
 
     this.on("toggle-scanner", () => {
       this.model.isScannerActive = !this.model.isScannerActive;
@@ -56,7 +59,7 @@ class ScanShipmentModalController extends WebcController {
 
     this.model.onChange("scannedData", () => {
 
-      let correctValue = 'test';
+      let correctValue = this.model.shipmentModel.shipment.orderId;
 
       if(this.model.scannedData === correctValue){
         this.model.scanSuccess = true;
@@ -65,9 +68,7 @@ class ScanShipmentModalController extends WebcController {
         this.model.scanSuccess = false;
         this.model.scanError = true;
       }
-
       console.log(this.model.scannedData);
-
     });
 
   }
@@ -76,8 +77,21 @@ class ScanShipmentModalController extends WebcController {
     return this.model.form.inputs.shipment_date.value + ' ' + this.model.form.inputs.shipment_time.value;
   }
 
-  sign(){
 
+  loadShipmentDataToModel(){
+    this.model.form.inputs.shipmentId.value = this.model.shipmentModel.shipment.shipmentId;
+    this.model.form.inputs.shipperId.value = this.model.shipmentModel.shipment.shipperId;
+    this.model.form.inputs.shipment_date.value = this.model.shipmentModel.shipment.scheduledPickupDateTime.date;
+    this.model.form.inputs.shipment_time.value =  this.model.shipmentModel.shipment.scheduledPickupDateTime.time;
+    this.model.form.inputs.dimensionHeight.value = this.model.shipmentModel.shipment.dimension.dimensionHeight;
+    this.model.form.inputs.dimensionWidth.value = this.model.shipmentModel.shipment.dimension.dimensionWidth;
+    this.model.form.inputs.dimensionLength.value = this.model.shipmentModel.shipment.dimension.dimensionLength;
+    this.model.form.inputs.origin.value = this.model.shipmentModel.shipment.origin;
+    this.model.form.inputs.specialInstructions.value = this.model.shipmentModel.shipment.specialInstructions;
+    this.model.form.inputs.shippingConditions.value = this.model.shipmentModel.shipment.shippingConditions;
+  }
+
+  sign(){
     let payload = {
       shipmentId : this.model.form.inputs.shipmentId.value,
       shipperId : this.model.form.inputs.shipperId.value,
