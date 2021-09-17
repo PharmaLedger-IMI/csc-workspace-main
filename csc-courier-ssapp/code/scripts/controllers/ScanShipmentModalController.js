@@ -84,7 +84,7 @@ class ScanShipmentModalController extends WebcController {
       shipment_date : this.model.form.inputs.shipment_date.value,
       shipment_time : this.model.form.inputs.shipment_time.value,
       specialInstructions : this.model.form.inputs.specialInstructions.value,
-      typeShipment : this.model.form.inputs.typeShipment.value,
+      shipmentType : this.model.form.inputs.shipmentType.value,
       dimensionHeight : this.model.form.inputs.dimensionHeight.value,
       dimensionWidth : this.model.form.inputs.dimensionWidth.value,
       dimensionLength : this.model.form.inputs.dimensionLength.value,
@@ -180,9 +180,9 @@ class ScanShipmentModalController extends WebcController {
             disabled:false,
             value: '',
           },
-          typeShipment: {
+          shipmentType: {
             label: 'Shipment Type',
-            name: 'typeShipment',
+            name: 'shipmentType',
             required: true,
             placeholder: 'e.g air',
             disabled:false,
