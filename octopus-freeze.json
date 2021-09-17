@@ -1,6 +1,27 @@
 {
     "workDir": ".",
-    "dependencies": [{
+    "dependencies": [
+        {
+            "name": "cardinal",
+            "src": "https://github.com/PrivateSky/cardinal.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "f2080909d6780d532225389eefadbbba494d70b4"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd cardinal && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd cardinal && npm run build"
+                }
+            ]
+        },
+        {
             "name": "privatesky",
             "src": "https://github.com/PrivateSky/psk-release.git",
             "actions": [
