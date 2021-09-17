@@ -257,7 +257,7 @@
                 {
                     "type": "smartClone",
                     "target": ".",
-                    "collectLog": false,
+                    "collectLog": false
                 },
                 {
                     "type": "execute",
