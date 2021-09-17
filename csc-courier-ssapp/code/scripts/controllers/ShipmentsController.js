@@ -25,17 +25,6 @@ export default class ShipmentsController extends BaseShipmentsController {
     super(...props);
 
     this.role = role;
-    // this.model = this.getShipmentsViewModel();
-    // this.shipmentService = new ShipmentService(this.DSUStorage);
-    //
-    // this.init();
-    // this.attachEvents();
-    // this.attachEventHandlers();
-
-    setTimeout( () => {
-      console.log(this.shipments);
-    }, 2000);
-
   }
 
   getTableHeaders() {
