@@ -288,28 +288,6 @@ class OrdersService extends DSUService {
         );
 
         return orderDb;
-      case Roles.Site:
-        order = await this.mountEntityAsync(orderSSI, FoldersEnum.Orders);
-        kits = await this.mountEntityAsync(attachedDSUKeySSIs.kitIdsKeySSI, FoldersEnum.Kits);
-        comments = await this.mountEntityAsync(attachedDSUKeySSIs.commentsKeySSI, FoldersEnum.Comments);
-        status = await this.mountEntityAsync(attachedDSUKeySSIs.statusKeySSI, FoldersEnum.Statuses);
-
-        orderDb = await this.addOrderToDB(
-          {
-            ...order,
-            orderSSI: order.uid,
-            status: status.history,
-            statusSSI: status.uid,
-            kitsSSI: kits.uid,
-            kits: kits.kitIds,
-            kitsFilename: kits.file.name,
-            commentsKeySSI: comments.uid,
-            comments: comments.comments,
-          },
-          order.uid
-        );
-
-        return orderDb;
     }
   }
 
