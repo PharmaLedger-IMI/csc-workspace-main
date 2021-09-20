@@ -108,7 +108,7 @@
         </div>
 
         <div class='row-wrapper button-wrapper'>
-          <webc-template template='shipment/scan-shipment'></webc-template>
+          <webc-template data-view-model='@shipmentModel.shipment' template='shipment/scan-shipment'></webc-template>
           <!-- TODO: fix condition -->
           <div data-if='true'>
 						<button class='btn-default' data-tag='edit-shipment'>

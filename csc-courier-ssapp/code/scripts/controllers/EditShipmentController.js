@@ -30,8 +30,6 @@ export default class EditShipmentController extends WebcController {
 
   addFileHandler() {
     this.on('add-file', (event) => {
-      debugger;
-
       const files = event.data;
 
       if (files) {
@@ -48,7 +46,6 @@ export default class EditShipmentController extends WebcController {
           });
         });
       }
-      debugger;
     });
 
     this.onTagClick('remove-file', (document) => {
@@ -228,7 +225,6 @@ export default class EditShipmentController extends WebcController {
   }
 
   async initViewModel() {
-    // debugger;
     this.model = viewModelResolver('shipment');
 
     // TODO: where are the comments?
