@@ -1,62 +1,36 @@
 <div class="grid-column-wrapper">
   <!-- Shipper ID -->
   <label>{{@form.shipperId.label}}</label>
-  <input class="form-control form-control-sm" readonly='readonly'
-         name="@form.shipperId.name" placeholder="@form.shipperId.placeholder" type="text"
-         value="@shipment.shipperId"/>
+  <input class="form-control form-control-sm" readonly="readonly" name="@form.shipperId.name" placeholder="@form.shipperId.placeholder" type="text" value="@shipment.shipperId" />
 
   <!-- Origin -->
   <label>{{@form.origin.label}}</label>
-  <input class="form-control form-control-sm" readonly='readonly'
-         name="@form.origin.name" placeholder="@form.origin.placeholder" type="text"
-         value="@shipment.origin"/>
+  <input class="form-control form-control-sm" readonly="readonly" name="@form.origin.name" placeholder="@form.origin.placeholder" type="text" value="@shipment.origin" />
 
   <!-- Type -->
   <label>{{@form.type.label}}</label>
-  <input class="form-control form-control-sm" readonly='readonly'
-         name="@form.shipmentType.name" placeholder="@form.shipmentType.placeholder"
-         type="text" value="@shipment.shipmentType"/>
+  <input class="form-control form-control-sm" readonly="readonly" name="@form.shipmentType.name" placeholder="@form.shipmentType.placeholder" type="text" value="@shipment.shipmentType" />
 
   <!-- Scheduled Pickup Date/Time -->
   <label>Scheduled Pickup Date/Time</label>
   <div>
-    <input class='form-control form-control-sm' readonly='readonly' type='date'
-           value='@shipment.scheduledPickupDateTime.date' />
-    <input class='form-control form-control-sm' readonly='readonly' type='time'
-           value='@shipment.scheduledPickupDateTime.time' />
+    <input class="form-control form-control-sm" readonly="readonly" type="text" value="@shipment.scheduledPickupDateTime.date" />
+    <input class="form-control form-control-sm" readonly="readonly" type="text" value="@shipment.scheduledPickupDateTime.time" />
   </div>
 
-    <label>{{@form.dimension.label}}</label>
-    <div class='mb-3'>
-      <div class='form-control-sm'>
-        <div class='form-inline'>
-          <label class='m-1'>{{@form.dimension.height.label}}</label>
-          <input class='form-control'  readonly='readonly'
-                 value='@shipment.dimension.dimensionHeight' />
-        </div>
-      </div>
-      <div class='form-control-sm'>
-        <div class='form-inline'>
-          <label class='m-1'>{{@form.dimension.length.label}}</label>
-          <input class='form-control'  readonly='readonly'
-                 value='@shipment.dimension.dimensionLength' />
-        </div>
-      </div>
-      <div class='form-control-sm'>
-        <div class='form-inline'>
-          <label class='m-1'>{{@form.dimension.width.label}}</label>
-          <input class='form-control'  readonly='readonly'
-                 value='@shipment.dimension.dimensionWidth' />
-        </div>
-      </div>
-    </div>
+  <label>{{@form.dimension.label}}</label>
+  <div>
+    <label>{{@form.dimension.height.label}}</label>
+    <input class="form-control form-control-sm" readonly="readonly" value="@shipment.dimension.dimensionHeight" />
+    <label>{{@form.dimension.length.label}}</label>
+    <input class="form-control form-control-sm" readonly="readonly" value="@shipment.dimension.dimensionLength" />
+    <label>{{@form.dimension.width.label}}</label>
+    <input class="form-control form-control-sm" readonly="readonly" value="@shipment.dimension.dimensionWidth" />
+  </div>
 
-    <label>{{@form.specialInstructions.label}}</label>
-    <textarea class='form-control form-control-sm'
-              readonly='readonly' value='@shipment.specialInstructions'></textarea>
+  <label>{{@form.specialInstructions.label}}</label>
+  <textarea class="form-control form-control-sm" readonly="readonly" value="@shipment.specialInstructions"></textarea>
   <!-- Shipping/Handling Conditions -->
-    <label>{{@form.shippingConditions.label}}</label>
-    <textarea class='form-control form-control-sm'
-              readonly='readonly' value='@shipment.shippingConditions'></textarea>
-
+  <label>{{@form.shippingConditions.label}}</label>
+  <textarea class="form-control form-control-sm" readonly="readonly" value="@shipment.shippingConditions"></textarea>
 </div>
