@@ -149,6 +149,70 @@ class ShipmentsService extends DSUService {
 		return result;
 	}
 
+	async updateShipmentNew(shipmentKeySSI, data) {
+
+		const { shipmentTransitBillingDsu, shipmentTransitDsu } = await this.createShipmentOtherDSUs();
+		const shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
+
+		if (data.masterWayBillN && data.hsCode) {
+			const shipmentTransitBilling = await this.updateShipmentTransitBillingDsu(data.masterWayBillN, data.hsCode, shipmentTransitBillingDsu.uid);
+			shipmentDB.shipmentTransitBilling = shipmentTransitBilling.billings;
+		  }
+
+		if (data.recipientName && data.deliveryDateTime && data.shipmentId) {
+			const shipmentTransit = await this.updateShipmentTransitDsu(data.recipientName, data.deliveryDateTime, data.shipmentId, shipmentTransitDsu.uid);
+			shipmentDB.shipmentTransit = shipmentTransit.transits;
+		  }
+
+		const result = await this.addShipmentToDB(shipmentDB, shipmentKeySSI);
+
+		return result;
+	}
+
+	async createShipmentOtherDSUs() {
+		const shipmentTransitBillingDsu = await this.saveEntityAsync(
+			{
+				billings: [],
+			},
+			FoldersEnum.ShipmentTransitBilling
+		);
+		const shipmentTransitDsu = await this.saveEntityAsync(
+			{
+				transits: [],
+			},
+			FoldersEnum.ShipmentTransit
+		);
+
+		return { shipmentTransitBillingDsu, shipmentTransitDsu };
+	}
+
+	async updateShipmentTransitBillingDsu(masterWayBillN, hsCode, keySSI) {
+		const shipmentTransitBillingDsu = await this.getEntityAsync(keySSI, FoldersEnum.ShipmentTransitBilling);
+		const result = await this.updateEntityAsync(
+		  {
+			...shipmentTransitBillingDsu,
+			masterWayBillN: [...shipmentTransitBillingDsu.masterWayBillN, masterWayBillN],
+			hsCode: [...shipmentTransitBillingDsu.hsCode, hsCode],
+		  },
+		  FoldersEnum.ShipmentTransitBilling
+		);
+		return result;
+	  }
+
+	  async updateShipmentTransitDsu(recipientName, deliveryDateTime, shipmentId, keySSI) {
+		const shipmentTransitDsu = await this.getEntityAsync(keySSI, FoldersEnum.ShipmentTransit);
+		const result = await this.updateEntityAsync(
+		  {
+			...shipmentTransitDsu,
+			recipientName: [...shipmentTransitDsu.recipientName, recipientName],
+			deliveryDateTime: [...shipmentTransitDsu.deliveryDateTime, deliveryDateTime],
+			shipmentId: [...shipmentTransitDsu.shipmentId, shipmentId],
+		  },
+		  FoldersEnum.ShipmentTransit
+		);
+		return result;
+	  }
+
 	async updateLocalShipment(shipmentSSI) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
 		const loadedShipmentDSU = await this.getEntityAsync(shipmentDB.shipmentSSI, FoldersEnum.Shipments);

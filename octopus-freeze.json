@@ -2,42 +2,6 @@
     "workDir": ".",
     "dependencies": [
         {
-            "name": "privatesky",
-            "src": "http://github.com/privatesky/privatesky.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "f25d26736cbf478c0f66f810c871b1b0d63264ab"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd privatesky && npm install"
-                }
-            ]
-        },
-        {
-            "name": "build privatesky",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd privatesky && npm run build && npm run prepare-release"
-                }
-            ]
-        },
-        {
-            "name": "Documentation Theme Install (globally)",
-            "src": "",
-            "description": "This hack is only used because the better-docs theme has a security vulnerability that would be assumed as a security risk for the repo, when its only used to generate documentation",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "sh -c \"theme=`npm ls -g better-docs | grep better-docs` && [ -z \\\"$theme\\\" ] && npm install -g better-docs taffydb || echo \\\"Documentation Theme already Installed\\\"\""
-                }
-            ]
-        },
-        {
             "name": "cardinal",
             "src": "https://github.com/PrivateSky/cardinal.git",
             "actions": [
@@ -45,7 +9,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "3ac61b6f75bd376a8778cbc25907d9bfc7bccb79"
+                    "commit": "f2080909d6780d532225389eefadbbba494d70b4"
                 },
                 {
                     "type": "execute",
@@ -58,6 +22,22 @@
             ]
         },
         {
+            "name": "privatesky",
+            "src": "https://github.com/PrivateSky/psk-release.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "79d5831dd2312e5dc8ff902cccd20b35b7b570f4"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd privatesky && npm install"
+                }
+            ]
+        },
+        {
             "name": "webcardinal",
             "src": "https://github.com/webcardinal/webcardinal-bundler",
             "actions": [
@@ -65,200 +45,107 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "21243c530664355a5ed8537d0ae7d3e1c5ab0525"
+                    "commit": "39918824dc58a8664663cf2250d163e49d72b134"
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd webcardinal && npm install && npm run bundle-minimal && npm run dev"
+                    "cmd": "cd webcardinal && npm install && npm run bundle-all && npm run dev"
                 }
             ]
         },
         {
-            "name": "pharmaledger-wallet",
+            "name": "menu-wallet-prototype",
             "src": "http://github.com/privatesky/menu-wallet-prototype.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "43cdecf66b1dfbeaba003cb46e03390a7bcc8f29"
+                    "commit": "f1b399830c426eca33c3ee5af57a918441f808e7"
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd pharmaledger-wallet && npm install"
+                    "cmd": "cd menu-wallet-prototype && npm install"
                 }
             ]
         },
         {
-            "name": "pdm-dsu-toolkit",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-dsu-toolkit && npm install && npm run prebuild"
-                }
-            ]
-        },
-        {
-            "name": "fgt-dsu-wizard",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-dsu-wizard && npm install && npm run prebuild"
-                }
-            ]
-        },
-        {
-            "name": "pdm-trust-loader",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-trust-loader && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-trust-loader && npm run postinstall"
-                },
-                {
-                    "type": "copy",
-                    "src": "./webcardinal/webcardinal",
-                    "target": "./pdm-trust-loader/src/webcardinal",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
-            "name": "apihub-root/fgt-mah-wallet/loader",
+            "name": "apihub-root/csc-sponsor-wallet/loader",
             "src": "https://github.com/PrivateSky/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "7fb45ead4022ed835c01e0071a914c0673c46ee0"
+                    "commit": "22d83ceacf62b9dcf0a7f70bc543ad0986d4226a"
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npm install"
+                    "cmd": "cd apihub-root/csc-sponsor-wallet/loader && npm install"
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npm run build"
+                    "cmd": "cd apihub-root/csc-sponsor-wallet/loader && npm run build"
                 }
             ]
         },
         {
-            "name": "Build and deploy PDM Trust Loader to Wholesaler and Pharmacy",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-trust-loader && npm run build"
-                },
-                {
-                    "type": "remove",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/loader"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-trust-loader/src",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/loader",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "remove",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/loader"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-trust-loader/src",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/loader",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
-            "name": "gtin-resolver",
-            "src": "https://github.com/PharmaLedger-IMI/gtin-resolver.git",
+            "name": "apihub-root/csc-cmo-wallet/loader",
+            "src": "https://github.com/PrivateSky/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "d3fdc5a08e049040301f73a13792af12505a7c2d"
+                    "commit": "22d83ceacf62b9dcf0a7f70bc543ad0986d4226a"
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd gtin-resolver && npm install"
+                    "cmd": "cd apihub-root/csc-cmo-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/csc-cmo-wallet/loader && npm run build"
                 }
             ]
         },
         {
-            "name": "gtin-dsu-wizard",
-            "src": "https://github.com/PharmaLedger-IMI/gtin-dsu-wizard.git",
+            "name": "apihub-root/csc-site-wallet/loader",
+            "src": "https://github.com/PrivateSky/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "357b163b46d94c8ed06af83a61f8d2cf7da2368b"
+                    "commit": "22d83ceacf62b9dcf0a7f70bc543ad0986d4226a"
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd gtin-dsu-wizard && npm install"
+                    "cmd": "cd apihub-root/csc-site-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/csc-site-wallet/loader && npm run build"
                 }
             ]
         },
         {
-            "name": "themes/pdm-theme",
-            "src": "http://github.com/PharmaLedger-IMI/pdm-theme.git",
+            "name": "apihub-root/csc-courier-wallet/loader",
+            "src": "https://github.com/PrivateSky/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "793cde9bcf5568c16c3fe9d0160bb24c964c8ad8"
+                    "commit": "22d83ceacf62b9dcf0a7f70bc543ad0986d4226a"
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd themes/pdm-theme && npm install"
-                }
-            ]
-        },
-        {
-            "name": "themes/blue-fluorite-theme",
-            "src": "https://github.com/PrivateSky/blue-fluorite-theme.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "347d1aceaf1f06b09d0307f9b78049f313b783aa"
+                    "cmd": "cd apihub-root/csc-courier-wallet/loader && npm install"
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd themes/blue-fluorite-theme && npm install"
-                }
-            ]
-        },
-        {
-            "name": "themes/clear-sky-theme",
-            "src": "https://github.com/PrivateSky/clear-sky-theme.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "82ea912284cbd8b19a8a2a8ab40d03103b983c7a"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/clear-sky-theme && npm install"
+                    "cmd": "cd apihub-root/csc-courier-wallet/loader && npm run build"
                 }
             ]
         },
@@ -270,7 +157,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "edb4445fd135d7fee03d6cc2c4fb72ee526727b2"
+                    "commit": "8ccb66adb594da6571bb5024c4556b2c899388df"
                 },
                 {
                     "type": "execute",
@@ -286,7 +173,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "7fb45ead4022ed835c01e0071a914c0673c46ee0"
+                    "commit": "22d83ceacf62b9dcf0a7f70bc543ad0986d4226a"
                 },
                 {
                     "type": "execute",
@@ -310,7 +197,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "0c49347113f41f86937379c8b68e274eca811858"
+                    "commit": "4c4654fab88439ea9a57b28b83eba798e46f205a"
                 },
                 {
                     "type": "execute",
@@ -319,187 +206,210 @@
             ]
         },
         {
-            "name": "fgt-mah-ssapp",
+            "name": "csc-sponsor-ssapp",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd fgt-mah-ssapp && npm install"
+                    "cmd": "cd csc-sponsor-ssapp && npm install"
                 }
             ]
         },
         {
-            "name": "fgt-pharmacy-ssapp",
+            "name": "csc-cmo-ssapp",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd fgt-pharmacy-ssapp && npm install"
+                    "cmd": "cd csc-cmo-ssapp && npm install"
                 }
             ]
         },
         {
-            "name": "fgt-wholesaler-ssapp",
+            "name": "csc-site-ssapp",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd fgt-wholesaler-ssapp && npm install"
+                    "cmd": "cd csc-site-ssapp && npm install"
+                }
+            ]
+        },
+        {
+            "name": "csc-courier-ssapp",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd csc-courier-ssapp && npm install"
+                }
+            ]
+        },
+        {
+            "name": "csc-services",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd csc-services && npm install"
+                }
+            ]
+        },
+        {
+            "name": "themes/blue-csc-theme",
+            "src": "https://github.com/PharmaLedger-IMI/blue-csc-theme.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/blue-csc-theme && npm install"
+                }
+            ]
+        },
+        {
+            "name": "themes/blue-fluorite-theme",
+            "src": "https://github.com/PrivateSky/blue-fluorite-theme.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "7dfa8dd6bd13239b698e0bd1a71e0aa353e16ba2"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/blue-fluorite-theme && npm install"
                 }
             ]
         }
     ],
     "build-use-case": [
         {
-            "name": "pdm-theme-wallet-build",
+            "name": "blue-csc-theme-wallet-build",
             "src": "",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd themes/pdm-theme && npm run build-dossier"
+                    "cmd": "cd themes/blue-csc-theme && npm run build-dossier"
                 }
             ]
         },
         {
-            "name": "Bundle_dsu-toolkit",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-dsu-toolkit && npm run prebuild"
-                }
-            ]
-        },
-        {
-            "name": "Bundle_dsu_wizard",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-dsu-wizard && npm run prebuild"
-                }
-            ]
-        },
-        {
-            "name": "Build and deploy PDM Trust Loader to WHolesaler & Pharmacy",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-trust-loader && npm run build"
-                },
-                {
-                    "type": "remove",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/loader"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-trust-loader/src",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/loader",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "remove",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/loader"
-                },
-                {
-                    "type": "copy",
-                    "src": "./pdm-trust-loader/src",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/loader",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
-            "name": "bind_ssapps_to_pharmaledger-wallet",
+            "name": "bind_csc_sponsor_ssapp_to_wallet",
             "src": "",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd pharmaledger-wallet && npm run build"
+                    "cmd": "cd csc-sponsor-ssapp && npm run build"
                 },
                 {
                     "type": "copy",
-                    "src": "./pharmaledger-wallet/seed",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/wallet-patch/seed",
+                    "src": "./csc-sponsor-ssapp/seed",
+                    "target": "./apihub-root/csc-sponsor-wallet/wallet-patch/seed",
                     "options": {
                         "overwrite": true
                     }
+                },
+                {
+                    "type": "copy",
+                    "src": "./csc-sponsor-ssapp/seed",
+                    "target": "./apihub-root/csc-sponsor-wallet/apps-patch/csc-sponsor-ssapp/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "execute",
+                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-sponsor-wallet/apps-patch/csc-sponsor-ssapp/readme"
                 }
             ]
         },
         {
-            "name": "bind_fgt_mah_ssapp_to_wallet",
+            "name": "bind_csc_cmo_ssapp_to_wallet",
             "src": "",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd fgt-mah-ssapp && npm run build"
+                    "cmd": "cd csc-cmo-ssapp && npm run build"
                 },
                 {
                     "type": "copy",
-                    "src": "./fgt-mah-ssapp/seed",
-                    "target": "./apihub-root/fgt-mah-wallet/wallet-patch/seed",
+                    "src": "./csc-cmo-ssapp/seed",
+                    "target": "./apihub-root/csc-cmo-wallet/wallet-patch/seed",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "copy",
-                    "src": "./fgt-mah-ssapp/seed",
-                    "target": "./apihub-root/fgt-mah-wallet/apps-patch/fgt-mah-ssapp/seed",
+                    "src": "./csc-cmo-ssapp/seed",
+                    "target": "./apihub-root/csc-cmo-wallet/apps-patch/csc-cmo-ssapp/seed",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-mah-wallet/apps-patch/fgt-mah-ssapp/readme"
+                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-cmo-wallet/apps-patch/csc-cmo-ssapp/readme"
                 }
             ]
         },
         {
-            "name": "bind_fgt_pharmacy_ssapp_to_wallet",
+            "name": "bind_csc_site_ssapp_to_wallet",
             "src": "",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd fgt-pharmacy-ssapp && npm run build"
+                    "cmd": "cd csc-site-ssapp && npm run build"
                 },
                 {
                     "type": "copy",
-                    "src": "./fgt-pharmacy-ssapp/seed",
-                    "target": "./apihub-root/fgt-pharmacy-wallet/wallet-patch/seed",
+                    "src": "./csc-site-ssapp/seed",
+                    "target": "./apihub-root/csc-site-wallet/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "./csc-site-ssapp/seed",
+                    "target": "./apihub-root/csc-site-wallet/apps-patch/csc-site-ssapp/seed",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-pharmacy-wallet/apps-patch/fgt-pharmacy-ssapp/readme"
+                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-site-wallet/apps-patch/csc-site-ssapp/readme"
                 }
             ]
         },
         {
-            "name": "bind_fgt_wholesaler_ssapp_to_wallet",
+            "name": "bind_csc_courier_ssapp_to_wallet",
             "src": "",
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd fgt-wholesaler-ssapp && npm run build"
+                    "cmd": "cd csc-courier-ssapp && npm run build"
                 },
                 {
                     "type": "copy",
-                    "src": "./fgt-wholesaler-ssapp/seed",
-                    "target": "./apihub-root/fgt-wholesaler-wallet/wallet-patch/seed",
+                    "src": "./csc-courier-ssapp/seed",
+                    "target": "./apihub-root/csc-courier-wallet/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copy",
+                    "src": "./csc-site-ssapp/seed",
+                    "target": "./apihub-root/csc-courier-wallet/apps-patch/csc-courier-ssapp/seed",
                     "options": {
                         "overwrite": true
                     }
                 },
                 {
                     "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/fgt-wholesaler-wallet/apps-patch/fgt-wholesaler-ssapp/readme"
+                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-courier-wallet/apps-patch/csc-courier-ssapp/readme"
                 }
             ]
         },
@@ -521,24 +431,38 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd apihub-root/fgt-mah-wallet/loader && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/fgt-pharmacy-wallet/loader && npx workbox generateSW"
-                },
-                {
-                    "type": "execute",
                     "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd apihub-root/fgt-wholesaler-wallet/loader && npx workbox generateSW"
+                    "cmd": "cd apihub-root/csc-sponsor-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/csc-cmo-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/csc-site-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/csc-courier-wallet/loader && npm install"
                 }
             ]
         }
     ],
     "build": [
+        {
+            "name": "blue-fluorite-theme-wallet-build",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
+                }
+            ]
+        },
         {
             "name": "cardinal-wallet-build",
             "src": "",
@@ -556,26 +480,6 @@
                 {
                     "type": "execute",
                     "cmd": "cd webcardinal && npm run build-dossier"
-                }
-            ]
-        },
-        {
-            "name": "blue-fluorite-theme-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
-                }
-            ]
-        },
-        {
-            "name": "clear-sky-theme-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/clear-sky-theme && npm run build-dossier"
                 }
             ]
         },
@@ -628,138 +532,9 @@
                     "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/readme"
                 }
             ]
-        },
-        {
-            "name": "gtin-resolver-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd gtin-resolver && npm run build"
-                }
-            ]
         }
     ],
     "install-mobile": [],
     "build-mobile": [],
-    "docs": [
-        {
-            "name": "Generate Modules Documentation",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-dsu-wizard && npm run docs"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-mah-ssapp && npm run docs"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-pharmacy-ssapp && npm run docs"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd fgt-wholesaler-ssapp && npm run docs"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-dsu-toolkit && npm run docs"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd pdm-trust-loader && npm run docs"
-                }
-            ]
-        },
-        {
-            "name": "Move module Documentation to workspace Folder",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "copy",
-                    "src": "fgt-dsu-wizard/docs",
-                    "target": "docs/fgt-dsu-wizard",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "pdm-dsu-toolkit/docs",
-                    "target": "docs/pdm-dsu-toolkit",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "fgt-mah-ssapp/docs",
-                    "target": "docs/fgt-mah-ssapp",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "fgt-pharmacy-ssapp/docs",
-                    "target": "docs/fgt-pharmacy-ssapp",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "fgt-wholesaler-ssapp/docs/",
-                    "target": "docs/fgt-wholesaler-ssapp",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "pdm-dsu-toolkit/docs/",
-                    "target": "docs/pdm-dsu-toolkit",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "copy",
-                    "src": "pdm-trust-loader/docs/",
-                    "target": "docs/pdm-trust-loader",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Compile Documentation",
-            "src": ".",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "./docs/bin/drawio_convert.sh"
-                },
-                {
-                    "type": "copy",
-                    "src": "workdocs/resources",
-                    "target": "docs/resources",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "node ./node_modules/markdown-include/bin/cli.js ./mdCompile.json"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "jsdoc -c jsdocs.json -t \"$(npm root -g)/better-docs\""
-                }
-            ]
-        }
-    ]
+    "docs": []
 }

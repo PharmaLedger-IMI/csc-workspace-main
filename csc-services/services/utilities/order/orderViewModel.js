@@ -6,6 +6,7 @@ const MIN_TEMPERATURE = orderBusinessRequirements.MinTemperature;
 const MAX_TEMPERATURE = orderBusinessRequirements.MaxTemperature;
 const momentService = require("csc-services").momentService;
 const sites = orderBusinessRequirements.sites;
+const cmos = orderBusinessRequirements.cmos;
 const SPONSOR_DID = orderBusinessRequirements.sponsorId;
 const orderViewModel = {
     cancelOrderModal: {
@@ -66,12 +67,8 @@ const orderViewModel = {
                 placeholder: 'Select Target CMO ID...',
                 required: true,
                 disabled: false,
-                options: [
-                    { label: 'ID 1', value: '1' },
-                    { label: 'ID 2', value: '2' },
-                    { label: 'ID 3', value: '3' },
-                ],
-                value: '1'
+                options: cmos.map((x) => {return {label:x.name, value:x.name}}),
+                value: cmos[0].name,
             },
             study_id: {
                 label: 'Study ID',
