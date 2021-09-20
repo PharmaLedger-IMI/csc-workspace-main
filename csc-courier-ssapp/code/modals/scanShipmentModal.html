@@ -13,35 +13,38 @@
     <p style='width: 100%;text-align: center;'>Please proceed to scanning process to change the shipment status to <b>"In Transit"</b></p>
 
     <div class='stepper-container'>
-        <div id='step-1' data-tag='step-1' class='step-element step-active'>1 - Scan Shipment</div>
-        <div id='step-2' data-tag='step-2' class='step-element'>2 - Add Details</div>
-        <div id='step-3' data-tag='step-3' class='step-element'>3 - Sign</div>
+        <button id='step-1' data-tag='step-1' class='step-element step-active'>1 - Scan Shipment</button>
+        <button id='step-2' data-tag='step-2' disabled='@formIsInvalid' class='step-element'>2 - Add Details</button>
+        <button id='step-3' data-tag='step-3' disabled='@formIsInvalid' class='step-element'>3 - Sign</button>
     </div>
 
     <div class="step-holder " id="step-1-wrapper">
-
-        <psk-condition condition="@scanSuccess">
-            <div slot="condition-true">
-                Shipment Scan Successfull!
+        <div data-if="@isScannerActive">
+            <div slot='true'>
+                <psk-barcode-scanner  title="Barcode Scanner" data="@scannedData"></psk-barcode-scanner>
             </div>
-        </psk-condition>
 
-        <psk-condition condition="@scanError">
-            <div slot="condition-true">
-                Wrong Shipment Code!
+            <div slot='false' data-if="@scanSuccess">
+                <div slot="true">
+                    <i class="fas fa-check fa-10x" style="color: #00345b"></i>
+                    <label class="scan-modal-label"> Shipment Scan Successful ! </label>
+                </div>
+                <div slot="false">
+                    <span class="fas fa-times fa-10x" style="color: #ef6c00"></span>
+                    <label class="scan-modal-label">Wrong Shipment Code Scanned. Please try again !</label>
+                    <button slot="false" class="btn-default" data-tag="start-scanner">
+                        Scan Again
+                    </button>
+                </div>
             </div>
-        </psk-condition>
+        </div>
 
-        <psk-condition condition="@isScannerActive">
-            <psk-barcode-scanner title="Barcode Scanner" data="@scannedData"></psk-barcode-scanner>
-            <label>Scanned Data:</label>
-            <psk-echo value="@scannedData"></psk-echo>
-        </psk-condition>
+
 
         <!-- Navigation Between Steps-->
         <div class="row-wrapper button-wrapper">
             <!-- Next Button -->
-            <button class="btn-default" data-tag="from_step_1_to_2" id="from_step_1_to_2">
+            <button disabled='@formIsInvalid' class="btn-default" data-tag="from_step_1_to_2" id="from_step_1_to_2">
                 Next
                 <i class="fas fa-angle-right"></i>
             </button>
@@ -52,7 +55,7 @@
         <div class="grid-column-wrapper">
             <!-- Shipment ID -->
             <label>{{@form.inputs.shipmentId.label}}</label>
-            <input class="form-control form-control-sm" disabled="@form.inputs.shipmentId.disabled" name="@form.inputs.shipmentId.name" placeholder="@form.inputs.shipmentId.placeholder" type="text" value="@form.inputs.shipmentId.value" />
+            <input class="form-control form-control-sm" name="@form.inputs.shipmentId.name" placeholder="@form.inputs.shipmentId.placeholder" type="text" value="@form.inputs.shipmentId.value" />
         </div>
 
         <!-- Navigation Between Steps-->
@@ -62,7 +65,7 @@
                 Previous
             </button>
             <!-- Next Button -->
-            <button class="btn-default" data-tag="from_step_2_to_3" id="from_step_2_to_3">
+            <button disabled='@formIsInvalid' class="btn-default" data-tag="from_step_2_to_3" id="from_step_2_to_3">
                 Next
                 <i class="fas fa-angle-right"></i>
             </button>
@@ -74,25 +77,25 @@
             <div class='col-12'>
                 <!-- Shipment ID -->
                 <label>{{@form.inputs.shipmentId.label}}</label>
-                <input class="form-control form-control-sm" disabled="@form.inputs.shipmentId.disabled" name="@form.inputs.shipmentId.name" placeholder="@form.inputs.shipmentId.placeholder" type="text" value="@form.inputs.shipmentId.value" />
+                <input class="form-control form-control-sm" readonly name="@form.inputs.shipmentId.name" placeholder="@form.inputs.shipmentId.placeholder" type="text" value="@form.inputs.shipmentId.value" />
             </div>
 
             <div class='col-12'>
                 <!-- Shipment ID -->
                 <label>{{@form.inputs.shipperId.label}}</label>
-                <input class="form-control form-control-sm" disabled="@form.inputs.shipperId.disabled" name="@form.inputs.shipperId.name" placeholder="@form.inputs.shipperId.placeholder" type="text" value="@form.inputs.shipperId.value" />
+                <input class="form-control form-control-sm" readonly name="@form.inputs.shipperId.name" placeholder="@form.inputs.shipperId.placeholder" type="text" value="@shipment.shipperId" />
             </div>
 
             <div class='col-12'>
                 <!-- Shipment ID -->
                 <label>{{@form.inputs.origin.label}}</label>
-                <input class="form-control form-control-sm" disabled="@form.inputs.origin.disabled" name="@form.inputs.origin.name" placeholder="@form.inputs.origin.placeholder" type="text" value="@form.inputs.origin.value" />
+                <input class="form-control form-control-sm" readonly name="@form.inputs.origin.name" placeholder="@form.inputs.origin.placeholder" type="text" value="@shipment.origin" />
             </div>
 
             <div class='col-12'>
                 <!-- Shipment Type -->
                 <label>{{@form.inputs.shipmentType.label}}</label>
-                <input class="form-control form-control-sm" disabled="@form.inputs.shipmentType.disabled" name="@form.inputs.shipmentType.name" placeholder="@form.inputs.shipmentType.placeholder" type="text" value="@form.inputs.shipmentType.value" />
+                <input class="form-control form-control-sm" readonly name="@form.inputs.shipmentType.name" placeholder="@form.inputs.shipmentType.placeholder" type="text" value="@shipment.shipmentType" />
             </div>
 
             <div class='col-12'>
@@ -103,11 +106,11 @@
                     <div class="row">
                         <div class="col-8">
                             <!-- Input -->
-                            <input class="form-control" value="@form.inputs.shipment_date.value" type="date" />
+                            <input class="form-control" readonly value="@shipment.scheduledPickupDateTime.date" type="date" />
                         </div>
                         <div class="col-4">
                             <!-- Input -->
-                            <input class="form-control" value="@form.inputs.shipment_time.value" type="time" />
+                            <input class="form-control" readonly value="@shipment.scheduledPickupDateTime.time" type="time" />
                         </div>
                     </div>
                 </div>
@@ -117,17 +120,17 @@
                 <div class='row'>
                     <div class='col-4'>
                         <label>{{@form.inputs.dimensionHeight.label}}</label>
-                        <input class="form-control form-control-sm" disabled="@form.inputs.dimensionHeight.disabled" name="@form.inputs.dimensionHeight.name" placeholder="@form.inputs.dimensionHeight.placeholder" type="text" value="@form.inputs.dimensionHeight.value" />
+                        <input class="form-control form-control-sm" readonly name="@form.inputs.dimensionHeight.name" placeholder="@form.inputs.dimensionHeight.placeholder" type="text" value="@shipment.dimension.dimensionHeight" />
                     </div>
 
                     <div class='col-4'>
                         <label>{{@form.inputs.dimensionLength.label}}</label>
-                        <input class="form-control form-control-sm" disabled="@form.inputs.dimensionLength.disabled" name="@form.inputs.dimensionLength.name" placeholder="@form.inputs.dimensionLength.placeholder" type="text" value="@form.inputs.dimensionLength.value" />
+                        <input class="form-control form-control-sm" readonly name="@form.inputs.dimensionLength.name" placeholder="@form.inputs.dimensionLength.placeholder" type="text" value="@shipment.dimension.dimensionLength" />
                     </div>
 
                     <div class='col-4'>
                         <label>{{@form.inputs.dimensionWidth.label}}</label>
-                        <input class="form-control form-control-sm" disabled="@form.inputs.dimensionWidth.disabled" name="@form.inputs.dimensionWidth.name" placeholder="@form.inputs.dimensionWidth.placeholder" type="text" value="@form.inputs.dimensionWidth.value" />
+                        <input class="form-control form-control-sm" readonly name="@form.inputs.dimensionWidth.name" placeholder="@form.inputs.dimensionWidth.placeholder" type="text" value="@shipment.dimension.dimensionWidth" />
                     </div>
                 </div>
 
@@ -136,13 +139,13 @@
             <div class='col-12'>
                 <!-- Special Instructions -->
                 <label>{{@form.inputs.specialInstructions.label}}</label>
-                <textarea class="form-control form-control-sm" readonly='readonly' name="@form.inputs.specialInstructions.name" placeholder="@form.inputs.specialInstructions.placeholder" />{{@form.inputs.specialInstructions.value}}</textarea>
+                <textarea class="form-control form-control-sm" readonly name="@form.inputs.specialInstructions.name" placeholder="@form.inputs.specialInstructions.placeholder" />{{@shipment.specialInstructions}}</textarea>
             </div>
 
             <div class='col-12'>
                 <!-- Shipment ID -->
                 <label>{{@form.inputs.shippingConditions.label}}</label>
-                <textarea class="form-control form-control-sm" readonly='readonly' name="@form.inputs.shippingConditions.name" placeholder="@form.inputs.shippingConditions.placeholder" />{{@form.inputs.shippingConditions.value}}</textarea>
+                <textarea class="form-control form-control-sm" readonly name="@form.inputs.shippingConditions.name" placeholder="@form.inputs.shippingConditions.placeholder" />{{@shipment.shippingConditions}}</textarea>
             </div>
         </div>
 

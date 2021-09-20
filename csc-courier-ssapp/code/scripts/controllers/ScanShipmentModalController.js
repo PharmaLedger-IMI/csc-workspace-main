@@ -13,15 +13,28 @@ class ScanShipmentModalController extends WebcController {
     console.log("Shipment" , this.model.shipmentModel.shipment);
 
     this.model = this.getReviewOrderViewModel(shipment);
+    this.model.shipment = this.model.shipmentModel.shipment;
 
-    this.loadShipmentDataToModel();
-
-    this.on("toggle-scanner", () => {
-      this.model.isScannerActive = !this.model.isScannerActive;
-      this.model.scannedData = '';
+    this.onTagEvent("start-scanner", 'click',() => {
+      this.model.isScannerActive = true;
     });
 
     this.initStepperNavigationHandlers();
+    this.addModelChangeHandlers();
+  }
+
+  addModelChangeHandlers(){
+    this.model.onChange("scannedData", () => {
+      let correctValue = this.model.shipmentModel.shipment.orderId;
+      this.model.scanSuccess = this.model.scannedData === correctValue;
+      this.model.formIsInvalid = !this.model.scanSuccess;
+      this.model.isScannerActive = false;
+    });
+
+    this.shipmentIdHandler = () => {
+      this.model.formIsInvalid = this.model.form.inputs.shipmentId.value.trim() === '';
+    };
+    this.model.onChange("form.inputs.shipmentId.value", this.shipmentIdHandler.bind(this));
   }
 
   initStepperNavigationHandlers() {
@@ -31,6 +44,7 @@ class ScanShipmentModalController extends WebcController {
 
     this.onTagEvent('step-2', 'click', (e) => {
       this.makeStepActive('step-2', 'step-2-wrapper', e);
+      this.shipmentIdHandler();
     });
 
     this.onTagEvent('step-3', 'click', (e) => {
@@ -43,6 +57,7 @@ class ScanShipmentModalController extends WebcController {
 
     this.onTagEvent('from_step_2_to_1', 'click', (e) => {
       this.makeStepActive('step-1', 'step-1-wrapper', e);
+      this.model.formIsInvalid = false;
     });
 
     this.onTagEvent('from_step_2_to_3', 'click', (e) => {
@@ -51,24 +66,11 @@ class ScanShipmentModalController extends WebcController {
 
     this.onTagEvent('from_step_3_to_2', 'click', (e) => {
       this.makeStepActive('step-2', 'step-2-wrapper', e);
+      this.model.formIsInvalid = false;
     });
 
     this.onTagEvent('sign_button', 'click', (e) => {
       this.sign();
-    });
-
-    this.model.onChange("scannedData", () => {
-
-      let correctValue = this.model.shipmentModel.shipment.orderId;
-
-      if(this.model.scannedData === correctValue){
-        this.model.scanSuccess = true;
-        this.model.scanError = false;
-      }else{
-        this.model.scanSuccess = false;
-        this.model.scanError = true;
-      }
-      console.log(this.model.scannedData);
     });
 
   }
@@ -78,39 +80,24 @@ class ScanShipmentModalController extends WebcController {
   }
 
 
-  loadShipmentDataToModel(){
-    this.model.form.inputs.shipmentId.value = this.model.shipmentModel.shipment.shipmentId;
-    this.model.form.inputs.shipperId.value = this.model.shipmentModel.shipment.shipperId;
-    this.model.form.inputs.shipment_date.value = this.model.shipmentModel.shipment.scheduledPickupDateTime.date;
-    this.model.form.inputs.shipment_time.value =  this.model.shipmentModel.shipment.scheduledPickupDateTime.time;
-    this.model.form.inputs.dimensionHeight.value = this.model.shipmentModel.shipment.dimension.dimensionHeight;
-    this.model.form.inputs.dimensionWidth.value = this.model.shipmentModel.shipment.dimension.dimensionWidth;
-    this.model.form.inputs.dimensionLength.value = this.model.shipmentModel.shipment.dimension.dimensionLength;
-    this.model.form.inputs.origin.value = this.model.shipmentModel.shipment.origin;
-    this.model.form.inputs.specialInstructions.value = this.model.shipmentModel.shipment.specialInstructions;
-    this.model.form.inputs.shippingConditions.value = this.model.shipmentModel.shipment.shippingConditions;
-  }
 
   sign(){
-    let payload = {
-      shipmentId : this.model.form.inputs.shipmentId.value,
-      shipperId : this.model.form.inputs.shipperId.value,
-      shipment_date : this.model.form.inputs.shipment_date.value,
-      shipment_time : this.model.form.inputs.shipment_time.value,
-      specialInstructions : this.model.form.inputs.specialInstructions.value,
-      shipmentType : this.model.form.inputs.shipmentType.value,
-      dimensionHeight : this.model.form.inputs.dimensionHeight.value,
-      dimensionWidth : this.model.form.inputs.dimensionWidth.value,
-      dimensionLength : this.model.form.inputs.dimensionLength.value,
-      origin : this.model.form.inputs.origin.value,
-      shippingConditions : this.model.form.inputs.shippingConditions.value,
-    }
+
+    let payload = { }
+    let shipmentDataProps = ["shipperId","scheduledPickupDateTime","dimension","origin","specialInstructions","shippingConditions"];
+
+    shipmentDataProps.forEach((prop) => {
+      payload[prop] = this.model.shipment[prop];
+    });
+
+    payload.shipmentId = this.model.form.inputs.shipmentId.value;
 
     console.log(payload);
   }
   getModel() {
     return {
       isScannerActive: false,
+      formIsInvalid:true,
       scannedData: ''
     }
   }
@@ -163,7 +150,7 @@ class ScanShipmentModalController extends WebcController {
             required: true,
             placeholder: 'Shipment ID...',
             disabled:false,
-            value: '',
+            value: 'SHIPMENT-ID-001',
           },
           shipperId: {
             label: 'Shipper ID',
@@ -271,7 +258,6 @@ class ScanShipmentModalController extends WebcController {
       isScannerActive: true,
       scannedData: '',
       scanSuccess: false,
-      scanError: false
     };
 
     return model;
