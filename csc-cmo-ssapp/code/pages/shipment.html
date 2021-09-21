@@ -103,13 +103,11 @@
                         </svg>
 						<span>Kits</span>
 					</div>
-					<!-- <div class='accordion-item-holder' data-if='@actions.showDefaultKitsAccordianText'>
-						<span class='py-3 text-muted' slot='false'>No kit scanned yet</span>
-					</div> -->
 					<div class='accordion-item-holder' data-if='@shipmentModel.shipment.isShipmentScanSuccessful'>
-						<webc-template data-view-model='@orderModel' template='order/kit-summary'></webc-template>
+						<span class='py-3 text-muted' slot='false'>No kit scanned yet</span>
+						<webc-template data-view-model='@orderModel.order' slot='true'
+									   template='order/kit-summary'></webc-template>
 					</div>
-
 				</div>
 
 				<div class='row-wrapper button-wrapper'>

@@ -4,9 +4,10 @@ require("./TableTemplateControllerImpl");
 require("./HeaderControllerImpl");
 require("./NotificationsControllerImpl");
 require("./DashboardMenuControllerImpl");
-require("./DashboardControllerImpl")
+require("./DashboardControllerImpl");
 require("./OrdersControllerImpl");
 require("./ReviewOrderControllerImpl");
 require("./helpers/ViewShipmentBaseController");
 require("./SingleShipmentControllerImpl");
 require("./ShipmentsControllerImpl");
+require("./ScanShipmentModalControllerImpl");

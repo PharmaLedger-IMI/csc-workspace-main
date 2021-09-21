@@ -1,173 +1,139 @@
 <style>
-	webc-modal {
-		--max-width: 90%;
-	}
+    webc-modal {
+        --max-width: 90%;
+    }
 
-    
     webc-modal::part(dialog) {
         align-items: unset !important;
-    }   
+    }
 </style>
+
 <div slot='header'>
-	<!-- <div class='modal-main-title' style="text-align: center;">Scan Shipment</div> -->
     <label class="scan-modal-label"> Scan Shipment </label>
 </div>
-<!--<webc-container controller="ScanShipmentModalController">-->
-    <!-- <div> -->
-        <main class="scan-modal">
-            <!-- <section class='order-section'>
-                <div class='order-main-section'> -->
-            <div class="stepper-container">
-                <!--First Step -->
-                <div class="step-element step-active" data-tag="step-1" id="step-1">1 - Scan Shipment</div>
-                <!-- Line -->
-                <div class="step-break-line"></div>
-                <!--Second Step -->
-                <div class="step-element" data-tag="step-2" id="step-2">2 - Scan Kits</div>
-                <!-- Line -->
-                <!--<div class='step-break-line'></div>-->
-                <!-- Comments -->
-                <!--<div class='step-element' data-tag='step-3' id='step-3'>3 - Scan Shipment</div>-->
-                <!-- Line -->
-                <div class="step-break-line"></div>
-                <!-- Confirmation -->
-                <div class="step-element" data-tag="step-3" id="step-3">3 - Summary</div>
-            </div>
-            <!-- 1 - Order Details -->
-            <div class="step-holder-modal" id="step-1-wrapper">
-                <label class="scan-modal-label"> Please find the QR code on shipment container and scan it </label>
-                <!--<div class="row w-90" id="new-order-details-holder">-->
-                    <!--<div class="col-8">-->
-                        <!--<div></div>-->
-                        
-                        <!-- Navigation Between Steps-->
-                        <div class="row-wrapper button-wrapper">
-                            <!--<div></div>
-                            <div></div>-->
-                            <button class="btn-default" data-tag="open-shipment-scanner">
-                                SCAN
-                                <!--<i class='fas fa-angle-right'></i>-->
-                            </button>
-                        </div>
-                    <!--</div>-->
-                <!--</div>-->
-            </div>
-            
-            <div data-if = "@showWrongShipmentScanResult" class="step-holder" style="padding: 10% 10%" id="wrong-shipment-scan-wrapper">
-                <span class="fas fa-times fa-10x" style="color: #ef6c00"></span>
-                <label class="scan-modal-label">Wrong Shipment Code Scanned. Please try again !</label>
-                        <div class="row-wrapper button-wrapper">
-                            <button class="btn-default" data-tag="retry-shipment-scan">
-                                SCAN
-                            </button>
-                        </div>
-            </div>
-            
-            <div data-if="@isShipmentScannerActive">
-                <div class="step-holder"  id="shipment-scanner">
-                    <!-- <div class="row w-100">
-                        <div class="col-6"> -->
-                            <psk-barcode-scanner normal-size data="@scannedShipmentData"></psk-barcode-scanner>
-                        <!-- </div>
-                    </div> -->
-                </div>
-            </div>
 
-            <div data-if = "@showCorrectShipmentScanResult" class="step-holder" style="padding: 10% 10%" id="shipment-scan-result">
-                <i class="fas fa-check fa-10x" style="color: #00345b"></i>
-                <label class="scan-modal-label"> Shipment Scan Successful ! </label>
-                        <div class="row-wrapper button-wrapper">
-                            <button class="btn-default" disabled>
-                                Previous
-                                <i class="fas fa-angle-left"></i>
-                            </button>
-                            <button class="btn-default" data-tag="step-2">
-                                Next
-                            </button>
-                        </div>
-            </div>
+<main class="scan-modal">
+    <div class="stepper-container">
+        <!--First Step -->
+        <div class="step-element step-active" data-tag="step-1" id="step-1">1 - Scan Shipment</div>
+        <!-- Line -->
+        <div class="step-break-line"></div>
+        <!--Second Step -->
+        <div class="step-element" data-tag="step-2" id="step-2">2 - Scan Kits</div>
+        <!-- Line -->
+        <div class="step-break-line"></div>
+        <!-- Confirmation -->
+        <div class="step-element" data-tag="step-3" id="step-3">3 - Summary</div>
+    </div>
 
-            <!-- 2 - Scan Kits -->
-            <div class="step-holder-modal step-hidden" id="step-2-wrapper">
-                
-                <label class="scan-modal-label"> <b> {{ @scanNum }} out of {{ @kits.length}} kits scanned </b> </label> 
-                <!-- Navigation Between Steps-->
-                <label class="scan-modal-label"> Please find the QR code on the kit containers and scan</label>               
-                <label class="scan-modal-label"> <b> Kit ID: {{@currentKitId}} </b> </label>
-                        <!-- Navigation Between Steps-->
-                        <div class="row-wrapper button-wrapper">
-                            <!--<div></div>-->
-                            <!-- Next Button -->
-                            <button class="btn-default" data-tag="open-kits-scanner">
-                                {{@kitScanButtonText}}
-                                <!--<i class='fas fa-angle-right'></i>-->
-                            </button>
-                        </div>
+    <!-- 1 - Scan Shipment -->
+    <div class="step-holder-modal" id="step-1-wrapper">
+        <div class="d-flex flex-column align-items-center" data-if="@canScanShipment">
+            <label class="scan-modal-label"> Please find the QR code on shipment container and scan it. </label>
+        </div>
+
+        <div class="d-flex justify-content-center" data-if="@isShipmentScannerActive">
+            <psk-barcode-scanner data="@scannedShipmentData" normal-size></psk-barcode-scanner>
+        </div>
+
+        <div class="d-flex flex-column align-items-center" data-if="@showWrongShipmentScanResult">
+            <span class="fas fa-times fa-10x" style="color: #ef6c00"></span>
+            <label class="scan-modal-label">Wrong Shipment Code Scanned. Please try again!</label>
+        </div>
+
+        <div class="d-flex flex-column align-items-center" data-if="@showCorrectShipmentScanResult">
+            <i class="fas fa-check fa-10x" style="color: #00345b"></i>
+            <label class="scan-modal-label"> Shipment Scan Successful! </label>
+        </div>
+
+        <!-- Navigation Between Steps-->
+        <div data-if="@canScanShipment">
+            <div class="row-wrapper button-wrapper">
+                <button class="btn-default" data-tag="open-shipment-scanner">
+                    SCAN
+                </button>
             </div>
-            <!-- </div> -->
-            <div data-if="@isKitsScannerActive">
-                <div class="step-holder" id="kit-scanner">
-                    <label class="scan-modal-label"> <b> Kit ID: {{@currentKitId}} </b> </label>
-                    <!-- <div class="row w-100">
-                        <div class="col-6"> -->
-                            <!-- <psk-barcode-scanner normal-size slot="true" data="@scannedKitsData"></psk-barcode-scanner> -->
-                            <psk-barcode-scanner normal-size data="@scannedKitData"></psk-barcode-scanner>
-                        <!-- </div>
-                    </div> -->
-                </div>
+        </div>
+
+        <div data-if="@enableStep1Navigation">
+            <div class="row-wrapper button-wrapper">
+                <button class="btn-default" data-tag="back-to-shipment-scan" disabled="@showCorrectShipmentScanResult"
+                        id="back-to-shipment-scan">
+                    <i class="fas fa-angle-left"></i>
+                    Previous
+                </button>
+                <button class="btn-default" data-tag="from_step_1_to_2" disabled="@showWrongShipmentScanResult"
+                        id="from_step_1_to_2">
+                    Next
+                    <i class="fas fa-angle-right"></i>
+                </button>
             </div>
-            <div data-if="@showKitsScanResult">
-                <div class="step-holder" style="padding: 10% 10%" id="kit-scan-result">
-                    <!--<div class="row w-100" id="new-order-details-holder">-->
-                        <!-- <div class="col-12"> -->
-                            <!-- <div></div> -->
-                            <!--<label>#### Scanned Data:</label>-->
-                            <!-- <i class="fas fa-check"></i> -->
-                            <i class="fas fa-check fa-10x" style="color: #00345b"></i>
-                            <label class="scan-modal-label"> {{ @kits.length}} out of {{ @kits.length}} kit(s) scanned successfully ! </label>
-                            <br> </br>
-                            <div class="row-wrapper button-wrapper">
-                                <button class="btn-default" disabled>
-                                    Previous
-                                    <i class="fas fa-angle-left"></i>
-                                </button>
-                                <!-- Next Button -->
-                                <button class="btn-default" data-tag="from_step_2_to_3" id="from_step_2_to_3">
-                                    Next
-                                    <i class="fas fa-angle-right"></i>
-                                </button>
-                            </div>
-                        <!-- </div> -->
-                    <!--</div>-->
-                </div>
+        </div>
+    </div>
+
+    <!-- 2 - Scan Kits -->
+    <div class="step-holder-modal step-hidden" id="step-2-wrapper">
+        <div class="d-flex flex-column align-items-center" data-if="@canScanKit">
+            <label class="scan-modal-label"> Please find the QR code on the kit containers and scan</label>
+            <h5><b>{{@currentKit.kitNumber}}</b></h5>
+            <label class="scan-modal-label"> <b> Kit ID: {{@currentKit.kitId}} </b> </label>
+        </div>
+
+        <div class="d-flex justify-content-center" data-if="@isKitsScannerActive">
+            <div class="step-holder">
+                <h5><b>{{@currentKit.kitNumber}}</b></h5>
+                <label class="scan-modal-label"> <b> Kit ID: {{@currentKit.kitId}} </b> </label>
+                <psk-barcode-scanner data="@scannedKitData" normal-size></psk-barcode-scanner>
             </div>
-            <div data-if="@showWrongKitScanResult" class="step-holder" style="padding: 10% 10%" id="wrong-kit-scan-wrapper">
-                <span class="fas fa-times fa-10x" style="color: #ef6c00"></span>
-                <label class="scan-modal-label"> Wrong Kit Code Scanned. Please try again ! </label>
-                        <div class="row-wrapper button-wrapper">
-                            <button class="btn-default" data-tag="retry-kit-scan">
-                                SCAN
-                            </button>
-                        </div>
+        </div>
+
+        <div class="d-flex flex-column align-items-center" data-if="@showWrongKitScanResult">
+            <span class="fas fa-times fa-10x" style="color: #ef6c00"></span>
+            <label class="scan-modal-label">Wrong Kit Code scanned. Please try again!</label>
+        </div>
+
+        <div class="d-flex flex-column align-items-center" data-if="@showCorrectKitScanResult">
+            <i class="fas fa-check fa-10x" style="color: #00345b"></i>
+            <label class="scan-modal-label"> Kit {{ @currentKit.kitId }} Scan Successful! </label>
+        </div>
+
+        <!-- Navigation Between Steps-->
+        <div data-if="@canScanKit">
+            <div class="row-wrapper button-wrapper">
+                <button class="btn-default" data-tag="open-kits-scanner">
+                    {{@kitScanButtonText}}
+                </button>
             </div>
-            <!-- Confirmation -->
-            <div class="step-holder step-hidden" style="justify-content: normal;"id="step-3-wrapper">
-                <!-- <div style="height:75%;"> -->
-                    <webc-template data-view-model='@' style="height: 65%; " template='shipment/shipment-scan-summary'></webc-template>
-                <!-- </div> -->
-                <div class="row-wrapper button-wrapper">
-                    <button class="btn-reset" data-tag="scan:reset">
-                        <i class="fas fa-times"></i>
-                        Clear Scans
-                    </button>
-                    <button class="btn-default" data-tag="scan:submit">
-                        <i class="fas fa-check"></i>
-                        Submit
-                    </button>
-                </div>
+        </div>
+
+        <div data-if="@enableStep2Navigation">
+            <div class="row-wrapper button-wrapper">
+                <button class="btn-default" data-tag="back-to-kit-scan" disabled="@showCorrectKitScanResult"
+                        id="back-to-kits-scan">
+                    <i class="fas fa-angle-left"></i>
+                    Previous
+                </button>
+                <button class="btn-default" data-tag="next-kit-scan" disabled="@showWrongKitScanResult"
+                        id="next-kit-scan">
+                    Next
+                    <i class="fas fa-angle-right"></i>
+                </button>
             </div>
-            <!-- </div>
-            </section> -->
-        </main>
-    <!-- </div> -->
-    <!--</webc-container>-->
+        </div>
+    </div>
+
+    <!-- Confirmation -->
+    <div class="step-holder step-hidden" id="step-3-wrapper">
+        <webc-template class="full-flex-column" data-view-model='@' template='order/kit-summary'></webc-template>
+        <div class="row-wrapper button-wrapper">
+            <button class="btn-reset" data-tag="scan:reset">
+                <i class="fas fa-times"></i>
+                Clear Scans
+            </button>
+            <button class="btn-default" data-tag="scan:submit">
+                <i class="fas fa-check"></i>
+                Submit
+            </button>
+        </div>
+    </div>
+</main>
