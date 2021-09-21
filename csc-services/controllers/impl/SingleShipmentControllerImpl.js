@@ -141,7 +141,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   }
 
   async cancelOrder() {
-    const {keySSI} = this.model.order;
+    const keySSI = this.model.shipmentModel.shipment.orderSSI;
     let comment = this.model.cancelOrderModal.comment.value ? {
           entity: this.role,
           comment: this.model.cancelOrderModal.comment.value,
