@@ -83,7 +83,10 @@ export default class NewOrderController extends WebcController {
           }
           const uuid = uuidv4();
           this.files.push({ fileContent: files[0], type: DocumentTypes.Kit, uuid });
-          const ids = await this.readFile(files[0]);
+          let ids = await this.readFile(files[0]);
+          ids = ids.map((id, index) => {
+            return {kitNumber: index + 1, kitId: id.trim()};
+          });
           this.model.form.inputs.kit_ids_attachment.name = files[0].name;
           this.model.form.inputs.kit_ids_attachment.ids = ids;
           this.model.form.inputs.kit_ids_attachment.uuid = uuid;

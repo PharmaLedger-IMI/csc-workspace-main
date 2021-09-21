@@ -13,6 +13,7 @@ const DashboardController = cscServices.getController('DashboardController', ACT
 const OrdersController = cscServices.getController('OrdersController', ACTOR);
 const SingleShipmentController = cscServices.getController('SingleShipmentController', ACTOR);
 const ShipmentsController = cscServices.getController('ShipmentsController', ACTOR);
+const ScanShipmentModalController = cscServices.getController('ScanShipmentModalController', ACTOR);
 
 addControllers({
 	TableTemplateController,
@@ -24,5 +25,6 @@ addControllers({
 	DashboardController,
 	OrdersController,
 	ShipmentsController,
-	SingleShipmentController
+	SingleShipmentController,
+	ScanShipmentModalController
 });

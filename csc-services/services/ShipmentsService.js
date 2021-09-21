@@ -2,7 +2,6 @@ const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedSto
 const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum } = require('./constants');
 const { shipmentStatusesEnum } = require('./constants/shipment');
-const { orderStatusesEnum } = require('./constants/order');
 const CommunicationService = require('./lib/CommunicationService.js');
 
 class ShipmentsService extends DSUService {
@@ -264,7 +263,7 @@ class ShipmentsService extends DSUService {
 		return result;
 	  }
 
-	async updateLocalShipment(shipmentSSI) {
+	async updateLocalShipment(shipmentSSI, newShipmentData = {}) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
 		const loadedShipmentDSU = await this.getEntityAsync(shipmentDB.shipmentSSI, FoldersEnum.Shipments);
 		const status = await this.getEntityAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
@@ -272,8 +271,10 @@ class ShipmentsService extends DSUService {
 		shipmentDB = {
 			...shipmentDB,
 			...loadedShipmentDSU,
+			...newShipmentData,
 			status: status.history
 		};
+
 		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
 	}
 }
