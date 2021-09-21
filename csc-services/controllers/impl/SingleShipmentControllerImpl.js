@@ -61,7 +61,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   confirmEditShipmentCallback = async (event) => {
     const shipmentDetails = event.detail;
     await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ReadyForDispatch, shipmentDetails);
-    this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', '/', 2000);
+    this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', { tag: 'dashboard', state: { tab: Topics.Shipment }}, 2000);
   };
 
   transformOrderData(data) {
