@@ -109,7 +109,16 @@
 
         <div class='row-wrapper button-wrapper'>
           <webc-template data-view-model='@shipmentModel.shipment' template='shipment/scan-shipment'></webc-template>
+          <!-- TODO: fix condition -->
+          <div data-if='true'>
+						<button class='btn-default' data-tag='edit-shipment'>
+							<span class='fas fa-pen'></span>
+							Edit Shipment
+						</button>
+					</div>
         </div>
+					
+				</div>
       </div>
     </section>
   </main>

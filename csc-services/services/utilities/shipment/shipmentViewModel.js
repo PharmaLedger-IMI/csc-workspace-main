@@ -92,7 +92,38 @@ const shipmentViewModel = {
 			placeholder: 'These are the Shipping/Handling Conditions',
 			disabled: false,
 			value: ''
-		}
+		},
+    billNumber: {
+      label: 'Master-way bill number',
+      name: 'bill-number',
+      required: true,
+      placeholder: 'Master-way bill number',
+      disabled: false,
+      value: '',
+    },
+    hsCode: {
+      label: 'HS Code',
+      name: 'hs-code',
+      required: true,
+      placeholder: 'HS Code',
+      disabled: false,
+      value: '',
+    },
+    attachment: {
+      label: 'Select files',
+      listFiles: true,
+      filesAppend: false,
+      files: [],
+    },
+    add_comment: {
+      label: 'Add a Comment',
+      name: 'add_comment',
+      required: true,
+      placeholder: 'Add a comment....',
+      disabled: false,
+      value: '',
+    },
+    documents: [],
 	}
 };
 
