@@ -313,11 +313,11 @@ class SingleOrderControllerImpl extends WebcController {
       this.model.cancelOrderModal = viewModelResolver('order').cancelOrderModal;
       this.showModalFromTemplate('cancelOrderModal', this.cancelOrder.bind(this), () => {
       }, {
-        controller: 'CancelOrderController',
-        disableExpanding: true,
-        disableBackdropClosing: true,
-        model: this.model
-      });
+          controller: 'CancelOrderController',
+          disableExpanding: true,
+          disableBackdropClosing: true,
+          model: this.model
+        });
     });
 
     this.onTagEvent('approve-order', 'click', () => {
@@ -337,10 +337,10 @@ class SingleOrderControllerImpl extends WebcController {
   async cancelOrder() {
     const { keySSI } = this.model.order;
     let comment = this.model.cancelOrderModal.comment.value ? {
-        entity: this.role,
-        comment: this.model.cancelOrderModal.comment.value,
-        date: new Date().getTime()
-      }
+      entity: this.role,
+      comment: this.model.cancelOrderModal.comment.value,
+      date: new Date().getTime()
+    }
       : null;
     await this.ordersService.updateOrderNew(keySSI, null, comment, this.role, orderStatusesEnum.Canceled);
     const shipment = this.model.shipment;
@@ -386,7 +386,7 @@ class SingleOrderControllerImpl extends WebcController {
   async prepareShipment() {
     const order = this.model.order;
     const shipmentResult = await this.shipmentsService.createShipment(order);
-
+    
     const otherOrderDetails = {
       shipmentSSI: shipmentResult.keySSI
     };
@@ -394,7 +394,7 @@ class SingleOrderControllerImpl extends WebcController {
 
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-    this.showErrorModalAndRedirect('Shipment Initiated, redirecting to dashboard...', 'Shipment Initiated', '/', 2000);
+    this.showErrorModalAndRedirect('Shipment Initiated, redirecting to View Shipment page...', 'Shipment Initiated', { tag: 'shipment', state: { keySSI: shipmentResult.keySSI }}, 2000);
   };
 
   getDate(str) {
