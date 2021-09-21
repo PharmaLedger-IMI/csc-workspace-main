@@ -394,8 +394,7 @@ class SingleOrderControllerImpl extends WebcController {
 
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-    this.showErrorModalAndRedirect('Shipment Initiated, redirecting to View Shipment page...', 'Shipment Initiated', 2000);
-    this.navigateToPageTag('shipment', { keySSI: shipmentResult.keySSI });
+    this.showErrorModalAndRedirect('Shipment Initiated, redirecting to View Shipment page...', 'Shipment Initiated', { tag: 'shipment', state: { keySSI: shipmentResult.keySSI }}, 2000);
   };
 
   getDate(str) {
