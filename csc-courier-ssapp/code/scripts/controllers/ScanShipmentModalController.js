@@ -1,17 +1,19 @@
 // MyModalController.js
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
-const viewModelResolver = cscServices.viewModelResolver;
-const { shipment } = cscServices.constants;
+const ShipmentService = cscServices.ShipmentService;
+const CommunicationService = cscServices.CommunicationService;
+const { shipment, Roles } = cscServices.constants;
 
 
 class ScanShipmentModalController extends WebcController {
 
   constructor(...props) {
     super(...props);
-
     console.log("Shipment" , this.model.shipmentModel.shipment);
 
+    let communicationService = CommunicationService.getInstance(Roles.Courier);
+    this.shipmentService = new ShipmentService (this.DSUStorage, communicationService);
     this.model = this.getReviewOrderViewModel(shipment);
     this.model.shipment = this.model.shipmentModel.shipment;
 
@@ -80,10 +82,8 @@ class ScanShipmentModalController extends WebcController {
   }
 
 
-
   sign(){
-
-    let payload = { }
+    let payload = {};
     let shipmentDataProps = ["shipperId","scheduledPickupDateTime","dimension","origin","specialInstructions","shippingConditions"];
 
     shipmentDataProps.forEach((prop) => {
@@ -91,8 +91,13 @@ class ScanShipmentModalController extends WebcController {
     });
 
     payload.shipmentId = this.model.form.inputs.shipmentId.value;
+    payload.signature = true;
 
-    console.log(payload);
+    this.shipmentService.createAndMountTransitDSU(this.model.shipment.shipmentSSI, payload).then(()=>{
+      //close modal from inside
+      this.element.destroy();
+      this.showErrorModalAndRedirect('Shipment is in transit now...', 'Shipment In Transit', { tag: 'shipment', keySSI: this.model.shipment.shipmentSSI }, 2000);
+    })
   }
   getModel() {
     return {
