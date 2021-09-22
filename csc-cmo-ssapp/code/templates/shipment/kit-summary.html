@@ -2,8 +2,8 @@
     <!-- Kit ID List -->
     <label>Kit ID List (.csv):</label>
     <div>
-        <input class="form-control form-control-sm" readonly="readonly" value="@kitsFilename"/>
-        <button class="btn-download-small" data-custom="@kitsFilename" data-tag="download-kits-file">
+        <input class="form-control form-control-sm" readonly="readonly" value="@order.kitsFilename"/>
+        <button class="btn-download-small" data-custom="@order.kitsFilename" data-tag="download-kits-file">
             <svg version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
                  y="0px">
                 <path d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
@@ -17,7 +17,7 @@
     <!-- Quantity -->
     <label>Quantity:</label>
     <div>
-        <input class="form-control form-control-sm" readonly="readonly" type="text" value="@kits.length"/>
+        <input class="form-control form-control-sm" readonly="readonly" type="text" value="@order.kits.length"/>
         <label> Kits </label>
     </div>
 </div>
@@ -30,7 +30,7 @@
             <th>Kit ID</th>
         </tr>
         </thead>
-        <tbody data-for="@kits">
+        <tbody data-for="@order.kits">
         <tr>
             <td>{{@kitNumber}}</td>
             <td>{{@kitId}}</td>

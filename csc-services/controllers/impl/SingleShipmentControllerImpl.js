@@ -211,7 +211,6 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     }
 
     this.model = model;
-    debugger;
   }
 }
 
