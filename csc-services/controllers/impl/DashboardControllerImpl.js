@@ -32,7 +32,7 @@ class DashboardControllerImpl extends WebcController {
 		if (this.history.location.state && this.history.location.state.tab) {
 			selectedTab = this.history.location.state.tab;
 		} else {
-			selectedTab = Topics.Order;
+			selectedTab = this.role === Roles.Site ? Topics.Shipment : Topics.Order;
 		}
 
 		this.model = {

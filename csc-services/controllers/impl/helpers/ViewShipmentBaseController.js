@@ -146,7 +146,7 @@ class ViewShipmentBaseControllerImpl extends WebcController{
       data.pending_action = this.getPendingAction(data.status_value);
       data.contextualContent = {
         afterReadyForDispatch: data.status.findIndex(el => el.status === shipmentStatusesEnum.ReadyForDispatch) !== -1,
-        afterInTransit: data.status.findIndex(el => el.status === shipmentStatusesEnum.InTransit) !== -1,
+        afterInTransit: data.status.findIndex(el => el.status === shipmentStatusesEnum.InTransit) !== -1 && data.hasOwnProperty('bill'),
         afterDelivered: data.status.findIndex(el => el.status === shipmentStatusesEnum.Delivered) !== -1,
         afterReceived: data.status.findIndex(el => el.status === shipmentStatusesEnum.Received) !== -1
       };
