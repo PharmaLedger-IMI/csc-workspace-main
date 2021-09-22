@@ -91,10 +91,9 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
   setShipmentActions(shipment) {
     const actions = {};
-    const cancelShipmentStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
     switch(this.role) {
       case Roles.Sponsor: {
-        actions.canCancelOrderAndShipment = cancelShipmentStatuses.indexOf(shipment.status_value) !== -1;
+        actions.canCancelOrderAndShipment = (shipment.status_value === shipmentStatusesEnum.InPreparation);
         this.attachSponsorEventHandlers();
 
         break;
