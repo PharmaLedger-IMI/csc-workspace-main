@@ -4,6 +4,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const { Roles } = cscServices.constants;
+const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
 class CourierSingleShipmentController extends ViewShipmentBaseController {
   constructor(...props) {
@@ -28,6 +29,20 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     });
   }
 
+  setShipmentActions(shipment) {
+    const actions = {};
+    
+    if (shipment.status[0].status === shipmentStatusesEnum.ReadyForDispatch) {
+      actions.canScanPickShipment = true;
+      actions.canEditShipment = false;
+    } else if (shipment.status[0].status === shipmentStatusesEnum.InTransit) {
+      actions.canEditShipment = true;
+      actions.canScanPickShipment = false;
+    }
+
+    return actions;
+  }
+
   async initViewModel() {
     const model = {
       shipmentModel: viewModelResolver('shipment'),
@@ -42,6 +57,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     let shipment = await this.shipmentsService.getShipment(model.keySSI);
     shipment = { ...this.transformShipmentData(shipment) };
     model.shipmentModel.shipment = shipment;
+    model.actions = this.setShipmentActions(model.shipmentModel.shipment);
     console.log(model);
     this.model = model;
   }
