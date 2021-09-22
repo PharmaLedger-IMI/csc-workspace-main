@@ -7,7 +7,7 @@
 
     <section class='order-section'>
       <div class='order-navigation-section'>
-				<span class='nav-back' data-tag='nav-back'>
+        <span class='nav-back' data-tag='nav-back'>
 					<svg viewBox='0 0 52 52' x='0px'
                xml:space='preserve' xmlns='http://www.w3.org/2000/svg'
                y='0px'>
@@ -77,13 +77,12 @@
         <div class='row-wrapper order-data-section'>
           <!-- Shipment Details -->
           <div class='accordion-item' data-tag='toggle-accordion'>
-            <svg enable-background='new 0 0 200 200' class='accordion-icon' version='1.1'
-                 viewBox='0 0 200 200' x='0px' xml:space='preserve'
-                 xmlns='http://www.w3.org/2000/svg' y='0px'>
-                        <path d='M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
+            <svg enable-background='new 0 0 200 200' class='accordion-icon' version='1.1' viewBox='0 0 200 200' x='0px' xml:space='preserve'
+              xmlns='http://www.w3.org/2000/svg' y='0px'>
+              <path d='M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
                             l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
                             C79.619,74.358,79.684,70.511,81.969,68.167z' fill='#231F20' />
-                        </svg>
+            </svg>
             <span>Shipment Details</span>
           </div>
           <div class='accordion-item-holder'>
@@ -92,13 +91,12 @@
 
           <!-- Kits -->
           <div class='accordion-item' data-tag='toggle-accordion'>
-            <svg enable-background='new 0 0 200 200' class='accordion-icon' version='1.1'
-                 viewBox='0 0 200 200' x='0px' xml:space='preserve'
-                 xmlns='http://www.w3.org/2000/svg' y='0px'>
-                        <path d='M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
+            <svg enable-background='new 0 0 200 200' class='accordion-icon' version='1.1' viewBox='0 0 200 200' x='0px' xml:space='preserve'
+              xmlns='http://www.w3.org/2000/svg' y='0px'>
+              <path d='M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
                             l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
                             C79.619,74.358,79.684,70.511,81.969,68.167z' fill='#231F20' />
-                        </svg>
+            </svg>
             <span>Kits</span>
           </div>
           <div class='accordion-item-holder' data-if='@shipmentModel.shipment.kits'>
@@ -108,17 +106,19 @@
         </div>
 
         <div class='row-wrapper button-wrapper'>
-          <webc-template data-view-model='@shipmentModel.shipment' template='shipment/scan-shipment'></webc-template>
+          <div data-if='@actions.canScanPickShipment'>
+            <webc-template data-view-model='@shipmentModel.shipment' template='shipment/scan-shipment'></webc-template>
+          </div>
           <!-- TODO: fix condition -->
-          <div data-if='true'>
-						<button class='btn-default' data-tag='edit-shipment'>
+          <div data-if='@actions.canEditShipment'>
+            <button class='btn-default' data-tag='edit-shipment'>
 							<span class='fas fa-pen'></span>
 							Edit Shipment
 						</button>
-					</div>
+          </div>
         </div>
-					
-				</div>
+
+      </div>
       </div>
     </section>
   </main>
