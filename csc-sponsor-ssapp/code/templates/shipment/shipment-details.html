@@ -1,5 +1,8 @@
 <div data-if='@shipment.contextualContent.afterReadyForDispatch'>
 	<div class='grid-column-wrapper'>
+		<!-- Shipment ID -->
+		<label>{{@form.shipmentId.label}}</label>
+		<input class='form-control' value='@shipment.shipmentId' readonly='readonly' />
 		<!-- Shipper ID -->
 		<label>{{@form.shipperId.label}}</label>
 		<input class='form-control' value='@shipment.shipperId' readonly='readonly' />
@@ -50,5 +53,21 @@
 		<!-- HS Code -->
 		<label>{{@form.hsCode.label}}</label>
 		<input class="form-control" data-view-model="@shipment.bill.hsCode" readonly='readonly' />
+	</div>
+</div>
+
+<div data-if='@shipment.contextualContent.afterDelivered'>
+	<div class='grid-column-wrapper'>
+		<!-- Recipient Name -->
+		<label>{{@form.recipientName.label}}</label>
+		<input class="form-control" value="@shipment.recipientName" readonly='readonly' />
+		<!-- Delivery date/time -->
+		<label>{{@form.deliveryDate.label}}</label>
+		<div>
+			<input class='form-control form-control-sm' readonly='readonly' type='date'
+				   value='@shipment.deliveryDateTime.date' />
+			<input class='form-control form-control-sm' readonly='readonly' type='time'
+				   value='@shipment.deliveryDateTime.time' />
+		</div>
 	</div>
 </div>
