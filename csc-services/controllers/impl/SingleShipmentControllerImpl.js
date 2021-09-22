@@ -100,19 +100,8 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
       }
 
       case Roles.CMO: {
-        if (shipment.status[0].status === shipmentStatusesEnum.InPreparation && !shipment.isShipmentScanSuccessful){
-          actions.canScanShipment = true;
-          actions.canEditShipment = false;
-          actions.showDefaultKitsAccordianText = true;
-        } else if(shipment.isShipmentScanSuccessful) {
-          actions.canEditShipment = true;
-          actions.canScanShipment = false;
-          actions.showDefaultKitsAccordianText = false;
-        } else {
-          actions.canEditShipment = false;
-          actions.canScanShipment = false;
-          actions.showDefaultKitsAccordianText = true;
-        }
+        actions.canScanShipment = shipment.status_value === shipmentStatusesEnum.InPreparation && !shipment.isShipmentScanSuccessful;
+        actions.canEditShipment = shipment.status_value === shipmentStatusesEnum.InPreparation && shipment.isShipmentScanSuccessful === true;
 
         this.attachCmoEventHandlers();
         break;
