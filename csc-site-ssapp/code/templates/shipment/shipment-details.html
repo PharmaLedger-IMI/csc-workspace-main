@@ -1,0 +1,36 @@
+<div data-if='@shipment.contextualContent.afterReadyForDispatch'>
+	<br />
+	<div class='grid-column-wrapper'>
+		<!-- Shipment ID -->
+		<label>{{@form.shipmentId.label}}</label>
+		<input class='form-control' value='@shipment.shipmentId' readonly='readonly' />
+		<!-- Shipper ID -->
+		<label>{{@form.shipperId.label}}</label>
+		<input class='form-control' value='@shipment.shipperId' readonly='readonly' />
+		<!-- Origin -->
+		<label>{{@form.origin.label}}</label>
+		<input class='form-control' value='@shipment.origin' readonly='readonly' />
+		<!-- Type -->
+		<label>{{@form.type.label}}</label>
+		<input class='form-control' type='text' value='@shipment.shipmentType' readonly='readonly' />
+		<!-- Dimension -->
+		<label>{{@form.dimension.label}}</label>
+		<div>
+			<div class='d-flex justify-content-center align-items-center'>
+				<label class='pr-2 m-0'>{{@form.dimension.height.label}}</label>
+				<input class='form-control' value='@shipment.dimension.dimensionHeight' readonly='readonly' />
+			</div>
+			<div class='d-flex justify-content-center align-items-center'>
+				<label class='pr-2 m-0'>{{@form.dimension.length.label}}</label>
+				<input class='form-control' value='@shipment.dimension.dimensionLength' readonly='readonly' />
+			</div>
+			<div class='d-flex justify-content-center align-items-center'>
+				<label class='pr-2 m-0'>{{@form.dimension.width.label}}</label>
+				<input class='form-control' value='@shipment.dimension.dimensionWidth' readonly='readonly' />
+			</div>
+		</div>
+		<!-- Special Instructions -->
+		<label>{{@form.specialInstructions.label}}</label>
+		<textarea class='form-control' value='@shipment.specialInstructions' readonly='readonly'></textarea>
+	</div>
+</div>
