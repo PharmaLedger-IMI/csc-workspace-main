@@ -91,29 +91,17 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
   setShipmentActions(shipment) {
     const actions = {};
-    const cancelShipmentStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
     switch(this.role) {
       case Roles.Sponsor: {
-        actions.canCancelOrderAndShipment = cancelShipmentStatuses.indexOf(shipment.status_value) !== -1;
+        actions.canCancelOrderAndShipment = (shipment.status_value === shipmentStatusesEnum.InPreparation);
         this.attachSponsorEventHandlers();
 
         break;
       }
 
       case Roles.CMO: {
-        if (shipment.status[0].status === shipmentStatusesEnum.InPreparation && !shipment.isShipmentScanSuccessful){
-          actions.canScanShipment = true;
-          actions.canEditShipment = false;
-          actions.showDefaultKitsAccordianText = true;
-        } else if(shipment.isShipmentScanSuccessful) {
-          actions.canEditShipment = true;
-          actions.canScanShipment = false;
-          actions.showDefaultKitsAccordianText = false;
-        } else {
-          actions.canEditShipment = false;
-          actions.canScanShipment = false;
-          actions.showDefaultKitsAccordianText = true;
-        }
+        actions.canScanShipment = shipment.status_value === shipmentStatusesEnum.InPreparation && !shipment.isShipmentScanSuccessful;
+        actions.canEditShipment = shipment.status_value === shipmentStatusesEnum.InPreparation && shipment.isShipmentScanSuccessful === true;
 
         this.attachCmoEventHandlers();
         break;
