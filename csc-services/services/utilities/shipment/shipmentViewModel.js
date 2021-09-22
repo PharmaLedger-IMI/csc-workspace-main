@@ -109,6 +109,29 @@ const shipmentViewModel = {
       disabled: false,
       value: '',
     },
+	recipientName: {
+		label: 'Recipient Name',
+		name: 'recipient-name',
+		required: true,
+		placeholder: 'Recipient name',
+		disabled: false,
+		value: '',
+	},
+	deliveryDate: {
+		label: 'Delivery Date/Time',
+		name: 'delivery-date',
+		required: true,
+		disabled: false,
+		type: 'date',
+		value: ''
+	},
+	deliveryTime: {
+		name: 'delivery-time',
+		required: true,
+		disabled: false,
+		type: 'time',
+		value: ''
+	},
     attachment: {
       label: 'Select files',
       listFiles: true,

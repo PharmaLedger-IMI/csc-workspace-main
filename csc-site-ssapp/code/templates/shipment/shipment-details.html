@@ -34,3 +34,19 @@
 		<textarea class='form-control' value='@shipment.specialInstructions' readonly='readonly'></textarea>
 	</div>
 </div>
+
+<div data-if='@shipment.contextualContent.afterDelivered'>
+	<div class='grid-column-wrapper'>
+		<!-- Recipient Name -->
+		<label>{{@form.recipientName.label}}</label>
+		<input class="form-control" value="@shipment.recipientName" readonly='readonly' />
+		<!-- Delivery date/time -->
+		<label>{{@form.deliveryDate.label}}</label>
+		<div>
+			<input class='form-control form-control-sm' readonly='readonly' type='date'
+				   value='@shipment.deliveryDateTime.date' />
+			<input class='form-control form-control-sm' readonly='readonly' type='time'
+				   value='@shipment.deliveryDateTime.time' />
+		</div>
+	</div>
+</div>
