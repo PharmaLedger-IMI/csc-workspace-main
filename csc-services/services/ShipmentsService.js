@@ -2,7 +2,6 @@ const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedSto
 const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum } = require('./constants');
 const { shipmentStatusesEnum } = require('./constants/shipment');
-const { orderStatusesEnum } = require('./constants/order');
 const CommunicationService = require('./lib/CommunicationService.js');
 
 class ShipmentsService extends DSUService {
@@ -98,7 +97,6 @@ class ShipmentsService extends DSUService {
 
 			case shipmentStatusesEnum.ShipmentCancelled: {
 				notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
-				notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
 				break;
 			}
 		}
@@ -137,6 +135,27 @@ class ShipmentsService extends DSUService {
 		}
 	}
 
+	async mountAndReceiveTransitShipment(shipmentSSI, transitShipmentSSI, role) {
+		let transitShipment, shipmentDb, status;
+
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
+		status = await this.getEntityAsync(shipmentDB.statusSSI,FoldersEnum.ShipmentsStatuses);
+		transitShipment = await this.mountEntityAsync(transitShipmentSSI, FoldersEnum.ShipmentTransit);
+		shipmentDB.transitShipmentKeySSI = transitShipmentSSI;
+		shipmentDB.status =	status.history;
+		shipmentDB.shipmentId = transitShipment.shipmentId;
+
+		shipmentDb = await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
+
+		if (role === Roles.CMO) {
+			//CMO is the owner of the ShipmentsDSU
+			let shipmentDSU = await this.getEntityAsync(shipmentSSI,FoldersEnum.Shipments);
+			shipmentDSU.shipmentId = shipmentDB.shipmentId;
+			await this.updateEntityAsync(shipmentDSU, FoldersEnum.Shipments);
+		}
+		return shipmentDb;
+	}
+
 	async updateStatusDsu(newStatus, keySSI) {
 		const statusDsu = await this.getEntityAsync(keySSI, FoldersEnum.ShipmentsStatuses);
 		const result = await this.updateEntityAsync(
@@ -149,6 +168,36 @@ class ShipmentsService extends DSUService {
 		return result;
 	}
 
+	async createAndMountTransitDSU(shipmentKeySSI, transientDataModel) {
+
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
+
+		const shipmentTransitDSU = await this.saveEntityAsync(transientDataModel, FoldersEnum.ShipmentTransit);
+		const status = await this.updateStatusDsu(shipmentStatusesEnum.InTransit, shipmentDB.statusSSI);
+		shipmentDB.transitDSUKeySSI = shipmentTransitDSU.keySSI;
+		shipmentDB.status = status.history;
+		shipmentDB.shipmentId = shipmentTransitDSU.shipmentId;
+		await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentKeySSI, shipmentDB);
+
+
+		const inTransitDSUMessage = {
+			transitShipmentSSI: shipmentTransitDSU.keySSI,
+			shipmentSSI: shipmentKeySSI
+		}
+
+		const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY, CommunicationService.identities.CSC.CMO_IDENTITY, CommunicationService.identities.CSC.SITE_IDENTITY];
+		notifiableActors.forEach(actor=>{
+			this.sendMessageToEntity(
+				actor,
+				shipmentStatusesEnum.InTransit,
+				inTransitDSUMessage,
+				shipmentStatusesEnum.InTransit
+			);
+		})
+
+	}
+
+	/** not used yet **/
 	async updateShipmentNew(shipmentKeySSI, data) {
 
 		const { shipmentTransitBillingDsu, shipmentTransitDsu } = await this.createShipmentOtherDSUs();
@@ -213,7 +262,7 @@ class ShipmentsService extends DSUService {
 		return result;
 	  }
 
-	async updateLocalShipment(shipmentSSI) {
+	async updateLocalShipment(shipmentSSI, newShipmentData = {}) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
 		const loadedShipmentDSU = await this.getEntityAsync(shipmentDB.shipmentSSI, FoldersEnum.Shipments);
 		const status = await this.getEntityAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
@@ -221,8 +270,10 @@ class ShipmentsService extends DSUService {
 		shipmentDB = {
 			...shipmentDB,
 			...loadedShipmentDSU,
+			...newShipmentData,
 			status: status.history
 		};
+
 		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
 	}
 }

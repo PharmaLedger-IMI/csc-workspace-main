@@ -2,7 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const momentService = cscServices.momentService;
-const { Commons, Topics } = cscServices.constants;
+const { Commons, Topics, Roles } = cscServices.constants;
 const { orderStatusesEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
@@ -10,7 +10,7 @@ class HistoryModalControllerImpl extends WebcController {
 
 	constructor(role, ...props) {
 		super(...props);
-
+		this.role = role;
 		this.model = this.transformData();
 		this.attachEventHandlers();
 	}
@@ -81,13 +81,18 @@ class HistoryModalControllerImpl extends WebcController {
 
 	transformShipmentData() {
 		const shipment = this.model.toObject('shipment') || {};
-
+		let normalStatuses = [];
 		if (shipment && shipment.status) {
 			shipment.status = [...shipment.status.sort((function(a, b) {
 				return new Date(a.date) - new Date(b.date);
 			}))];
 
-			const normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
+			if (this.role === Roles.Courier) {
+				normalStatuses = [shipmentStatusesEnum.ReadyForDispatch];
+			} else {
+				normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
+			}
+
 			const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
 			shipment.status.forEach(item => {
 				item.approved = approvedStatuses.indexOf(item.status) !== -1;

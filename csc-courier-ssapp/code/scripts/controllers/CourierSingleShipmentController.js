@@ -3,6 +3,7 @@ const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
+const { Roles } = cscServices.constants;
 
 class CourierSingleShipmentController extends ViewShipmentBaseController {
   constructor(...props) {
@@ -18,11 +19,18 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     this.showHistoryHandler();
     this.toggleAccordionItemHandler();
     this.navigationHandlers();
+
+    this.onTagEvent('edit-shipment', 'click', () => {
+      this.navigateToPageTag('edit-shipment', {
+        shipment: this.model.toObject('shipmentModel.shipment'),
+        role: Roles.Courier
+      });
+    });
   }
 
   async initViewModel() {
     const model = {
-      shipmentModel: viewModelResolver('shipment')
+      shipmentModel: viewModelResolver('shipment'),
     };
 
     //all fields are disabled
