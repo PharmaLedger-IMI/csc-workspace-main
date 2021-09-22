@@ -97,7 +97,6 @@ class ShipmentsService extends DSUService {
 
 			case shipmentStatusesEnum.ShipmentCancelled: {
 				notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
-				notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
 				break;
 			}
 		}
