@@ -1,4 +1,5 @@
 <div data-if='@shipment.contextualContent.afterReadyForDispatch'>
+	<br />
 	<div class='grid-column-wrapper'>
 		<!-- Shipment ID -->
 		<label>{{@form.shipmentId.label}}</label>
@@ -12,14 +13,6 @@
 		<!-- Type -->
 		<label>{{@form.type.label}}</label>
 		<input class='form-control' type='text' value='@shipment.shipmentType' readonly='readonly' />
-		<!-- Scheduled Pickup Date/Time -->
-		<label>{{@form.pickupDate.label}}</label>
-		<div>
-			<input class='form-control form-control-sm' readonly='readonly' type='date'
-			       value='@shipment.scheduledPickupDateTime.date' />
-			<input class='form-control form-control-sm' readonly='readonly' type='time'
-			       value='@shipment.scheduledPickupDateTime.time' />
-		</div>
 		<!-- Dimension -->
 		<label>{{@form.dimension.label}}</label>
 		<div>
@@ -39,20 +32,6 @@
 		<!-- Special Instructions -->
 		<label>{{@form.specialInstructions.label}}</label>
 		<textarea class='form-control' value='@shipment.specialInstructions' readonly='readonly'></textarea>
-		<!-- Shipping/Handling Conditions -->
-		<label>{{@form.shippingConditions.label}}</label>
-		<textarea class='form-control' value='@shipment.shippingConditions' readonly='readonly'></textarea>
-	</div>
-</div>
-
-<div data-if='@shipment.contextualContent.afterInTransit'>
-	<div class='grid-column-wrapper'>
-		<!-- Master-way bill number -->
-		<label>{{@form.billNumber.label}}</label>
-		<input class="form-control" value="@shipment.bill.billNumber" readonly='readonly' />
-		<!-- HS Code -->
-		<label>{{@form.hsCode.label}}</label>
-		<input class="form-control" data-view-model="@shipment.bill.hsCode" readonly='readonly' />
 	</div>
 </div>
 
