@@ -166,6 +166,10 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     model.shipmentModel.shipment = await this.shipmentsService.getShipment(model.keySSI);
     model.shipmentModel.shipment = { ...this.transformShipmentData(model.shipmentModel.shipment) };
+    if (model.shipmentModel.shipment.shipmentComments) {
+      model.shipmentModel.shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
+    }
+
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
 
     model.orderModel.order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
@@ -177,6 +181,11 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     }
     if (model.shipmentModel.shipment.documents) {
       model.documents = model.documents.concat(model.shipmentModel.shipment.documents);
+    }
+
+    if(model.shipmentModel.shipment.shipmentDocuments){
+      let shipmentDocuments  = await this.getShipmentDocuments(model.shipmentModel.shipment);
+      model.documents = model.documents.concat(shipmentDocuments);
     }
 
     this.model = model;
