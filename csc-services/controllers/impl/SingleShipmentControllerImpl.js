@@ -158,20 +158,6 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
           ...this.model.toObject('orderModel.order')
         }
       });
-
-      // const modalConfiguration = {
-      //   controller: 'ScanShipmentModalController',
-      //   disableExpanding: true,
-      //   disableBackdropClosing: false,
-      //   disableFooter: true,
-      //   model: {
-      //     shipmentId: this.model.orderModel.order.orderId,
-      //     ...this.model.toObject('orderModel.order')
-      //   }
-      // };
-
-      // this.showModalFromTemplate('scanShipmentModal', this.confirmScanShipmentCallback, () => {
-      // }, modalConfiguration);
     });
   }
 
