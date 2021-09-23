@@ -1,6 +1,5 @@
 const cscServices = require('csc-services');
 const FileDownloaderService = cscServices.FileDownloaderService;
-const eventBusService = cscServices.EventBusService;
 const { WebcController } = WebCardinal.controllers;
 const { shipmentStatusesEnum, shipmentPendingActionEnum } = cscServices.constants.shipment;
 const momentService = cscServices.momentService;
@@ -13,7 +12,7 @@ class ViewShipmentBaseControllerImpl extends WebcController{
 
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
   }
-  
+
   navigationHandlers() {
     this.onTagClick('nav-back', () => {
       this.history.goBack();

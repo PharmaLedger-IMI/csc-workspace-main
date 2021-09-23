@@ -204,9 +204,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   }
 
   attachRefresh() {
-    console.log("attachRefresh");
 		eventBusService.addEventListener(Topics.RefreshShipments, async () => {
-      console.log("RefreshShipments");
 			let title = 'Shipment Updated';
 			let content = 'Shipment was updated, New status is available';
 			let modalOptions = {
