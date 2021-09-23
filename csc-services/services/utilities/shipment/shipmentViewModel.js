@@ -3,6 +3,16 @@ const shipmentBusinessRequirements = constants.shipment.shipmentBusinessRequirem
 const shippers = shipmentBusinessRequirements.shippers;
 const shipmentViewModel = {
 	form: {
+		shipmentId: {
+			label: 'Shipment ID',
+			name: 'shipment-id',
+			id: 'shipment-id',
+			required: true,
+			placeholder: 'Shipment ID',
+			disabled: false,
+			type: 'text',
+			value: ''
+		},
 		shipperId: {
 			label: 'Shipper ID',
 			name: 'shipper-id',
