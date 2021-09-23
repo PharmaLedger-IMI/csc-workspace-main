@@ -12,34 +12,8 @@ class ViewShipmentBaseControllerImpl extends WebcController{
     super(...props);
 
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
-    this.init();
-  }
-
-  async init() {
-    this.attachRefresh();
-  }
-
-  attachRefresh() {
-    console.log("attachRefresh");
-		eventBusService.addEventListener(Topics.RefreshShipments, async () => {
-      console.log("RefreshShipments");
-			let title = 'Shipment Updated';
-			let content = 'Shipment was updated, New status is available';
-			let modalOptions = {
-				disableExpanding: true,
-				confirmButtonText: 'Update View',
-				id: 'confirm-modal'
-			};
-
-      this.showModal(content, title, this.onSubmitYesResponse.bind(this), this.init.bind(this), modalOptions);
-		});
   }
   
-  async onSubmitYesResponse() {
-    console.log("ShipmentRedirect");
-    this.navigateToPageTag('shipment', { keySSI: model.shipment.keySSI });
-  }
-
   navigationHandlers() {
     this.onTagClick('nav-back', () => {
       this.history.goBack();
