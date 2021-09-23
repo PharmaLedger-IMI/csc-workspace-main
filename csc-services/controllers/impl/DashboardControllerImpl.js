@@ -230,7 +230,6 @@ class DashboardControllerImpl extends WebcController {
 				notificationRole = Roles.Courier;
 				const messageData = data.message.data;
 				const { shipmentSSI } = messageData;
-				let shipmentData = {};
 				if (messageData.transitShipmentSSI) {
 					shipmentData = { ...await this.shipmentService.mountAndReceiveTransitShipment(shipmentSSI, messageData.transitShipmentSSI, this.role) };
 				}
