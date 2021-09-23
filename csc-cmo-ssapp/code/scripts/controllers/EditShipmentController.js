@@ -5,15 +5,19 @@ const OrderService = cscServices.OrderService;
 const ShipmentService = cscServices.ShipmentService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
-const { FoldersEnum } = cscServices.constants;
+const { FoldersEnum, Topics, Roles } = cscServices.constants;
+const { shipmentStatusesEnum } = cscServices.constants.shipment;
+const CommunicationService = cscServices.CommunicationService;
 
 export default class EditShipmentController extends WebcController {
 
 	constructor(...props) {
 		super(...props);
 
+		this.model.keySSI = this.history.location.state.keySSI;
 		this.ordersService = new OrderService(this.DSUStorage);
-		this.shipmentsService = new ShipmentService(this.DSUStorage);
+		let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
+		this.shipmentsService = new ShipmentService(this.DSUStorage, communicationService);
 		this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
 
 		this.attachEventHandlers();
@@ -24,7 +28,26 @@ export default class EditShipmentController extends WebcController {
 		this.downloadKitListHandler();
 		this.attachNavigationHandlers();
 		this.attachFormActions();
+		this.navigationHandlers();
 	}
+
+	navigationHandlers() {
+    this.onTagClick('nav-back', () => {
+      this.history.goBack();
+    });
+
+    this.onTagClick('dashboard', () => {
+      this.navigateToPageTag('dashboard', { tab: Topics.Order });
+    });
+
+    this.onTagClick('shipments', () => {
+      this.navigateToPageTag('dashboard', { tab: Topics.Shipment });
+    });
+
+    this.onTagClick('view-shipment', () => {
+      this.navigateToPageTag('shipment', { keySSI: this.model.keySSI });
+    });
+  }
 
 	downloadKitListHandler() {
 		this.onTagClick('download-kits-file', async (model) => {
@@ -45,10 +68,26 @@ export default class EditShipmentController extends WebcController {
 			this.model.shipmentModel.form = viewModelResolver('shipment').form;
 		});
 
-		this.onTagClick('form:submit', () => {
+		this.onTagClick('form:submit', async () => {
 			const shipmentData = this.prepareShipmentData();
-			console.log(JSON.stringify(shipmentData, null, 2));
-			this.send('confirmed', shipmentData);
+			await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ReadyForDispatch, shipmentData);
+			this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', { tag: 'dashboard', state: { tab: Topics.Shipment }}, 2000);
+			let modalOptions = {
+				disableExpanding: true,
+				disableCancelButton: true,
+				confirmButtonText: 'Ok',
+				id: 'confirm-modal',
+			};
+
+			this.showModal(
+				'Shipment edited successfully!',
+				'Edit Shipment',
+				() => {
+					this.navigateToPageTag('shipment', { keySSI: this.model.keySSI });
+				},
+				() => {},
+				modalOptions
+			);
 		});
 	}
 

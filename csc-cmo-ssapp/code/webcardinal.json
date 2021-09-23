@@ -47,6 +47,13 @@
       "src": "scan-shipment.html",
       "tag": "scan-shipment",
       "indexed": false
+    },
+    {
+      "name": "Edit Shipment",
+      "path": "/edit-shipment",
+      "src": "edit-shipment.html",
+      "tag": "edit-shipment",
+      "indexed": false
     }
   ],
   "skin" : "default"
