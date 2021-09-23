@@ -150,19 +150,28 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
   scanShipmentHandler() {
     this.onTagClick('scan-shipment', () => {
-      const modalConfiguration = {
-        controller: 'ScanShipmentModalController',
-        disableExpanding: true,
-        disableBackdropClosing: false,
-        disableFooter: true,
-        model: {
+      console.log(this.model.toObject('orderModel.order'));
+
+      this.navigateToPageTag('scan-shipment', {
+        shipment: {
           shipmentId: this.model.orderModel.order.orderId,
           ...this.model.toObject('orderModel.order')
         }
-      };
+      });
 
-      this.showModalFromTemplate('scanShipmentModal', this.confirmScanShipmentCallback, () => {
-      }, modalConfiguration);
+      // const modalConfiguration = {
+      //   controller: 'ScanShipmentModalController',
+      //   disableExpanding: true,
+      //   disableBackdropClosing: false,
+      //   disableFooter: true,
+      //   model: {
+      //     shipmentId: this.model.orderModel.order.orderId,
+      //     ...this.model.toObject('orderModel.order')
+      //   }
+      // };
+
+      // this.showModalFromTemplate('scanShipmentModal', this.confirmScanShipmentCallback, () => {
+      // }, modalConfiguration);
     });
   }
 

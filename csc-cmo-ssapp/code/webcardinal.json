@@ -40,6 +40,13 @@
       "src": "shipment.html",
       "tag": "shipment",
       "indexed": false
+    },
+    {
+      "name": "Scan Shipment",
+      "path": "/scan-shipment",
+      "src": "scan-shipment.html",
+      "tag": "scan-shipment",
+      "indexed": false
     }
   ],
   "skin" : "default"
