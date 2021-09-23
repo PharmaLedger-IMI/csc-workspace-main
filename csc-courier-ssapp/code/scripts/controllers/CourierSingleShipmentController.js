@@ -19,6 +19,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
   attachEventListeners() {
     this.showHistoryHandler();
     this.toggleAccordionItemHandler();
+    this.downloadAttachmentHandler();
     this.navigationHandlers();
 
     this.onTagEvent('edit-shipment', 'click', () => {
@@ -57,6 +58,15 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     let shipment = await this.shipmentsService.getShipment(model.keySSI);
     shipment = { ...this.transformShipmentData(shipment) };
     model.shipmentModel.shipment = shipment;
+
+    if (model.shipmentModel.shipment.shipmentComments) {
+      model.shipmentModel.shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
+    }
+
+    if(model.shipmentModel.shipment.shipmentDocuments){
+      model.shipmentModel.shipment.documents = await this.getShipmentDocuments(model.shipmentModel.shipment);
+    }
+
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
     console.log(model);
     this.model = model;
