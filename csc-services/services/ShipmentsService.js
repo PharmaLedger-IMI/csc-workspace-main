@@ -1,7 +1,7 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum } = require('./constants');
-const { shipmentStatusesEnum } = require('./constants/shipment');
+const { shipmentStatusesEnum, shipmentsEventsEnum} = require('./constants/shipment');
 const CommunicationService = require('./lib/CommunicationService.js');
 
 class ShipmentsService extends DSUService {
@@ -196,7 +196,7 @@ class ShipmentsService extends DSUService {
 		})
 	}
 
-	async createAndMountShipmentTransitOtherDSUs(shipmentKeySSI, billData, shipmentDocuments, transitComments){
+	async createAndMountShipmentTransitOtherDSUs(shipmentKeySSI, billData, shipmentDocuments, shipmentComments){
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
 
 		let { shipmentTransitBillingDSU, transitDocumentsDSU, transitCommentsDSU } = await this.createShipmentTransitOtherDSUs();
@@ -211,8 +211,8 @@ class ShipmentsService extends DSUService {
 			transitDocumentsDSU = await this.addDocumentsToDsu(shipmentDocuments,transitDocumentsDSU.keySSI,Roles.Courier);
 		}
 
-		if (transitComments) {
-			transitCommentsDSU = await this.addCommentToDsu(transitComments, transitCommentsDSU.keySSI);
+		if (shipmentComments) {
+			transitCommentsDSU = await this.addCommentToDsu(shipmentComments, transitCommentsDSU.keySSI);
 		}
 
 		shipmentDB.bill = billData;
@@ -250,6 +250,31 @@ class ShipmentsService extends DSUService {
 	}
 
 
+	async addShipmentComment(shipmentSSI, commentData){
+
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
+		let shipmentComments = await this.getEntityAsync(shipmentDB.shipmentComments,FoldersEnum.ShipmentComments);
+		shipmentComments.comments.push(commentData);
+		shipmentComments = await this.saveEntityAsync(shipmentComments,FoldersEnum.ShipmentComments);
+
+		const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY, CommunicationService.identities.CSC.SITE_IDENTITY];
+
+		const inTransitComment = {
+			shipmentSSI:shipmentSSI
+		}
+
+		notifiableActors.forEach(actor=>{
+			this.sendMessageToEntity(
+				actor,
+				shipmentsEventsEnum.InTransitNewComment,
+				inTransitComment,
+				shipmentsEventsEnum.InTransitNewComment
+			);
+		})
+
+		return shipmentComments;
+
+	}
 
 	async getShipmentComments(commentsKeySSI){
 		return await this.getEntityAsync(commentsKeySSI,FoldersEnum.ShipmentComments);
