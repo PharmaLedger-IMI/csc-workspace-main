@@ -1,6 +1,7 @@
 const cscServices = require('csc-services');
 const FileDownloaderService = cscServices.FileDownloaderService;
 const { WebcController } = WebCardinal.controllers;
+const ShipmentService = cscServices.ShipmentService;
 const { shipmentStatusesEnum, shipmentPendingActionEnum } = cscServices.constants.shipment;
 const momentService = cscServices.momentService;
 const { Commons, FoldersEnum, Topics, Roles } = cscServices.constants;
@@ -9,7 +10,7 @@ class ViewShipmentBaseControllerImpl extends WebcController{
 
   constructor(...props) {
     super(...props);
-
+    this.shipmentService = new ShipmentService(this.DSUStorage);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
   }
 
@@ -27,6 +28,7 @@ class ViewShipmentBaseControllerImpl extends WebcController{
     this.onTagClick('download-file', async (model) => {
       const { name, attached_by } = model;
       let keySSI;
+      let location = FoldersEnum.Documents;
       switch (attached_by) {
         case Roles.Sponsor: {
           keySSI = this.model.orderModel.order.sponsorDocumentsKeySSI;
@@ -37,12 +39,13 @@ class ViewShipmentBaseControllerImpl extends WebcController{
           break;
         }
         case Roles.Courier: {
-          keySSI = this.model.shipmentModel.shipment.courierDocumentsKeySSI;
+          keySSI = this.model.shipmentModel.shipment.shipmentDocuments;
+          location = FoldersEnum.ShipmentDocuments
           break;
         }
       }
 
-      await this.downloadFile(name, FoldersEnum.Documents, keySSI);
+      await this.downloadFile(name, location, keySSI);
     });
   }
 
@@ -146,30 +149,35 @@ class ViewShipmentBaseControllerImpl extends WebcController{
       data.pending_action = this.getPendingAction(data.status_value);
       data.contextualContent = {
         afterReadyForDispatch: data.status.findIndex(el => el.status === shipmentStatusesEnum.ReadyForDispatch) !== -1,
-        afterInTransit: data.status.findIndex(el => el.status === shipmentStatusesEnum.InTransit) !== -1,
+        afterInTransit: data.status.findIndex(el => el.status === shipmentStatusesEnum.InTransit) !== -1 && data.hasOwnProperty('bill'),
         afterDelivered: data.status.findIndex(el => el.status === shipmentStatusesEnum.Delivered) !== -1,
         afterReceived: data.status.findIndex(el => el.status === shipmentStatusesEnum.Received) !== -1
       };
-
-      if (data.comments) {
-        data.comments.forEach((comment) => {
-          comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
-        });
-      }
-
-      data.documents = [];
-      if (data.courierDocuments) {
-        data.courierDocuments.forEach((doc) => {
-          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
-          data.documents.push(doc);
-        });
-      }
 
       return data;
     }
 
     return {};
   }
+
+  async getShipmentComments(shipment){
+    let commentsData = await this.shipmentService.getShipmentComments(shipment.shipmentComments);
+    let comments = commentsData.comments;
+    comments.forEach((comment) => {
+      comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
+    });
+    return comments;
+  }
+
+  async getShipmentDocuments(shipment){
+    let documentsData = await this.shipmentService.getShipmentDocuments(shipment.shipmentDocuments);
+    documentsData.documents.forEach((doc)=>{
+      doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
+    });
+
+    return  documentsData.documents;
+  }
+
 
   getPendingAction(status_value) {
     switch (status_value) {

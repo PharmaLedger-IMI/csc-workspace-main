@@ -7,7 +7,7 @@
 
     <section class='order-section'>
       <div class='order-navigation-section'>
-				<span class='nav-back' data-tag='nav-back'>
+        <span class='nav-back' data-tag='nav-back'>
 					<svg viewBox='0 0 52 52' x='0px'
                xml:space='preserve' xmlns='http://www.w3.org/2000/svg'
                y='0px'>
@@ -70,48 +70,106 @@
         <div class='row-wrapper order-data-section'>
           <!-- Shipment Details -->
           <div class='accordion-item' data-tag='toggle-accordion'>
-            <svg enable-background='new 0 0 200 200' class='accordion-icon' version='1.1'
-                 viewBox='0 0 200 200' x='0px' xml:space='preserve'
-                 xmlns='http://www.w3.org/2000/svg' y='0px'>
-                        <path d='M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
+            <svg enable-background='new 0 0 200 200' class='accordion-icon' version='1.1' viewBox='0 0 200 200' x='0px' xml:space='preserve'
+              xmlns='http://www.w3.org/2000/svg' y='0px'>
+              <path d='M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
                             l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
                             C79.619,74.358,79.684,70.511,81.969,68.167z' fill='#231F20' />
-                        </svg>
+            </svg>
             <span>Shipment Details</span>
           </div>
           <div class='accordion-item-holder'>
             <webc-template data-view-model='@shipmentModel' template='shipment/shipment-details'></webc-template>
           </div>
 
-          <!-- Kits -->
-          <div class='accordion-item' data-tag='toggle-accordion'>
-            <svg enable-background='new 0 0 200 200' class='accordion-icon' version='1.1'
-                 viewBox='0 0 200 200' x='0px' xml:space='preserve'
-                 xmlns='http://www.w3.org/2000/svg' y='0px'>
-                        <path d='M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
+          <!-- Attached Documents -->
+          <div data-if='@shipmentModel.shipment.shipmentDocuments'>
+          <div class="accordion-item" data-tag="toggle-accordion" id="attached_documents_accordion">
+            <svg enable-background="new 0 0 200 200" class="accordion-icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
+              <path
+                d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
+                    l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
+                    C79.619,74.358,79.684,70.511,81.969,68.167z"
+                fill="#231F20"
+              />
+            </svg>
+            <span>Attached Documents</span>
+          </div>
+          <div class="accordion-item-holder" data-if="@shipmentModel.shipment.documents.length">
+            <table slot='true' class="table table-borderless attach-documents-table">
+              <thead>
+              <tr>
+                <th scope="col">Document Name</th>
+                <th scope="col">Attached By</th>
+                <th scope="col">Date/Time Attached</th>
+                <th class="text-center" scope="col">Open/Download</th>
+              </tr>
+              </thead>
+              <tbody data-for="@shipmentModel.shipment.documents">
+              <tr>
+                <th>{{@name}}</th>
+                <td>{{@attached_by}}</td>
+                <td>{{@date}}</td>
+                <td class="text-center" data-tag="download-file" data-custom="@name">
+                  <svg class="attach-documents-table-icon" enable-background="new 0 0 200 200" id="Layer_1" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+                       y="0px">
+                      <path
+                        d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
+                                        c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
+                                        c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
+                                        c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"
+                      />
+                    </svg>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <div slot="false">No attached documents</div>
+          </div>
+          </div>
+
+          <div data-if='@shipmentModel.shipment.shipmentComments'>
+          <div class="accordion-item" data-tag="toggle-accordion" id="shipment_comments_accordion">
+            <svg enable-background="new 0 0 200 200" class="accordion-icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+                 y="0px">
+              <path
+                d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
                             l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
-                            C79.619,74.358,79.684,70.511,81.969,68.167z' fill='#231F20' />
-                        </svg>
-            <span>Kits</span>
+                            C79.619,74.358,79.684,70.511,81.969,68.167z"
+                fill="#231F20"
+              />
+            </svg>
+            <span>Shipment Comments</span>
           </div>
-          <div class='accordion-item-holder' data-if='@shipmentModel.shipment.kits'>
-            <span class='py-3 text-muted' slot='false'>No kit scanned yet</span>
+          <div class="accordion-item-holder">
+              <div class="comments-container py-5 flex-column" data-for="@shipmentModel.shipment.comments">
+                <div class="comment">
+                  <div class="identity"><small>{{@entity}}</small>, <small>{{@date}}</small></div>
+                  <div>{{@comment}}</div>
+                </div>
+                <div slot="no-data">No comments</div>
+              </div>
           </div>
+          </div>
+
+
 
         </div>
 
         <div class='row-wrapper button-wrapper'>
-          <webc-template data-view-model='@shipmentModel.shipment' template='shipment/scan-shipment'></webc-template>
+          <div data-if='@actions.canScanPickShipment'>
+            <webc-template data-view-model='@shipmentModel.shipment' template='shipment/scan-shipment'></webc-template>
+          </div>
           <!-- TODO: fix condition -->
-          <div data-if='true'>
-						<button class='btn-default' data-tag='edit-shipment'>
+          <div data-if='@actions.canEditShipment'>
+            <button class='btn-default' data-tag='edit-shipment'>
 							<span class='fas fa-pen'></span>
 							Edit Shipment
 						</button>
-					</div>
+          </div>
         </div>
-					
-				</div>
+
+      </div>
       </div>
     </section>
   </main>
