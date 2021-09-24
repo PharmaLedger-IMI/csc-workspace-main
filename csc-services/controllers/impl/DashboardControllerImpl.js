@@ -32,7 +32,7 @@ class DashboardControllerImpl extends WebcController {
 		if (this.history.location.state && this.history.location.state.tab) {
 			selectedTab = this.history.location.state.tab;
 		} else {
-			selectedTab = Topics.Order;
+			selectedTab = this.role === Roles.Site ? Topics.Shipment : Topics.Order;
 		}
 
 		this.model = {
@@ -228,8 +228,20 @@ class DashboardControllerImpl extends WebcController {
 
 			case shipmentStatusesEnum.InTransit: {
 				notificationRole = Roles.Courier;
-				const { transitShipmentSSI, shipmentSSI } = data.message.data;
-				shipmentData = await this.shipmentService.mountAndReceiveTransitShipment(shipmentSSI, transitShipmentSSI, this.role);
+				const messageData = data.message.data;
+				const { shipmentSSI } = messageData;
+				if (messageData.transitShipmentSSI) {
+					shipmentData = { ...await this.shipmentService.mountAndReceiveTransitShipment(shipmentSSI, messageData.transitShipmentSSI, this.role) };
+				}
+				if (messageData.shipmentBilling) {
+					shipmentData = { ...shipmentData, ...await this.shipmentService.mountShipmentBillingDSU(shipmentSSI, messageData.shipmentBilling)}
+				}
+				if (messageData.shipmentDocuments) {
+					shipmentData = { ...shipmentData, ...await this.shipmentService.mountShipmentDocumentsDSU(shipmentSSI,messageData.shipmentDocuments) };
+				}
+				if (messageData.shipmentComments) {
+					shipmentData = { ...shipmentData, ...await this.shipmentService.mountShipmentCommentsDSU(shipmentSSI,messageData.shipmentComments) };
+				}
 				break;
 			}
 		}

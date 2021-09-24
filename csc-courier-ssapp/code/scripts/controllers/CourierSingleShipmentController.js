@@ -4,6 +4,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const { Roles } = cscServices.constants;
+const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
 class CourierSingleShipmentController extends ViewShipmentBaseController {
   constructor(...props) {
@@ -18,6 +19,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
   attachEventListeners() {
     this.showHistoryHandler();
     this.toggleAccordionItemHandler();
+    this.downloadAttachmentHandler();
     this.navigationHandlers();
 
     this.onTagEvent('edit-shipment', 'click', () => {
@@ -26,6 +28,20 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
         role: Roles.Courier
       });
     });
+  }
+
+  setShipmentActions(shipment) {
+    const actions = {};
+    
+    if (shipment.status[0].status === shipmentStatusesEnum.ReadyForDispatch) {
+      actions.canScanPickShipment = true;
+      actions.canEditShipment = false;
+    } else if (shipment.status[0].status === shipmentStatusesEnum.InTransit) {
+      actions.canEditShipment = true;
+      actions.canScanPickShipment = false;
+    }
+
+    return actions;
   }
 
   async initViewModel() {
@@ -42,6 +58,16 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     let shipment = await this.shipmentsService.getShipment(model.keySSI);
     shipment = { ...this.transformShipmentData(shipment) };
     model.shipmentModel.shipment = shipment;
+
+    if (model.shipmentModel.shipment.shipmentComments) {
+      model.shipmentModel.shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
+    }
+
+    if(model.shipmentModel.shipment.shipmentDocuments){
+      model.shipmentModel.shipment.documents = await this.getShipmentDocuments(model.shipmentModel.shipment);
+    }
+
+    model.actions = this.setShipmentActions(model.shipmentModel.shipment);
     console.log(model);
     this.model = model;
   }

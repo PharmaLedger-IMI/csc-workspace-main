@@ -2,6 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const ShipmentService = cscServices.ShipmentService;
+const CommunicationService = cscServices.CommunicationService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { Roles, FoldersEnum } = cscServices.constants;
@@ -13,7 +14,8 @@ export default class EditShipmentController extends WebcController {
     super(...props);
 
 		this.originalShipment = this.history.location.state.shipment;
-    this.shipmentsService = new ShipmentService(this.DSUStorage);
+    let communicationService = CommunicationService.getInstance(Roles.Courier);
+    this.shipmentsService = new ShipmentService(this.DSUStorage, communicationService);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
 
     this.role = this.history.location.state.role;
@@ -97,9 +99,9 @@ export default class EditShipmentController extends WebcController {
     });
 
     this.onTagClick('form_submit', () => {
-      const shipmentData = this.prepareShipmentData();
+      this.shipmentData = this.prepareShipmentData();
 
-      if (!shipmentData) {
+      if (!this.shipmentData) {
         this.showErrorModal("Please fill-in bill number, HS code and mandatory documents!", "Invalid form", () => {}, () => {});
         return;
       }
@@ -118,12 +120,21 @@ export default class EditShipmentController extends WebcController {
   }
 
   async onSubmitYesResponse() {
-    console.log(JSON.parse(JSON.stringify(shipmentData)));
+    let billingData = {...this.shipmentData.bill};
+    let {keySSI}  = this.model.shipment;
+    await this.shipmentsService.createAndMountShipmentTransitOtherDSUs(keySSI, billingData, this.shipmentData.documents, this.shipmentData.editComment);
+
+    this.showErrorModalAndRedirect('Shipment Edited, redirecting to dashboard...', 'Shipment Edit', {
+      tag: 'shipment',
+      state: { keySSI: keySSI }
+    }, 2000);
+
+
     // TODO: on submit (check if there comments)
     // const result = await this.ShipmentService.editShipment(this.model.shipment.keySSI, ...);
     // eventBusService.emitEventListeners(Topics.RefreshShipments, null);
 
-    this.showErrorModalAndRedirect('Shipment Edited, redirecting to dashboard...', 'Shipment Edit', '/', 2000);
+
   }
 
   attachModelChangeHandlers() {
@@ -231,17 +242,9 @@ export default class EditShipmentController extends WebcController {
     this.model.allComments = JSON.parse(JSON.stringify([]));
     // this.model.shipment = await this.shipmentsService.getShipment(this.model.keySSI);
 		this.model.shipment = this.originalShipment;
-    this.setDocuments();
+    this.model.form.documents = [];
     this.model.wizard = this.getWizardForm();
     console.log(JSON.parse(JSON.stringify(this.model)));
-  }
-
-  setDocuments() {
-    let documents = JSON.parse(JSON.stringify(this.model.shipment.documents));
-    documents = documents.map((x) => ({ ...x, uuid: uuidv4() }));
-    this.files = documents.map((x) => ({ fileContent: x, uuid: x.uuid }));
-    this.model.form.documents = documents;
-    return;
   }
 
   prepareShipmentData() {
@@ -257,7 +260,7 @@ export default class EditShipmentController extends WebcController {
     }
 
     return {
-      formData: { billNumber: billNumber.value, hsCode: hsCode.value },
+      bill: { billNumber: billNumber.value, hsCode: hsCode.value },
       documents,
       editComment
     }
