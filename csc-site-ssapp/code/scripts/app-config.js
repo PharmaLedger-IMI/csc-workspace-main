@@ -14,6 +14,7 @@ const OrdersController = cscServices.getController('OrdersController', ACTOR);
 const SingleShipmentController = cscServices.getController('SingleShipmentController', ACTOR);
 const ShipmentsController = cscServices.getController('ShipmentsController', ACTOR);
 const ScanShipmentModalController = cscServices.getController('ScanShipmentModalController', ACTOR);
+const TabNavigatorController = cscServices.getController('TabNavigatorController', ACTOR);
 
 addControllers({
 	TableTemplateController,
@@ -26,5 +27,6 @@ addControllers({
 	OrdersController,
 	ShipmentsController,
 	SingleShipmentController,
-	ScanShipmentModalController
+	ScanShipmentModalController,
+	TabNavigatorController
 });

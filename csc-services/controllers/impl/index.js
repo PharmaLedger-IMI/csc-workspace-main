@@ -11,3 +11,4 @@ require("./helpers/ViewShipmentBaseController");
 require("./SingleShipmentControllerImpl");
 require("./ShipmentsControllerImpl");
 require("./ScanShipmentModalControllerImpl");
+require("./TabNavigatorControllerImpl");
