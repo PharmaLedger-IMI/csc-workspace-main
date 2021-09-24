@@ -97,7 +97,6 @@ class ShipmentsService extends DSUService {
 
 			case shipmentStatusesEnum.ShipmentCancelled: {
 				notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
-				notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
 				break;
 			}
 		}
@@ -195,73 +194,109 @@ class ShipmentsService extends DSUService {
 				shipmentStatusesEnum.InTransit
 			);
 		})
-
 	}
 
-	/** not used yet **/
-	async updateShipmentNew(shipmentKeySSI, data) {
+	async createAndMountShipmentTransitOtherDSUs(shipmentKeySSI, billData, shipmentDocuments, transitComments){
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
 
-		const { shipmentTransitBillingDsu, shipmentTransitDsu } = await this.createShipmentOtherDSUs();
-		const shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
+		let { shipmentTransitBillingDSU, transitDocumentsDSU, transitCommentsDSU } = await this.createShipmentTransitOtherDSUs();
 
-		if (data.masterWayBillN && data.hsCode) {
-			const shipmentTransitBilling = await this.updateShipmentTransitBillingDsu(data.masterWayBillN, data.hsCode, shipmentTransitBillingDsu.uid);
-			shipmentDB.shipmentTransitBilling = shipmentTransitBilling.billings;
-		  }
+		for(let prop in billData){
+			shipmentTransitBillingDSU[prop] = billData[prop];
+		}
 
-		if (data.recipientName && data.deliveryDateTime && data.shipmentId) {
-			const shipmentTransit = await this.updateShipmentTransitDsu(data.recipientName, data.deliveryDateTime, data.shipmentId, shipmentTransitDsu.uid);
-			shipmentDB.shipmentTransit = shipmentTransit.transits;
-		  }
+		await this.updateEntityAsync(shipmentTransitBillingDSU, FoldersEnum.ShipmentTransitBilling);
 
-		const result = await this.addShipmentToDB(shipmentDB, shipmentKeySSI);
+		if(shipmentDocuments){
+			transitDocumentsDSU = await this.addDocumentsToDsu(shipmentDocuments,transitDocumentsDSU.keySSI,Roles.Courier);
+		}
 
-		return result;
+		if (transitComments) {
+			transitCommentsDSU = await this.addCommentToDsu(transitComments, transitCommentsDSU.keySSI);
+		}
+
+		shipmentDB.bill = billData;
+		shipmentDB.shipmentBilling = shipmentTransitBillingDSU.keySSI;
+		shipmentDB.shipmentDocuments = transitDocumentsDSU.keySSI;
+		shipmentDB.shipmentComments = transitCommentsDSU.keySSI;
+
+		const siteMessage = {
+			shipmentSSI: shipmentKeySSI,
+			shipmentComments: shipmentDB.shipmentComments
+		};
+
+		this.sendMessageToEntity(
+			CommunicationService.identities.CSC.SITE_IDENTITY,
+			shipmentStatusesEnum.InTransit,
+			siteMessage,
+			shipmentStatusesEnum.InTransit
+		);
+
+		const sponsorMessage = {
+			shipmentSSI: shipmentKeySSI,
+			shipmentBilling: shipmentTransitBillingDSU.keySSI,
+			shipmentDocuments: shipmentDB.shipmentDocuments,
+			shipmentComments: shipmentDB.shipmentComments
+		};
+
+		this.sendMessageToEntity(
+			CommunicationService.identities.CSC.SPONSOR_IDENTITY,
+			shipmentStatusesEnum.InTransit,
+			sponsorMessage,
+			shipmentStatusesEnum.InTransit
+		);
+
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentKeySSI, shipmentDB);
 	}
 
-	async createShipmentOtherDSUs() {
-		const shipmentTransitBillingDsu = await this.saveEntityAsync(
-			{
-				billings: [],
-			},
+
+
+	async getShipmentComments(commentsKeySSI){
+		return await this.getEntityAsync(commentsKeySSI,FoldersEnum.ShipmentComments);
+	}
+	async getShipmentDocuments(documentsKeySSI){
+		return await this.getEntityAsync(documentsKeySSI,FoldersEnum.ShipmentDocuments);
+	}
+
+	async createShipmentTransitOtherDSUs() {
+		const shipmentTransitBillingDSU = await this.saveEntityAsync(
+			{},
 			FoldersEnum.ShipmentTransitBilling
 		);
-		const shipmentTransitDsu = await this.saveEntityAsync(
-			{
-				transits: [],
-			},
-			FoldersEnum.ShipmentTransit
+		const transitDocumentsDSU = await this.saveEntityAsync(
+			{ documents: [] },
+			FoldersEnum.ShipmentDocuments
+		);
+		const transitCommentsDSU = await this.saveEntityAsync(
+			{ comments: [] },
+			FoldersEnum.ShipmentComments
 		);
 
-		return { shipmentTransitBillingDsu, shipmentTransitDsu };
+		return { shipmentTransitBillingDSU, transitDocumentsDSU, transitCommentsDSU };
 	}
 
-	async updateShipmentTransitBillingDsu(masterWayBillN, hsCode, keySSI) {
-		const shipmentTransitBillingDsu = await this.getEntityAsync(keySSI, FoldersEnum.ShipmentTransitBilling);
-		const result = await this.updateEntityAsync(
-		  {
-			...shipmentTransitBillingDsu,
-			masterWayBillN: [...shipmentTransitBillingDsu.masterWayBillN, masterWayBillN],
-			hsCode: [...shipmentTransitBillingDsu.hsCode, hsCode],
-		  },
-		  FoldersEnum.ShipmentTransitBilling
-		);
-		return result;
-	  }
 
-	  async updateShipmentTransitDsu(recipientName, deliveryDateTime, shipmentId, keySSI) {
-		const shipmentTransitDsu = await this.getEntityAsync(keySSI, FoldersEnum.ShipmentTransit);
-		const result = await this.updateEntityAsync(
-		  {
-			...shipmentTransitDsu,
-			recipientName: [...shipmentTransitDsu.recipientName, recipientName],
-			deliveryDateTime: [...shipmentTransitDsu.deliveryDateTime, deliveryDateTime],
-			shipmentId: [...shipmentTransitDsu.shipmentId, shipmentId],
-		  },
-		  FoldersEnum.ShipmentTransit
-		);
-		return result;
-	  }
+	async mountShipmentBillingDSU(shipmentSSI, shipmentTransitSSI){
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
+		await this.mountEntityAsync(shipmentTransitSSI, FoldersEnum.ShipmentTransitBilling);
+		shipmentDB.shipmentTransitBillingDSU = shipmentTransitSSI;
+		shipmentDB.bill = await this.getEntityAsync(shipmentTransitSSI, FoldersEnum.ShipmentTransitBilling);
+		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
+	}
+
+	async mountShipmentCommentsDSU(shipmentSSI, shipmentCommentsSSI){
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
+		await this.mountEntityAsync(shipmentCommentsSSI, FoldersEnum.ShipmentComments);
+		shipmentDB.shipmentComments = shipmentCommentsSSI;
+		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
+	}
+
+	async mountShipmentDocumentsDSU(shipmentSSI, shipmentDocumentsSSI){
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
+		await this.mountEntityAsync(shipmentDocumentsSSI, FoldersEnum.ShipmentDocuments);
+		shipmentDB.shipmentDocuments = shipmentDocumentsSSI;
+		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
+	}
 
 	async updateLocalShipment(shipmentSSI, newShipmentData = {}) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
@@ -277,6 +312,75 @@ class ShipmentsService extends DSUService {
 
 		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
 	}
+
+	//TODO to be refactored and extracted in a separete service used also of adding orders comments, documents
+	async addDocumentsToDsu(files, keySSI, role) {
+		const documentsDsu = await this.getEntityAsync(keySSI, FoldersEnum.ShipmentDocuments);
+
+		const updatedDocumentsDSU = await this.updateEntityAsync(
+			{
+				...documentsDsu,
+				documents: [
+					...documentsDsu.documents,
+					...files.map((x) => ({
+						name: x.name,
+						attached_by: role,
+						date: new Date().getTime(),
+					})),
+				],
+			},
+			FoldersEnum.ShipmentDocuments
+		);
+
+		for (const file of files) {
+			const attachmentKeySSI = await this.uploadFile(FoldersEnum.ShipmentDocuments + '/' + updatedDocumentsDSU.uid + '/' + 'files' + '/' + file.name, file);
+			updatedDocumentsDSU.documents.find((x) => x.name === file.name).attachmentKeySSI = attachmentKeySSI;
+		}
+		const result = await this.updateEntityAsync(updatedDocumentsDSU, FoldersEnum.ShipmentDocuments);
+
+		return result;
+	}
+	//TODO to be refactored and extracted in a separete service used also of adding orders comments, documents
+	async addCommentToDsu(comments, keySSI) {
+		const commentsDsu = await this.getEntityAsync(keySSI, FoldersEnum.ShipmentComments);
+		const result = await this.updateEntityAsync(
+			{
+				...commentsDsu,
+				comments: [...commentsDsu.comments, comments],
+			},
+			FoldersEnum.ShipmentComments
+		);
+		return result;
+	}
+
+	uploadFile(path, file) {
+		function getFileContentAsBuffer(file, callback) {
+			let fileReader = new FileReader();
+			fileReader.onload = function (evt) {
+				let arrayBuffer = fileReader.result;
+				callback(undefined, arrayBuffer);
+			};
+
+			fileReader.readAsArrayBuffer(file);
+		}
+
+		return new Promise((resolve, reject) => {
+			getFileContentAsBuffer(file, (err, arrayBuffer) => {
+				if (err) {
+					reject('Could not get file as a Buffer');
+				}
+				this.DSUStorage.writeFile(path, $$.Buffer.from(arrayBuffer), undefined, (err, keySSI) => {
+					if (err) {
+						reject(new Error(err));
+						return;
+					}
+					resolve();
+				});
+			});
+		});
+	}
+
+
 }
 
 module.exports = ShipmentsService;

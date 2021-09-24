@@ -45,24 +45,11 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
   editShipmentHandler() {
     this.onTagClick('edit-shipment', () => {
-      const modalConfiguration = {
-        controller: 'EditShipmentController',
-        disableExpanding: true,
-        disableBackdropClosing: false,
-        disableFooter: true,
-        model: { keySSI: this.model.keySSI }
-      };
-
-      this.showModalFromTemplate('editShipment', this.confirmEditShipmentCallback, () => {
-      }, modalConfiguration);
+      this.navigateToPageTag('edit-shipment', {
+        keySSI: this.model.keySSI
+      });
     });
   }
-
-  confirmEditShipmentCallback = async (event) => {
-    const shipmentDetails = event.detail;
-    await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ReadyForDispatch, shipmentDetails);
-    this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', { tag: 'dashboard', state: { tab: Topics.Shipment }}, 2000);
-  };
 
   transformOrderData(data) {
     if (data) {
@@ -91,29 +78,17 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
   setShipmentActions(shipment) {
     const actions = {};
-    const cancelShipmentStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
     switch(this.role) {
       case Roles.Sponsor: {
-        actions.canCancelOrderAndShipment = cancelShipmentStatuses.indexOf(shipment.status_value) !== -1;
+        actions.canCancelOrderAndShipment = (shipment.status_value === shipmentStatusesEnum.InPreparation);
         this.attachSponsorEventHandlers();
 
         break;
       }
 
       case Roles.CMO: {
-        if (shipment.status[0].status === shipmentStatusesEnum.InPreparation && !shipment.isShipmentScanSuccessful){
-          actions.canScanShipment = true;
-          actions.canEditShipment = false;
-          actions.showDefaultKitsAccordianText = true;
-        } else if(shipment.isShipmentScanSuccessful) {
-          actions.canEditShipment = true;
-          actions.canScanShipment = false;
-          actions.showDefaultKitsAccordianText = false;
-        } else {
-          actions.canEditShipment = false;
-          actions.canScanShipment = false;
-          actions.showDefaultKitsAccordianText = true;
-        }
+        actions.canScanShipment = shipment.status_value === shipmentStatusesEnum.InPreparation && !shipment.isShipmentScanSuccessful;
+        actions.canEditShipment = shipment.status_value === shipmentStatusesEnum.InPreparation && shipment.isShipmentScanSuccessful === true;
 
         this.attachCmoEventHandlers();
         break;
@@ -162,19 +137,12 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
   scanShipmentHandler() {
     this.onTagClick('scan-shipment', () => {
-      const modalConfiguration = {
-        controller: 'ScanShipmentModalController',
-        disableExpanding: true,
-        disableBackdropClosing: false,
-        disableFooter: true,
-        model: {
+      this.navigateToPageTag('scan-shipment', {
+        shipment: {
           shipmentId: this.model.orderModel.order.orderId,
           ...this.model.toObject('orderModel.order')
         }
-      };
-
-      this.showModalFromTemplate('scanShipmentModal', this.confirmScanShipmentCallback, () => {
-      }, modalConfiguration);
+      });
     });
   }
 
@@ -198,6 +166,10 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     model.shipmentModel.shipment = await this.shipmentsService.getShipment(model.keySSI);
     model.shipmentModel.shipment = { ...this.transformShipmentData(model.shipmentModel.shipment) };
+    if (model.shipmentModel.shipment.shipmentComments) {
+      model.shipmentModel.shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
+    }
+
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
 
     model.orderModel.order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
@@ -211,7 +183,27 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
       model.documents = model.documents.concat(model.shipmentModel.shipment.documents);
     }
 
+    if(model.shipmentModel.shipment.shipmentDocuments){
+      let shipmentDocuments  = await this.getShipmentDocuments(model.shipmentModel.shipment);
+      model.documents = model.documents.concat(shipmentDocuments);
+    }
+
     this.model = model;
+    this.attachRefresh();
+  }
+
+  attachRefresh() {
+		eventBusService.addEventListener(Topics.RefreshShipments, async () => {
+			let title = 'Shipment Updated';
+			let content = 'Shipment was updated, New status is available';
+			let modalOptions = {
+				disableExpanding: true,
+				confirmButtonText: 'Update View',
+				id: 'confirm-modal'
+			};
+
+      this.showModal(content, title, this.initViewModel.bind(this), this.initViewModel.bind(this), modalOptions);
+		});
   }
 }
 
