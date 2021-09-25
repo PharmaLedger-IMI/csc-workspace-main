@@ -26,7 +26,18 @@ class OrdersService extends DSUService {
   }
 
   async getOrder(keySSI) {
-    return await this.storageService.getRecord(this.ORDERS_TABLE, keySSI);
+    let order;
+    //this is the SITE who will thrown an error because it doesn't have order mounted but the orderKeySSI is in the shipment
+    //TODO check with business this requirement
+    try{
+      order = await this.storageService.getRecord(this.ORDERS_TABLE, keySSI);
+    }
+    catch (e){
+      const orderDataDSU = await this.mountEntityAsync(keySSI,FoldersEnum.Orders);
+      order = await this.storageService.insertRecord(this.ORDERS_TABLE, keySSI,orderDataDSU);
+    }
+    return order
+
   }
 
   async addOrderToDB(data, key) {

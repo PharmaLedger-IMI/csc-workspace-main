@@ -135,10 +135,15 @@ class ShipmentsService extends DSUService {
 		}
 	}
 
-	async mountAndReceiveTransitShipment(shipmentSSI, transitShipmentSSI, role) {
+	async mountAndReceiveTransitShipment(shipmentSSI, transitShipmentSSI, statusKeySSI, role) {
 		let transitShipment, shipmentDb, status;
-
-		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
+		let shipmentDB;
+		if(role === Roles.Site){
+			shipmentDB = await this.mountAndReceiveShipment(shipmentSSI, role, statusKeySSI);
+		}
+		else{
+			shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
+		}
 		status = await this.getEntityAsync(shipmentDB.statusSSI,FoldersEnum.ShipmentsStatuses);
 		transitShipment = await this.mountEntityAsync(transitShipmentSSI, FoldersEnum.ShipmentTransit);
 		shipmentDB.transitShipmentKeySSI = transitShipmentSSI;
@@ -182,6 +187,7 @@ class ShipmentsService extends DSUService {
 
 		const inTransitDSUMessage = {
 			transitShipmentSSI: shipmentTransitDSU.keySSI,
+			statusSSI:status.keySSI,
 			shipmentSSI: shipmentKeySSI
 		}
 
