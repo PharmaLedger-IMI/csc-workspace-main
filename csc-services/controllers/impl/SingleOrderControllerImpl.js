@@ -295,13 +295,13 @@ class SingleOrderControllerImpl extends WebcController {
     const isShipmentCreated = typeof shipment !== 'undefined';
     const canCMOReviewStatuses = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedBySponsor];
     const canSponsorReviewStatuses = [orderStatusesEnum.ReviewedByCMO];
-    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
+    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation];
     const actions = {};
 
     switch (this.role) {
       case Roles.Sponsor:
         actions.canBeReviewed = canSponsorReviewStatuses.indexOf(order.status_value) !== -1;
-        actions.canBeCancelled = cancellableOrderStatus.indexOf(order.status_value) !== -1 || cancellableOrderStatus.indexOf(shipment.status_value) !== -1;
+        actions.canBeCancelled = cancellableOrderStatus.indexOf(order.status_value) !== -1 && (!shipment || cancellableOrderStatus.indexOf(shipment.status_value) !== -1);
         actions.canBeApproved = actions.canBeReviewed;
         actions.orderCancelButtonText = isShipmentCreated ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
         this.attachSponsorEventHandlers();
