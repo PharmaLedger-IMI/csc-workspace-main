@@ -32,13 +32,22 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
 
   setShipmentActions(shipment) {
     const actions = {};
-    
+
     if (shipment.status[0].status === shipmentStatusesEnum.ReadyForDispatch) {
       actions.canScanPickShipment = true;
       actions.canEditShipment = false;
+      actions.canAddMessage = false;
     } else if (shipment.status[0].status === shipmentStatusesEnum.InTransit) {
-      actions.canEditShipment = true;
-      actions.canScanPickShipment = false;
+      const bill_number = JSON.stringify(shipment.bill.billNumber);
+      if (bill_number != null) {
+        actions.canEditShipment = false;
+        actions.canScanPickShipment = false;
+        actions.canAddMessage = true;
+      } else {
+        actions.canEditShipment = true;
+        actions.canScanPickShipment = false;
+        actions.canAddMessage = false;
+      }
     }
 
     return actions;
@@ -63,7 +72,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
       model.shipmentModel.shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
     }
 
-    if(model.shipmentModel.shipment.shipmentDocuments){
+    if (model.shipmentModel.shipment.shipmentDocuments) {
       model.shipmentModel.shipment.documents = await this.getShipmentDocuments(model.shipmentModel.shipment);
     }
 
