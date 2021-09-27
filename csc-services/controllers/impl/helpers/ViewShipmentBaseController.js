@@ -50,8 +50,8 @@ class ViewShipmentBaseControllerImpl extends WebcController{
   }
 
   downloadKitListHandler() {
-    this.onTagClick('download-kits-file', async (model) => {
-      const { kitsFilename, kitsSSI } = model.order;
+    this.onTagClick('download-kits-file', async (order) => {
+      const { kitsFilename, kitsSSI } = order;
       await this.downloadFile(kitsFilename, FoldersEnum.Kits, kitsSSI);
     });
   }
