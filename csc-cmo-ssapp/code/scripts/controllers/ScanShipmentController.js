@@ -11,7 +11,6 @@ export default class ScanShipmentController extends WebcController {
     this.role = Roles.CMO;
 
     this.model = this.history.location.state.shipment;
-    console.log(this.history.location.state.shipment);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     this.shipmentsService = new ShipmentsService(this.DSUStorage);
 
@@ -219,6 +218,7 @@ export default class ScanShipmentController extends WebcController {
       { id: 'step-3', holder_id: 'step-3-wrapper', name: 'Confirmation', visible: false, validated: false },
     ];
 
+    this.model.showShipmentDetails = true;
     this.model.scannedShipmentData = '';
     this.model.isShipmentScanOk = false;
     this.model.canScanShipment = true;

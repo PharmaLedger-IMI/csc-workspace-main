@@ -231,7 +231,7 @@ class DashboardControllerImpl extends WebcController {
 				const messageData = data.message.data;
 				const { shipmentSSI } = messageData;
 				if (messageData.transitShipmentSSI) {
-					shipmentData = { ...await this.shipmentService.mountAndReceiveTransitShipment(shipmentSSI, messageData.transitShipmentSSI, this.role) };
+					shipmentData = { ...await this.shipmentService.mountAndReceiveTransitShipment(shipmentSSI, messageData.transitShipmentSSI, messageData.statusSSI, this.role) };
 				}
 				if (messageData.shipmentBilling) {
 					shipmentData = { ...shipmentData, ...await this.shipmentService.mountShipmentBillingDSU(shipmentSSI, messageData.shipmentBilling)}
