@@ -201,6 +201,9 @@ class SingleOrderControllerImpl extends WebcController {
     if (this.model.order.shipmentSSI) {
       const shipment = await this.shipmentsService.getShipment(this.model.order.shipmentSSI);
       this.model.shipment = this.transformShipmentData(shipment);
+      if (this.model.shipment.status_value !== shipmentStatusesEnum.InPreparation) {
+        this.model.order.pending_action = orderPendingActionEnum.NoFurtherActionsRequired;
+      }
     }
 
     this.model.order.actions = this.setOrderActions();
