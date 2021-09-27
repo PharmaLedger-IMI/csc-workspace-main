@@ -157,6 +157,11 @@
         </div>
 
         <div class='row-wrapper button-wrapper'>
+
+          <div data-if='@actions.canAddShipmentComment'>
+            <webc-template data-view-model='@shipmentModel.shipment' template='shipment/add-shipment-comment'></webc-template>
+          </div>
+
           <div data-if='@actions.canScanPickShipment'>
             <webc-template data-view-model='@shipmentModel.shipment' template='shipment/scan-shipment'></webc-template>
           </div>

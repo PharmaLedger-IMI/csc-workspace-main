@@ -36,9 +36,11 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     if (shipment.status[0].status === shipmentStatusesEnum.ReadyForDispatch) {
       actions.canScanPickShipment = true;
       actions.canEditShipment = false;
+      actions.canAddShipmentComment = false;
     } else if (shipment.status[0].status === shipmentStatusesEnum.InTransit) {
       actions.canEditShipment = true;
       actions.canScanPickShipment = false;
+      actions.canAddShipmentComment = true;
     }
 
     return actions;
