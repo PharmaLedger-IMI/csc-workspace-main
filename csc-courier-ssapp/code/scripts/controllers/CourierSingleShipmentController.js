@@ -3,7 +3,8 @@ const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
-const { Roles } = cscServices.constants;
+const eventBusService = cscServices.EventBusService;
+const { Roles, Topics } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
 class CourierSingleShipmentController extends ViewShipmentBaseController {
@@ -60,6 +61,21 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
     console.log(model);
     this.model = model;
+    this.attachRefresh();
+  }
+
+  attachRefresh() {
+		eventBusService.addEventListener(Topics.RefreshShipments, async () => {
+			let title = 'Shipment Updated';
+			let content = 'Shipment was updated, New status is available';
+			let modalOptions = {
+				disableExpanding: true,
+				confirmButtonText: 'Update View',
+				id: 'confirm-modal'
+			};
+
+      this.showModal(content, title, this.initViewModel.bind(this), this.initViewModel.bind(this), modalOptions);
+		});
   }
 }
 
