@@ -37,16 +37,18 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
       actions.canScanPickShipment = true;
       actions.canEditShipment = false;
       actions.canAddMessage = false;
+      actions.scan = false;
     } else if (shipment.status[0].status === shipmentStatusesEnum.InTransit) {
-      const bill_number = JSON.stringify(shipment.bill.billNumber);
-      if (bill_number != null) {
+      if (shipment.shipmentBilling) {
         actions.canEditShipment = false;
         actions.canScanPickShipment = false;
         actions.canAddMessage = true;
+        actions.scan = true;
       } else {
         actions.canEditShipment = true;
         actions.canScanPickShipment = false;
         actions.canAddMessage = false;
+        actions.scan = false;
       }
     }
 
