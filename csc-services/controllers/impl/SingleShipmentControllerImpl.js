@@ -45,24 +45,11 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
   editShipmentHandler() {
     this.onTagClick('edit-shipment', () => {
-      const modalConfiguration = {
-        controller: 'EditShipmentController',
-        disableExpanding: true,
-        disableBackdropClosing: false,
-        disableFooter: true,
-        model: { keySSI: this.model.keySSI }
-      };
-
-      this.showModalFromTemplate('editShipment', this.confirmEditShipmentCallback, () => {
-      }, modalConfiguration);
+      this.navigateToPageTag('edit-shipment', {
+        keySSI: this.model.keySSI
+      });
     });
   }
-
-  confirmEditShipmentCallback = async (event) => {
-    const shipmentDetails = event.detail;
-    await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ReadyForDispatch, shipmentDetails);
-    this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', { tag: 'dashboard', state: { tab: Topics.Shipment }}, 2000);
-  };
 
   transformOrderData(data) {
     if (data) {
@@ -150,19 +137,12 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
   scanShipmentHandler() {
     this.onTagClick('scan-shipment', () => {
-      const modalConfiguration = {
-        controller: 'ScanShipmentModalController',
-        disableExpanding: true,
-        disableBackdropClosing: false,
-        disableFooter: true,
-        model: {
+      this.navigateToPageTag('scan-shipment', {
+        shipment: {
           shipmentId: this.model.orderModel.order.orderId,
           ...this.model.toObject('orderModel.order')
         }
-      };
-
-      this.showModalFromTemplate('scanShipmentModal', this.confirmScanShipmentCallback, () => {
-      }, modalConfiguration);
+      });
     });
   }
 
@@ -186,6 +166,10 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     model.shipmentModel.shipment = await this.shipmentsService.getShipment(model.keySSI);
     model.shipmentModel.shipment = { ...this.transformShipmentData(model.shipmentModel.shipment) };
+    if (model.shipmentModel.shipment.shipmentComments) {
+      model.shipmentModel.shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
+    }
+
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
 
     model.orderModel.order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
@@ -197,6 +181,11 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     }
     if (model.shipmentModel.shipment.documents) {
       model.documents = model.documents.concat(model.shipmentModel.shipment.documents);
+    }
+
+    if(model.shipmentModel.shipment.shipmentDocuments){
+      let shipmentDocuments  = await this.getShipmentDocuments(model.shipmentModel.shipment);
+      model.documents = model.documents.concat(shipmentDocuments);
     }
 
     this.model = model;

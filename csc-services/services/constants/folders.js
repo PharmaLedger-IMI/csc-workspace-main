@@ -8,4 +8,6 @@ module.exports.FoldersEnum = {
     ShipmentsStatuses: '/shipmentsstatuses',
     ShipmentTransitBilling: '/shipmenttransitbilling',
     ShipmentTransit:'/shipmenttransit',
+    ShipmentDocuments:'/shipmentdocuments',
+    ShipmentComments:'/shipmentcomments',
 };

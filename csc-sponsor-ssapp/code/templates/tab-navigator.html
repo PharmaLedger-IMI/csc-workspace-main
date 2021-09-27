@@ -1,0 +1,13 @@
+<webc-container controller='TabNavigatorController' data-view-model="@">
+<div class="tab-navigator">
+	<button class="btn" is-active="@isOrder" data-custom="order" data-tag="change-tab" id="tab-0">
+		<i class="far fa-list-alt mr-2"></i>Orders
+	</button>
+	<button class="btn" is-active="@isShipment" data-custom="shipment" data-tag="change-tab" id="tab-1">
+		<i class="fas fa-truck mr-2"></i>Shipments
+	</button>
+	<button class="btn" is-active="@isKit" data-custom="kits" data-tag="change-tab" id="tab-2">
+		<i class="fas fa-medkit mr-2"></i>Kits
+	</button>
+</div>
+</webc-container>
