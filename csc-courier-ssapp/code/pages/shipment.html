@@ -151,7 +151,7 @@
         </div>
 
         <div class='row-wrapper button-wrapper'>
-          <div data-if='@actions.canScanPickShipment'>
+          <div data-if='@actions.canPickupShipment'>
             <webc-template data-view-model='@shipmentModel.shipment' template='shipment/scan-shipment'></webc-template>
           </div>
           <!-- TODO: fix condition -->
@@ -167,10 +167,10 @@
 							Add Message
 						</button>
           </div>
-          <div data-if='@actions.scan'>
-            <button class='btn-default' data-tag='scan'>
+          <div data-if='@actions.canDeliverShipment'>
+            <button class='btn-default' data-tag='scan-and-deliver'>
 							<span class='fas fa-icon fa-qrcode'></span>
-							Scan
+							Scan & Deliver Shipment
 						</button>
           </div>
         </div>
