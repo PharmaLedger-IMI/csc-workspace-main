@@ -1,0 +1,37 @@
+<style xmlns='http://www.w3.org/1999/html'>
+    webc-modal {
+        --max-width: calc( 100% - 40px);
+    }
+</style>
+
+<div slot="header">
+  <div class="modal-main-title">Add Shipment Comment</div>
+</div>
+
+
+<div class='row'>
+
+  <div class='col-12'>
+    <div class='form-group'>
+      <label>Comment</label>
+      <textarea id='commentValue' class='form-control' value="@form.inputs.comment.value"></textarea>
+    </div>
+  </div>
+
+  <!-- Navigation Between Steps-->
+  <div class="row-wrapper button-wrapper">
+
+    <button id='closeModalButton' class="btn-default" data-close="">
+      <i class="fas fa-window-close"></i>
+      Close
+    </button>
+
+    <button class="btn-default" data-tag="add-shipment-comment-submit-button" id="submitButton">
+      <i class="fas fa-check"></i>
+      Submit
+    </button>
+  </div>
+</div>
+
+<div slot="footer">
+</div>

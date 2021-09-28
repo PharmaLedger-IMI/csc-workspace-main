@@ -161,12 +161,11 @@
 							Edit Shipment
 						</button>
           </div>
+
           <div data-if='@actions.canAddMessage'>
-            <button class='btn-default' data-tag='add-message'>
-							<span class='fas fa-pen'></span>
-							Add Message
-						</button>
+            <webc-template data-view-model='@shipmentModel.shipment' template='shipment/add-shipment-comment'></webc-template>
           </div>
+            
           <div data-if='@actions.canDeliverShipment'>
             <button class='btn-default' data-tag='scan-and-deliver'>
 							<span class='fas fa-icon fa-qrcode'></span>
