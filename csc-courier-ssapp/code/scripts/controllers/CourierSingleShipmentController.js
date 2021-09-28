@@ -29,6 +29,10 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
         role: Roles.Courier
       });
     });
+
+    this.onTagEvent('add-shipment-comment', 'click', (e) => {
+      this.onAddShipmentCommentModalOpen();
+    });
   }
 
   setShipmentActions(shipment) {
@@ -96,6 +100,22 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
 
       this.showModal(content, title, this.initViewModel.bind(this), this.initViewModel.bind(this), modalOptions);
 		});
+  }
+
+  onAddShipmentCommentModalOpen(){
+    this.createWebcModal({
+      template: 'addShipmentCommentModal',
+      model:this.model,
+      controller: 'AddShipmentCommentModalController',
+      disableBackdropClosing: true,
+      disableFooter: true,
+      disableHeader: true,
+      disableExpanding: true,
+      disableClosing: false,
+      disableCancelButton: true,
+      expanded: false,
+      centered: true,
+    });
   }
 }
 
