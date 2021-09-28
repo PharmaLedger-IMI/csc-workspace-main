@@ -30,7 +30,6 @@ class OrdersService extends DSUService {
     //this is the SITE who will thrown an error because it doesn't have order mounted but the orderKeySSI is in the shipment
     //TODO check with business this requirement
     try{
-      debugger;
       order = await this.storageService.getRecord(this.ORDERS_TABLE, keySSI);
       const documentsAndComments = await this.getDocumentsAndComments(order);
       order = {...order, ...documentsAndComments};

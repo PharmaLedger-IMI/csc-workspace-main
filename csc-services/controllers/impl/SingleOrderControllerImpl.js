@@ -192,7 +192,7 @@ class SingleOrderControllerImpl extends WebcController {
   async init() {
     const order = await this.ordersService.getOrder(this.model.keySSI);
     this.model.order = order;
-    this.model.order = { ...this.transformData(this.model.order) };
+    this.model.order = { ...this.transformOrderData(this.model.order) };
     this.model.order.delivery_date = {
       date: this.getDate(this.model.order.deliveryDate),
       time: this.getTime(this.model.order.deliveryDate)
@@ -210,7 +210,7 @@ class SingleOrderControllerImpl extends WebcController {
     this.attachRefresh();
   }
 
-  transformData(data) {
+  transformOrderData(data) {
     if (data) {
       data.documents = [];
 
