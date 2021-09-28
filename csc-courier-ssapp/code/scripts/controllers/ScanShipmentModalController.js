@@ -3,7 +3,8 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const ShipmentService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
-const { shipment, Roles } = cscServices.constants;
+const eventBusService = cscServices.EventBusService;
+const { shipment, Roles, Topics } = cscServices.constants;
 
 
 class ScanShipmentModalController extends WebcController {
@@ -94,9 +95,7 @@ class ScanShipmentModalController extends WebcController {
     payload.signature = true;
 
     this.shipmentService.createAndMountTransitDSU(this.model.shipment.shipmentSSI, payload).then(()=>{
-      //close modal from inside
-      this.element.destroy();
-      this.showErrorModalAndRedirect('Shipment is in transit now...', 'Shipment In Transit', { tag: 'shipment', keySSI: this.model.shipment.shipmentSSI }, 2000);
+      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     })
   }
   getModel() {

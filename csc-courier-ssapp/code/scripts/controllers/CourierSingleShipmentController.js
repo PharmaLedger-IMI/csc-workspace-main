@@ -3,7 +3,8 @@ const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
-const { Roles } = cscServices.constants;
+const eventBusService = cscServices.EventBusService;
+const { Roles, Topics } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
 class CourierSingleShipmentController extends ViewShipmentBaseController {
@@ -31,18 +32,26 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
   }
 
   setShipmentActions(shipment) {
-    const actions = {};
-    
-    if (shipment.status[0].status === shipmentStatusesEnum.ReadyForDispatch) {
-      actions.canScanPickShipment = true;
-      actions.canEditShipment = false;
-      actions.canAddShipmentComment = false;
-    } else if (shipment.status[0].status === shipmentStatusesEnum.InTransit) {
-      actions.canEditShipment = true;
-      actions.canScanPickShipment = false;
-      actions.canAddShipmentComment = true;
-    }
+    const actions = {
+      canPickupShipment:false,
+      canEditShipment:false,
+      canAddMessage:false,
+      canDeliverShipment:false
+    };
 
+    switch (shipment.status[0].status) {
+      case shipmentStatusesEnum.ReadyForDispatch:
+        actions.canPickupShipment = true;
+        break;
+      case shipmentStatusesEnum.InTransit:
+        if (shipment.shipmentBilling) {
+          actions.canAddMessage = true;
+          actions.canDeliverShipment = true;
+        } else {
+          actions.canEditShipment = true;
+        }
+        break;
+    }
     return actions;
   }
 
@@ -65,13 +74,28 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
       model.shipmentModel.shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
     }
 
-    if(model.shipmentModel.shipment.shipmentDocuments){
+    if (model.shipmentModel.shipment.shipmentDocuments) {
       model.shipmentModel.shipment.documents = await this.getShipmentDocuments(model.shipmentModel.shipment);
     }
 
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
     console.log(model);
     this.model = model;
+    this.attachRefresh();
+  }
+
+  attachRefresh() {
+		eventBusService.addEventListener(Topics.RefreshShipments, async () => {
+			let title = 'Shipment Updated';
+			let content = 'Shipment was updated, New status is available';
+			let modalOptions = {
+				disableExpanding: true,
+				confirmButtonText: 'Update View',
+				id: 'confirm-modal'
+			};
+
+      this.showModal(content, title, this.initViewModel.bind(this), this.initViewModel.bind(this), modalOptions);
+		});
   }
 }
 
