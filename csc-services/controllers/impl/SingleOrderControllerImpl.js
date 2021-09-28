@@ -94,17 +94,26 @@ class SingleOrderControllerImpl extends WebcController {
 
   attachRefresh() {
 		eventBusService.addEventListener(Topics.RefreshOrders, async () => {
-			let title = 'Order Updated';
-			let content = 'Order was updated, New status is available';
-			let modalOptions = {
-				disableExpanding: true,
-				confirmButtonText: 'Update View',
-				id: 'confirm-modal'
-			};
-
-      this.showModal(content, title, this.init.bind(this), this.init.bind(this), modalOptions);
+      let title = 'Order Updated';
+      let content = 'Order was updated, New status is available';
+			this.showOrderUpdateModal(title, content);
+		});
+    eventBusService.addEventListener(Topics.RefreshShipments, async () => {
+      let title = 'Shipment Updated';
+      let content = 'Shipment was updated, New status is available';
+			this.showOrderUpdateModal(title, content);
 		});
 	}
+
+  showOrderUpdateModal(title, content) {
+    let modalOptions = {
+      disableExpanding: true,
+      confirmButtonText: 'Update View',
+      id: 'confirm-modal'
+    };
+
+    this.showModal(content, title, this.init.bind(this), this.init.bind(this), modalOptions);
+  }
 
   navigationHandlers() {
     this.onTagClick('nav-back', () => {
