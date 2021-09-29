@@ -170,10 +170,7 @@
           </div>
             
           <div data-if='@actions.canDeliverShipment'>
-            <button class='btn-default' data-tag='scan-and-deliver'>
-							<span class='fas fa-icon fa-qrcode'></span>
-							Scan & Deliver Shipment
-						</button>
+            <webc-template data-view-model='@shipmentModel.shipment' template='shipment/deliver-shipment'></webc-template>
           </div>
         </div>
 
