@@ -29,6 +29,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     this.initViewModel();
     this.attachEventListeners();
     this.openFirstAccordion();
+    this.attachRefresh();
   }
 
   attachEventListeners() {
@@ -190,10 +191,10 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     this.model = model;
     let modalOpen = false;
-    this.attachRefresh(modalOpen);
   }
 
-  attachRefresh(modalOpen) {
+  attachRefresh() {
+    let modalOpen = false;
     eventBusService.addEventListener(Topics.RefreshShipments, async () => {
       if (!modalOpen) {
         modalOpen = true;

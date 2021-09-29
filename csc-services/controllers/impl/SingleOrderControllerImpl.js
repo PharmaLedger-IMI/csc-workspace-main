@@ -90,18 +90,20 @@ class SingleOrderControllerImpl extends WebcController {
     });
 
     this.navigationHandlers();
+    this.attachRefresh();
   }
 
-  attachRefresh(modalOpen) {
+  attachRefresh() {
     eventBusService.addEventListener(Topics.RefreshOrders, async () => {
-      this.showOrderUpdateModal(modalOpen);
+      this.showOrderUpdateModal();
     });
     eventBusService.addEventListener(Topics.RefreshShipments, async () => {
-      this.showOrderUpdateModal(modalOpen);
+      this.showOrderUpdateModal();
     });
 	}
 
-  showOrderUpdateModal(modalOpen) {
+  showOrderUpdateModal() {
+    let modalOpen = false;
     if (!modalOpen) {
       modalOpen = true;
       let title = 'Order Updated';
@@ -217,8 +219,6 @@ class SingleOrderControllerImpl extends WebcController {
     }
 
     this.model.order.actions = this.setOrderActions();
-    let modalOpen = false;
-    this.attachRefresh(modalOpen);
   }
 
   transformOrderData(data) {
