@@ -92,21 +92,28 @@ class SingleOrderControllerImpl extends WebcController {
     this.navigationHandlers();
   }
 
-  attachRefresh() {
-		eventBusService.addEventListener(Topics.RefreshOrders, this.showOrderUpdateModal.bind(this));
-    eventBusService.addEventListener(Topics.RefreshShipments,this.showOrderUpdateModal.bind(this));
+  attachRefresh(modalOpen) {
+    eventBusService.addEventListener(Topics.RefreshOrders, async () => {
+      this.showOrderUpdateModal(modalOpen);
+    });
+    eventBusService.addEventListener(Topics.RefreshShipments, async () => {
+      this.showOrderUpdateModal(modalOpen);
+    });
 	}
 
-  showOrderUpdateModal() {
-    let title = 'Order Updated';
-    let content = 'Order was updated, New status is available';
-    let modalOptions = {
-      disableExpanding: true,
-      confirmButtonText: 'Update View',
-      id: 'confirm-modal'
-    };
+  showOrderUpdateModal(modalOpen) {
+    if (!modalOpen) {
+      modalOpen = true;
+      let title = 'Order Updated';
+      let content = 'Order was updated, New status is available';
+      let modalOptions = {
+        disableExpanding: true,
+        confirmButtonText: 'Update View',
+        id: 'confirm-modal'
+      };
 
-    this.showModal(content, title, this.init.bind(this), this.init.bind(this), modalOptions);
+      this.showModal(content, title, this.init.bind(this), this.init.bind(this), modalOptions);
+    }
   }
 
   navigationHandlers() {
@@ -210,7 +217,8 @@ class SingleOrderControllerImpl extends WebcController {
     }
 
     this.model.order.actions = this.setOrderActions();
-    this.attachRefresh();
+    let modalOpen = false;
+    this.attachRefresh(modalOpen);
   }
 
   transformOrderData(data) {
