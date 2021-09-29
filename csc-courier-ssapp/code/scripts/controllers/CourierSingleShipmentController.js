@@ -29,30 +29,33 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
         role: Roles.Courier
       });
     });
+
+    this.onTagEvent('add-shipment-comment', 'click', (e) => {
+      this.onAddShipmentCommentModalOpen();
+    });
   }
 
   setShipmentActions(shipment) {
-    const actions = {};
+    const actions = {
+      canPickupShipment:false,
+      canEditShipment:false,
+      canAddMessage:false,
+      canDeliverShipment:false
+    };
 
-    if (shipment.status[0].status === shipmentStatusesEnum.ReadyForDispatch) {
-      actions.canScanPickShipment = true;
-      actions.canEditShipment = false;
-      actions.canAddMessage = false;
-      actions.scan = false;
-    } else if (shipment.status[0].status === shipmentStatusesEnum.InTransit) {
-      if (shipment.shipmentBilling) {
-        actions.canEditShipment = false;
-        actions.canScanPickShipment = false;
-        actions.canAddMessage = true;
-        actions.scan = true;
-      } else {
-        actions.canEditShipment = true;
-        actions.canScanPickShipment = false;
-        actions.canAddMessage = false;
-        actions.scan = false;
-      }
+    switch (shipment.status[0].status) {
+      case shipmentStatusesEnum.ReadyForDispatch:
+        actions.canPickupShipment = true;
+        break;
+      case shipmentStatusesEnum.InTransit:
+        if (shipment.shipmentBilling) {
+          actions.canAddMessage = true;
+          actions.canDeliverShipment = true;
+        } else {
+          actions.canEditShipment = true;
+        }
+        break;
     }
-
     return actions;
   }
 
@@ -100,6 +103,22 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
 
         this.showModal(content, title, this.initViewModel.bind(this), this.initViewModel.bind(this), modalOptions);
       }
+    });
+  }
+
+  onAddShipmentCommentModalOpen(){
+    this.createWebcModal({
+      template: 'addShipmentCommentModal',
+      model:this.model,
+      controller: 'AddShipmentCommentModalController',
+      disableBackdropClosing: true,
+      disableFooter: true,
+      disableHeader: true,
+      disableExpanding: true,
+      disableClosing: false,
+      disableCancelButton: true,
+      expanded: false,
+      centered: true,
     });
   }
 }

@@ -96,8 +96,6 @@ class ScanShipmentModalController extends WebcController {
 
     this.shipmentService.createAndMountTransitDSU(this.model.shipment.shipmentSSI, payload).then(()=>{
       eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-      //close modal from inside
-      this.element.destroy();
     })
   }
   getModel() {
