@@ -84,21 +84,7 @@ class DeliverShipmentModalController extends WebcController {
 
 
   sign(){
-    let payload = {};
-    let shipmentDataProps = ["shipperId","scheduledPickupDateTime","dimension","origin","specialInstructions","shippingConditions"];
-
-    shipmentDataProps.forEach((prop) => {
-      payload[prop] = this.model.shipment[prop];
-    });
-
-    payload.shipmentId = this.model.form.inputs.shipmentId.value;
-    payload.signature = true;
-
-    this.shipmentService.createAndMountTransitDSU(this.model.shipment.shipmentSSI, payload).then(()=>{
-      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-      //close modal from inside
-      this.element.destroy();
-    })
+    //TODO
   }
   getModel() {
     return {
