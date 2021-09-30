@@ -34,6 +34,15 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     this.onTagEvent('add-shipment-comment', 'click', (e) => {
       this.onAddShipmentCommentModalOpen();
     });
+
+    this.onTagClick('deliver-shipment', () => {
+      this.navigateToPageTag('deliver-shipment', {
+        shipment: {
+          shipmentId: this.model.shipmentModel.shipment.shipmentId,
+          ...this.model.toObject('shipmentModel.shipment')
+        }
+      });
+    });
   }
 
   setShipmentActions(shipment) {

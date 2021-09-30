@@ -9,7 +9,6 @@ require("./OrdersControllerImpl");
 require("./ReviewOrderControllerImpl");
 require("./helpers/ViewShipmentBaseController");
 require("./SingleShipmentControllerImpl");
-require("./CourierSingleShipmentControllerImpl");
 require("./ShipmentsControllerImpl");
 require("./ScanShipmentModalControllerImpl");
 require("./TabNavigatorControllerImpl");

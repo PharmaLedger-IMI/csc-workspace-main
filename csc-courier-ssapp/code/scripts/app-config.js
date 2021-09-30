@@ -10,7 +10,6 @@ const NotificationsController = cscServices.getController('NotificationsControll
 const DashboardMenuController = cscServices.getController('DashboardMenuController', ACTOR);
 const BaseShipmentsController = cscServices.getController('ShipmentsController', ACTOR);
 const ViewShipmentBaseController = cscServices.getController('ViewShipmentBaseController');
-const CourierSingleShipmentController = cscServices.getController('CourierSingleShipmentController');
 
 addControllers({
 	TableTemplateController,
@@ -19,6 +18,5 @@ addControllers({
 	NotificationsController,
 	DashboardMenuController,
 	BaseShipmentsController,
-	ViewShipmentBaseController,
-	CourierSingleShipmentController
+	ViewShipmentBaseController
 });
