@@ -40,7 +40,7 @@ class DeliverShipmentController extends WebcController {
 
   addModelChangeHandlers(){
     this.model.onChange("scannedData", () => {
-      let correctValue = this.model.shipment.orderId;
+      let correctValue = this.model.shipment.shipmentId;
       this.model.scanSuccess = this.model.scannedData === correctValue;
       this.model.formIsInvalid = !this.model.scanSuccess;
       this.model.isScannerActive = false;
