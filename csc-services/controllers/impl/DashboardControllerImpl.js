@@ -9,7 +9,7 @@ const eventBusService = cscServices.EventBusService;
 const { order, shipment, Roles, Topics } = cscServices.constants;
 const { NotificationTypes } = cscServices.constants.notifications;
 const { orderStatusesEnum } = order;
-const { shipmentStatusesEnum } = shipment;
+const { shipmentStatusesEnum , shipmentsEventsEnum} = shipment;
 
 const csIdentities = {};
 csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
@@ -227,6 +227,7 @@ class DashboardControllerImpl extends WebcController {
 			}
 
 			case shipmentStatusesEnum.InTransit: {
+
 				notificationRole = Roles.Courier;
 				const messageData = data.message.data;
 				const { shipmentSSI } = messageData;
@@ -243,6 +244,11 @@ class DashboardControllerImpl extends WebcController {
 					shipmentData = { ...shipmentData, ...await this.shipmentService.mountShipmentCommentsDSU(shipmentSSI,messageData.shipmentComments) };
 				}
 				break;
+			}
+			case shipmentsEventsEnum.InTransitNewComment: {
+				notificationRole = Roles.Courier;
+				const { shipmentSSI } = data.message.data;
+				shipmentData = await this.shipmentService.getShipment(shipmentSSI);
 			}
 		}
 
