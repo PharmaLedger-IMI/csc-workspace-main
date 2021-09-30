@@ -90,21 +90,33 @@ class SingleOrderControllerImpl extends WebcController {
     });
 
     this.navigationHandlers();
+    this.attachRefresh();
   }
 
   attachRefresh() {
-		eventBusService.addEventListener(Topics.RefreshOrders, async () => {
-			let title = 'Order Updated';
-			let content = 'Order was updated, New status is available';
-			let modalOptions = {
-				disableExpanding: true,
-				confirmButtonText: 'Update View',
-				id: 'confirm-modal'
-			};
+    eventBusService.addEventListener(Topics.RefreshOrders, async () => {
+      this.showOrderUpdateModal();
+    });
+    eventBusService.addEventListener(Topics.RefreshShipments, async () => {
+      this.showOrderUpdateModal();
+    });
+	}
+
+  showOrderUpdateModal() {
+    let modalOpen = false;
+    if (!modalOpen) {
+      modalOpen = true;
+      let title = 'Order Updated';
+      let content = 'Order was updated, New status is available';
+      let modalOptions = {
+        disableExpanding: true,
+        confirmButtonText: 'Update View',
+        id: 'confirm-modal'
+      };
 
       this.showModal(content, title, this.init.bind(this), this.init.bind(this), modalOptions);
-		});
-	}
+    }
+  }
 
   navigationHandlers() {
     this.onTagClick('nav-back', () => {
@@ -207,7 +219,6 @@ class SingleOrderControllerImpl extends WebcController {
     }
 
     this.model.order.actions = this.setOrderActions();
-    this.attachRefresh();
   }
 
   transformOrderData(data) {
