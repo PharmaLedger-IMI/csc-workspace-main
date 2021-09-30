@@ -21,6 +21,13 @@
       "tag": "scan_shipment"
     },
     {
+      "name": "Deliver Shipment",
+      "path": "/deliver-shipment",
+      "src": "deliver-shipment.html",
+      "tag": "deliver-shipment",
+      "indexed": false
+    },
+    {
       "name": "Edit Shipment",
       "path": "/edit-shipment",
       "src": "edit-shipment.html",
