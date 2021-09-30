@@ -13,10 +13,6 @@ export default class ScanShipmentController extends WebcController {
     this.onTagEvent('scan-shipment-button', 'click', (e) => {
       this.onModalOpen();
     });
-
-    this.onTagEvent('add-shipment-comment-button', 'click', (e) => {
-      this.onAddShipmentCommentModalOpen();
-    });
   }
 
   onModalOpen(){
@@ -34,22 +30,5 @@ export default class ScanShipmentController extends WebcController {
       centered: true,
     });
   }
-
-  onAddShipmentCommentModalOpen(){
-    this.createWebcModal({
-      template: 'addShipmentCommentModal',
-      model:this.model,
-      controller: 'AddShipmentCommentModalController',
-      disableBackdropClosing: false,
-      disableFooter: true,
-      disableHeader: true,
-      disableExpanding: true,
-      disableClosing: false,
-      disableCancelButton: true,
-      expanded: false,
-      centered: true,
-    });
-  }
-
 
 }

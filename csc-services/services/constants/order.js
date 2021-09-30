@@ -10,7 +10,8 @@ const orderPendingActionEnum = {
 	PendingReviewByCMO: 'Pending Review by CMO',
 	SponsorReviewOrApprove: 'Sponsor Review or Approve',
 	NoPendingActions: 'There are no any further pending actions',
-	PendingShipmentPreparation: 'Pending Shipment Preparation'
+	PendingShipmentPreparation: 'Pending Shipment Preparation',
+	NoFurtherActionsRequired: 'No further actions required'
 };
 
 const orderTableHeaders = [

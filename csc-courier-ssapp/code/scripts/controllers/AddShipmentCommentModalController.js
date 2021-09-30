@@ -3,13 +3,15 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const ShipmentService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
-const { shipment, Roles } = cscServices.constants;
+const eventBusService = cscServices.EventBusService;
+const { Roles, Topics } = cscServices.constants;
 
 
 class AddShipmentCommentModalController extends WebcController {
 
   constructor(...props) {
     super(...props);
+    this.element = props[0];
 
     this.model.form = {
        inputs:{
@@ -28,13 +30,13 @@ class AddShipmentCommentModalController extends WebcController {
 
 
   initHandlers() {
-    this.onTagEvent('add-shipment-comment-submit-button', 'click', (e) => {
+    this.onTagEvent('submit-shipment-comment', 'click', (e) => {
       this.submit();
     });
   }
 
 
-  submit(){
+  async submit(){
 
     let payload = {
       date: new Date().getTime(),
@@ -42,10 +44,9 @@ class AddShipmentCommentModalController extends WebcController {
       comment: this.model.form.inputs.comment.value
     };
 
-    console.log("Shipment SSI", this.model.shipmentModel.shipment.shipmentSSI);
-    console.log("Payload:",payload);
-    this.shipmentService.addShipmentComment( this.model.shipmentModel.shipment.shipmentSSI, payload);
-    this.hideModal();
+    await this.shipmentService.addShipmentComment( this.model.shipmentModel.shipment.shipmentSSI, payload);
+    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+    this.element.destroy();
   }
 
   hideModal(){

@@ -1,6 +1,7 @@
 <style xmlns='http://www.w3.org/1999/html'>
     webc-modal {
-        --max-width: calc( 100% - 40px);
+        --width: calc( 100% - 40px) ;
+        --max-width: 720px;
     }
 </style>
 
@@ -10,7 +11,6 @@
 
 
 <div class='row'>
-
   <div class='col-12'>
     <div class='form-group'>
       <label>Comment</label>
@@ -21,12 +21,12 @@
   <!-- Navigation Between Steps-->
   <div class="row-wrapper button-wrapper">
 
-    <button id='closeModalButton' class="btn-default" data-close="">
+    <button id='closeModalButton' class="btn-default" data-close>
       <i class="fas fa-window-close"></i>
-      Close
+      Cancel
     </button>
 
-    <button class="btn-default" data-tag="add-shipment-comment-submit-button" id="submitButton">
+    <button class="btn-default" data-tag="submit-shipment-comment" id="submitButton">
       <i class="fas fa-check"></i>
       Submit
     </button>

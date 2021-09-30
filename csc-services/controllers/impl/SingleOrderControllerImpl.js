@@ -192,7 +192,7 @@ class SingleOrderControllerImpl extends WebcController {
   async init() {
     const order = await this.ordersService.getOrder(this.model.keySSI);
     this.model.order = order;
-    this.model.order = { ...this.transformData(this.model.order) };
+    this.model.order = { ...this.transformOrderData(this.model.order) };
     this.model.order.delivery_date = {
       date: this.getDate(this.model.order.deliveryDate),
       time: this.getTime(this.model.order.deliveryDate)
@@ -201,13 +201,16 @@ class SingleOrderControllerImpl extends WebcController {
     if (this.model.order.shipmentSSI) {
       const shipment = await this.shipmentsService.getShipment(this.model.order.shipmentSSI);
       this.model.shipment = this.transformShipmentData(shipment);
+      if (this.model.shipment.status_value !== shipmentStatusesEnum.InPreparation) {
+        this.model.order.pending_action = orderPendingActionEnum.NoFurtherActionsRequired;
+      }
     }
 
     this.model.order.actions = this.setOrderActions();
     this.attachRefresh();
   }
 
-  transformData(data) {
+  transformOrderData(data) {
     if (data) {
       data.documents = [];
 
@@ -295,13 +298,13 @@ class SingleOrderControllerImpl extends WebcController {
     const isShipmentCreated = typeof shipment !== 'undefined';
     const canCMOReviewStatuses = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedBySponsor];
     const canSponsorReviewStatuses = [orderStatusesEnum.ReviewedByCMO];
-    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
+    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation];
     const actions = {};
 
     switch (this.role) {
       case Roles.Sponsor:
         actions.canBeReviewed = canSponsorReviewStatuses.indexOf(order.status_value) !== -1;
-        actions.canBeCancelled = cancellableOrderStatus.indexOf(order.status_value) !== -1 || cancellableOrderStatus.indexOf(shipment.status_value) !== -1;
+        actions.canBeCancelled = cancellableOrderStatus.indexOf(order.status_value) !== -1 && (!shipment || cancellableOrderStatus.indexOf(shipment.status_value) !== -1);
         actions.canBeApproved = actions.canBeReviewed;
         actions.orderCancelButtonText = isShipmentCreated ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
         this.attachSponsorEventHandlers();

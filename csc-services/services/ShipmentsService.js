@@ -261,7 +261,7 @@ class ShipmentsService extends DSUService {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
 		let shipmentComments = await this.getEntityAsync(shipmentDB.shipmentComments,FoldersEnum.ShipmentComments);
 		shipmentComments.comments.push(commentData);
-		shipmentComments = await this.saveEntityAsync(shipmentComments,FoldersEnum.ShipmentComments);
+		shipmentComments = await this.updateEntityAsync(shipmentComments,FoldersEnum.ShipmentComments);
 
 		const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY, CommunicationService.identities.CSC.SITE_IDENTITY];
 
