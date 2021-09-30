@@ -25,6 +25,17 @@ class DeliverShipmentController extends WebcController {
 
     this.initStepperNavigationHandlers();
     this.addModelChangeHandlers();
+    this.navigationHandlers();
+  }
+
+  navigationHandlers() {
+    this.onTagClick('dashboard', () => {
+      this.navigateToPageTag('dashboard');
+    });
+
+    this.onTagClick('view-shipment', () => {
+      this.navigateToPageTag('shipment', { keySSI: this.model.shipment.shipmentSSI });
+    });
   }
 
   addModelChangeHandlers(){
