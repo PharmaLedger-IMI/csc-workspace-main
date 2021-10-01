@@ -104,6 +104,7 @@ class DeliverShipmentController extends WebcController {
     };
     this.shipmentService.updateTransitShipmentDSU(this.model.shipment.shipmentSSI, payload, shipmentStatusesEnum.Delivered).then(()=>{
       eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+      this.showErrorModalAndRedirect("Shipment" + this.model.shipment.shipmentId +" was delivered", "Shipment Delivered", '/', 2000);
     })
   }
 
