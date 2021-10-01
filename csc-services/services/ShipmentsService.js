@@ -3,6 +3,7 @@ const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum } = require('./constants');
 const { shipmentStatusesEnum, shipmentsEventsEnum} = require('./constants/shipment');
 const CommunicationService = require('./lib/CommunicationService.js');
+const EncryptionService = require('./lib/EncryptionService.js');
 
 class ShipmentsService extends DSUService {
 	SHIPMENTS_TABLE = 'shipments';
@@ -42,14 +43,17 @@ class ShipmentsService extends DSUService {
 		const statusModel = { history: [] };
 		const statusDSU = await this.saveEntityAsync(statusModel, FoldersEnum.ShipmentsStatuses);
 		const status = await this.updateStatusDsu(shipmentStatusesEnum.InPreparation, statusDSU.keySSI);
-
+		const order = await this.getEntityAsync(data.orderSSI,FoldersEnum.Orders);
 		const shipmentModel = {
 			orderSSI: data.orderSSI,
 			requestDate: data.requestDate,
 			orderId: data.orderId,
 			sponsorId: data.sponsorId,
 			shipmentId: data.orderId,
-			status: status.history
+			status: status.history,
+			encryptedMessages:{
+				kitIdKeySSIEncrypted:order.kitIdKeySSIEncrypted
+			}
 		};
 		const shipmentDSU = await this.saveEntityAsync(shipmentModel);
 		const shipmentDBData = { ...shipmentModel, shipmentSSI: shipmentDSU.keySSI, statusSSI: statusDSU.keySSI };
@@ -140,6 +144,10 @@ class ShipmentsService extends DSUService {
 		let shipmentDB;
 		if(role === Roles.Site){
 			shipmentDB = await this.mountAndReceiveShipment(shipmentSSI, role, statusKeySSI);
+			let kitIdKeySSIEncrypted = shipmentDB.encryptedMessages.kitIdKeySSIEncrypted;
+			const kitIdSSI = await EncryptionService.decryptData(kitIdKeySSIEncrypted);
+			shipmentDB.kitISSI = kitIdSSI;
+			await this.mountEntityAsync(kitIdSSI, FoldersEnum.Kits);
 		}
 		else{
 			shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
