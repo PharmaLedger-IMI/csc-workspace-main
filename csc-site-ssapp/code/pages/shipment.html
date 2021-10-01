@@ -1,4 +1,4 @@
-<webc-container controller='SingleShipmentController'>
+<webc-container controller='SiteSingleShipmentController'>
 	<main class='full-flex-column'>
 		<section>
 			<webc-template template='header-template'></webc-template>
@@ -68,28 +68,24 @@
 				</div>
 
 				<div class='row-wrapper order-data-section'>
-					<!-- Order Details -->
+					<!-- Shipment Details -->
 					<div class='accordion-item' data-tag='toggle-accordion'>
-						<svg enable-background='new 0 0 200 200' class='accordion-icon' version='1.1'
-						     viewBox='0 0 200 200' x='0px' xml:space='preserve'
-						     xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' y='0px'>
-                        <path d='M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
+						<svg enable-background='new 0 0 200 200' class='accordion-icon' version='1.1' viewBox='0 0 200 200' x='0px' xml:space='preserve'
+							xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' y='0px'>
+							<path d='M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
                             l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
                             C79.619,74.358,79.684,70.511,81.969,68.167z' fill='#231F20' />
-                        </svg>
+						</svg>
 						<span>Shipment Details</span>
 					</div>
 					<div class='accordion-item-holder'>
-						<webc-template data-view-model='@orderModel' template='order/order-details'></webc-template>
-
 						<webc-template data-view-model='@shipmentModel' template='shipment/shipment-details'></webc-template>
 					</div>
 
 					<!-- Shipment Comments -->
 					<div class='accordion-item' data-tag='toggle-accordion'>
-						<svg enable-background='new 0 0 200 200' class='accordion-icon' version='1.1'
-							 viewBox='0 0 200 200' x='0px' xml:space='preserve'
-							 xmlns='http://www.w3.org/2000/svg' y='0px'>
+						<svg enable-background='new 0 0 200 200' class='accordion-icon' version='1.1' viewBox='0 0 200 200' x='0px' xml:space='preserve'
+							xmlns='http://www.w3.org/2000/svg' y='0px'>
 							<path d='M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
                             l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
                             C79.619,74.358,79.684,70.511,81.969,68.167z' fill='#231F20' />
@@ -121,10 +117,19 @@
 					</div>
 					<div class='accordion-item-holder' data-if='@shipmentModel.shipment.isShipmentReceived'>
 						<span class='py-3 text-muted' slot='false'>Shipment not received yet</span>
-<!--						<webc-template data-view-model='@orderModel.order' slot='true'-->
+<!--						<webc-template data-view-model='@shipmentModel.order' slot='true'-->
 <!--									   template='kit-summary'></webc-template>-->
 					</div>
 
+					<div class='row-wrapper button-wrapper'>
+						<!--<div data-if='@actions.canReceiveShipment'>-->
+							<button class='btn-default' data-tag='scan-shipment-received'>
+								<span class='fas fa-icon fa-qrcode'></span>
+									Scan Shipment
+							</button>
+						<!--<webc-template data-view-model='@shipmentModel.shipment' template='shipment/scan-shipment'></webc-template>-->
+						<!--</div>-->
+					<!--</div>-->
 				</div>
 			</div>
 		</section>
