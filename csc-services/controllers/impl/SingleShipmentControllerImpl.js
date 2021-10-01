@@ -202,6 +202,8 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
         let content = 'Shipment was updated, New status is available';
         let modalOptions = {
           disableExpanding: true,
+          disableClosing: true,
+          disableCancelButton: true,
           confirmButtonText: 'Update View',
           id: 'confirm-modal'
         };
