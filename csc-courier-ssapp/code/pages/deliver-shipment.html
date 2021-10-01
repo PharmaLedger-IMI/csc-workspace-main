@@ -106,7 +106,7 @@
                                 <label>{{@form.inputs.shipperId.label}}</label>
                                 <input class="form-control form-control-sm" readonly name="@form.inputs.shipperId.name"
                                     placeholder="@form.inputs.shipperId.placeholder" type="text"
-                                    value="@shipment.shipperId" />
+                                    value="@form.inputs.shipperId.value" />
                             </div>
 
                             <div class='col-12'>
@@ -114,7 +114,7 @@
                                 <label>{{@form.inputs.origin.label}}</label>
                                 <input class="form-control form-control-sm" readonly name="@form.inputs.origin.name"
                                     placeholder="@form.inputs.origin.placeholder" type="text"
-                                    value="@shipment.origin" />
+                                    value="@form.inputs.origin.value" />
                             </div>
 
                             <div class='col-12'>
@@ -135,12 +135,12 @@
                                         <div class="col-8">
                                             <!-- Input -->
                                             <input class="form-control" readonly
-                                                value="@shipment.scheduledPickupDateTime.date" type="date" />
+                                                value="@form.inputs.shipment_date.value" type="text" />
                                         </div>
                                         <div class="col-4">
                                             <!-- Input -->
                                             <input class="form-control" readonly
-                                                value="@shipment.scheduledPickupDateTime.time" type="time" />
+                                                value="@form.inputs.shipment_time.value" type="time" />
                                         </div>
                                     </div>
                                 </div>
@@ -153,7 +153,7 @@
                                         <input class="form-control form-control-sm" readonly
                                             name="@form.inputs.dimensionHeight.name"
                                             placeholder="@form.inputs.dimensionHeight.placeholder" type="text"
-                                            value="@shipment.dimension.dimensionHeight" />
+                                            value="@form.inputs.dimensionHeight.value" />
                                     </div>
 
                                     <div class='col-4'>
@@ -161,7 +161,7 @@
                                         <input class="form-control form-control-sm" readonly
                                             name="@form.inputs.dimensionLength.name"
                                             placeholder="@form.inputs.dimensionLength.placeholder" type="text"
-                                            value="@shipment.dimension.dimensionLength" />
+                                            value="@form.inputs.dimensionLength.value" />
                                     </div>
 
                                     <div class='col-4'>
@@ -169,7 +169,7 @@
                                         <input class="form-control form-control-sm" readonly
                                             name="@form.inputs.dimensionWidth.name"
                                             placeholder="@form.inputs.dimensionWidth.placeholder" type="text"
-                                            value="@shipment.dimension.dimensionWidth" />
+                                            value="@form.inputs.dimensionWidth.value" />
                                     </div>
                                 </div>
 
@@ -180,7 +180,7 @@
                                 <label>{{@form.inputs.specialInstructions.label}}</label>
                                 <textarea class="form-control form-control-sm" readonly
                                     name="@form.inputs.specialInstructions.name"
-                                    placeholder="@form.inputs.specialInstructions.placeholder" />{{@shipment.specialInstructions}}</textarea>
+                                    placeholder="@form.inputs.specialInstructions.placeholder" />{{@form.inputs.specialInstructions.value}}</textarea>
                             </div>
 
                             <div class='col-12'>
@@ -188,7 +188,7 @@
                                 <label>{{@form.inputs.shippingConditions.label}}</label>
                                 <textarea class="form-control form-control-sm" readonly
                                     name="@form.inputs.shippingConditions.name"
-                                    placeholder="@form.inputs.shippingConditions.placeholder" />{{@shipment.shippingConditions}}</textarea>
+                                    placeholder="@form.inputs.shippingConditions.placeholder" />{{@form.inputs.shippingConditions.value}}</textarea>
                             </div>
 
                             <div class='col-12'>
@@ -202,7 +202,7 @@
                                     placeholder="@form.inputs.hsCode.placeholder" readonly='readonly' />
                                 <!-- Recipient Name -->
                                 <label>{{@form.inputs.recipient.label}}</label>
-                                <input class="form-control form-control-sm" value="@form.inputs.recipient.name"
+                                <input class="form-control form-control-sm" value="@form.inputs.recipient.value"
                                     placeholder="@form.inputs.recipient.placeholder" readonly='readonly' />
                             </div>
                         </div>

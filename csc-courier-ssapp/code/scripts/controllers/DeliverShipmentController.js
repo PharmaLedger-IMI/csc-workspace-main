@@ -45,11 +45,6 @@ class DeliverShipmentController extends WebcController {
       this.model.formIsInvalid = !this.model.scanSuccess;
       this.model.isScannerActive = false;
     });
-
-    this.shipmentIdHandler = () => {
-      this.model.formIsInvalid = this.model.form.inputs.shipmentId.value.trim() === '';
-    };
-    this.model.onChange("form.inputs.shipmentId.value", this.shipmentIdHandler.bind(this));
   }
 
   initStepperNavigationHandlers() {
@@ -59,7 +54,6 @@ class DeliverShipmentController extends WebcController {
 
     this.onTagEvent('step-2', 'click', (e) => {
       this.makeStepActive('step-2', 'step-2-wrapper', e);
-      this.shipmentIdHandler();
     });
 
     this.onTagEvent('step-3', 'click', (e) => {
@@ -162,7 +156,7 @@ class DeliverShipmentController extends WebcController {
             required: true,
             placeholder: 'Shipper ID...',
             disabled:false,
-            value: '',
+            value: 'Shipper ID 1',
           },
           recipient: {
             label: 'Recipient',
@@ -170,20 +164,20 @@ class DeliverShipmentController extends WebcController {
             required: true,
             placeholder: 'Recipient Name...',
             disabled:false,
-            value: '',
+            value: 'Tom',
           },
           shipment_date: {
             label: 'Shipment Date/Time',
             name: 'shipment_date',
             required: true,
             disabled: false,
-            value: '',
+            value: '20/11/2021',
           },
           shipment_time: {
             name: 'shipment_time',
             required: true,
             disabled: false,
-            value: '',
+            value: '04:25',
           },
           specialInstructions: {
             label: 'Special Instructions',
@@ -191,7 +185,7 @@ class DeliverShipmentController extends WebcController {
             required: true,
             placeholder: 'e.g You should do this...',
             disabled:false,
-            value: '',
+            value: 'Do not freeze',
           },
           shipmentType: {
             label: 'Shipment Type',
@@ -199,7 +193,7 @@ class DeliverShipmentController extends WebcController {
             required: true,
             placeholder: 'e.g air',
             disabled:false,
-            value: '',
+            value: 'road',
           },
           dimensionHeight: {
             label: 'Height',
@@ -207,7 +201,7 @@ class DeliverShipmentController extends WebcController {
             required: true,
             placeholder: 'Fill in the height.',
             disabled:false,
-            value: '',
+            value: '3',
           },
           dimensionWidth: {
             label: 'Width',
@@ -215,7 +209,7 @@ class DeliverShipmentController extends WebcController {
             required: true,
             placeholder: 'Fill in the width.',
             disabled:false,
-            value: '',
+            value: '3',
           },
           dimensionLength: {
             label: 'Length',
@@ -223,7 +217,7 @@ class DeliverShipmentController extends WebcController {
             required: true,
             placeholder: 'Fill in the length.',
             disabled:false,
-            value: '',
+            value: '3',
           },
           origin: {
             label: 'Origin',
@@ -231,7 +225,7 @@ class DeliverShipmentController extends WebcController {
             required: true,
             placeholder: 'Fill in the origin.',
             disabled:false,
-            value: '',
+            value: 'lasi',
           },
           shippingConditions: {
             label: 'Shipping Conditions',
@@ -239,7 +233,7 @@ class DeliverShipmentController extends WebcController {
             required: true,
             placeholder: 'The condition of the shipping.',
             disabled:false,
-            value: '',
+            value: 'Handle properly',
           },
           scheduledPickupDate: {
             label: 'Scheduled Pickup Date',
@@ -269,17 +263,17 @@ class DeliverShipmentController extends WebcController {
             label: 'Master-way bill number',
             name: 'billNumber',
             required: true,
-            placeholder: '0000000',
+            placeholder: '123456',
             disabled:false,
-            value: '0000000',
+            value: '123456',
           },
           hsCode: {
             label: 'HS Code',
             name: 'hsCode',
             required: true,
-            placeholder: '0000000',
+            placeholder: '3421',
             disabled:false,
-            value: '000000',
+            value: '3421',
           },
         }
       },
