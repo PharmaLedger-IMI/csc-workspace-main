@@ -3,11 +3,9 @@ const DSUService = require('./lib/DSUService.js');
 const { Roles, messagesEnum, order, FoldersEnum } = require('./constants');
 const orderStatusesEnum = order.orderStatusesEnum;
 const CommunicationService = require('./lib/CommunicationService.js');
-const moment = require('./lib/moment.min');
-
+const EncryptionService = require('./lib/EncryptionService.js');
 class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
-  ORDERS_FOLDER = '/orders';
 
   constructor(DSUStorage, communicationService) {
     super(DSUStorage, '/orders');
@@ -100,6 +98,7 @@ class OrdersService extends DSUService {
     const sponsorDocuments = await this.addDocumentsToDsu(data.files, sponsorDocumentsDsu.uid, Roles.Sponsor);
 
     const kits = await this.addKitsToDsu(data.kitIdsFile, data.kitIds, kitIdsDsu.uid);
+    const kitIdKeySSIEncrypted = await EncryptionService.encryptData(kitIdsDsu.uid);
 
     const comment = { entity: Roles.Sponsor, comment: data.add_comment, date: new Date().getTime() };
     const comments = await this.addCommentToDsu(comment, commentsDsu.uid);
@@ -116,6 +115,7 @@ class OrdersService extends DSUService {
       temperature_comments: data.temperature_comments,
       requestDate: new Date().getTime(),
       deliveryDate: data.delivery_date,
+      kitIdKeySSIEncrypted:kitIdKeySSIEncrypted
     };
 
     const order = await this.saveEntityAsync(orderModel);
