@@ -46,10 +46,10 @@ class DeliverShipmentController extends WebcController {
       this.model.isScannerActive = false;
     });
 
-    this.shipmentIdHandler = () => {
-      this.model.formIsInvalid = this.model.form.inputs.shipmentId.value.trim() === '';
+    this.recipientHandler = () => {
+      this.model.formIsInvalid = this.model.form.inputs.recipient.value.trim() === '';
     };
-    this.model.onChange("form.inputs.shipmentId.value", this.shipmentIdHandler.bind(this));
+    this.model.onChange("form.inputs.recipient.value", this.recipientHandler.bind(this));
   }
 
   initStepperNavigationHandlers() {
@@ -59,7 +59,7 @@ class DeliverShipmentController extends WebcController {
 
     this.onTagEvent('step-2', 'click', (e) => {
       this.makeStepActive('step-2', 'step-2-wrapper', e);
-      this.shipmentIdHandler();
+      this.recipientHandler();
     });
 
     this.onTagEvent('step-3', 'click', (e) => {

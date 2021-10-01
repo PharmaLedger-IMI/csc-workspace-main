@@ -98,7 +98,7 @@
                                 <label>{{@form.inputs.shipmentId.label}}</label>
                                 <input class="form-control form-control-sm" readonly name="@form.inputs.shipmentId.name"
                                     placeholder="@form.inputs.shipmentId.placeholder" type="text"
-                                    value="@form.inputs.shipmentId.value" />
+                                    value="@shipment.shipmentId" />
                             </div>
 
                             <div class='col-12'>
@@ -194,15 +194,15 @@
                             <div class='col-12'>
                                 <!-- Master-way bill number -->
                                 <label>{{@form.inputs.billNumber.label}}</label>
-                                <input class="form-control form-control-sm" value="@form.inputs.billNumber.value"
+                                <input class="form-control form-control-sm" value="@shipment.bill.billNumber"
                                     placeholder="@form.inputs.billNumber.placeholder" readonly='readonly' />
                                 <!-- HS Code -->
                                 <label>{{@form.inputs.hsCode.label}}</label>
-                                <input class="form-control form-control-sm" value="@form.inputs.hsCode.value"
+                                <input class="form-control form-control-sm" value="@shipment.bill.hsCode"
                                     placeholder="@form.inputs.hsCode.placeholder" readonly='readonly' />
                                 <!-- Recipient Name -->
                                 <label>{{@form.inputs.recipient.label}}</label>
-                                <input class="form-control form-control-sm" value="@form.inputs.recipient.name"
+                                <input class="form-control form-control-sm" value="@form.inputs.recipient.value"
                                     placeholder="@form.inputs.recipient.placeholder" readonly='readonly' />
                             </div>
                         </div>
