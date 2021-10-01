@@ -169,6 +169,20 @@ class ShipmentsService extends DSUService {
 		return shipmentDb;
 	}
 
+	//update shipmentDB with data from shipmentTransitDSU
+	async updateShipmentDB(shipmentKeySSI){
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
+		const transitShipment = await this.getEntityAsync(shipmentDB.transitShipmentKeySSI, FoldersEnum.ShipmentTransit);
+		shipmentDB = {
+			...shipmentDB,
+			recipientName:transitShipment.recipientName,
+			signature:transitShipment.signature
+		}
+		const status = await this.getEntityAsync(shipmentDB.statusSSI,FoldersEnum.ShipmentsStatuses);
+		shipmentDB.status =	status.history;
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE,shipmentKeySSI,shipmentDB);
+	}
+
 	async updateStatusDsu(newStatus, keySSI) {
 		const statusDsu = await this.getEntityAsync(keySSI, FoldersEnum.ShipmentsStatuses);
 		const result = await this.updateEntityAsync(
@@ -206,6 +220,34 @@ class ShipmentsService extends DSUService {
 				shipmentStatusesEnum.InTransit,
 				inTransitDSUMessage,
 				shipmentStatusesEnum.InTransit
+			);
+		})
+	}
+
+	//add new data to shipmentTransitDSU and update shipment status
+	async updateTransitShipmentDSU(shipmentKeySSI, data, newStatus ){
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
+
+		let shipmentTransitDSU = await this.getEntityAsync(shipmentDB.transitDSUKeySSI, FoldersEnum.ShipmentTransit);
+		shipmentTransitDSU = {...shipmentTransitDSU, ...data};
+		await this.updateEntityAsync(shipmentTransitDSU,FoldersEnum.ShipmentTransit);
+		const status = await this.updateStatusDsu(newStatus, shipmentDB.statusSSI);
+		shipmentDB = {...shipmentDB, ...data};
+		shipmentDB.status = status.history;
+		await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentKeySSI, shipmentDB);
+
+		const updatedTransitShipmentDSU = {
+			statusSSI:status.keySSI,
+			shipmentSSI: shipmentKeySSI
+		}
+
+		const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY, CommunicationService.identities.CSC.SITE_IDENTITY];
+		notifiableActors.forEach(actor=>{
+			this.sendMessageToEntity(
+				actor,
+				newStatus,
+				updatedTransitShipmentDSU,
+				newStatus
 			);
 		})
 	}

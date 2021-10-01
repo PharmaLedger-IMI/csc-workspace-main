@@ -4,7 +4,7 @@ const ShipmentService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
 const { shipment, Roles, Topics } = cscServices.constants;
-
+const shipmentStatusesEnum = shipment.shipmentStatusesEnum;
 
 class DeliverShipmentController extends WebcController {
 
@@ -97,7 +97,14 @@ class DeliverShipmentController extends WebcController {
 
 
   sign(){
-    //TODO
+    let payload = {
+      recipientName:this.model.form.inputs.recipient.value,
+      signature:true,
+      deliveryDateTime:new Date().getTime()
+    };
+    this.shipmentService.updateTransitShipmentDSU(this.model.shipment.shipmentSSI, payload, shipmentStatusesEnum.Delivered).then(()=>{
+      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+    })
   }
 
   getModel() {
