@@ -68,6 +68,7 @@ class DeliverShipmentController extends WebcController {
 
     this.onTagEvent('from_step_1_to_2', 'click', (e) => {
       this.makeStepActive('step-2', 'step-2-wrapper', e);
+      this.recipientHandler();
     });
 
     this.onTagEvent('from_step_2_to_1', 'click', (e) => {
@@ -98,6 +99,7 @@ class DeliverShipmentController extends WebcController {
   sign(){
     //TODO
   }
+
   getModel() {
     return {
       isScannerActive: false,
