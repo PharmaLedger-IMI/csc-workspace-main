@@ -176,6 +176,7 @@ class ShipmentsService extends DSUService {
 		shipmentDB = {
 			...shipmentDB,
 			recipientName:transitShipment.recipientName,
+			deliveryDateTime:transitShipment.deliveryDateTime,
 			signature:transitShipment.signature
 		}
 		const status = await this.getEntityAsync(shipmentDB.statusSSI,FoldersEnum.ShipmentsStatuses);
