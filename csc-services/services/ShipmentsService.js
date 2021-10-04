@@ -3,6 +3,7 @@ const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum } = require('./constants');
 const { shipmentStatusesEnum, shipmentsEventsEnum} = require('./constants/shipment');
 const CommunicationService = require('./lib/CommunicationService.js');
+const EncryptionService = require('./lib/EncryptionService.js');
 
 class ShipmentsService extends DSUService {
 	SHIPMENTS_TABLE = 'shipments';
@@ -42,14 +43,17 @@ class ShipmentsService extends DSUService {
 		const statusModel = { history: [] };
 		const statusDSU = await this.saveEntityAsync(statusModel, FoldersEnum.ShipmentsStatuses);
 		const status = await this.updateStatusDsu(shipmentStatusesEnum.InPreparation, statusDSU.keySSI);
-
+		const order = await this.getEntityAsync(data.orderSSI,FoldersEnum.Orders);
 		const shipmentModel = {
 			orderSSI: data.orderSSI,
 			requestDate: data.requestDate,
 			orderId: data.orderId,
 			sponsorId: data.sponsorId,
 			shipmentId: data.orderId,
-			status: status.history
+			status: status.history,
+			encryptedMessages:{
+				kitIdKeySSIEncrypted:order.kitIdKeySSIEncrypted
+			}
 		};
 		const shipmentDSU = await this.saveEntityAsync(shipmentModel);
 		const shipmentDBData = { ...shipmentModel, shipmentSSI: shipmentDSU.keySSI, statusSSI: statusDSU.keySSI };
@@ -140,6 +144,10 @@ class ShipmentsService extends DSUService {
 		let shipmentDB;
 		if(role === Roles.Site){
 			shipmentDB = await this.mountAndReceiveShipment(shipmentSSI, role, statusKeySSI);
+			let kitIdKeySSIEncrypted = shipmentDB.encryptedMessages.kitIdKeySSIEncrypted;
+			const kitIdSSI = await EncryptionService.decryptData(kitIdKeySSIEncrypted);
+			shipmentDB.kitISSI = kitIdSSI;
+			await this.mountEntityAsync(kitIdSSI, FoldersEnum.Kits);
 		}
 		else{
 			shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
@@ -159,6 +167,21 @@ class ShipmentsService extends DSUService {
 			await this.updateEntityAsync(shipmentDSU, FoldersEnum.Shipments);
 		}
 		return shipmentDb;
+	}
+
+	//update shipmentDB with data from shipmentTransitDSU
+	async updateShipmentDB(shipmentKeySSI){
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
+		const transitShipment = await this.getEntityAsync(shipmentDB.transitShipmentKeySSI, FoldersEnum.ShipmentTransit);
+		shipmentDB = {
+			...shipmentDB,
+			recipientName:transitShipment.recipientName,
+			deliveryDateTime:transitShipment.deliveryDateTime,
+			signature:transitShipment.signature
+		}
+		const status = await this.getEntityAsync(shipmentDB.statusSSI,FoldersEnum.ShipmentsStatuses);
+		shipmentDB.status =	status.history;
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE,shipmentKeySSI,shipmentDB);
 	}
 
 	async updateStatusDsu(newStatus, keySSI) {
@@ -198,6 +221,34 @@ class ShipmentsService extends DSUService {
 				shipmentStatusesEnum.InTransit,
 				inTransitDSUMessage,
 				shipmentStatusesEnum.InTransit
+			);
+		})
+	}
+
+	//add new data to shipmentTransitDSU and update shipment status
+	async updateTransitShipmentDSU(shipmentKeySSI, data, newStatus ){
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
+
+		let shipmentTransitDSU = await this.getEntityAsync(shipmentDB.transitDSUKeySSI, FoldersEnum.ShipmentTransit);
+		shipmentTransitDSU = {...shipmentTransitDSU, ...data};
+		await this.updateEntityAsync(shipmentTransitDSU,FoldersEnum.ShipmentTransit);
+		const status = await this.updateStatusDsu(newStatus, shipmentDB.statusSSI);
+		shipmentDB = {...shipmentDB, ...data};
+		shipmentDB.status = status.history;
+		await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentKeySSI, shipmentDB);
+
+		const updatedTransitShipmentDSU = {
+			statusSSI:status.keySSI,
+			shipmentSSI: shipmentKeySSI
+		}
+
+		const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY, CommunicationService.identities.CSC.SITE_IDENTITY];
+		notifiableActors.forEach(actor=>{
+			this.sendMessageToEntity(
+				actor,
+				newStatus,
+				updatedTransitShipmentDSU,
+				newStatus
 			);
 		})
 	}

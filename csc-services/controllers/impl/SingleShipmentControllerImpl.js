@@ -81,7 +81,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     const actions = {};
     switch(this.role) {
       case Roles.Sponsor: {
-        actions.canCancelOrderAndShipment = (shipment.status_value === shipmentStatusesEnum.InPreparation);
+        actions.canCancelOrderAndShipment = shipment.status_value === shipmentStatusesEnum.InPreparation;
         this.attachSponsorEventHandlers();
 
         break;
@@ -92,6 +92,12 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
         actions.canEditShipment = shipment.status_value === shipmentStatusesEnum.InPreparation && shipment.isShipmentScanSuccessful === true;
 
         this.attachCmoEventHandlers();
+        break;
+      }
+
+      case Roles.Site: {
+        actions.canReceiveShipment = shipment.status_value === shipmentStatusesEnum.Delivered
+        this.attachSiteEventHandlers();
         break;
       }
     }
@@ -134,6 +140,17 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
   attachCmoEventHandlers(){
     this.scanShipmentHandler();
+  }
+
+  attachSiteEventHandlers(){
+    this.onTagClick('scan-shipment-received', () => {
+      this.navigateToPageTag('scan-shipment-received', {
+        shipment: {
+          shipmentId: this.model.shipmentModel.shipment.shipmentId,
+          ...this.model.toObject('shipmentModel.shipment')
+        }
+      });
+    });
   }
 
   scanShipmentHandler() {
@@ -202,6 +219,8 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
         let content = 'Shipment was updated, New status is available';
         let modalOptions = {
           disableExpanding: true,
+          disableClosing: true,
+          disableCancelButton: true,
           confirmButtonText: 'Update View',
           id: 'confirm-modal'
         };

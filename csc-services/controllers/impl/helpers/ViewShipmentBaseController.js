@@ -141,6 +141,11 @@ class ViewShipmentBaseControllerImpl extends WebcController{
         return new Date(b.date) - new Date(a.date);
       }))[0].date).format(Commons.DateTimeFormatPattern);
 
+      if(data.deliveryDateTime){
+        let deliveryDateTime = momentService(data.deliveryDateTime).format(Commons.YMDHMDateTimeFormatPattern);
+        data.deliveryDateTime = this.getDateTime (deliveryDateTime)
+      }
+
       const normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
       const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
       data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
