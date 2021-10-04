@@ -4,7 +4,7 @@ const ShipmentService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
 const { shipment, Roles, Topics } = cscServices.constants;
-
+const shipmentStatusesEnum = shipment.shipmentStatusesEnum;
 
 class DeliverShipmentController extends WebcController {
 
@@ -68,6 +68,7 @@ class DeliverShipmentController extends WebcController {
 
     this.onTagEvent('from_step_1_to_2', 'click', (e) => {
       this.makeStepActive('step-2', 'step-2-wrapper', e);
+      this.recipientHandler();
     });
 
     this.onTagEvent('from_step_2_to_1', 'click', (e) => {
@@ -96,8 +97,17 @@ class DeliverShipmentController extends WebcController {
 
 
   sign(){
-    //TODO
+    let payload = {
+      recipientName:this.model.form.inputs.recipient.value,
+      signature:true,
+      deliveryDateTime:new Date().getTime()
+    };
+    this.shipmentService.updateTransitShipmentDSU(this.model.shipment.shipmentSSI, payload, shipmentStatusesEnum.Delivered).then(()=>{
+      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+      this.showErrorModalAndRedirect("Shipment" + this.model.shipment.shipmentId +" was delivered", "Shipment Delivered", '/', 2000);
+    })
   }
+
   getModel() {
     return {
       isScannerActive: false,
