@@ -7,10 +7,6 @@
   <label>{{@form.shipperId.label}}</label>
   <input class="form-control form-control-sm" readonly="readonly" name="@form.shipperId.name" placeholder="@form.shipperId.placeholder" type="text" value="@shipment.shipperId" />
 
-  <!-- Shipper ID -->
-  <label>{{@form.shipperId.label}}</label>
-  <input class="form-control form-control-sm" readonly="readonly" name="@form.shipperId.name" placeholder="@form.shipperId.placeholder" type="text" value="@shipment.shipperId" />
-
   <!-- Origin -->
   <label>{{@form.origin.label}}</label>
   <input class="form-control form-control-sm" readonly="readonly" name="@form.origin.name" placeholder="@form.origin.placeholder" type="text" value="@shipment.origin" />
@@ -42,17 +38,12 @@
   <label>{{@form.shippingConditions.label}}</label>
   <textarea class="form-control form-control-sm" readonly="readonly" value="@shipment.shippingConditions"></textarea>
 
-  <!-- Shipment ID -->
-  <label>{{@form.shipmentId.label}}</label>
-  <input class="form-control form-control-sm" readonly="readonly" name="@form.shipmentId.name" placeholder="@form.shipmentId.placeholder" type="text" value="@shipment.shipmentId" />
-
-
   <!-- billNumber ID -->
   <label>{{@form.billNumber.label}}</label>
-  <input class="form-control form-control-sm" readonly="readonly" name="@form.billNumber.name" placeholder="@form.billNumber.placeholder" type="text" value="@shipment.billNumber" />
+  <input class="form-control form-control-sm" readonly="readonly" name="@form.billNumber.name" placeholder="@form.billNumber.placeholder" type="text" value="@shipment.bill.billNumber" />
 
   <!-- billNumber ID -->
   <label>{{@form.hsCode.label}}</label>
-  <input class="form-control form-control-sm" readonly="readonly" name="@form.hsCode.name" placeholder="@form.hsCode.placeholder" type="text" value="@shipment.hsCode" />
+  <input class="form-control form-control-sm" readonly="readonly" name="@form.hsCode.name" placeholder="@form.hsCode.placeholder" type="text" value="@shipment.bill.hsCode" />
 
 </div>
