@@ -24,7 +24,7 @@ export default class NewOrderController extends WebcController {
       wizard_form: [
         { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Order Details', visible: true, validated: false },
         { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Attach Documents', visible: false, validated: false },
-        { id: 'step-3', holder_id: 'step-3-wrapper', name: 'Comments', visible: false, validated: false },
+        { id: 'step-3', holder_id: 'step-3-wrapper', name: 'Comments', visible: false, valifd: false },
         { id: 'step-4', holder_id: 'step-4-wrapper', name: 'Summary', visible: false, validated: false },
       ],
       wizard_form_navigation: [
