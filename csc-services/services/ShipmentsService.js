@@ -146,7 +146,7 @@ class ShipmentsService extends DSUService {
 			shipmentDB = await this.mountAndReceiveShipment(shipmentSSI, role, statusKeySSI);
 			let kitIdKeySSIEncrypted = shipmentDB.encryptedMessages.kitIdKeySSIEncrypted;
 			const kitIdSSI = await EncryptionService.decryptData(kitIdKeySSIEncrypted);
-			shipmentDB.kitISSI = kitIdSSI;
+			shipmentDB.kitIdSSI = kitIdSSI;
 			await this.mountEntityAsync(kitIdSSI, FoldersEnum.Kits);
 		}
 		else{

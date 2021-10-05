@@ -375,6 +375,10 @@ class OrdersService extends DSUService {
 
     return result;
   }
+
+  async getKitIds(kitIdsSSI){
+    return await this.getEntityAsync(kitIdsSSI,FoldersEnum.Kits);
+  }
 }
 
 module.exports = OrdersService;
