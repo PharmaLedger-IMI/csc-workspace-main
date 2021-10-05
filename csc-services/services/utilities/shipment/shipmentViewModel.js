@@ -1,6 +1,9 @@
 const constants = require("csc-services").constants
 const shipmentBusinessRequirements = constants.shipment.shipmentBusinessRequirements;
 const shippers = shipmentBusinessRequirements.shippers;
+const momentService = require("csc-services").momentService;
+const DAYS_AHEAD = 2;
+
 const shipmentViewModel = {
 	form: {
 		shipmentId: {
@@ -58,6 +61,7 @@ const shipmentViewModel = {
 			required: true,
 			disabled: false,
 			type: 'date',
+			min: momentService(new Date()).add(DAYS_AHEAD, 'days').format(constants.Commons.YearMonthDayPattern),
 			value: ''
 		},
 		pickupTime: {

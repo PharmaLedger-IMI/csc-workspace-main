@@ -1,4 +1,8 @@
 <div class="grid-column-wrapper">
+  <!-- Shipment ID -->
+  <label>{{@form.shipmentId.label}}</label>
+  <input class="form-control form-control-sm" readonly="readonly" name="@form.shipmentId.name" placeholder="@form.shipmentId.placeholder" type="text" value="@shipment.shipmentId" />
+
   <!-- Shipper ID -->
   <label>{{@form.shipperId.label}}</label>
   <input class="form-control form-control-sm" readonly="readonly" name="@form.shipperId.name" placeholder="@form.shipperId.placeholder" type="text" value="@shipment.shipperId" />
@@ -34,3 +38,15 @@
   <label>{{@form.shippingConditions.label}}</label>
   <textarea class="form-control form-control-sm" readonly="readonly" value="@shipment.shippingConditions"></textarea>
 </div>
+
+  <div data-if='@shipment.contextualContent.afterInTransit'>
+    <div class='grid-column-wrapper'>
+      <!-- Master-way bill number -->
+      <label>{{@form.billNumber.label}}</label>
+      <input class="form-control form-control-sm" readonly="readonly" name="@form.billNumber.name" placeholder="@form.billNumber.placeholder" type="text" value="@shipment.bill.billNumber" />
+      <!-- HS Code -->
+      <label>{{@form.hsCode.label}}</label>
+      <input class="form-control form-control-sm" readonly="readonly" name="@form.hsCode.name" placeholder="@form.hsCode.placeholder" type="text" value="@shipment.bill.hsCode" />
+    </div>
+  </div>
+
