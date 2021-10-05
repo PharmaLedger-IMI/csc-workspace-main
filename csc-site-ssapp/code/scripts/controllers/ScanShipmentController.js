@@ -74,7 +74,6 @@ class ScanShipmentController extends WebcController {
   }
 
   sign(){
-    console.log("shipment" + JSON.stringify(this.model.shipment));
     this.shipmentService.sendMessageToSpo(this.model.shipment.shipmentSSI);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', { tag: 'dashboard', state: { tab: Topics.Shipment }}, 2000);
