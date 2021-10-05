@@ -1,6 +1,7 @@
 const messages = require('./messages');
 const notifications = require('./notifications');
 const order = require('./order');
+const kit = require('./kit');
 const shipment = require('./shipment');
 const roles = require('./roles');
 const topics = require('./topics');
@@ -13,6 +14,7 @@ module.exports = {
 	...messages,
 	notifications,
 	order,
+	kit,
 	shipment,
 	...roles,
 	...topics,

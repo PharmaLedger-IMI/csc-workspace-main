@@ -1,0 +1,20 @@
+<webc-container class="full-flex-column" controller="KitsController">
+	<div class="row-wrapper full-flex-column">
+			<div class="table-container-wrapper full-flex-column">
+					<webc-template template="tab-navigator"></webc-template>
+
+					<div class="full-flex-column" data-if='@kitsListIsReady'>
+							<div class="full-flex-column" slot="true" data-if="@kitsListNotEmpty">
+									<webc-template data-view-model="@" slot="true" template="kits/table-template-kits"></webc-template>
+									<div slot="false" class='no-data-info full-flex-column'>No kits available.</div>
+							</div>
+							<webc-spinner slot='false'></webc-spinner>
+					</div>
+
+					<button class='btn-reset' data-tag='debug-add-kits'>
+						<i class='fas fa-times'></i>
+						Debugging: add kits
+					</button>
+			</div>
+	</div>
+</webc-container>
