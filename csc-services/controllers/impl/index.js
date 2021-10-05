@@ -12,3 +12,4 @@ require("./SingleShipmentControllerImpl");
 require("./ShipmentsControllerImpl");
 require("./ScanShipmentModalControllerImpl");
 require("./TabNavigatorControllerImpl");
+require("./KitsControllerImpl");

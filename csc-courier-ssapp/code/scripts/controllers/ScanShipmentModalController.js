@@ -98,9 +98,10 @@ class ScanShipmentModalController extends WebcController {
     payload.signature = true;
 
     await this.shipmentService.createAndMountTransitDSU(this.model.shipment.shipmentSSI, payload);
+    eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
     this.model.disableSign = false;
     window.WebCardinal.loader.hidden = true;
-    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+
   }
   
   getModel() {
