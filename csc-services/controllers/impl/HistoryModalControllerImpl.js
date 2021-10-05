@@ -81,19 +81,51 @@ class HistoryModalControllerImpl extends WebcController {
 
 	transformShipmentData() {
 		const shipment = this.model.toObject('shipment') || {};
+
 		let normalStatuses = [];
+		let approvedStatuses = [];
+
 		if (shipment && shipment.status) {
 			shipment.status = [...shipment.status.sort((function(a, b) {
 				return new Date(a.date) - new Date(b.date);
 			}))];
 
-			if (this.role === Roles.Courier) {
-				normalStatuses = [shipmentStatusesEnum.ReadyForDispatch];
-			} else {
-				normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
+			// Set Normal Statuses by Roles
+			switch (this.role) {
+				// For Sponsor
+				case Roles.Sponsor:
+					// Set the normal statuses
+					normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch, shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered];
+					// Set the Approved statuses
+					approvedStatuses = [shipmentStatusesEnum.Received];
+					break;
+
+				// For CMO
+				case Roles.CMO:
+					// Set the normal statuses
+					normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
+					// Set the Approved statuses
+					approvedStatuses = [shipmentStatusesEnum.Dispatched];
+					break;
+
+				// For Courier
+				case Roles.Courier:
+					// Set the normal statuses
+					normalStatuses = [shipmentStatusesEnum.ReadyForDispatch,shipmentStatusesEnum.InTransit];
+					// Set the Approved statuses
+					approvedStatuses = [shipmentStatusesEnum.Delivered];
+					break;
+
+				// For Site
+				case Roles.Site:
+					// Set the normal statuses
+					normalStatuses = [shipmentStatusesEnum.InTransit];
+					// Set the Approved statuses
+					approvedStatuses = [shipmentStatusesEnum.Received];
+					break;
 			}
 
-			const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
+
 			shipment.status.forEach(item => {
 				item.approved = approvedStatuses.indexOf(item.status) !== -1;
 				item.normal = normalStatuses.indexOf(item.status) !== -1;
