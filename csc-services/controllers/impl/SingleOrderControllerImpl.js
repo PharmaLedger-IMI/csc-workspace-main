@@ -20,6 +20,7 @@ class SingleOrderControllerImpl extends WebcController {
   constructor(role, ...props) {
     super(...props);
     this.role = role;
+    this.addedRefreshListeners = false;
 
     const model = viewModelResolver('order');
     //all fields are disabled
@@ -91,34 +92,6 @@ class SingleOrderControllerImpl extends WebcController {
 
     this.navigationHandlers();
    
-  }
-
-  async attachRefresh() {
-    //console.log("Model " + JSON.stringify(this.model.shipment));
-    eventBusService.addEventListener(Topics.RefreshOrders + this.model.order.orderId, async () => {
-      this.showOrderUpdateModal();
-    });
-    eventBusService.addEventListener(Topics.RefreshShipments + this.model.shipment.shipmentId, async () => {
-      this.showOrderUpdateModal();
-    });
-	}
-
-  showOrderUpdateModal() {
-    let modalOpen = false;
-    if (!modalOpen) {
-      modalOpen = true;
-      let title = 'Order Updated';
-      let content = 'Order was updated, New status is available';
-      let modalOptions = {
-        disableExpanding: true,
-        disableClosing: true,
-        disableCancelButton: true,
-        confirmButtonText: 'Update View',
-        id: 'confirm-modal'
-      };
-
-      this.showModal(content, title, this.init.bind(this), this.init.bind(this), modalOptions);
-    }
   }
 
   navigationHandlers() {
@@ -213,8 +186,6 @@ class SingleOrderControllerImpl extends WebcController {
       time: this.getTime(this.model.order.deliveryDate)
     };
 
-    console.log("shipmentSSI" + this.model.order.shipmentSSI);
-
     if (this.model.order.shipmentSSI) {
       const shipment = await this.shipmentsService.getShipment(this.model.order.shipmentSSI);
       this.model.shipment = this.transformShipmentData(shipment);
@@ -225,7 +196,40 @@ class SingleOrderControllerImpl extends WebcController {
     }
 
     this.model.order.actions = this.setOrderActions();
-    this.attachRefresh();
+    this.attachRefreshListeners();
+  }
+
+   attachRefreshListeners() {
+
+     if (!this.addedRefreshListeners) {
+       this.addedRefreshListeners = true;
+       this.refreshModalOpened = false;
+
+       // Here is a known semantic issue: when both shipment and order are canceled,
+       // but from the business point of view the application is not presenting any bug because the order will refresh
+       // and will prevent the shipment refresh to trigger
+
+       eventBusService.addEventListener(Topics.RefreshOrders + this.model.order.orderId, this.showOrderUpdateModal.bind(this));
+       if(this.model.shipment){
+         eventBusService.addEventListener(Topics.RefreshShipments + this.model.shipment.shipmentId,  this.showOrderUpdateModal.bind(this));
+       }
+     }
+  }
+
+  showOrderUpdateModal() {
+    if (!this.refreshModalOpened) {
+      this.refreshModalOpened = true;
+      let title = 'Order Updated';
+      let content = 'Order was updated';
+      let modalOptions = {
+        disableExpanding: true,
+        disableClosing: true,
+        disableCancelButton: true,
+        confirmButtonText: 'Update View',
+        id: 'confirm-modal'
+      };
+      this.showModal(content, title, this.init.bind(this), this.init.bind(this), modalOptions);
+    }
   }
 
   transformOrderData(data) {

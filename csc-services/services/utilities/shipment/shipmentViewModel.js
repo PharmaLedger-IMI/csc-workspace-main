@@ -23,7 +23,7 @@ const shipmentViewModel = {
 			required: true,
 			placeholder: 'Select Shipper ID',
 			disabled: false,
-			options: shippers.map(x => {return {label:x.name, value:x.name}}),
+			options: shippers.map(x => { return { label: x.name, value: x.name } }),
 			value: shippers[0].name
 		},
 		origin: {
@@ -34,6 +34,13 @@ const shipmentViewModel = {
 			disabled: false,
 			type: 'text',
 			value: ''
+		},
+		sponsorId: {
+			label: 'Sponsor ID',
+			name: 'sponsor_id',
+			required: true,
+			disabled: true,
+			value: '',
 		},
 		type: {
 			label: 'Type',
@@ -107,60 +114,65 @@ const shipmentViewModel = {
 			disabled: false,
 			value: ''
 		},
-    billNumber: {
-      label: 'Master-way bill number',
-      name: 'bill-number',
-      required: true,
-      placeholder: 'Master-way bill number',
-      disabled: false,
-      value: '',
-    },
-    hsCode: {
-      label: 'HS Code',
-      name: 'hs-code',
-      required: true,
-      placeholder: 'HS Code',
-      disabled: false,
-      value: '',
-    },
-	recipientName: {
-		label: 'Recipient Name',
-		name: 'recipient-name',
-		required: true,
-		placeholder: 'Recipient name',
-		disabled: false,
-		value: '',
-	},
-	deliveryDate: {
-		label: 'Delivery Date/Time',
-		name: 'delivery-date',
-		required: true,
-		disabled: false,
-		type: 'date',
-		value: ''
-	},
-	deliveryTime: {
-		name: 'delivery-time',
-		required: true,
-		disabled: false,
-		type: 'time',
-		value: ''
-	},
-    attachment: {
-      label: 'Select files',
-      listFiles: true,
-      filesAppend: false,
-      files: [],
-    },
-    add_comment: {
-      label: 'Add a Comment',
-      name: 'add_comment',
-      required: true,
-      placeholder: 'Add a comment....',
-      disabled: false,
-      value: '',
-    },
-    documents: [],
+		billNumber: {
+			label: 'Master-way bill number',
+			name: 'bill-number',
+			required: true,
+			placeholder: 'Master-way bill number',
+			disabled: false,
+			value: '',
+		},
+		hsCode: {
+			label: 'HS Code',
+			name: 'hs-code',
+			required: true,
+			placeholder: 'HS Code',
+			disabled: false,
+			value: '',
+		},
+		recipientName: {
+			label: 'Recipient Name',
+			name: 'recipient-name',
+			required: true,
+			placeholder: 'Recipient name',
+			disabled: false,
+			value: '',
+		},
+		deliveryDate: {
+			label: 'Delivery Date/Time',
+			name: 'delivery-date',
+			required: true,
+			disabled: false,
+			type: 'date',
+			value: ''
+		},
+		deliveryTime: {
+			name: 'delivery-time',
+			required: true,
+			disabled: false,
+			type: 'time',
+			value: ''
+		},
+		attachment: {
+			label: 'Select files',
+			listFiles: true,
+			filesAppend: false,
+			files: [],
+		},
+		add_comment: {
+			label: 'Add a Comment',
+			name: 'add_comment',
+			required: true,
+			placeholder: 'Add a comment....',
+			disabled: false,
+			value: '',
+		},
+		documents: [],
+		temperature: [
+			{ value: "Within Range", text: "Within Range" },
+			{ value: "Out of Range", text: "Out of Range" },
+		],
+		comments: [],
 	}
 };
 

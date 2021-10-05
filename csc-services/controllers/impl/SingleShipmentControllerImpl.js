@@ -206,29 +206,9 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     }
 
     this.model = model;
-    this.attachRefresh();
+    this.attachRefreshListeners();
   }
 
-  async attachRefresh() {
-    let modalOpen = false;
-    //console.log("SingleShipment" + this.model.shipmentModel.shipment.shipmentId);
-    eventBusService.addEventListener(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, async () => {
-      if (!modalOpen) {
-        modalOpen = true;
-        let title = 'Shipment Updated';
-        let content = 'Shipment was updated, New status is available';
-        let modalOptions = {
-          disableExpanding: true,
-          disableClosing: true,
-          disableCancelButton: true,
-          confirmButtonText: 'Update View',
-          id: 'confirm-modal'
-        };
-
-        this.showModal(content, title, this.initViewModel.bind(this), this.initViewModel.bind(this), modalOptions);
-      }
-    });
-  }
 }
 
 const controllersRegistry = require('../ControllersRegistry').getControllersRegistry();
