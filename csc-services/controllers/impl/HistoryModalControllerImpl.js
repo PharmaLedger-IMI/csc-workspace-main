@@ -99,7 +99,6 @@ class HistoryModalControllerImpl extends WebcController {
 					// Set the Approved statuses
 					approvedStatuses = [shipmentStatusesEnum.Received];
 					break;
-
 				// For CMO
 				case Roles.CMO:
 					// Set the normal statuses

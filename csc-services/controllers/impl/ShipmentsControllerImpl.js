@@ -65,8 +65,8 @@ class ShipmentsControllerImpl extends WebcController {
 
   transformData(data) {
     if (data) {
-      const normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
-      const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
+      const normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch,shipmentStatusesEnum.InTransit];
+      const approvedStatuses = [ shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
 
       data.forEach((item) => {
         item.orderId = item.orderId || '-';
