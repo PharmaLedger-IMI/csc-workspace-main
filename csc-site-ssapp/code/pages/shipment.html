@@ -1,4 +1,4 @@
-<webc-container controller='SiteSingleShipmentController'>
+<webc-container controller='SingleShipmentController'>
 	<main class='full-flex-column'>
 		<section>
 			<webc-template template='header-template'></webc-template>
@@ -122,11 +122,12 @@
 					</div>
 
 					<div class='row-wrapper button-wrapper'>
-						<!--<div data-if='@actions.canReceiveShipment'>-->
+						<div data-if='@actions.canReceiveShipment'>
 							<button class='btn-default' data-tag='scan-shipment-received'>
 								<span class='fas fa-icon fa-qrcode'></span>
-									Scan Shipment
+								Scan Shipment
 							</button>
+						</div>
 					</div>
 				</div>
 			</div>
