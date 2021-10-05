@@ -104,6 +104,7 @@ class DashboardControllerImpl extends WebcController {
 		const notificationResult = await this.notificationsService.insertNotification(notification);
 		eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
 		eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+		eventBusService.emitEventListeners(Topics.RefreshOrders + orderData.orderId, null);
 		console.log('notification added', notification, notificationResult);
 	}
 
@@ -130,6 +131,7 @@ class DashboardControllerImpl extends WebcController {
 		const notificationResult = await this.notificationsService.insertNotification(notification);
 		eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
 		eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+		eventBusService.emitEventListeners(Topics.RefreshShipments + shipmentData.shipmentId, null);
 		console.log('notification added', notification, notificationResult);
 	}
 

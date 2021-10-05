@@ -29,7 +29,6 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     this.initViewModel();
     this.attachEventListeners();
     this.openFirstAccordion();
-    this.attachRefresh();
   }
 
   attachEventListeners() {
@@ -207,12 +206,13 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     }
 
     this.model = model;
-    let modalOpen = false;
+    this.attachRefresh();
   }
 
-  attachRefresh() {
+  async attachRefresh() {
     let modalOpen = false;
-    eventBusService.addEventListener(Topics.RefreshShipments, async () => {
+    //console.log("SingleShipment" + this.model.shipmentModel.shipment.shipmentId);
+    eventBusService.addEventListener(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, async () => {
       if (!modalOpen) {
         modalOpen = true;
         let title = 'Shipment Updated';

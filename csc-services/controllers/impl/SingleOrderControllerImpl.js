@@ -90,14 +90,15 @@ class SingleOrderControllerImpl extends WebcController {
     });
 
     this.navigationHandlers();
-    this.attachRefresh();
+   
   }
 
-  attachRefresh() {
-    eventBusService.addEventListener(Topics.RefreshOrders, async () => {
+  async attachRefresh() {
+    //console.log("Model " + JSON.stringify(this.model.shipment));
+    eventBusService.addEventListener(Topics.RefreshOrders + this.model.order.orderId, async () => {
       this.showOrderUpdateModal();
     });
-    eventBusService.addEventListener(Topics.RefreshShipments, async () => {
+    eventBusService.addEventListener(Topics.RefreshShipments + this.model.shipment.shipmentId, async () => {
       this.showOrderUpdateModal();
     });
 	}
@@ -212,15 +213,19 @@ class SingleOrderControllerImpl extends WebcController {
       time: this.getTime(this.model.order.deliveryDate)
     };
 
+    console.log("shipmentSSI" + this.model.order.shipmentSSI);
+
     if (this.model.order.shipmentSSI) {
       const shipment = await this.shipmentsService.getShipment(this.model.order.shipmentSSI);
       this.model.shipment = this.transformShipmentData(shipment);
+      console.log("shipment " + JSON.stringify(this.model.shipment));
       if (this.model.shipment.status_value !== shipmentStatusesEnum.InPreparation) {
         this.model.order.pending_action = orderPendingActionEnum.NoFurtherActionsRequired;
       }
     }
 
     this.model.order.actions = this.setOrderActions();
+    this.attachRefresh();
   }
 
   transformOrderData(data) {

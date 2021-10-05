@@ -15,7 +15,6 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     this.initViewModel();
     this.openFirstAccordion();
     this.attachEventListeners();
-    this.attachRefresh();
   }
 
   attachEventListeners() {
@@ -95,11 +94,12 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
     console.log(model);
     this.model = model;
+    this.attachRefresh();
   }
 
-  attachRefresh() {
+  async attachRefresh() {
     let modalOpen = false;
-    eventBusService.addEventListener(Topics.RefreshShipments, async () => {
+    eventBusService.addEventListener(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, async () => {
       if (!modalOpen) {
         modalOpen = true;
         let title = 'Shipment Updated';

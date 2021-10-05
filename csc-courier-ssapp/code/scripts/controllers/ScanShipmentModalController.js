@@ -95,7 +95,7 @@ class ScanShipmentModalController extends WebcController {
     payload.signature = true;
 
     this.shipmentService.createAndMountTransitDSU(this.model.shipment.shipmentSSI, payload).then(()=>{
-      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+      eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
     })
   }
   getModel() {
