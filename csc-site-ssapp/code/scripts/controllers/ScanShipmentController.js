@@ -2,6 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentService = cscServices.ShipmentService;
+const OrderService = cscServices.OrderService;
 const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
 const { shipment, Roles, Topics } = cscServices.constants;
@@ -14,8 +15,10 @@ class ScanShipmentController extends WebcController {
     this.originalShipment = this.history.location.state.shipment;
     let communicationService = CommunicationService.getInstance(Roles.Courier);
     this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
+    this.orderService = new OrderService(this.DSUStorage, communicationService);
     this.model = {	shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;
+    this.retrieveKitIds(this.originalShipment.kitIdSSI);
 
     this.onTagEvent("start-scanner", 'click',() => {
       this.model.isScannerActive = true;
@@ -24,6 +27,12 @@ class ScanShipmentController extends WebcController {
     this.initScanViewModel();
     this.initStepperNavigationHandlers();
     this.addModelChangeHandlers();
+  }
+
+  async retrieveKitIds(kitIdSSI){
+    this.model.shipmentModel.kitsAreAvailable = false;
+    this.model.shipmentModel.kits = await this.orderService.getKitIds(kitIdSSI);
+    this.model.shipmentModel.kitsAreAvailable = true;
   }
 
   addModelChangeHandlers() {
@@ -71,6 +80,12 @@ class ScanShipmentController extends WebcController {
       this.sign();
     });
 
+  }
+
+  sign(){
+    this.shipmentService.sendMessageToSpo(this.model.shipment.shipmentSSI);
+    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+    this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', { tag: 'dashboard', state: { tab: Topics.Shipment }}, 2000);
   }
 
   makeStepActive(step_id, step_holder_id, e) {
