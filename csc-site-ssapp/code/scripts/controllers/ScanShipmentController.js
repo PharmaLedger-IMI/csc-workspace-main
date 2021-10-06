@@ -85,7 +85,7 @@ class ScanShipmentController extends WebcController {
   sign(){
     this.shipmentService.sendMessageToSpo(this.model.shipment.shipmentSSI);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-    this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', { tag: 'dashboard', state: { tab: Topics.Shipment }}, 2000);
+    this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', { tag: 'dashboard', state: { tab: Topics.Shipment }}, 2000);
   }
 
   makeStepActive(step_id, step_holder_id, e) {

@@ -30,6 +30,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     });
 
     this.onTagEvent('add-shipment-comment', 'click', (e) => {
+      this.addedRefreshListeners = false;
       this.onAddShipmentCommentModalOpen();
     });
 

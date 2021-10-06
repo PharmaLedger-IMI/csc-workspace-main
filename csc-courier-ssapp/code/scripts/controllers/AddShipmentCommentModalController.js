@@ -37,15 +37,15 @@ class AddShipmentCommentModalController extends WebcController {
 
 
   async submit(){
-
+    
     let payload = {
       date: new Date().getTime(),
       entity: Roles.Courier,
       comment: this.model.form.inputs.comment.value
     };
-
+    
     await this.shipmentService.addShipmentComment( this.model.shipmentModel.shipment.shipmentSSI, payload);
-    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+    eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, null); 
     this.element.destroy();
   }
 
