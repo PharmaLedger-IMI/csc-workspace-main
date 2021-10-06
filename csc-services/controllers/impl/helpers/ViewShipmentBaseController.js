@@ -1,6 +1,7 @@
-const cscServices = require('csc-services');
-const FileDownloaderService = cscServices.FileDownloaderService;
 const { WebcController } = WebCardinal.controllers;
+const cscServices = require('csc-services');
+const eventBusService = cscServices.EventBusService
+const FileDownloaderService = cscServices.FileDownloaderService;
 const ShipmentService = cscServices.ShipmentService;
 const { shipmentStatusesEnum, shipmentPendingActionEnum } = cscServices.constants.shipment;
 const momentService = cscServices.momentService;
@@ -11,6 +12,7 @@ class ViewShipmentBaseControllerImpl extends WebcController{
   constructor(...props) {
     super(...props);
     this.shipmentService = new ShipmentService(this.DSUStorage);
+    this.addedRefreshListeners = false;
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
   }
 
@@ -181,6 +183,30 @@ class ViewShipmentBaseControllerImpl extends WebcController{
     });
 
     return  documentsData.documents;
+  }
+
+
+  attachRefreshListeners() {
+    if (!this.addedRefreshListeners) {
+      this.addedRefreshListeners = true;
+      let modalOpen = false;
+      eventBusService.addEventListener(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, () => {
+        if (!modalOpen) {
+          modalOpen = true;
+          let title = 'Shipment Updated';
+          let content = 'Shipment was updated';
+          let modalOptions = {
+            disableExpanding: true,
+            disableClosing: true,
+            disableCancelButton: true,
+            confirmButtonText: 'Update View',
+            id: 'confirm-modal'
+          };
+
+          this.showModal(content, title, this.initViewModel.bind(this), this.initViewModel.bind(this), modalOptions);
+        }
+      });
+    }
   }
 
 

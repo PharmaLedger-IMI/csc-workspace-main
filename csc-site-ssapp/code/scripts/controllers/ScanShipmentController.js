@@ -15,7 +15,10 @@ class ScanShipmentController extends WebcController {
     let communicationService = CommunicationService.getInstance(Roles.Courier);
     this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
     this.model = {	shipmentModel: viewModelResolver('shipment') };
+<<<<<<< HEAD
 //    this.model.shipmentModel.form = viewModelResolver('shipment').form;
+=======
+>>>>>>> 9528e573f9e4ac6c1668dd322662004be7ae6c62
     this.model.shipment = this.originalShipment;
 
     this.onTagEvent("start-scanner", 'click',() => {
