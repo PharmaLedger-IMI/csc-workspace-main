@@ -116,6 +116,7 @@ class ShipmentsService extends DSUService {
 				notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
 				break;
 			}
+
 		}
 
 		const notificationData = {
@@ -227,7 +228,7 @@ class ShipmentsService extends DSUService {
 			shipmentSSI: shipmentKeySSI
 		}
 
-		const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY, CommunicationService.identities.CSC.CMO_IDENTITY, CommunicationService.identities.CSC.SITE_IDENTITY];
+		const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY,  CommunicationService.identities.CSC.SITE_IDENTITY];
 		notifiableActors.forEach(actor=>{
 			this.sendMessageToEntity(
 				actor,
@@ -235,7 +236,17 @@ class ShipmentsService extends DSUService {
 				inTransitDSUMessage,
 				shipmentStatusesEnum.InTransit
 			);
-		})
+		});
+
+		//Send a message to cmo
+		this.sendMessageToEntity(
+			CommunicationService.identities.CSC.CMO_IDENTITY,
+			shipmentStatusesEnum.Dispatched,
+			inTransitDSUMessage,
+			shipmentStatusesEnum.Dispatched
+		);
+
+
 	}
 
 	//add new data to shipmentTransitDSU and update shipment status
