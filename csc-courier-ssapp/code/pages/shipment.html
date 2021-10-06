@@ -152,8 +152,11 @@
 
         <div class='row-wrapper button-wrapper'>
           <div data-if='@actions.canPickupShipment'>
-            <webc-template data-view-model='@shipmentModel.shipment' template='shipment/scan-shipment'></webc-template>
-          </div>
+                <button class='btn-default' data-tag='scan-shipment-pickup'>
+                  <span class='fas fa-icon fa-qrcode'></span>
+                  Scan & Pick-up Shipment
+                </button>
+              </div>
           <!-- TODO: fix condition -->
           <div data-if='@actions.canEditShipment'>
             <button class='btn-default' data-tag='edit-shipment'>
