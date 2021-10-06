@@ -190,6 +190,12 @@ class ViewShipmentBaseControllerImpl extends WebcController{
     if (!this.addedRefreshListeners) {
       this.addedRefreshListeners = true;
       let modalOpen = false;
+
+      let updateViewHandler = ()=>{
+        modalOpen = false;
+        this.initViewModel();
+      };
+
       eventBusService.addEventListener(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, () => {
         if (!modalOpen) {
           modalOpen = true;
@@ -202,8 +208,7 @@ class ViewShipmentBaseControllerImpl extends WebcController{
             confirmButtonText: 'Update View',
             id: 'confirm-modal'
           };
-
-          this.showModal(content, title, this.initViewModel.bind(this), this.initViewModel.bind(this), modalOptions);
+          this.showModal(content, title, updateViewHandler, updateViewHandler, modalOptions);
         }
       });
     }
