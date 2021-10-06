@@ -172,14 +172,24 @@ class ShipmentsService extends DSUService {
 		shipmentDB.status =	status.history;
 		shipmentDB.shipmentId = transitShipment.shipmentId;
 
-		shipmentDb = await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
-
 		if (role === Roles.CMO) {
 			//CMO is the owner of the ShipmentsDSU
 			let shipmentDSU = await this.getEntityAsync(shipmentSSI,FoldersEnum.Shipments);
 			shipmentDSU.shipmentId = shipmentDB.shipmentId;
+
+			//TODO find a better implementation
+			//one approach is to split the shipmentStatuses in more DSUs because CMO stops here and no future shipment statueses should be read
+			//the In Transit equivalent for the CMO is Dispatched.
+			shipmentDB.status.forEach(shipmentStatus => {
+				if (shipmentStatus.status === shipmentStatusesEnum.InTransit) {
+					shipmentStatus.status = shipmentStatusesEnum.Dispatched;
+				}
+			});
 			await this.updateEntityAsync(shipmentDSU, FoldersEnum.Shipments);
 		}
+
+		shipmentDb = await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
+
 		return shipmentDb;
 	}
 

@@ -6,11 +6,13 @@ const ShipmentService = cscServices.ShipmentService;
 const { shipmentStatusesEnum, shipmentPendingActionEnum } = cscServices.constants.shipment;
 const momentService = cscServices.momentService;
 const { Commons, FoldersEnum, Topics, Roles } = cscServices.constants;
+const utilitiesService = cscServices.UtilitiesService;
 
 class ViewShipmentBaseControllerImpl extends WebcController{
 
-  constructor(...props) {
+  constructor(role,...props) {
     super(...props);
+    this.role = role;
     this.shipmentService = new ShipmentService(this.DSUStorage);
     this.addedRefreshListeners = false;
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
@@ -148,8 +150,9 @@ class ViewShipmentBaseControllerImpl extends WebcController{
         data.deliveryDateTime = this.getDateTime (deliveryDateTime)
       }
 
-      const normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
-      const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
+      const statuses = utilitiesService.getNormalAndApproveStatusByRole(this.role);
+      const normalStatuses = statuses.normalStatuses;
+      const approvedStatuses = statuses.approvedStatuses;
       data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
       data.status_cancelled = data.status_value === shipmentStatusesEnum.Cancelled;
       data.status_normal = normalStatuses.indexOf(data.status_value) !== -1;

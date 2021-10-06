@@ -41,7 +41,7 @@ class UtilitiesService {
         // For Site
         case Roles.Site:
           // Set the normal statuses
-          normalStatuses = [shipmentStatusesEnum.InTransit];
+          normalStatuses = [shipmentStatusesEnum.InTransit,shipmentStatusesEnum.Delivered];
           // Set the Approved statuses
           approvedStatuses = [shipmentStatusesEnum.Received];
           break;
