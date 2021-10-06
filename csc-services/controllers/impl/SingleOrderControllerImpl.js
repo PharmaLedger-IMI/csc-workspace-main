@@ -410,17 +410,17 @@ class SingleOrderControllerImpl extends WebcController {
     });
 
      this.onTagEvent('prepare-shipment', 'click', async () => {
-      const order = this.model.order;
-      const shipmentResult = await this.shipmentsService.createShipment(order);
 
-      const otherOrderDetails = {
-        shipmentSSI: shipmentResult.keySSI
-      };
-      const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
+       const order = this.model.order;
+       const shipmentResult = await this.shipmentsService.createShipment(order);
 
-      eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-
+       const otherOrderDetails = {
+         shipmentSSI: shipmentResult.keySSI
+       };
+       const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
+       eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+       eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+       
       this.createWebcModal({
         template: 'prepareShipmentModal',
         controller: 'PrepareShipmentModalController',
@@ -437,19 +437,7 @@ class SingleOrderControllerImpl extends WebcController {
     });
   }
 
-  async prepareShipment() {
-    const order = this.model.order;
-    const shipmentResult = await this.shipmentsService.createShipment(order);
-    
-    const otherOrderDetails = {
-      shipmentSSI: shipmentResult.keySSI
-    };
-    const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
 
-    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-    this.showErrorModalAndRedirect('Shipment Initiated, redirecting to View Shipment page...', 'Shipment Initiated', { tag: 'shipment', state: { keySSI: shipmentResult.keySSI }}, 2000);
-  };
 
   getDate(str) {
     return str.split(' ')[0];
