@@ -72,6 +72,19 @@ class ShipmentsService extends DSUService {
 		return shipmentDb;
 	}
 
+	sendMessageToSpo(shipmentKeySSI) {
+		const notificationData = {
+			shipmentSSI: shipmentKeySSI,
+		};
+		
+		this.sendMessageToEntity(
+			CommunicationService.identities.CSC.SPONSOR_IDENTITY,
+			shipmentStatusesEnum.Received,
+			notificationData,
+			shipmentStatusesEnum.Received
+		);
+	}
+
 	async updateShipment(shipmentKeySSI, newStatus, newShipmentData) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
 		const status = await this.updateStatusDsu(newStatus, shipmentDB.statusSSI);
