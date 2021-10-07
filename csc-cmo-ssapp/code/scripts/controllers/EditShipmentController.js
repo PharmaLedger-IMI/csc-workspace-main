@@ -60,12 +60,22 @@ export default class EditShipmentController extends WebcController {
 		});
 	}
 
+	resetEditOfShipment() {
+		this.model.shipmentModel.form = viewModelResolver('shipment').form;
+		this.makeStepActive('step-1', 'step-1-wrapper');
+	}
+
 	attachFormActions() {
 		this.onTagClick('form:reset', (model, target, event) => {
 			event.preventDefault();
 			event.stopImmediatePropagation();
-			this.model.shipmentModel.form = viewModelResolver('shipment').form;
-			this.makeStepActive('step-1', 'step-1-wrapper');
+
+			this.showModalFromTemplate('resetEditShipmentModal', this.resetEditOfShipment.bind(this), () => {}, {
+				controller: 'resetEditShipmentModal',
+				disableExpanding: true,
+				disableBackdropClosing: true,
+			});
+
 		});
 
 		this.onTagClick('form:submit', async () => {
