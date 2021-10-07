@@ -28,7 +28,6 @@ class KitsControllerImpl extends WebcController {
 
 	async getKits() {
 		try {
-			debugger;
 			this.model.kitsListIsReady = false;
 			const kitsTemp = await this.kitsService.getAllKits();
 			this.kits = this.transformData(kitsTemp);
@@ -100,7 +99,6 @@ class KitsControllerImpl extends WebcController {
 	filterData() {
 		let result = this.kits;
 		if (this.model.search.value && this.model.search.value !== '') {
-			debugger;
 			result = result.filter((x) => 
 				x.kitId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
 				x.shipmentId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||

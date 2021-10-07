@@ -20,7 +20,6 @@ class KitsService extends DSUService {
   }
 
 	async getAllKits() {
-    debugger;
 		const shipments = await this.shipmentsService.getShipments();
 		if (shipments && shipments.length > 0) {
 			let kits = [];
