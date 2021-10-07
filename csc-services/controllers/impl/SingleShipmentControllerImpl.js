@@ -18,7 +18,7 @@ csIdentities [Roles.Courier] = CommunicationService.identities.CSC.COU_IDENTITY;
 
 class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   constructor(role, ...props) {
-    super(...props);
+    super(role,...props);
     this.role = role;
 
     let communicationService = CommunicationService.getInstance(csIdentities[role]);

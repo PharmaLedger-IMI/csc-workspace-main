@@ -5,7 +5,8 @@ const shipmentStatusesEnum = {
 	Delivered: 'Delivered',
 	Received: 'Received',
 	ShipmentCancelled: 'Order & Shipment Cancelled',
-	Cancelled: 'Cancelled'
+	Cancelled: 'Cancelled',
+	Dispatched: 'Dispatched'
 };
 
 const shipmentsEventsEnum = {
