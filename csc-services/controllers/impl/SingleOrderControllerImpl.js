@@ -420,7 +420,7 @@ class SingleOrderControllerImpl extends WebcController {
        const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
        eventBusService.emitEventListeners(Topics.RefreshOrders, null);
        eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-       
+
       this.createWebcModal({
         template: 'prepareShipmentModal',
         controller: 'PrepareShipmentModalController',
