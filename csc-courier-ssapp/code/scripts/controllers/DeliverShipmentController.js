@@ -1,5 +1,6 @@
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
+const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
@@ -11,11 +12,10 @@ class DeliverShipmentController extends WebcController {
   constructor(...props) {
     super(...props);
     this.originalShipment = this.history.location.state.shipment;
-    //console.log("Shipment" , this.originalShipment);
 
     let communicationService = CommunicationService.getInstance(Roles.Courier);
     this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
-    this.model = this.getReviewOrderViewModel(shipment);
+    this.model = this.getDeliverShipmentViewModel(shipment);
 
     this.model.shipment = this.originalShipment;
     this.model.disableSign = false;
@@ -48,9 +48,9 @@ class DeliverShipmentController extends WebcController {
     });
 
     this.recipientHandler = () => {
-      this.model.formIsInvalid = this.model.form.inputs.recipient.value.trim() === '';
+      this.model.formIsInvalid = this.model.form.recipientName.value.trim() === '';
     };
-    this.model.onChange("form.inputs.recipient.value", this.recipientHandler.bind(this));
+    this.model.onChange("form.recipientName.value", this.recipientHandler.bind(this));
   }
 
   initStepperNavigationHandlers() {
@@ -92,14 +92,9 @@ class DeliverShipmentController extends WebcController {
 
   }
 
-  getDateTime() {
-    return this.model.form.inputs.shipment_date.value + ' ' + this.model.form.inputs.shipment_time.value;
-  }
-
-
   async sign() {
     let payload = {
-      recipientName: this.model.form.inputs.recipient.value,
+      recipientName: this.model.form.recipientName.value,
       signature: true,
       deliveryDateTime: new Date().getTime()
     };
@@ -148,7 +143,7 @@ class DeliverShipmentController extends WebcController {
     }
   }
 
-  getReviewOrderViewModel() {
+  getDeliverShipmentViewModel() {
     let model = {
       wizard_form: [
         { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Scan Shipment', visible: true, validated: false },
@@ -161,143 +156,7 @@ class DeliverShipmentController extends WebcController {
         { id: 'from_step_2_to_3', name: 'Next', visible: true, validated: false },
         { id: 'from_step_3_to_2', name: 'Previous', visible: true, validated: false },
       ],
-      form: {
-        inputs: {
-          shipmentId: {
-            label: 'Shipment ID',
-            name: 'shipmentId',
-            required: true,
-            placeholder: 'Shipment ID...',
-            disabled: false,
-            value: 'SHIPMENT-ID-001',
-          },
-          shipperId: {
-            label: 'Shipper ID',
-            name: 'shipperId',
-            required: true,
-            placeholder: 'Shipper ID...',
-            disabled: false,
-            value: '',
-          },
-          recipient: {
-            label: 'Recipient',
-            name: 'recipient',
-            required: true,
-            placeholder: 'Recipient Name...',
-            disabled: false,
-            value: '',
-          },
-          shipment_date: {
-            label: 'Shipment Date/Time',
-            name: 'shipment_date',
-            required: true,
-            disabled: false,
-            value: '',
-          },
-          shipment_time: {
-            name: 'shipment_time',
-            required: true,
-            disabled: false,
-            value: '',
-          },
-          specialInstructions: {
-            label: 'Special Instructions',
-            name: 'specialInstructions',
-            required: true,
-            placeholder: 'e.g You should do this...',
-            disabled: false,
-            value: '',
-          },
-          shipmentType: {
-            label: 'Shipment Type',
-            name: 'shipmentType',
-            required: true,
-            placeholder: 'e.g air',
-            disabled: false,
-            value: '',
-          },
-          dimensionHeight: {
-            label: 'Height',
-            name: 'dimensionHeight',
-            required: true,
-            placeholder: 'Fill in the height.',
-            disabled: false,
-            value: '',
-          },
-          dimensionWidth: {
-            label: 'Width',
-            name: 'dimensionWidth',
-            required: true,
-            placeholder: 'Fill in the width.',
-            disabled: false,
-            value: '',
-          },
-          dimensionLength: {
-            label: 'Length',
-            name: 'dimensionLength',
-            required: true,
-            placeholder: 'Fill in the length.',
-            disabled: false,
-            value: '',
-          },
-          origin: {
-            label: 'Origin',
-            name: 'origin',
-            required: true,
-            placeholder: 'Fill in the origin.',
-            disabled: false,
-            value: '',
-          },
-          shippingConditions: {
-            label: 'Shipping Conditions',
-            name: 'shippingConditions',
-            required: true,
-            placeholder: 'The condition of the shipping.',
-            disabled: false,
-            value: '',
-          },
-          scheduledPickupDate: {
-            label: 'Scheduled Pickup Date',
-            name: 'scheduledPickupDate',
-            required: true,
-            placeholder: 'The date of the scheduled pickup.',
-            disabled: false,
-            value: '',
-          },
-          scheduledPickupTime: {
-            label: 'Scheduled Pickup Time',
-            name: 'scheduledPickupTime',
-            required: true,
-            placeholder: 'The time of the scheduled pickup.',
-            disabled: false,
-            value: '',
-          },
-          signature: {
-            label: 'Signature',
-            name: 'signature',
-            required: true,
-            placeholder: 'Signature',
-            disabled: false,
-            value: '',
-          },
-          billNumber: {
-            label: 'Master-way bill number',
-            name: 'billNumber',
-            required: true,
-            placeholder: '0000000',
-            disabled: false,
-            value: '0000000',
-          },
-          hsCode: {
-            label: 'HS Code',
-            name: 'hsCode',
-            required: true,
-            placeholder: '0000000',
-            disabled: false,
-            value: '000000',
-          },
-        }
-      },
+      form: viewModelResolver('shipment').form,
       isScannerActive: true,
       scannedData: '',
       scanSuccess: false,
@@ -305,9 +164,6 @@ class DeliverShipmentController extends WebcController {
 
     return model;
   }
-
-
-
 }
 
 export default DeliverShipmentController;
