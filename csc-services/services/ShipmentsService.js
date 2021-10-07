@@ -178,7 +178,7 @@ class ShipmentsService extends DSUService {
 			shipmentDSU.shipmentId = shipmentDB.shipmentId;
 
 			//TODO find a better implementation
-			//one approach is to split the shipmentStatuses in more DSUs because CMO stops here and no future shipment statueses should be read
+			//one approach is to split the shipmentStatuses in more DSUs because CMO stops here and no future shipment statuses should be read
 			//the In Transit equivalent for the CMO is Dispatched.
 			shipmentDB.status.forEach(shipmentStatus => {
 				if (shipmentStatus.status === shipmentStatusesEnum.InTransit) {
