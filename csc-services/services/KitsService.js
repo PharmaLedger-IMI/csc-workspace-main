@@ -20,6 +20,7 @@ class KitsService extends DSUService {
   }
 
 	async getAllKits() {
+    debugger;
 		const shipments = await this.shipmentsService.getShipments();
 		if (shipments && shipments.length > 0) {
 			let kits = [];
@@ -32,7 +33,12 @@ class KitsService extends DSUService {
 			return kits;
 			// return kitsDummyData;
 		} else {
-			return [];
+      //TODO: remove at some point
+      const testingValues = await this.getKits("SHIPMENT-ID-001");
+      if (testingValues && testingValues.length > 0) {
+        return testingValues;
+      }
+			else return [];
 		}
 	}
 

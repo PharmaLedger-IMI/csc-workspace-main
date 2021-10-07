@@ -28,6 +28,7 @@ class KitsControllerImpl extends WebcController {
 
 	async getKits() {
 		try {
+			debugger;
 			this.model.kitsListIsReady = false;
 			const kitsTemp = await this.kitsService.getAllKits();
 			this.kits = this.transformData(kitsTemp);
