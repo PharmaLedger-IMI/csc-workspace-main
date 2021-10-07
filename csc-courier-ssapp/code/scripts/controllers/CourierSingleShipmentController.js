@@ -22,6 +22,15 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     this.downloadAttachmentHandler();
     this.navigationHandlers();
 
+    this.onTagClick('scan-shipment-pickup', () => {
+        this.navigateToPageTag('scan-shipment-pickup', {
+            shipment: {
+               shipmentId: this.model.shipmentModel.shipment.shipmentId,
+                ...this.model.toObject('shipmentModel.shipment')
+            }
+            });
+       });
+
     this.onTagEvent('edit-shipment', 'click', () => {
       this.navigateToPageTag('edit-shipment', {
         shipment: this.model.toObject('shipmentModel.shipment'),
