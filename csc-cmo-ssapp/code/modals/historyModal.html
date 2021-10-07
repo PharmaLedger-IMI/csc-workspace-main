@@ -13,7 +13,7 @@
 </div>
 
 <main class='full-flex-column justify-content-between'>
-	<div class='row'>
+	<div class='row justify-content-center align-items-center'>
 		<div class='col-4 text-center'>
 			<div class='history-orders'>
 				<svg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' x='0px' y='0px'
@@ -107,43 +107,9 @@
 			</div>
 
 		</div>
-		<div class='col-4 text-center'>
-			<div class='history-orders'>
-				<svg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' x='0px' y='0px'
-				     width='200px' height='200px' viewBox='0 0 200 200' enable-background='new 0 0 200 200'
-				     xml:space='preserve'>
-            <path fill='#231F20' d='M92.5,122.386H78v-15h14.5v-14.5h15v14.5H122v15h-14.5v14.5h-15V122.386z M159.712,52.231v17.965
-                c0,4.298-2.567,8.001-5.972,10.094v67.479c0,6.566-6.565,11.942-11.943,11.942H58.201c-5.378,0-11.942-5.376-11.942-11.942V80.29
-                c-3.404-2.093-5.971-5.796-5.971-10.094V52.231c0-6.576,5.971-11.942,11.944-11.942h95.537
-                C153.74,40.289,159.712,45.655,159.712,52.231z M141.797,82.087H58.201v65.682h83.596V82.087z M147.77,52.231H52.232v17.913h95.537
-                V52.231z' />
-            </svg>
-				<span><b>Kits</b></span>
-			</div>
-
-			<div data-if='@kits'>
-				<div data-for='@kits.status'>
-					<div class='history-connector'></div>
-
-					<div data-if='@approved'>
-						<div slot='true' class='history-status background-approved'>
-							<div class='history-date'>{{@date}}</div>
-							<div><b>{{@status}}</b></div>
-						</div>
-					</div>
-
-					<div data-if='@normal'>
-						<div slot='true' class='history-status background-primary'>
-							<div class='history-date'>{{@date}}</div>
-							<div><b>{{@status}}</b></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
 	</div>
 
-	<div class='row-wrapper button-wrapper'>
+	<div class='row-wrapper button-wrapper justify-content-center align-items-center'>
 		<div class="col-4 d-flex justify-content-center" data-if='@displayViewOrderButton'>
 			<button class='btn-default' data-tag='view-order'>
 				<svg class='view-more-icon' enable-background='new 0 0 200 200' height='200px' id='Layer_1'
@@ -157,7 +123,6 @@
 				View Order
 			</button>
 		</div>
-
 		<div class="col-4 d-flex justify-content-center" data-if='@displayViewShipmentButton'>
 			<button class='btn-default' data-tag='view-shipment'>
 				<svg class='view-more-icon' enable-background='new 0 0 200 200' height='200px' id='Layer_1'
@@ -169,20 +134,6 @@
 			                  fill='#231F20'></path>
 			          </svg>
 				View Shipment
-			</button>
-		</div>
-
-		<div class="col-4 d-flex justify-content-center" data-if='@displayViewKitsButton'>
-			<button class='btn-default' data-tag='view-kits'>
-				<svg class='view-more-icon' enable-background='new 0 0 200 200' height='200px' id='Layer_1'
-				     version='1.1' viewBox='0 0 200 200' width='200px' x='0px' xml:space='preserve'
-				     xmlns='http://www.w3.org/2000/svg'
-				     y='0px'>
-			            <path d='M107.5,62.462h67.57v15.021H107.5V62.462z M107.5,137.538h67.57v-15.021H107.5V137.538z M130.02,107.51
-			                h45.051V92.493H130.02V107.51z M107.5,99.999L69.961,62.462v30.031H24.93v15.017h45.031v30.028L107.5,99.999z'
-			                  fill='#231F20'></path>
-			          </svg>
-				View Kits
 			</button>
 		</div>
 	</div>
