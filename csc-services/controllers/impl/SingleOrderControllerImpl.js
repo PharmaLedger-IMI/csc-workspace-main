@@ -42,7 +42,7 @@ class SingleOrderControllerImpl extends WebcController {
     //Init Check on Accordion Items
     if (this.model.accordion) {
       let keys = Object.keys(this.model.accordion);
-      if (keys) {
+      if (keys.length > 0) {
         keys.forEach((key) => {
           if (this.model.accordion[key].isOpened) {
             this.openAccordionItem(this.model.accordion[key].id);
