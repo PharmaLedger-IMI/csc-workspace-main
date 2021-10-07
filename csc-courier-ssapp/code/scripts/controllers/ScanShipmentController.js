@@ -101,7 +101,6 @@ class ScanShipmentController extends WebcController {
     let shipmentDataProps = ["shipperId", "scheduledPickupDateTime", "dimension", "origin", "specialInstructions", "shippingConditions"];
     this.model.disableSign = true;
     window.WebCardinal.loader.hidden = false;
-
     shipmentDataProps.forEach((prop) => {
       payload[prop] = this.model.shipment[prop];
     });
@@ -109,14 +108,13 @@ class ScanShipmentController extends WebcController {
     payload.signature = true;
 
     await this.shipmentService.createAndMountTransitDSU(this.model.shipment.shipmentSSI, payload);
-    this.model.disableSign = false;
-    window.WebCardinal.loader.hidden = true;
     eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
 
-        this.showErrorModalAndRedirect('Shipment Pickedup, redirecting to dashboard...', 'Shipment Pickup', {
-          tag: 'shipment',
-          state: { keySSI: keySSI }
+    this.showErrorModalAndRedirect('Shipment Pickedup, redirecting to dashboard...', 'Shipment Pickup', {
+        tag: 'shipment',
+         state: { keySSI: keySSI }
         }, 2000);
+    window.WebCardinal.loader.hidden = true;
   }
   
   getModel() {
