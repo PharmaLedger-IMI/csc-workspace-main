@@ -8,7 +8,7 @@ const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
 class CourierSingleShipmentController extends ViewShipmentBaseController {
   constructor(...props) {
-    super(...props);
+    super(Roles.Courier,...props);
     let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.COU_IDENTITY);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
     this.initViewModel();

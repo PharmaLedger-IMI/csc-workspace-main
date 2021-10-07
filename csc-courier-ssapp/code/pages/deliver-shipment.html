@@ -70,10 +70,10 @@
                     <div class="step-holder step-hidden" id="step-2-wrapper">
                         <div class="grid-column-wrapper">
                             <!-- Recipient Name -->
-                            <label>{{@form.inputs.recipient.label}}</label>
-                            <input class="form-control form-control-sm" name="@form.inputs.recipient.name"
-                                placeholder="@form.inputs.recipient.placeholder" type="text"
-                                value="@form.inputs.recipient.value" />
+                            <label>{{@form.recipientName.label}}</label>
+                            <input class="form-control form-control-sm" name="@form.recipientName.name"
+                                placeholder="@form.recipientName.placeholder" type="text"
+                                value="@form.recipientName.value" />
                         </div>
 
                         <!-- Navigation Between Steps-->
@@ -95,34 +95,34 @@
                         <div class='row'>
                             <div class='col-12'>
                                 <!-- Shipment ID -->
-                                <label>{{@form.inputs.shipmentId.label}}</label>
-                                <input class="form-control form-control-sm" readonly name="@form.inputs.shipmentId.name"
-                                    placeholder="@form.inputs.shipmentId.placeholder" type="text"
+                                <label>{{@form.shipmentId.label}}</label>
+                                <input class="form-control form-control-sm" readonly name="@form.shipmentId.name"
+                                    placeholder="@form.shipmentId.placeholder" type="text"
                                     value="@shipment.shipmentId" />
                             </div>
 
                             <div class='col-12'>
                                 <!-- Shipper ID -->
-                                <label>{{@form.inputs.shipperId.label}}</label>
-                                <input class="form-control form-control-sm" readonly name="@form.inputs.shipperId.name"
-                                    placeholder="@form.inputs.shipperId.placeholder" type="text"
+                                <label>{{@form.shipperId.label}}</label>
+                                <input class="form-control form-control-sm" readonly name="@form.shipperId.name"
+                                    placeholder="@form.shipperId.placeholder" type="text"
                                     value="@shipment.shipperId" />
                             </div>
 
                             <div class='col-12'>
                                 <!-- Origin -->
-                                <label>{{@form.inputs.origin.label}}</label>
-                                <input class="form-control form-control-sm" readonly name="@form.inputs.origin.name"
-                                    placeholder="@form.inputs.origin.placeholder" type="text"
+                                <label>{{@form.origin.label}}</label>
+                                <input class="form-control form-control-sm" readonly name="@form.origin.name"
+                                    placeholder="@form.origin.placeholder" type="text"
                                     value="@shipment.origin" />
                             </div>
 
                             <div class='col-12'>
                                 <!-- Shipment Type -->
-                                <label>{{@form.inputs.shipmentType.label}}</label>
+                                <label>{{@form.type.label}}</label>
                                 <input class="form-control form-control-sm" readonly
-                                    name="@form.inputs.shipmentType.name"
-                                    placeholder="@form.inputs.shipmentType.placeholder" type="text"
+                                    name="@form.type.name"
+                                    placeholder="@form.type.placeholder" type="text"
                                     value="@shipment.shipmentType" />
                             </div>
 
@@ -130,7 +130,7 @@
                                 <!-- Delivery Date/Time -->
                                 <div class="form-group">
                                     <!--Label -->
-                                    <label>{{@form.inputs.shipment_date.label}}</label>
+                                    <label>{{@form.pickupDate.label}}</label>
                                     <div class="row">
                                         <div class="col-8">
                                             <!-- Input -->
@@ -149,26 +149,26 @@
                             <div class='col-12'>
                                 <div class='row'>
                                     <div class='col-4'>
-                                        <label>{{@form.inputs.dimensionHeight.label}}</label>
+                                        <label>{{@form.dimension.height.label}}</label>
                                         <input class="form-control form-control-sm" readonly
-                                            name="@form.inputs.dimensionHeight.name"
-                                            placeholder="@form.inputs.dimensionHeight.placeholder" type="text"
+                                            name="@form.dimensionHeight.name"
+                                            placeholder="@form.dimension.height.placeholder" type="text"
                                             value="@shipment.dimension.dimensionHeight" />
                                     </div>
 
                                     <div class='col-4'>
-                                        <label>{{@form.inputs.dimensionLength.label}}</label>
+                                        <label>{{@form.dimension.length.label}}</label>
                                         <input class="form-control form-control-sm" readonly
-                                            name="@form.inputs.dimensionLength.name"
-                                            placeholder="@form.inputs.dimensionLength.placeholder" type="text"
+                                            name="@form.dimensionLength.name"
+                                            placeholder="@form.dimension.length.placeholder" type="text"
                                             value="@shipment.dimension.dimensionLength" />
                                     </div>
 
                                     <div class='col-4'>
-                                        <label>{{@form.inputs.dimensionWidth.label}}</label>
+                                        <label>{{@form.dimension.width.label}}</label>
                                         <input class="form-control form-control-sm" readonly
-                                            name="@form.inputs.dimensionWidth.name"
-                                            placeholder="@form.inputs.dimensionWidth.placeholder" type="text"
+                                            name="@form.dimensionWidth.name"
+                                            placeholder="@form.dimension.width.placeholder" type="text"
                                             value="@shipment.dimension.dimensionWidth" />
                                     </div>
                                 </div>
@@ -177,33 +177,33 @@
 
                             <div class='col-12'>
                                 <!-- Special Instructions -->
-                                <label>{{@form.inputs.specialInstructions.label}}</label>
+                                <label>{{@form.specialInstructions.label}}</label>
                                 <textarea class="form-control form-control-sm" readonly
-                                    name="@form.inputs.specialInstructions.name"
-                                    placeholder="@form.inputs.specialInstructions.placeholder" />{{@shipment.specialInstructions}}</textarea>
+                                    name="@form.specialInstructions.name"
+                                    placeholder="@form.specialInstructions.placeholder" />{{@shipment.specialInstructions}}</textarea>
                             </div>
 
                             <div class='col-12'>
                                 <!-- Shipping Conditions -->
-                                <label>{{@form.inputs.shippingConditions.label}}</label>
+                                <label>{{@form.shippingConditions.label}}</label>
                                 <textarea class="form-control form-control-sm" readonly
-                                    name="@form.inputs.shippingConditions.name"
-                                    placeholder="@form.inputs.shippingConditions.placeholder" />{{@shipment.shippingConditions}}</textarea>
+                                    name="@form.shippingConditions.name"
+                                    placeholder="@form.shippingConditions.placeholder" />{{@shipment.shippingConditions}}</textarea>
                             </div>
 
                             <div class='col-12'>
                                 <!-- Master-way bill number -->
-                                <label>{{@form.inputs.billNumber.label}}</label>
+                                <label>{{@form.billNumber.label}}</label>
                                 <input class="form-control form-control-sm" value="@shipment.bill.billNumber"
-                                    placeholder="@form.inputs.billNumber.placeholder" readonly='readonly' />
+                                    placeholder="@form.billNumber.placeholder" readonly='readonly' />
                                 <!-- HS Code -->
-                                <label>{{@form.inputs.hsCode.label}}</label>
+                                <label>{{@form.hsCode.label}}</label>
                                 <input class="form-control form-control-sm" value="@shipment.bill.hsCode"
-                                    placeholder="@form.inputs.hsCode.placeholder" readonly='readonly' />
+                                    placeholder="@form.hsCode.placeholder" readonly='readonly' />
                                 <!-- Recipient Name -->
-                                <label>{{@form.inputs.recipient.label}}</label>
-                                <input class="form-control form-control-sm" value="@form.inputs.recipient.value"
-                                    placeholder="@form.inputs.recipient.placeholder" readonly='readonly' />
+                                <label>{{@form.recipientName.label}}</label>
+                                <input class="form-control form-control-sm" value="@form.recipientName.value"
+                                    placeholder="@form.recipientName.placeholder" readonly='readonly' />
                             </div>
                         </div>
 

@@ -2,6 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 
+const utilitiesService = cscServices.UtilitiesService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const ShipmentService = cscServices.ShipmentService;
@@ -65,8 +66,10 @@ class ShipmentsControllerImpl extends WebcController {
 
   transformData(data) {
     if (data) {
-      const normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
-      const approvedStatuses = [shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered, shipmentStatusesEnum.Received];
+
+      const statuses = utilitiesService.getNormalAndApproveStatusByRole(this.role);
+      const normalStatuses = statuses.normalStatuses;
+      const approvedStatuses = statuses.approvedStatuses;
 
       data.forEach((item) => {
         item.orderId = item.orderId || '-';

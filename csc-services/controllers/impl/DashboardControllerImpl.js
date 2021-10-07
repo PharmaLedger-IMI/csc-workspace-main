@@ -227,7 +227,7 @@ class DashboardControllerImpl extends WebcController {
 				shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
 				break;
 			}
-
+			case shipmentStatusesEnum.Dispatched:
 			case shipmentStatusesEnum.InTransit: {
 
 				notificationRole = Roles.Courier;
@@ -249,6 +249,13 @@ class DashboardControllerImpl extends WebcController {
 			}
 			case shipmentStatusesEnum.Delivered: {
 				notificationRole = Roles.Courier;
+				const messageData = data.message.data;
+				const { shipmentSSI } = messageData;
+				shipmentData = await this.shipmentService.updateShipmentDB(shipmentSSI);
+				break;
+			}
+			case shipmentStatusesEnum.Received: {
+				notificationRole = Roles.Site;
 				const messageData = data.message.data;
 				const { shipmentSSI } = messageData;
 				shipmentData = await this.shipmentService.updateShipmentDB(shipmentSSI);
