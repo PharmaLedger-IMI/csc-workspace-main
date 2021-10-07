@@ -104,6 +104,7 @@ class DashboardControllerImpl extends WebcController {
 		const notificationResult = await this.notificationsService.insertNotification(notification);
 		eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
 		eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+		eventBusService.emitEventListeners(Topics.RefreshOrders + orderData.orderId, null);
 		console.log('notification added', notification, notificationResult);
 	}
 
@@ -130,6 +131,7 @@ class DashboardControllerImpl extends WebcController {
 		const notificationResult = await this.notificationsService.insertNotification(notification);
 		eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
 		eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+		eventBusService.emitEventListeners(Topics.RefreshShipments + shipmentData.shipmentId, null);
 		console.log('notification added', notification, notificationResult);
 	}
 
@@ -225,7 +227,7 @@ class DashboardControllerImpl extends WebcController {
 				shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
 				break;
 			}
-
+			case shipmentStatusesEnum.Dispatched:
 			case shipmentStatusesEnum.InTransit: {
 
 				notificationRole = Roles.Courier;
@@ -247,6 +249,13 @@ class DashboardControllerImpl extends WebcController {
 			}
 			case shipmentStatusesEnum.Delivered: {
 				notificationRole = Roles.Courier;
+				const messageData = data.message.data;
+				const { shipmentSSI } = messageData;
+				shipmentData = await this.shipmentService.updateShipmentDB(shipmentSSI);
+				break;
+			}
+			case shipmentStatusesEnum.Received: {
+				notificationRole = Roles.Site;
 				const messageData = data.message.data;
 				const { shipmentSSI } = messageData;
 				shipmentData = await this.shipmentService.updateShipmentDB(shipmentSSI);

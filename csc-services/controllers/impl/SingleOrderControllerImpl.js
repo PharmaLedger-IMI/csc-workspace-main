@@ -20,6 +20,7 @@ class SingleOrderControllerImpl extends WebcController {
   constructor(role, ...props) {
     super(...props);
     this.role = role;
+    this.addedRefreshListeners = false;
 
     const model = viewModelResolver('order');
     //all fields are disabled
@@ -41,7 +42,7 @@ class SingleOrderControllerImpl extends WebcController {
     //Init Check on Accordion Items
     if (this.model.accordion) {
       let keys = Object.keys(this.model.accordion);
-      if (keys) {
+      if (keys.length > 0) {
         keys.forEach((key) => {
           if (this.model.accordion[key].isOpened) {
             this.openAccordionItem(this.model.accordion[key].id);
@@ -90,34 +91,7 @@ class SingleOrderControllerImpl extends WebcController {
     });
 
     this.navigationHandlers();
-    this.attachRefresh();
-  }
-
-  attachRefresh() {
-    eventBusService.addEventListener(Topics.RefreshOrders, async () => {
-      this.showOrderUpdateModal();
-    });
-    eventBusService.addEventListener(Topics.RefreshShipments, async () => {
-      this.showOrderUpdateModal();
-    });
-	}
-
-  showOrderUpdateModal() {
-    let modalOpen = false;
-    if (!modalOpen) {
-      modalOpen = true;
-      let title = 'Order Updated';
-      let content = 'Order was updated, New status is available';
-      let modalOptions = {
-        disableExpanding: true,
-        disableClosing: true,
-        disableCancelButton: true,
-        confirmButtonText: 'Update View',
-        id: 'confirm-modal'
-      };
-
-      this.showModal(content, title, this.init.bind(this), this.init.bind(this), modalOptions);
-    }
+   
   }
 
   navigationHandlers() {
@@ -215,12 +189,47 @@ class SingleOrderControllerImpl extends WebcController {
     if (this.model.order.shipmentSSI) {
       const shipment = await this.shipmentsService.getShipment(this.model.order.shipmentSSI);
       this.model.shipment = this.transformShipmentData(shipment);
+      console.log("shipment " + JSON.stringify(this.model.shipment));
       if (this.model.shipment.status_value !== shipmentStatusesEnum.InPreparation) {
         this.model.order.pending_action = orderPendingActionEnum.NoFurtherActionsRequired;
       }
     }
 
     this.model.order.actions = this.setOrderActions();
+    this.attachRefreshListeners();
+  }
+
+   attachRefreshListeners() {
+
+     if (!this.addedRefreshListeners) {
+       this.addedRefreshListeners = true;
+       this.refreshModalOpened = false;
+
+       // Here is a known semantic issue: when both shipment and order are canceled,
+       // but from the business point of view the application is not presenting any bug because the order will refresh
+       // and will prevent the shipment refresh to trigger
+
+       eventBusService.addEventListener(Topics.RefreshOrders + this.model.order.orderId, this.showOrderUpdateModal.bind(this));
+       if(this.model.shipment){
+         eventBusService.addEventListener(Topics.RefreshShipments + this.model.shipment.shipmentId,  this.showOrderUpdateModal.bind(this));
+       }
+     }
+  }
+
+  showOrderUpdateModal() {
+    if (!this.refreshModalOpened) {
+      this.refreshModalOpened = true;
+      let title = 'Order Updated';
+      let content = 'Order was updated';
+      let modalOptions = {
+        disableExpanding: true,
+        disableClosing: true,
+        disableCancelButton: true,
+        confirmButtonText: 'Update View',
+        id: 'confirm-modal'
+      };
+      this.showModal(content, title, this.init.bind(this), this.init.bind(this), modalOptions);
+    }
   }
 
   transformOrderData(data) {
@@ -400,33 +409,35 @@ class SingleOrderControllerImpl extends WebcController {
       });
     });
 
-    this.onTagEvent('prepare-shipment', 'click', () => {
-      this.showModal("Are you sure you want to prepare the shipment?",
-        'Prepare Shipment',
-        this.prepareShipment.bind(this),
-        () => {
-        }, {
-          disableExpanding: true,
-          cancelButtonText: 'No',
-          confirmButtonText: 'Yes',
-          id: 'confirm-modal'
-        });
+     this.onTagEvent('prepare-shipment', 'click', async () => {
+
+       const order = this.model.order;
+       const shipmentResult = await this.shipmentsService.createShipment(order);
+
+       const otherOrderDetails = {
+         shipmentSSI: shipmentResult.keySSI
+       };
+       const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
+       eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+       eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+
+      this.createWebcModal({
+        template: 'prepareShipmentModal',
+        controller: 'PrepareShipmentModalController',
+        model: {...shipmentResult},
+        disableBackdropClosing: false,
+        disableFooter: true,
+        disableHeader: true,
+        disableExpanding: true,
+        disableClosing: true,
+        disableCancelButton: true,
+        expanded: false,
+        centered: true,
+      });
     });
   }
 
-  async prepareShipment() {
-    const order = this.model.order;
-    const shipmentResult = await this.shipmentsService.createShipment(order);
-    
-    const otherOrderDetails = {
-      shipmentSSI: shipmentResult.keySSI
-    };
-    const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
 
-    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-    this.showErrorModalAndRedirect('Shipment Initiated, redirecting to View Shipment page...', 'Shipment Initiated', { tag: 'shipment', state: { keySSI: shipmentResult.keySSI }}, 2000);
-  };
 
   getDate(str) {
     return str.split(' ')[0];

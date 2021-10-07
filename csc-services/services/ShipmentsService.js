@@ -72,6 +72,19 @@ class ShipmentsService extends DSUService {
 		return shipmentDb;
 	}
 
+	sendMessageToSpo(shipmentKeySSI) {
+		const notificationData = {
+			shipmentSSI: shipmentKeySSI,
+		};
+		
+		this.sendMessageToEntity(
+			CommunicationService.identities.CSC.SPONSOR_IDENTITY,
+			shipmentStatusesEnum.Received,
+			notificationData,
+			shipmentStatusesEnum.Received
+		);
+	}
+
 	async updateShipment(shipmentKeySSI, newStatus, newShipmentData) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
 		const status = await this.updateStatusDsu(newStatus, shipmentDB.statusSSI);
@@ -103,6 +116,7 @@ class ShipmentsService extends DSUService {
 				notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
 				break;
 			}
+
 		}
 
 		const notificationData = {
@@ -146,7 +160,7 @@ class ShipmentsService extends DSUService {
 			shipmentDB = await this.mountAndReceiveShipment(shipmentSSI, role, statusKeySSI);
 			let kitIdKeySSIEncrypted = shipmentDB.encryptedMessages.kitIdKeySSIEncrypted;
 			const kitIdSSI = await EncryptionService.decryptData(kitIdKeySSIEncrypted);
-			shipmentDB.kitISSI = kitIdSSI;
+			shipmentDB.kitIdSSI = kitIdSSI;
 			await this.mountEntityAsync(kitIdSSI, FoldersEnum.Kits);
 		}
 		else{
@@ -158,14 +172,24 @@ class ShipmentsService extends DSUService {
 		shipmentDB.status =	status.history;
 		shipmentDB.shipmentId = transitShipment.shipmentId;
 
-		shipmentDb = await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
-
 		if (role === Roles.CMO) {
 			//CMO is the owner of the ShipmentsDSU
 			let shipmentDSU = await this.getEntityAsync(shipmentSSI,FoldersEnum.Shipments);
 			shipmentDSU.shipmentId = shipmentDB.shipmentId;
+
+			//TODO find a better implementation
+			//one approach is to split the shipmentStatuses in more DSUs because CMO stops here and no future shipment statuses should be read
+			//the In Transit equivalent for the CMO is Dispatched.
+			shipmentDB.status.forEach(shipmentStatus => {
+				if (shipmentStatus.status === shipmentStatusesEnum.InTransit) {
+					shipmentStatus.status = shipmentStatusesEnum.Dispatched;
+				}
+			});
 			await this.updateEntityAsync(shipmentDSU, FoldersEnum.Shipments);
 		}
+
+		shipmentDb = await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
+
 		return shipmentDb;
 	}
 
@@ -214,7 +238,7 @@ class ShipmentsService extends DSUService {
 			shipmentSSI: shipmentKeySSI
 		}
 
-		const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY, CommunicationService.identities.CSC.CMO_IDENTITY, CommunicationService.identities.CSC.SITE_IDENTITY];
+		const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY,  CommunicationService.identities.CSC.SITE_IDENTITY];
 		notifiableActors.forEach(actor=>{
 			this.sendMessageToEntity(
 				actor,
@@ -222,7 +246,17 @@ class ShipmentsService extends DSUService {
 				inTransitDSUMessage,
 				shipmentStatusesEnum.InTransit
 			);
-		})
+		});
+
+		//Send a message to cmo
+		this.sendMessageToEntity(
+			CommunicationService.identities.CSC.CMO_IDENTITY,
+			shipmentStatusesEnum.Dispatched,
+			inTransitDSUMessage,
+			shipmentStatusesEnum.Dispatched
+		);
+
+
 	}
 
 	//add new data to shipmentTransitDSU and update shipment status

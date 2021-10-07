@@ -11,14 +11,15 @@ class ScanShipmentModalController extends WebcController {
 
   constructor(...props) {
     super(...props);
-    console.log("Shipment" , this.model.shipmentModel.shipment);
+    console.log("Shipment", this.model.shipmentModel.shipment);
 
     let communicationService = CommunicationService.getInstance(Roles.Courier);
-    this.shipmentService = new ShipmentService (this.DSUStorage, communicationService);
+    this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
     this.model = this.getReviewOrderViewModel(shipment);
     this.model.shipment = this.model.shipmentModel.shipment;
+    this.model.disableSign = false;
 
-    this.onTagEvent("start-scanner", 'click',() => {
+    this.onTagEvent("start-scanner", 'click', () => {
       this.model.isScannerActive = true;
     });
 
@@ -26,7 +27,7 @@ class ScanShipmentModalController extends WebcController {
     this.addModelChangeHandlers();
   }
 
-  addModelChangeHandlers(){
+  addModelChangeHandlers() {
     this.model.onChange("scannedData", () => {
       let correctValue = this.model.shipmentModel.shipment.orderId;
       this.model.scanSuccess = this.model.scannedData === correctValue;
@@ -83,9 +84,11 @@ class ScanShipmentModalController extends WebcController {
   }
 
 
-  sign(){
+  async sign() {
     let payload = {};
-    let shipmentDataProps = ["shipperId","scheduledPickupDateTime","dimension","origin","specialInstructions","shippingConditions"];
+    let shipmentDataProps = ["shipperId", "scheduledPickupDateTime", "dimension", "origin", "specialInstructions", "shippingConditions"];
+    this.model.disableSign = true;
+    window.WebCardinal.loader.hidden = false;
 
     shipmentDataProps.forEach((prop) => {
       payload[prop] = this.model.shipment[prop];
@@ -94,14 +97,17 @@ class ScanShipmentModalController extends WebcController {
     payload.shipmentId = this.model.form.inputs.shipmentId.value;
     payload.signature = true;
 
-    this.shipmentService.createAndMountTransitDSU(this.model.shipment.shipmentSSI, payload).then(()=>{
-      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-    })
+    await this.shipmentService.createAndMountTransitDSU(this.model.shipment.shipmentSSI, payload);
+    eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
+    this.model.disableSign = false;
+    window.WebCardinal.loader.hidden = true;
+
   }
+  
   getModel() {
     return {
       isScannerActive: false,
-      formIsInvalid:true,
+      formIsInvalid: true,
       scannedData: ''
     }
   }
@@ -153,7 +159,7 @@ class ScanShipmentModalController extends WebcController {
             name: 'shipmentId',
             required: true,
             placeholder: 'Shipment ID...',
-            disabled:false,
+            disabled: false,
             value: 'SHIPMENT-ID-001',
           },
           shipperId: {
@@ -161,7 +167,7 @@ class ScanShipmentModalController extends WebcController {
             name: 'shipperId',
             required: true,
             placeholder: 'Shipper ID...',
-            disabled:false,
+            disabled: false,
             value: '',
           },
           shipment_date: {
@@ -182,7 +188,7 @@ class ScanShipmentModalController extends WebcController {
             name: 'specialInstructions',
             required: true,
             placeholder: 'e.g You should do this...',
-            disabled:false,
+            disabled: false,
             value: '',
           },
           shipmentType: {
@@ -190,7 +196,7 @@ class ScanShipmentModalController extends WebcController {
             name: 'shipmentType',
             required: true,
             placeholder: 'e.g air',
-            disabled:false,
+            disabled: false,
             value: '',
           },
           dimensionHeight: {
@@ -198,7 +204,7 @@ class ScanShipmentModalController extends WebcController {
             name: 'dimensionHeight',
             required: true,
             placeholder: 'Fill in the height.',
-            disabled:false,
+            disabled: false,
             value: '',
           },
           dimensionWidth: {
@@ -206,7 +212,7 @@ class ScanShipmentModalController extends WebcController {
             name: 'dimensionWidth',
             required: true,
             placeholder: 'Fill in the width.',
-            disabled:false,
+            disabled: false,
             value: '',
           },
           dimensionLength: {
@@ -214,7 +220,7 @@ class ScanShipmentModalController extends WebcController {
             name: 'dimensionLength',
             required: true,
             placeholder: 'Fill in the length.',
-            disabled:false,
+            disabled: false,
             value: '',
           },
           origin: {
@@ -222,7 +228,7 @@ class ScanShipmentModalController extends WebcController {
             name: 'origin',
             required: true,
             placeholder: 'Fill in the origin.',
-            disabled:false,
+            disabled: false,
             value: '',
           },
           shippingConditions: {
@@ -230,7 +236,7 @@ class ScanShipmentModalController extends WebcController {
             name: 'shippingConditions',
             required: true,
             placeholder: 'The condition of the shipping.',
-            disabled:false,
+            disabled: false,
             value: '',
           },
           scheduledPickupDate: {
@@ -238,7 +244,7 @@ class ScanShipmentModalController extends WebcController {
             name: 'scheduledPickupDate',
             required: true,
             placeholder: 'The date of the scheduled pickup.',
-            disabled:false,
+            disabled: false,
             value: '',
           },
           scheduledPickupTime: {
@@ -246,7 +252,7 @@ class ScanShipmentModalController extends WebcController {
             name: 'scheduledPickupTime',
             required: true,
             placeholder: 'The time of the scheduled pickup.',
-            disabled:false,
+            disabled: false,
             value: '',
           },
           signature: {
@@ -254,7 +260,7 @@ class ScanShipmentModalController extends WebcController {
             name: 'signature',
             required: true,
             placeholder: 'Signature',
-            disabled:false,
+            disabled: false,
             value: '',
           },
         }

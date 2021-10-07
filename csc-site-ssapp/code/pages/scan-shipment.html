@@ -61,7 +61,7 @@
               <div class="col-lg-12 col-xl-6">
                 <div class="form-group">
                     <label>Actual temperature observed</label><br>
-                      <select class="form-control" data-for="@form.inputs.temperature" id="temperature" name="temperature" value="@form.inputs.temperature.value">
+                      <select class="form-control" data-for="@shipmentModel.form.temperature" id="temperature" name="temperature" value="@shipmentModel.form.temperature.value">
                         <option value="@value">{{ @text }}</option>
                       </select>
                 </div>
@@ -71,7 +71,7 @@
               <div class="col-lg-12 col-xl-6">
                 <div class="form-group">
                   <label>Comments:</label>
-                    <div class="comments-wrapper" data-for="@form.comments">
+                    <div class="comments-wrapper" data-for="@shipmentModel.form.comments">
                       <div class="comment">
                         <div class="identity"><small>{{@date}}</small></div>
                         <div>{{@comment}}</div>
@@ -85,9 +85,9 @@
               <div class="col-lg-12 col-xl-6">
                   <!-- Add Comment -->
                   <div class="form-group">
-                    <label>{{@form.inputs.add_comment.label}}</label>
-                    <input class="form-control" name="@form.inputs.add_comment.name" placeholder="@form.inputs.add_comment.placeholder" required="@form.inputs.add_comment.required"
-                      type="text" value="@form.inputs.add_comment.value" />
+                    <label>{{@shipmentModel.form.add_comment.label}}</label>
+                    <input class="form-control" name="@shipmentModel.form.add_comment.name" placeholder="@shipmentModel.form.add_comment.placeholder" required="@shipmentModel.form.add_comment.required"
+                      type="text" value="@shipmentModel.form.add_comment.value" />
               </div>
             </div>
 
@@ -111,32 +111,32 @@
               <div class='col-12'>
                 <div class="form-group">
                 <!-- Shipment ID -->
-                  <label>{{@form.inputs.shipmentId.label}}</label>
-                  <input class="form-control form-control-sm" readonly name="@form.inputs.shipmentId.name" placeholder="@form.inputs.shipmentId.placeholder"
-                    type="text" value="@form.inputs.shipmentId.value" />
+                  <label>{{@shipmentModel.form.shipmentId.label}}</label>
+                  <input class="form-control form-control-sm" readonly name="@shipmentModel.form.shipmentId.name" placeholder="@shipmentModel.form.shipmentId.placeholder"
+                    type="text" value="@shipment.shipmentId" />
                 </div>
               </div>
 
               <div class='col-12'>
                 <div class="form-group">
-                  <label>{{@form.inputs.shipperId.label}}</label>
-                  <input class="form-control form-control-sm" readonly name="@form.inputs.shipperId.name" placeholder="@form.inputs.shipperId.placeholder"
+                  <label>{{@shipmentModel.form.shipperId.label}}</label>
+                  <input class="form-control form-control-sm" readonly name="@shipmentModel.form.shipperId.name" placeholder="@shipmentModel.form.shipperId.placeholder"
                     type="text" value="@shipment.shipperId" />
                 </div>
               </div>
 
               <div class='col-12'>
                 <div class="form-group">
-                  <label>{{@form.inputs.origin.label}}</label>
-                  <input class="form-control form-control-sm" readonly name="@form.inputs.origin.name" placeholder="@form.inputs.origin.placeholder"
+                  <label>{{@shipmentModel.form.origin.label}}</label>
+                  <input class="form-control form-control-sm" readonly name="@shipmentModel.form.origin.name" placeholder="@shipmentModel.form.origin.placeholder"
                     type="text" value="@shipment.origin" />
                 </div>
               </div>
 
               <div class='col-12'>
                 <div class="form-group">
-                  <label>{{@form.inputs.sponsorId.label}}</label>
-                  <input class="form-control form-control-sm" readonly name="@form.inputs.sponsorId.name" type="text" value="@shipment.sponsorId"
+                  <label>{{@shipmentModel.form.sponsorId.label}}</label>
+                  <input class="form-control form-control-sm" readonly name="@shipmentModel.form.sponsorId.name" type="text" value="@shipment.sponsorId"
                   />
                 </div>
               </div>
@@ -144,7 +144,7 @@
               <div class='col-12'>
                 <div class="form-group">
                   <label>Actual temperature observed</label>
-                  <input class="form-control form-control-sm" readonly name="temperature" type="text" value="@form.inputs.temperature.value"
+                  <input class="form-control form-control-sm" readonly name="temperature" type="text" value="@shipmentModel.form.temperature.value"
                   />
                 </div>
               </div>
@@ -152,10 +152,18 @@
               <div class='col-12'>
                 <div class="form-group">
                   <label>Comments</label>
-                  <input class="form-control form-control-sm" readonly name="@form.inputs.add_comment.name" type="text" value="@form.inputs.add_comment.value"
+                  <input class="form-control form-control-sm" readonly name="@shipmentModel.form.add_comment.name" type="text" value="@shipmentModel.form.add_comment.value"
                   />
                 </div>
               </div>
+
+              <div class='col-12' data-if='@shipmentModel.kitsAreAvailable'>
+                <div class='form-group' slot='true'>
+                  <webc-template data-view-model='@shipmentModel.kits'
+                                 template='kit-summary'></webc-template>
+                </div>
+              </div>
+
             </div>
 
             <!-- Navigation Between Steps-->
