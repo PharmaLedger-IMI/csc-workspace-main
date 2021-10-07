@@ -64,8 +64,8 @@ export default class EditShipmentController extends WebcController {
 		this.onTagClick('form:reset', (model, target, event) => {
 			event.preventDefault();
 			event.stopImmediatePropagation();
-
 			this.model.shipmentModel.form = viewModelResolver('shipment').form;
+			this.makeStepActive('step-1', 'step-1-wrapper');
 		});
 
 		this.onTagClick('form:submit', async () => {
