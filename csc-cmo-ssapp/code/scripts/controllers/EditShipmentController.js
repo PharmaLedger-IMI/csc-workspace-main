@@ -71,7 +71,6 @@ export default class EditShipmentController extends WebcController {
 			event.stopImmediatePropagation();
 
 			this.showModalFromTemplate('resetEditShipmentModal', this.resetEditOfShipment.bind(this), () => {}, {
-				controller: 'resetEditShipmentModal',
 				disableExpanding: true,
 				disableBackdropClosing: true,
 			});
