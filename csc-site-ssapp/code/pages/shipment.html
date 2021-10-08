@@ -92,7 +92,7 @@
 						</svg>
 						<span>Shipment Comments</span>
 					</div>
-					<div class='accordion-item-holder'>
+					<div class='accordion-item-holder' style="overflow: auto;">
 						<div class='container d-flex' data-if='@shipmentModel.shipment.comments'>
 							<span class='py-3 text-muted' slot='false'>There is no comment added.</span>
 							<div class="comments-container py-5 flex-column" data-for="@shipmentModel.shipment.comments" slot='true'>
