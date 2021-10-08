@@ -42,7 +42,7 @@ class SingleOrderControllerImpl extends WebcController {
     //Init Check on Accordion Items
     if (this.model.accordion) {
       let keys = Object.keys(this.model.accordion);
-      if (keys) {
+      if (keys.length > 0) {
         keys.forEach((key) => {
           if (this.model.accordion[key].isOpened) {
             this.openAccordionItem(this.model.accordion[key].id);
@@ -420,7 +420,7 @@ class SingleOrderControllerImpl extends WebcController {
        const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
        eventBusService.emitEventListeners(Topics.RefreshOrders, null);
        eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-       
+
       this.createWebcModal({
         template: 'prepareShipmentModal',
         controller: 'PrepareShipmentModalController',

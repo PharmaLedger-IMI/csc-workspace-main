@@ -74,28 +74,28 @@ const shipmentViewModel = {
 		dimension: {
 			label: 'Dimension (m)',
 			height: {
-				label: 'H',
+				label: 'Height',
 				name: 'height',
 				required: true,
-				placeholder: 'Fill in the height.',
+				placeholder: 'Fill in the height',
 				disabled: false,
 				type: 'number',
 				value: ''
 			},
 			length: {
-				label: 'L',
+				label: 'Length',
 				name: 'length',
 				required: true,
-				placeholder: 'Fill in the length.',
+				placeholder: 'Fill in the length',
 				disabled: false,
 				type: 'number',
 				value: ''
 			},
 			width: {
-				label: 'W',
+				label: 'Width',
 				name: 'width',
 				required: true,
-				placeholder: 'Fill in the width.',
+				placeholder: 'Fill in the width',
 				disabled: false,
 				type: 'number',
 				value: ''
@@ -166,7 +166,7 @@ const shipmentViewModel = {
 			label: 'Add a Comment',
 			name: 'add_comment',
 			required: true,
-			placeholder: 'Add a comment....',
+			placeholder: 'Add a comment',
 			disabled: false,
 			value: '',
 		},

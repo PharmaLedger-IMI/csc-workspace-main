@@ -14,11 +14,11 @@
       "tag": "dashboard"
     },
     {
-      "name": "Scan Shipment",
-      "path": "./scan_shipment",
-      "src": "scan_shipment.html",
+      "name": "Scan & Pickup Shipment",
+      "path": "./scan-shipment",
+      "src": "scan-shipment.html",
       "indexed": false,
-      "tag": "scan_shipment"
+      "tag": "scan-shipment-pickup"
     },
     {
       "name": "Deliver Shipment",

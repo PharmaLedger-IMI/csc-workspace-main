@@ -100,12 +100,11 @@ class DeliverShipmentController extends WebcController {
     };
     this.model.disableSign = true;
     window.WebCardinal.loader.hidden = false;
-    
+
     await this.shipmentService.updateTransitShipmentDSU(this.model.shipment.shipmentSSI, payload, shipmentStatusesEnum.Delivered);
-    this.model.disableSign = false;
-    window.WebCardinal.loader.hidden = true;
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     this.showErrorModalAndRedirect("Shipment" + this.model.shipment.shipmentId + " was delivered", "Shipment Delivered", '/', 2000);
+    window.WebCardinal.loader.hidden = true;
   }
 
   getModel() {
