@@ -16,11 +16,11 @@ class ScanShipmentController extends WebcController {
     let communicationService = CommunicationService.getInstance(Roles.Courier);
     this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
     this.orderService = new OrderService(this.DSUStorage, communicationService);
-    this.model = {	shipmentModel: viewModelResolver('shipment') };
+    this.model = { shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;
     this.retrieveKitIds(this.originalShipment.kitIdSSI);
 
-    this.onTagEvent("start-scanner", 'click',() => {
+    this.onTagEvent("start-scanner", 'click', () => {
       this.model.isScannerActive = true;
     });
 
@@ -29,7 +29,7 @@ class ScanShipmentController extends WebcController {
     this.addModelChangeHandlers();
   }
 
-  async retrieveKitIds(kitIdSSI){
+  async retrieveKitIds(kitIdSSI) {
     this.model.shipmentModel.kitsAreAvailable = false;
     this.model.shipmentModel.kits = await this.orderService.getKitIds(kitIdSSI);
     this.model.shipmentModel.kitsAreAvailable = true;
@@ -76,16 +76,28 @@ class ScanShipmentController extends WebcController {
       this.model.formIsInvalid = false;
     });
 
+    this.onTagClick('dashboard', () => {
+      this.navigateToPageTag('dashboard');
+    });
+
+    this.onTagClick('view-shipment', () => {
+      this.navigateToPageTag('shipment', { keySSI: this.model.shipment.shipmentSSI });
+    });
+
+    this.onTagClick('nav-back', () => {
+      this.history.goBack();
+    });
+    
     this.onTagEvent('sign_button', 'click', (e) => {
       this.sign();
     });
 
   }
 
-  sign(){
+  sign() {
     this.shipmentService.sendMessageToSpo(this.model.shipment.shipmentSSI);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-    this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', { tag: 'dashboard', state: { tab: Topics.Shipment }}, 2000);
+    this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', { tag: 'dashboard', state: { tab: Topics.Shipment } }, 2000);
   }
 
   makeStepActive(step_id, step_holder_id, e) {
@@ -117,19 +129,19 @@ class ScanShipmentController extends WebcController {
 
   initScanViewModel() {
     this.model.wizard_form = [
-        { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Scan Shipment', visible: true, validated: false },
-        { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Add Details', visible: false, validated: false, },
-        { id: 'step-3', holder_id: 'step-3-wrapper', name: 'Confirmation', visible: false, validated: false },
-      ];
+      { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Scan Shipment', visible: true, validated: false },
+      { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Add Details', visible: false, validated: false, },
+      { id: 'step-3', holder_id: 'step-3-wrapper', name: 'Confirmation', visible: false, validated: false },
+    ];
     this.model.wizard_form_navigation = [
-        { id: 'from_step_1_to_2', name: 'Next', visible: true, validated: false },
-        { id: 'from_step_2_to_1', name: 'Previous', visible: true, validated: false },
-        { id: 'from_step_2_to_3', name: 'Next', visible: true, validated: false },
-        { id: 'from_step_3_to_2', name: 'Previous', visible: true, validated: false },
-      ];
-       this.model.isScannerActive = true;
-       this.model.scannedData = '';
-       this.model.scanSuccess = false;
+      { id: 'from_step_1_to_2', name: 'Next', visible: true, validated: false },
+      { id: 'from_step_2_to_1', name: 'Previous', visible: true, validated: false },
+      { id: 'from_step_2_to_3', name: 'Next', visible: true, validated: false },
+      { id: 'from_step_3_to_2', name: 'Previous', visible: true, validated: false },
+    ];
+    this.model.isScannerActive = true;
+    this.model.scannedData = '';
+    this.model.scanSuccess = false;
   }
 }
 
