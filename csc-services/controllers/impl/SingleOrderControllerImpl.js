@@ -42,7 +42,7 @@ class SingleOrderControllerImpl extends WebcController {
     //Init Check on Accordion Items
     if (this.model.accordion) {
       let keys = Object.keys(this.model.accordion);
-      if (keys) {
+      if (keys.length > 0) {
         keys.forEach((key) => {
           if (this.model.accordion[key].isOpened) {
             this.openAccordionItem(this.model.accordion[key].id);
@@ -440,11 +440,11 @@ class SingleOrderControllerImpl extends WebcController {
 
 
   getDate(str) {
-    return str.split(' ')[0];
+    return momentService.unix(str).format(Commons.DateFormatPattern);
   }
 
   getTime(str) {
-    return str.split(' ')[1];
+    return momentService.unix(str).format(Commons.HourFormatPattern);
   }
 
   async downloadFile(filename, rootFolder, keySSI) {

@@ -4,6 +4,7 @@ const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService;
 const { Topics, Roles, DocumentTypes } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
+const momentService = cscServices.momentService;
 const CommunicationService = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
 const FileDownloaderService = cscServices.FileDownloaderService;
@@ -190,7 +191,7 @@ export default class NewOrderController extends WebcController {
       if (this.model.form) {
         if (this.model.form.inputs) {
           let keys = Object.keys(this.model.form.inputs);
-          if (keys) {
+          if (keys.length > 0) {
             keys.forEach((key) => {
               if (key === 'delivery_date' || key === 'delivery_time') {
                 payload['delivery_date'] = this.getDateTime();
@@ -324,7 +325,7 @@ export default class NewOrderController extends WebcController {
   }
 
   getDateTime() {
-    return this.model.form.inputs.delivery_date.value + ' ' + this.model.form.inputs.delivery_time.value;
+    return momentService(this.model.form.inputs.delivery_date.value + ' ' + this.model.form.inputs.delivery_time.value).unix();
   }
 
   getTemperature() {
@@ -349,7 +350,6 @@ export default class NewOrderController extends WebcController {
   extractIdsFromCsv(contents) {
     // for demo purposes assume comma separated values
     const ids = contents.split(',');
-    console.log(!ids, ids.length === 0, !ids.every((i) => typeof i === 'string'));
     if (!ids || ids.length === 0 || !ids.every((i) => typeof i === 'string')) {
       // TODO: not working well, always strings
       throw new Error('File could not be read.');

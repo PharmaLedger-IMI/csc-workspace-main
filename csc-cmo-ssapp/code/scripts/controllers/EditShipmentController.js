@@ -8,6 +8,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const { FoldersEnum, Topics, Roles } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const CommunicationService = cscServices.CommunicationService;
+const momentService = cscServices.momentService;
 
 export default class EditShipmentController extends WebcController {
 
@@ -60,12 +61,21 @@ export default class EditShipmentController extends WebcController {
 		});
 	}
 
+	resetEditOfShipment() {
+		this.model.shipmentModel.form = viewModelResolver('shipment').form;
+		this.makeStepActive('step-1', 'step-1-wrapper');
+	}
+
 	attachFormActions() {
 		this.onTagClick('form:reset', (model, target, event) => {
 			event.preventDefault();
 			event.stopImmediatePropagation();
 
-			this.model.shipmentModel.form = viewModelResolver('shipment').form;
+			this.showModalFromTemplate('resetEditShipmentModal', this.resetEditOfShipment.bind(this), () => {}, {
+				disableExpanding: true,
+				disableBackdropClosing: true,
+			});
+
 		});
 
 		this.onTagClick('form:submit', async () => {
@@ -139,11 +149,10 @@ export default class EditShipmentController extends WebcController {
 		return {};
 	}
 
-	getDateTime(str) {
-		const dateTime = str.split(' ');
+	getDateTime(timestamp) {
 		return {
-			date: dateTime[0],
-			time: dateTime[1]
+			date: momentService.unix(timestamp).format(Commons.DateFormatPattern),
+			time: momentService.unix(timestamp).format(Commons.HourFormatPattern)
 		};
 	}
 
