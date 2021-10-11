@@ -21,6 +21,8 @@ class SingleOrderControllerImpl extends WebcController {
     super(...props);
     this.role = role;
     this.addedRefreshListeners = false;
+    this.attachedSponsorEventsHandlers = false;
+    this.attachedCMOEventsHandlers = false;
 
     const model = viewModelResolver('order');
     //all fields are disabled
@@ -189,7 +191,6 @@ class SingleOrderControllerImpl extends WebcController {
     if (this.model.order.shipmentSSI) {
       const shipment = await this.shipmentsService.getShipment(this.model.order.shipmentSSI);
       this.model.shipment = this.transformShipmentData(shipment);
-      console.log("shipment " + JSON.stringify(this.model.shipment));
       if (this.model.shipment.status_value !== shipmentStatusesEnum.InPreparation) {
         this.model.order.pending_action = orderPendingActionEnum.NoFurtherActionsRequired;
       }
@@ -343,6 +344,10 @@ class SingleOrderControllerImpl extends WebcController {
   }
 
   attachSponsorEventHandlers() {
+    if(this.attachedSponsorEventsHandlers){
+      return;
+    }
+
     this.onTagEvent('review-order', 'click', () => {
       this.navigateToPageTag('review-order', {
         order: this.model.toObject('order')
@@ -372,6 +377,7 @@ class SingleOrderControllerImpl extends WebcController {
 
       this.showModal(content, title, this.approveOrder.bind(this), () => {}, modalOptions);
     });
+    this.attachedSponsorEventsHandlers = true;
   }
 
   async cancelOrder() {
@@ -403,28 +409,33 @@ class SingleOrderControllerImpl extends WebcController {
   }
 
   attachCmoEventHandlers() {
+
+    if(this.attachedCMOEventsHandlers){
+      return;
+    }
+
     this.onTagEvent('review-order', 'click', () => {
       this.navigateToPageTag('review-order', {
         order: this.model.toObject('order')
       });
     });
 
-     this.onTagEvent('prepare-shipment', 'click', async () => {
+    this.onTagEvent('prepare-shipment', 'click', async () => {
+      window.WebCardinal.loader.hidden = false;
+      const order = this.model.order;
+      const shipmentResult = await this.shipmentsService.createShipment(order);
 
-       const order = this.model.order;
-       const shipmentResult = await this.shipmentsService.createShipment(order);
-
-       const otherOrderDetails = {
-         shipmentSSI: shipmentResult.keySSI
-       };
-       const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
-       eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-       eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-
+      const otherOrderDetails = {
+        shipmentSSI: shipmentResult.keySSI
+      };
+      await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
+      eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+      window.WebCardinal.loader.hidden = true;
       this.createWebcModal({
         template: 'prepareShipmentModal',
         controller: 'PrepareShipmentModalController',
-        model: {...shipmentResult},
+        model: { ...shipmentResult },
         disableBackdropClosing: false,
         disableFooter: true,
         disableHeader: true,
@@ -432,9 +443,10 @@ class SingleOrderControllerImpl extends WebcController {
         disableClosing: true,
         disableCancelButton: true,
         expanded: false,
-        centered: true,
+        centered: true
       });
     });
+    this.attachedCMOEventsHandlers = true;
   }
 
 
