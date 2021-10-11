@@ -325,7 +325,7 @@ export default class NewOrderController extends WebcController {
   }
 
   getDateTime() {
-    return momentService(this.model.form.inputs.delivery_date.value + ' ' + this.model.form.inputs.delivery_time.value).unix();
+    return momentService(this.model.form.inputs.delivery_date.value + ' ' + this.model.form.inputs.delivery_time.value).valueOf();
   }
 
   getTemperature() {

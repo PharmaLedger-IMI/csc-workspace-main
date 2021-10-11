@@ -451,12 +451,12 @@ class SingleOrderControllerImpl extends WebcController {
 
 
 
-  getDate(str) {
-    return momentService.unix(str).format(Commons.DateFormatPattern);
+  getDate(timestamp) {
+    return momentService(timestamp).format(Commons.DateFormatPattern);
   }
 
-  getTime(str) {
-    return momentService.unix(str).format(Commons.HourFormatPattern);
+  getTime(timestamp) {
+    return momentService(timestamp).format(Commons.HourFormatPattern);
   }
 
   async downloadFile(filename, rootFolder, keySSI) {
