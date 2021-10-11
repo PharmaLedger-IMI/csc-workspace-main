@@ -299,7 +299,6 @@ class SingleOrderControllerImpl extends WebcController {
   getPendingAction(status_value) {
     switch (status_value) {
       case orderStatusesEnum.Initiated:
-      case orderStatusesEnum.ReviewedBySponsor:
         return orderPendingActionEnum.PendingReviewByCMO;
 
       case orderStatusesEnum.ReviewedByCMO:
@@ -319,16 +318,15 @@ class SingleOrderControllerImpl extends WebcController {
     const order = this.model.order;
     const shipment = this.model.shipment;
     const isShipmentCreated = typeof shipment !== 'undefined';
-    const canCMOReviewStatuses = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedBySponsor];
+    const canCMOReviewStatuses = [orderStatusesEnum.Initiated];
     const canSponsorReviewStatuses = [orderStatusesEnum.ReviewedByCMO];
-    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation];
+    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation];
     const actions = {};
 
     switch (this.role) {
       case Roles.Sponsor:
-        actions.canBeReviewed = canSponsorReviewStatuses.indexOf(order.status_value) !== -1;
         actions.canBeCancelled = cancellableOrderStatus.indexOf(order.status_value) !== -1 && (!shipment || cancellableOrderStatus.indexOf(shipment.status_value) !== -1);
-        actions.canBeApproved = actions.canBeReviewed;
+        actions.canBeApproved = canSponsorReviewStatuses.indexOf(order.status_value) !== -1;
         actions.orderCancelButtonText = isShipmentCreated ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
         this.attachSponsorEventHandlers();
         break;
@@ -347,12 +345,6 @@ class SingleOrderControllerImpl extends WebcController {
     if(this.attachedSponsorEventsHandlers){
       return;
     }
-
-    this.onTagEvent('review-order', 'click', () => {
-      this.navigateToPageTag('review-order', {
-        order: this.model.toObject('order')
-      });
-    });
 
     this.onTagEvent('cancel-order', 'click', () => {
       this.model.cancelOrderModal = viewModelResolver('order').cancelOrderModal;

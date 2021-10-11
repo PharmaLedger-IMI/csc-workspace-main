@@ -1,7 +1,6 @@
 export const orderStatusesEnum = {
   Initiated: 'Initiated',
   ReviewedByCMO: 'Reviewed by CMO',
-  ReviewedBySponsor: 'Reviewed by Sponsor',
   Approved: 'Approved'
 };
 

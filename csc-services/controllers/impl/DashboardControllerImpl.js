@@ -171,13 +171,6 @@ class DashboardControllerImpl extends WebcController {
 				break;
 			}
 
-			case orderStatusesEnum.ReviewedBySponsor: {
-				notificationRole = Roles.Sponsor;
-				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
-
-				break;
-			}
-
 			case orderStatusesEnum.Canceled: {
 				notificationRole = Roles.Sponsor;
 				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
