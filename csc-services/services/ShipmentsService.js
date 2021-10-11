@@ -72,19 +72,6 @@ class ShipmentsService extends DSUService {
 		return shipmentDb;
 	}
 
-	sendMessageToSpo(shipmentKeySSI) {
-		const notificationData = {
-			shipmentSSI: shipmentKeySSI,
-		};
-		
-		this.sendMessageToEntity(
-			CommunicationService.identities.CSC.SPONSOR_IDENTITY,
-			shipmentStatusesEnum.Received,
-			notificationData,
-			shipmentStatusesEnum.Received
-		);
-	}
-
 	async updateShipment(shipmentKeySSI, newStatus, newShipmentData) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
 		const status = await this.updateStatusDsu(newStatus, shipmentDB.statusSSI);
@@ -262,7 +249,7 @@ class ShipmentsService extends DSUService {
     async createAndMountReceivedDSU(shipmentKeySSI, transientDataModel) {
 
     	let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
-    	const shipmentReceivedDSU = await this.saveEntityAsync(transientDataModel, shipmentStatusesEnum.Received);
+    	const shipmentReceivedDSU = await this.saveEntityAsync(transientDataModel, FoldersEnum.ShipmentReceived);
     	const status = await this.updateStatusDsu(shipmentStatusesEnum.Received, shipmentDB.statusSSI);
 
     	shipmentDB.receivedDSUKeySSI = shipmentReceivedDSU.keySSI;
@@ -272,7 +259,7 @@ class ShipmentsService extends DSUService {
 
     	const shipmentReceivedDSUMessage = {
     			receivedShipmentSSI: shipmentReceivedDSU.keySSI,
-    			statusSSI:status.keySSI,
+    			statusSSI:  status.keySSI,
     			shipmentSSI: shipmentKeySSI
     	}
 

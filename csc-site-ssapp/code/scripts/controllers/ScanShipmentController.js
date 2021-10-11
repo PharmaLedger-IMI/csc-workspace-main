@@ -101,11 +101,10 @@ class ScanShipmentController extends WebcController {
       this.model.disableSign = true;
       window.WebCardinal.loader.hidden = false;
       payload.shipmentId = this.model.shipment.shipmentId;
-//      payload.shipmentSSI = this.model.shipment.shipmentSSI;
       payload.shipmentActualTemperature = this.model.shipmentModel.form.temperature.value;
       payload.shipmentReceivedDateTime = this.model.shipmentModel.form.receivedDate.value
       payload.signature = true;
-//    this.shipmentService.sendMessageToSpo(this.model.shipment.shipmentSSI);
+
       await this.shipmentService.createAndMountReceivedDSU(this.model.shipment.shipmentSSI, payload);
       eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
 
