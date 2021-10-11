@@ -126,8 +126,8 @@ class ViewShipmentBaseControllerImpl extends WebcController{
 
   getDateTime(timestamp) {
     return {
-      date: momentService.unix(timestamp).format(Commons.DateFormatPattern),
-      time: momentService.unix(timestamp).format(Commons.HourFormatPattern)
+      date: momentService(timestamp).format(Commons.YMDDateTimeFormatPattern),
+      time: momentService(timestamp).format(Commons.HourFormatPattern)
     };
   }
 
@@ -145,8 +145,7 @@ class ViewShipmentBaseControllerImpl extends WebcController{
       }))[0].date).format(Commons.DateTimeFormatPattern);
 
       if(data.deliveryDateTime){
-        let deliveryDateTime = momentService(data.deliveryDateTime).format(Commons.YMDHMDateTimeFormatPattern);
-        data.deliveryDateTime = this.getDateTime (deliveryDateTime)
+        data.deliveryDateTime = this.getDateTime (data.deliveryDateTime)
       }
 
       const statuses = utilitiesService.getNormalAndApproveStatusByRole(this.role);

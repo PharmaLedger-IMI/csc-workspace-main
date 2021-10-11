@@ -5,7 +5,7 @@ const OrderService = cscServices.OrderService;
 const ShipmentService = cscServices.ShipmentService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
-const { FoldersEnum, Topics, Roles } = cscServices.constants;
+const { FoldersEnum, Topics, Commons } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const CommunicationService = cscServices.CommunicationService;
 const momentService = cscServices.momentService;
@@ -151,8 +151,8 @@ export default class EditShipmentController extends WebcController {
 
 	getDateTime(timestamp) {
 		return {
-			date: momentService.unix(timestamp).format(Commons.DateFormatPattern),
-			time: momentService.unix(timestamp).format(Commons.HourFormatPattern)
+			date: momentService(timestamp).format(Commons.DateFormatPattern),
+			time: momentService(timestamp).format(Commons.HourFormatPattern)
 		};
 	}
 
