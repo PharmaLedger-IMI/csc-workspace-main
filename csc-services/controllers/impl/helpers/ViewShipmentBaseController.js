@@ -124,11 +124,10 @@ class ViewShipmentBaseControllerImpl extends WebcController{
   }
 
 
-  getDateTime(str) {
-    const dateTime = str.split(' ');
+  getDateTime(timestamp) {
     return {
-      date: dateTime[0],
-      time: dateTime[1]
+      date: momentService.unix(timestamp).format(Commons.DateFormatPattern),
+      time: momentService.unix(timestamp).format(Commons.HourFormatPattern)
     };
   }
 

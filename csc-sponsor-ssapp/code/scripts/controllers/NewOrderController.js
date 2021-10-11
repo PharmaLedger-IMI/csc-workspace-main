@@ -4,6 +4,7 @@ const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService;
 const { Topics, Roles, DocumentTypes } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
+const momentService = cscServices.momentService;
 const CommunicationService = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
 const FileDownloaderService = cscServices.FileDownloaderService;
@@ -324,7 +325,7 @@ export default class NewOrderController extends WebcController {
   }
 
   getDateTime() {
-    return this.model.form.inputs.delivery_date.value + ' ' + this.model.form.inputs.delivery_time.value;
+    return momentService(this.model.form.inputs.delivery_date.value + ' ' + this.model.form.inputs.delivery_time.value).unix();
   }
 
   getTemperature() {
