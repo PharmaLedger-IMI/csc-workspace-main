@@ -440,11 +440,11 @@ class SingleOrderControllerImpl extends WebcController {
 
 
   getDate(str) {
-    return str.split(' ')[0];
+    return momentService.unix(str).format(Commons.DateFormatPattern);
   }
 
   getTime(str) {
-    return str.split(' ')[1];
+    return momentService.unix(str).format(Commons.HourFormatPattern);
   }
 
   async downloadFile(filename, rootFolder, keySSI) {
