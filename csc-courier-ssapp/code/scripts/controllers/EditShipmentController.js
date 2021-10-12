@@ -5,7 +5,7 @@ const ShipmentService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
-const { Roles, FoldersEnum } = cscServices.constants;
+const { Roles } = cscServices.constants;
 const { uuidv4 } = cscServices.utils;
 
 export default class EditShipmentController extends WebcController {

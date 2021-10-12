@@ -179,6 +179,19 @@ const shipmentViewModel = {
 			{ value: "Out of Range", text: "Out of Range" },
 		],
 		comments: [],
+        receivedDate: {
+            label: 'Received Date/Time',
+            name: 'received_date',
+            required: true,
+            disabled: false,
+            value: '',
+        },
+        receivedTime: {
+            name: 'received_time',
+            required: true,
+            disabled: false,
+            value: '',
+        }
 	}
 };
 

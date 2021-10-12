@@ -21,6 +21,8 @@ class SingleOrderControllerImpl extends WebcController {
     super(...props);
     this.role = role;
     this.addedRefreshListeners = false;
+    this.attachedSponsorEventsHandlers = false;
+    this.attachedCMOEventsHandlers = false;
 
     const model = viewModelResolver('order');
     //all fields are disabled
@@ -189,7 +191,6 @@ class SingleOrderControllerImpl extends WebcController {
     if (this.model.order.shipmentSSI) {
       const shipment = await this.shipmentsService.getShipment(this.model.order.shipmentSSI);
       this.model.shipment = this.transformShipmentData(shipment);
-      console.log("shipment " + JSON.stringify(this.model.shipment));
       if (this.model.shipment.status_value !== shipmentStatusesEnum.InPreparation) {
         this.model.order.pending_action = orderPendingActionEnum.NoFurtherActionsRequired;
       }
@@ -298,7 +299,6 @@ class SingleOrderControllerImpl extends WebcController {
   getPendingAction(status_value) {
     switch (status_value) {
       case orderStatusesEnum.Initiated:
-      case orderStatusesEnum.ReviewedBySponsor:
         return orderPendingActionEnum.PendingReviewByCMO;
 
       case orderStatusesEnum.ReviewedByCMO:
@@ -318,16 +318,15 @@ class SingleOrderControllerImpl extends WebcController {
     const order = this.model.order;
     const shipment = this.model.shipment;
     const isShipmentCreated = typeof shipment !== 'undefined';
-    const canCMOReviewStatuses = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedBySponsor];
+    const canCMOReviewStatuses = [orderStatusesEnum.Initiated];
     const canSponsorReviewStatuses = [orderStatusesEnum.ReviewedByCMO];
-    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.ReviewedBySponsor, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation];
+    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation];
     const actions = {};
 
     switch (this.role) {
       case Roles.Sponsor:
-        actions.canBeReviewed = canSponsorReviewStatuses.indexOf(order.status_value) !== -1;
         actions.canBeCancelled = cancellableOrderStatus.indexOf(order.status_value) !== -1 && (!shipment || cancellableOrderStatus.indexOf(shipment.status_value) !== -1);
-        actions.canBeApproved = actions.canBeReviewed;
+        actions.canBeApproved = canSponsorReviewStatuses.indexOf(order.status_value) !== -1;
         actions.orderCancelButtonText = isShipmentCreated ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
         this.attachSponsorEventHandlers();
         break;
@@ -343,11 +342,9 @@ class SingleOrderControllerImpl extends WebcController {
   }
 
   attachSponsorEventHandlers() {
-    this.onTagEvent('review-order', 'click', () => {
-      this.navigateToPageTag('review-order', {
-        order: this.model.toObject('order')
-      });
-    });
+    if(this.attachedSponsorEventsHandlers){
+      return;
+    }
 
     this.onTagEvent('cancel-order', 'click', () => {
       this.model.cancelOrderModal = viewModelResolver('order').cancelOrderModal;
@@ -372,6 +369,7 @@ class SingleOrderControllerImpl extends WebcController {
 
       this.showModal(content, title, this.approveOrder.bind(this), () => {}, modalOptions);
     });
+    this.attachedSponsorEventsHandlers = true;
   }
 
   async cancelOrder() {
@@ -403,28 +401,33 @@ class SingleOrderControllerImpl extends WebcController {
   }
 
   attachCmoEventHandlers() {
+
+    if(this.attachedCMOEventsHandlers){
+      return;
+    }
+
     this.onTagEvent('review-order', 'click', () => {
       this.navigateToPageTag('review-order', {
         order: this.model.toObject('order')
       });
     });
 
-     this.onTagEvent('prepare-shipment', 'click', async () => {
+    this.onTagEvent('prepare-shipment', 'click', async () => {
+      window.WebCardinal.loader.hidden = false;
+      const order = this.model.order;
+      const shipmentResult = await this.shipmentsService.createShipment(order);
 
-       const order = this.model.order;
-       const shipmentResult = await this.shipmentsService.createShipment(order);
-
-       const otherOrderDetails = {
-         shipmentSSI: shipmentResult.keySSI
-       };
-       const orderResult = await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
-       eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-       eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-
+      const otherOrderDetails = {
+        shipmentSSI: shipmentResult.keySSI
+      };
+      await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
+      eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+      window.WebCardinal.loader.hidden = true;
       this.createWebcModal({
         template: 'prepareShipmentModal',
         controller: 'PrepareShipmentModalController',
-        model: {...shipmentResult},
+        model: { ...shipmentResult },
         disableBackdropClosing: false,
         disableFooter: true,
         disableHeader: true,
@@ -432,19 +435,20 @@ class SingleOrderControllerImpl extends WebcController {
         disableClosing: true,
         disableCancelButton: true,
         expanded: false,
-        centered: true,
+        centered: true
       });
     });
+    this.attachedCMOEventsHandlers = true;
   }
 
 
 
-  getDate(str) {
-    return momentService.unix(str).format(Commons.DateFormatPattern);
+  getDate(timestamp) {
+    return momentService(timestamp).format(Commons.DateFormatPattern);
   }
 
-  getTime(str) {
-    return momentService.unix(str).format(Commons.HourFormatPattern);
+  getTime(timestamp) {
+    return momentService(timestamp).format(Commons.HourFormatPattern);
   }
 
   async downloadFile(filename, rootFolder, keySSI) {

@@ -60,7 +60,8 @@ class TableTemplateControllerImpl extends WebcController {
   }
 
   paginateData(data, page = 1) {
-    data = _.clone(data);
+    //no need for lodash
+    data = JSON.parse(JSON.stringify(data));
     if (data && data.length > 0) {
       const itemsPerPage = this.model.pagination.itemsPerPage;
       const length = data.length;
@@ -99,7 +100,7 @@ class TableTemplateControllerImpl extends WebcController {
       if (headers[idx].notSortable) return;
 
       if (headers[idx].asc || headers[idx].desc) {
-        const data = _.clone(this.model.data);
+        const data = JSON.parse(JSON.stringify(this.model.data));
         data.reverse();
         this.model.data = data;
         this.model.headers = this.model.headers.map((x) => {
@@ -113,7 +114,7 @@ class TableTemplateControllerImpl extends WebcController {
             return { ...x, asc: false, desc: false };
           } else return { ...x, asc: true, desc: false };
         });
-        const data = _.clone(this.model.data);
+        const data = JSON.parse(JSON.stringify(this.model.data));
         this.model.data = data.sort((a, b) => (a[column] >= b[column] ? 1 : -1));
       }
     } else {

@@ -10,10 +10,6 @@ const { orderStatusesEnum } = order;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const { uuidv4 } = cscServices.utils;
 
-const csIdentities = {};
-csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
-csIdentities[Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
-
 class ReviewOrderControllerImpl extends WebcController {
   files = [];
   modalCancelHandler = ()=>{};
@@ -23,7 +19,7 @@ class ReviewOrderControllerImpl extends WebcController {
 
     this.role = role;
     this.originalOrder = this.history.location.state.order;
-    let communicationService = CommunicationService.getInstance(csIdentities[role]);
+    let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
 
@@ -150,7 +146,7 @@ class ReviewOrderControllerImpl extends WebcController {
   }
 
   async onSubmitYesResponse() {
-    const orderStatus = this.role === Roles.Sponsor ? orderStatusesEnum.ReviewedBySponsor : orderStatusesEnum.ReviewedByCMO;
+    const orderStatus = orderStatusesEnum.ReviewedByCMO;
     const newFiles = this.files.filter((x) => x.fileContent instanceof File).map((x) => x.fileContent);
     const reviewComment = {
       entity: this.role,

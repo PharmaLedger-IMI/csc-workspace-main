@@ -19,6 +19,7 @@ class ScanShipmentController extends WebcController {
     this.model = { shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;
     this.retrieveKitIds(this.originalShipment.kitIdSSI);
+    this.model.disableSign = false;
 
     this.onTagEvent("start-scanner", 'click', () => {
       this.model.isScannerActive = true;
@@ -94,10 +95,21 @@ class ScanShipmentController extends WebcController {
 
   }
 
-  sign() {
-    this.shipmentService.sendMessageToSpo(this.model.shipment.shipmentSSI);
-    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-    this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', { tag: 'dashboard', state: { tab: Topics.Shipment } }, 2000);
+  async sign() {
+      let payload = {};
+      let {keySSI}  = this.model.shipment.shipmentSSI;
+      this.model.disableSign = true;
+      window.WebCardinal.loader.hidden = false;
+      payload.shipmentId = this.model.shipment.shipmentId;
+      payload.shipmentActualTemperature = this.model.shipmentModel.form.temperature.value;
+      payload.shipmentReceivedDateTime = this.model.shipmentModel.form.receivedDate.value
+      payload.signature = true;
+
+      await this.shipmentService.createAndMountReceivedDSU(this.model.shipment.shipmentSSI, payload);
+      eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
+
+      this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', { tag: 'shipment', state: { keySSI: this.model.shipment.shipmentSSI } }, 2000);
+      window.WebCardinal.loader.hidden = true;
   }
 
   makeStepActive(step_id, step_holder_id, e) {

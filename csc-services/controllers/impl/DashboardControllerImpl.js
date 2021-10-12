@@ -132,6 +132,12 @@ class DashboardControllerImpl extends WebcController {
 		eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
 		eventBusService.emitEventListeners(Topics.RefreshShipments, null);
 		eventBusService.emitEventListeners(Topics.RefreshShipments + shipmentData.shipmentId, null);
+		
+		if (shipmentStatus == shipmentStatusesEnum.Dispatched)
+		{
+			eventBusService.emitEventListeners(Topics.RefreshShipments + shipmentData.orderId, null);
+		}
+		
 		console.log('notification added', notification, notificationResult);
 	}
 
@@ -166,13 +172,6 @@ class DashboardControllerImpl extends WebcController {
 
 			case orderStatusesEnum.ReviewedByCMO: {
 				notificationRole = Roles.CMO;
-				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
-
-				break;
-			}
-
-			case orderStatusesEnum.ReviewedBySponsor: {
-				notificationRole = Roles.Sponsor;
 				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
 
 				break;

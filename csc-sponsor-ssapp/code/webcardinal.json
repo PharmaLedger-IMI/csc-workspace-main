@@ -35,13 +35,6 @@
       "indexed": false
     },
     {
-      "name": "revieworder",
-      "path": "/review-order",
-      "src": "review-order.html",
-      "tag": "review-order",
-      "indexed": false
-    },
-    {
       "name": "Shipment",
       "path": "/shipment",
       "src": "shipment.html",
