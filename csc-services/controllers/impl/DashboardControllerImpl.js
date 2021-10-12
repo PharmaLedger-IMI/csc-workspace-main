@@ -132,6 +132,12 @@ class DashboardControllerImpl extends WebcController {
 		eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
 		eventBusService.emitEventListeners(Topics.RefreshShipments, null);
 		eventBusService.emitEventListeners(Topics.RefreshShipments + shipmentData.shipmentId, null);
+		
+		if (shipmentStatus == shipmentStatusesEnum.Dispatched)
+		{
+			eventBusService.emitEventListeners(Topics.RefreshShipments + shipmentData.orderId, null);
+		}
+		
 		console.log('notification added', notification, notificationResult);
 	}
 
