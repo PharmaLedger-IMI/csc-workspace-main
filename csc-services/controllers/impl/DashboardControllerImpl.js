@@ -226,7 +226,10 @@ class DashboardControllerImpl extends WebcController {
 				shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
 				break;
 			}
+
+			//TODO split this to separate case implementations:
 			case shipmentStatusesEnum.Dispatched:
+			case shipmentStatusesEnum.PickUpAtWarehouse:
 			case shipmentStatusesEnum.InTransit: {
 
 				notificationRole = Roles.Courier;

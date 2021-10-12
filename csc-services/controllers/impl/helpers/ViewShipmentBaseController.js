@@ -224,6 +224,9 @@ class ViewShipmentBaseControllerImpl extends WebcController{
       case shipmentStatusesEnum.ReadyForDispatch:
         return shipmentPendingActionEnum.PendingPickUp;
 
+      case shipmentStatusesEnum.PickUpAtWarehouse:
+        return shipmentPendingActionEnum.PendingInTransit;
+
       case shipmentStatusesEnum.InTransit:
         return shipmentPendingActionEnum.PendingDelivery;
 

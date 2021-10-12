@@ -1,6 +1,7 @@
 const shipmentStatusesEnum = {
 	InPreparation: 'In Preparation',
 	ReadyForDispatch: 'Ready For Dispatch',
+	PickUpAtWarehouse: 'Pick-up at warehouse',
 	InTransit: 'In Transit',
 	Delivered: 'Delivered',
 	Received: 'Received',
@@ -16,6 +17,7 @@ const shipmentsEventsEnum = {
 const shipmentPendingActionEnum = {
 	PendingReadyForDispatch: 'Pending Ready for Dispatch',
 	PendingPickUp: 'Pending Pick-Up',
+	PendingInTransit: 'In Transit',
 	PendingDelivery: 'Pending Delivery',
 	PendingReception: 'Pending Reception',
 	ManageKits: 'Manage Kits'
