@@ -132,9 +132,10 @@ class DashboardControllerImpl extends WebcController {
 		eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
 		eventBusService.emitEventListeners(Topics.RefreshShipments, null);
 		eventBusService.emitEventListeners(Topics.RefreshShipments + shipmentData.shipmentId, null);
-		
-		if (shipmentStatus == shipmentStatusesEnum.Dispatched)
-		{
+
+		//TODO: refactor this logic
+		//added for the case when shipment is receiving a new shipmentId but the listeners are already using the initial shipmentId (which is orderId by convention)
+		if (shipmentStatus === shipmentStatusesEnum.Dispatched || shipmentStatus === shipmentStatusesEnum.PickUpAtWarehouse && this.role === Roles.Sponsor) {
 			eventBusService.emitEventListeners(Topics.RefreshShipments + shipmentData.orderId, null);
 		}
 		
@@ -227,7 +228,6 @@ class DashboardControllerImpl extends WebcController {
 				break;
 			}
 
-			//TODO split this to separate case implementations:
 			case shipmentStatusesEnum.Dispatched:
 			case shipmentStatusesEnum.PickUpAtWarehouse:
 			case shipmentStatusesEnum.InTransit: {
@@ -235,6 +235,7 @@ class DashboardControllerImpl extends WebcController {
 				notificationRole = Roles.Courier;
 				const messageData = data.message.data;
 				const { shipmentSSI } = messageData;
+				//SITE will receive on InTransit status all the details except shipmentBilling
 				if (messageData.transitShipmentSSI) {
 					shipmentData = { ...await this.shipmentService.mountAndReceiveTransitShipment(shipmentSSI, messageData.transitShipmentSSI, messageData.statusSSI, this.role) };
 				}

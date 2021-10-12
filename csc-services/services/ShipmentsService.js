@@ -224,16 +224,13 @@ class ShipmentsService extends DSUService {
 			statusSSI:status.keySSI,
 			shipmentSSI: shipmentKeySSI
 		}
-		//TODO only one actor should be notified
-		const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY];
-		notifiableActors.forEach(actor=>{
-			this.sendMessageToEntity(
-				actor,
-				shipmentStatusesEnum.PickUpAtWarehouse,
-				inTransitDSUMessage,
-				shipmentStatusesEnum.PickUpAtWarehouse
-			);
-		});
+
+		this.sendMessageToEntity(
+			CommunicationService.identities.CSC.SPONSOR_IDENTITY,
+			shipmentStatusesEnum.PickUpAtWarehouse,
+			inTransitDSUMessage,
+			shipmentStatusesEnum.PickUpAtWarehouse
+		);
 
 		//Send a message to cmo
 		this.sendMessageToEntity(
