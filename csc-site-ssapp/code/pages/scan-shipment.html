@@ -67,6 +67,26 @@
                 </div>
               </div>
 
+              <div class='col-12 col-xl-6'>
+                <!-- Received Date/Time -->
+                <div class="form-group">
+                  <!--Label -->
+                  <label>{{@shipmentModel.form.receivedDate.label}}</label>
+                  <div class="row">
+                    <div class="col-8">
+                      <!-- Input -->
+                      <input class="form-control"
+                             value="@shipmentModel.form.receivedDate.value" type="date" />
+                    </div>
+                    <div class="col-4">
+                      <!-- Input -->
+                      <input class="form-control"
+                             value="@shipmentModel.form.receivedTime.value" type="time" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- Comments Preview -->
               <div class="col-lg-12 col-xl-6">
                 <div class="form-group">
@@ -143,9 +163,17 @@
 
               <div class='col-12'>
                 <div class="form-group">
-                  <label>Actual temperature observed</label>
+                  <label>Shipment Actual temperature observed</label>
                   <input class="form-control form-control-sm" readonly name="temperature" type="text" value="@shipmentModel.form.temperature.value"
                   />
+                </div>
+              </div>
+
+              <div class='col-12'>
+                <div class="form-group">
+                  <label>{{@shipmentModel.form.receivedDate.label}}</label>
+                  <input class="form-control form-control-sm" readonly type="date" value="@shipmentModel.form.receivedDate.value" />
+                  <input class="form-control form-control-sm" readonly type="time" value="@shipmentModel.form.receivedTime.value" />
                 </div>
               </div>
 
@@ -172,7 +200,7 @@
                 <i class="fas fa-angle-left"></i>
                   Previous
               </button>
-              <button disabled='@formIsInvalid' class="btn-default" data-tag="sign_button" id="sign_button">
+              <button disabled='@formIsInvalid' class="btn-default" data-tag="sign_button" id="sign_button" disabled="@disableSign">
                 <!--<i class="fas fa-check"></i>-->
                   Sign
                   <i class="fas fa-angle-right"></i>
