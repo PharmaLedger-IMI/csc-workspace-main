@@ -192,6 +192,11 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
       model.documents = model.documents.concat(model.shipmentModel.shipment.documents);
     }
 
+    if (model.shipmentModel.shipment.receivedDSUKeySSI) {
+        const receivedDSU  = await this.shipmentService.getShipmentReceivedDSU(model.shipmentModel.shipment.receivedDSUKeySSI);
+        model.shipmentModel = {...model.shipmentModel, ...JSON.parse(JSON.stringify(receivedDSU))};
+        }
+
     if(model.shipmentModel.shipment.shipmentDocuments){
       let shipmentDocuments  = await this.getShipmentDocuments(model.shipmentModel.shipment);
       model.documents = model.documents.concat(shipmentDocuments);

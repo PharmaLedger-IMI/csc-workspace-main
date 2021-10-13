@@ -242,8 +242,8 @@ class ShipmentsService extends DSUService {
 
 
 	}
-    //arijit-shipmentReceivedDSU
-    async createAndMountReceivedDSU(shipmentKeySSI, transientDataModel) {
+    
+    async createAndMountReceivedDSU(shipmentKeySSI, transientDataModel, shipmentComments) {
 
     	let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
     	const shipmentReceivedDSU = await this.saveEntityAsync(transientDataModel, FoldersEnum.ShipmentReceived);
@@ -253,6 +253,10 @@ class ShipmentsService extends DSUService {
     	shipmentDB.status = status.history;
     	shipmentDB.shipmentId = shipmentReceivedDSU.shipmentId;
     	await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentKeySSI, shipmentDB);
+
+		if(shipmentComments) {
+			const shipmentCommentDSU = await this.addCommentToDsu(shipmentComments, shipmentDB.shipmentComments);
+		}
 
     	const shipmentReceivedDSUMessage = {
     			receivedShipmentSSI: shipmentReceivedDSU.keySSI,
@@ -387,6 +391,10 @@ class ShipmentsService extends DSUService {
 	async getShipmentDocuments(documentsKeySSI){
 		return await this.getEntityAsync(documentsKeySSI,FoldersEnum.ShipmentDocuments);
 	}
+
+	async getShipmentReceivedDSU(receivedDSUKeySSI){
+    	return await this.getEntityAsync(receivedDSUKeySSI,FoldersEnum.ShipmentReceived);
+    }
 
 	async createShipmentTransitOtherDSUs() {
 		const shipmentTransitBillingDSU = await this.saveEntityAsync(
