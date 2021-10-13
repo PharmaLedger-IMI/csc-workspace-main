@@ -9,8 +9,8 @@ export default class ScanShipmentController extends WebcController {
   constructor(...props) {
     super(...props);
     this.role = Roles.CMO;
-
     this.model = this.history.location.state.shipment;
+    this.model.submitDisabled = false;
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     this.shipmentsService = new ShipmentsService(this.DSUStorage);
 
@@ -129,15 +129,17 @@ export default class ScanShipmentController extends WebcController {
 
     this.onTagClick('scan:submit', async () => {
       if (this.model.isShipmentScanOk && this.model.foundAllCorrectKitScans) {
+        this.model.submitDisabled = true;
+        window.WebCardinal.loader.hidden = false;
         const newShipmentData = { isShipmentScanSuccessful: true };
-        const result = await this.shipmentsService.updateLocalShipment(this.model.shipmentSSI, newShipmentData);
+        await this.shipmentsService.updateLocalShipment(this.model.shipmentSSI, newShipmentData);
         let modalOptions = {
           disableExpanding: true,
           disableCancelButton: true,
           confirmButtonText: 'Ok',
           id: 'confirm-modal',
         };
-
+        window.WebCardinal.loader.hidden = true;
         this.showModal(
           'Shipment scanned successfully!',
           'Scan Shipment',
