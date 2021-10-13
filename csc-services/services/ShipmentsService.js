@@ -256,7 +256,7 @@ class ShipmentsService extends DSUService {
     	await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentKeySSI, shipmentDB);
 
 		if(shipmentComments) {
-			const shipmentCommentDSU = await this.addCommentToDsu(shipmentComments, transitCommentsDSU);
+			const shipmentCommentDSU = await this.addCommentToDsu(shipmentComments, transitCommentsDSU.keySSI);
 		}
 
     	const shipmentReceivedDSUMessage = {

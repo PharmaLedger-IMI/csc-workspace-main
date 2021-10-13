@@ -193,7 +193,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     }
 
     if (model.shipmentModel.shipment.receivedDSUKeySSI) {
-        const receivedDSU  = await this.ShipmentService.getShipmentReceivedDSU(model.shipmentModel.shipment.receivedDSUKeySSI);
+        const receivedDSU  = await this.shipmentService.getShipmentReceivedDSU(model.shipmentModel.shipment.receivedDSUKeySSI);
         model.shipmentModel = {...model.shipmentModel, ...JSON.parse(JSON.stringify(receivedDSU))};
         }
 
