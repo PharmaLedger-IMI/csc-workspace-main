@@ -14,7 +14,7 @@ export default class EditShipmentController extends WebcController {
 
 	constructor(...props) {
 		super(...props);
-
+		this.model.submitDisabled = false;
 		this.model.keySSI = this.history.location.state.keySSI;
 		this.ordersService = new OrderService(this.DSUStorage);
 		let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
@@ -79,6 +79,8 @@ export default class EditShipmentController extends WebcController {
 		});
 
 		this.onTagClick('form:submit', async () => {
+			window.WebCardinal.loader.hidden = false;
+			this.model.submitDisabled = true;
 			const shipmentData = this.prepareShipmentData();
 			await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ReadyForDispatch, shipmentData);
 			this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', { tag: 'dashboard', state: { tab: Topics.Shipment }}, 2000);
@@ -88,7 +90,7 @@ export default class EditShipmentController extends WebcController {
 				confirmButtonText: 'Ok',
 				id: 'confirm-modal',
 			};
-
+			window.WebCardinal.loader.hidden = true;
 			this.showModal(
 				'Shipment edited successfully!',
 				'Edit Shipment',

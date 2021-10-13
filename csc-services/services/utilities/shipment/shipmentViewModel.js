@@ -181,12 +181,14 @@ const shipmentViewModel = {
             name: 'received_date',
             required: true,
             disabled: false,
+            type: 'date',
             value: '',
         },
         receivedTime: {
             name: 'received_time',
             required: true,
             disabled: false,
+            type: 'time',
             value: '',
         }
 	}
