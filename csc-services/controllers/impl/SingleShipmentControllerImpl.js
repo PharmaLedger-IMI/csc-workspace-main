@@ -163,14 +163,6 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     });
   }
 
-  confirmScanShipmentCallback = async () => {
-    this.model.shipmentModel.shipment.isShipmentScanSuccessful = true;
-    this.model.actions.canEditShipment = true;
-    this.model.actions.canScanShipment = false;
-
-    const newShipmentData = {isShipmentScanSuccessful: true};
-    const result = await this.shipmentsService.updateLocalShipment(this.model.keySSI, newShipmentData);
-  };
 
   async initViewModel() {
     const model = {
@@ -199,6 +191,11 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     if (model.shipmentModel.shipment.documents) {
       model.documents = model.documents.concat(model.shipmentModel.shipment.documents);
     }
+
+    if (model.shipmentModel.shipment.receivedDSUKeySSI) {
+        const receivedDSU  = await this.shipmentService.getShipmentReceivedDSU(model.shipmentModel.shipment.receivedDSUKeySSI);
+        model.shipmentModel = {...model.shipmentModel, ...JSON.parse(JSON.stringify(receivedDSU))};
+        }
 
     if(model.shipmentModel.shipment.shipmentDocuments){
       let shipmentDocuments  = await this.getShipmentDocuments(model.shipmentModel.shipment);

@@ -64,13 +64,12 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
       case shipmentStatusesEnum.ReadyForDispatch:
         actions.canPickupShipment = true;
         break;
+      case shipmentStatusesEnum.PickUpAtWarehouse:
+        actions.canEditShipment = true;
+        break;
       case shipmentStatusesEnum.InTransit:
-        if (shipment.shipmentBilling) {
-          actions.canAddMessage = true;
-          actions.canDeliverShipment = true;
-        } else {
-          actions.canEditShipment = true;
-        }
+        actions.canAddMessage = true;
+        actions.canDeliverShipment = true;
         break;
     }
     return actions;

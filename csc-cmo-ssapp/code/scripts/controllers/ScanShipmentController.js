@@ -9,13 +9,14 @@ export default class ScanShipmentController extends WebcController {
   constructor(...props) {
     super(...props);
     this.role = Roles.CMO;
-
     this.model = this.history.location.state.shipment;
+    this.model.submitDisabled = false;
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     this.shipmentsService = new ShipmentsService(this.DSUStorage);
 
     this.initScanViewModel();
     this.attachEventListeners();
+    this.handleOnChange = true;
   }
 
   attachEventListeners() {
@@ -61,11 +62,13 @@ export default class ScanShipmentController extends WebcController {
     this.model.onChange('isShipmentScannerActive', this.step1NavigationHandler.bind(this));
 
     this.model.onChange('scannedShipmentData', () => {
-      console.log('[SCAN] ', this.model.scannedShipmentData);
-      this.model.isShipmentScannerActive = false;
-      this.model.isShipmentScanOk = this.model.scannedShipmentData === this.model.shipmentId;
-      this.model.showWrongShipmentScanResult = !this.model.isShipmentScanOk;
-      this.model.showCorrectShipmentScanResult = this.model.isShipmentScanOk;
+      if (this.handleOnChange) {
+        console.log('[SCAN] ', this.model.scannedShipmentData);
+        this.model.isShipmentScannerActive = false;
+        this.model.isShipmentScanOk = this.model.scannedShipmentData === this.model.shipmentId;
+        this.model.showWrongShipmentScanResult = !this.model.isShipmentScanOk;
+        this.model.showCorrectShipmentScanResult = this.model.isShipmentScanOk;
+      }
     });
   }
 
@@ -89,11 +92,14 @@ export default class ScanShipmentController extends WebcController {
     this.model.onChange('isKitsScannerActive', this.step2NavigationHandler.bind(this));
 
     this.model.onChange('scannedKitData', () => {
-      console.log('[SCAN] ', this.model.scannedKitData);
-      const isKitOk = this.model.scannedKitData === this.model.currentKit.kitId;
-      this.model.isKitsScannerActive = false;
-      this.model.showWrongKitScanResult = !isKitOk;
-      this.model.showCorrectKitScanResult = isKitOk;
+      if (this.handleOnChange) {
+        console.log('[SCAN] ', this.model.scannedKitData);
+        const isKitOk = this.model.scannedKitData === this.model.currentKit.kitId;
+        this.model.isKitsScannerActive = false;
+        this.model.showWrongKitScanResult = !isKitOk;
+        this.model.showCorrectKitScanResult = isKitOk;
+      }
+      this.handleOnChange = true;
     });
 
     this.onTagClick('next-kit-scan', (model, target, e) => {
@@ -118,19 +124,22 @@ export default class ScanShipmentController extends WebcController {
     this.onTagClick('scan:reset', (model, target, e) => {
       this.initScanViewModel();
       this.makeStepActive('step-1', 'step-1-wrapper', e);
+      this.handleOnChange = false;
     });
 
     this.onTagClick('scan:submit', async () => {
       if (this.model.isShipmentScanOk && this.model.foundAllCorrectKitScans) {
+        this.model.submitDisabled = true;
+        window.WebCardinal.loader.hidden = false;
         const newShipmentData = { isShipmentScanSuccessful: true };
-        const result = await this.shipmentsService.updateLocalShipment(this.model.shipmentSSI, newShipmentData);
+        await this.shipmentsService.updateLocalShipment(this.model.shipmentSSI, newShipmentData);
         let modalOptions = {
           disableExpanding: true,
           disableCancelButton: true,
           confirmButtonText: 'Ok',
           id: 'confirm-modal',
         };
-
+        window.WebCardinal.loader.hidden = true;
         this.showModal(
           'Shipment scanned successfully!',
           'Scan Shipment',

@@ -168,7 +168,7 @@ class ShipmentsService extends DSUService {
 			//one approach is to split the shipmentStatuses in more DSUs because CMO stops here and no future shipment statuses should be read
 			//the In Transit equivalent for the CMO is Dispatched.
 			shipmentDB.status.forEach(shipmentStatus => {
-				if (shipmentStatus.status === shipmentStatusesEnum.InTransit) {
+				if (shipmentStatus.status === shipmentStatusesEnum.PickUpAtWarehouse) {
 					shipmentStatus.status = shipmentStatusesEnum.Dispatched;
 				}
 			});
@@ -212,7 +212,7 @@ class ShipmentsService extends DSUService {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
 
 		const shipmentTransitDSU = await this.saveEntityAsync(transientDataModel, FoldersEnum.ShipmentTransit);
-		const status = await this.updateStatusDsu(shipmentStatusesEnum.InTransit, shipmentDB.statusSSI);
+		const status = await this.updateStatusDsu(shipmentStatusesEnum.PickUpAtWarehouse, shipmentDB.statusSSI);
 		shipmentDB.transitDSUKeySSI = shipmentTransitDSU.keySSI;
 		shipmentDB.status = status.history;
 		shipmentDB.shipmentId = shipmentTransitDSU.shipmentId;
@@ -225,15 +225,12 @@ class ShipmentsService extends DSUService {
 			shipmentSSI: shipmentKeySSI
 		}
 
-		const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY,  CommunicationService.identities.CSC.SITE_IDENTITY];
-		notifiableActors.forEach(actor=>{
-			this.sendMessageToEntity(
-				actor,
-				shipmentStatusesEnum.InTransit,
-				inTransitDSUMessage,
-				shipmentStatusesEnum.InTransit
-			);
-		});
+		this.sendMessageToEntity(
+			CommunicationService.identities.CSC.SPONSOR_IDENTITY,
+			shipmentStatusesEnum.PickUpAtWarehouse,
+			inTransitDSUMessage,
+			shipmentStatusesEnum.PickUpAtWarehouse
+		);
 
 		//Send a message to cmo
 		this.sendMessageToEntity(
@@ -245,8 +242,8 @@ class ShipmentsService extends DSUService {
 
 
 	}
-    //arijit-shipmentReceivedDSU
-    async createAndMountReceivedDSU(shipmentKeySSI, transientDataModel) {
+    
+    async createAndMountReceivedDSU(shipmentKeySSI, transientDataModel, shipmentComments) {
 
     	let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
     	const shipmentReceivedDSU = await this.saveEntityAsync(transientDataModel, FoldersEnum.ShipmentReceived);
@@ -256,6 +253,10 @@ class ShipmentsService extends DSUService {
     	shipmentDB.status = status.history;
     	shipmentDB.shipmentId = shipmentReceivedDSU.shipmentId;
     	await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentKeySSI, shipmentDB);
+
+		if(shipmentComments) {
+			const shipmentCommentDSU = await this.addCommentToDsu(shipmentComments, shipmentDB.shipmentComments);
+		}
 
     	const shipmentReceivedDSUMessage = {
     			receivedShipmentSSI: shipmentReceivedDSU.keySSI,
@@ -318,12 +319,17 @@ class ShipmentsService extends DSUService {
 			transitCommentsDSU = await this.addCommentToDsu(shipmentComments, transitCommentsDSU.keySSI);
 		}
 
+		const status = await this.updateStatusDsu(shipmentStatusesEnum.InTransit, shipmentDB.statusSSI);
+		shipmentDB.status = status.history;
+
 		shipmentDB.bill = billData;
 		shipmentDB.shipmentBilling = shipmentTransitBillingDSU.keySSI;
 		shipmentDB.shipmentDocuments = transitDocumentsDSU.keySSI;
 		shipmentDB.shipmentComments = transitCommentsDSU.keySSI;
 
 		const siteMessage = {
+			transitShipmentSSI: shipmentDB.transitDSUKeySSI,
+			statusSSI:status.keySSI,
 			shipmentSSI: shipmentKeySSI,
 			shipmentComments: shipmentDB.shipmentComments
 		};
@@ -386,6 +392,10 @@ class ShipmentsService extends DSUService {
 		return await this.getEntityAsync(documentsKeySSI,FoldersEnum.ShipmentDocuments);
 	}
 
+	async getShipmentReceivedDSU(receivedDSUKeySSI){
+    	return await this.getEntityAsync(receivedDSUKeySSI,FoldersEnum.ShipmentReceived);
+    }
+
 	async createShipmentTransitOtherDSUs() {
 		const shipmentTransitBillingDSU = await this.saveEntityAsync(
 			{},
@@ -409,6 +419,8 @@ class ShipmentsService extends DSUService {
 		await this.mountEntityAsync(shipmentTransitSSI, FoldersEnum.ShipmentTransitBilling);
 		shipmentDB.shipmentTransitBillingDSU = shipmentTransitSSI;
 		shipmentDB.bill = await this.getEntityAsync(shipmentTransitSSI, FoldersEnum.ShipmentTransitBilling);
+		const status = await this.updateStatusDsu(shipmentStatusesEnum.InTransit, shipmentDB.statusSSI);
+		shipmentDB.status = status.history;
 		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
 	}
 
