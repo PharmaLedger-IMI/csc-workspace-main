@@ -163,14 +163,6 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     });
   }
 
-  confirmScanShipmentCallback = async () => {
-    this.model.shipmentModel.shipment.isShipmentScanSuccessful = true;
-    this.model.actions.canEditShipment = true;
-    this.model.actions.canScanShipment = false;
-
-    const newShipmentData = {isShipmentScanSuccessful: true};
-    const result = await this.shipmentsService.updateLocalShipment(this.model.keySSI, newShipmentData);
-  };
 
   async initViewModel() {
     const model = {

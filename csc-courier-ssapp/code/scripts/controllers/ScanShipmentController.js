@@ -5,7 +5,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
-const { shipment, Roles, Topics } = cscServices.constants;
+const { Roles, Topics } = cscServices.constants;
 
 class ScanShipmentController extends WebcController {
 
