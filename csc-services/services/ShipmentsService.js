@@ -248,7 +248,6 @@ class ShipmentsService extends DSUService {
     	let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentKeySSI);
     	const shipmentReceivedDSU = await this.saveEntityAsync(transientDataModel, FoldersEnum.ShipmentReceived);
     	const status = await this.updateStatusDsu(shipmentStatusesEnum.Received, shipmentDB.statusSSI);
-		let { transitCommentsDSU } = await this.createShipmentTransitOtherDSUs();
 
     	shipmentDB.receivedDSUKeySSI = shipmentReceivedDSU.keySSI;
     	shipmentDB.status = status.history;
@@ -256,7 +255,7 @@ class ShipmentsService extends DSUService {
     	await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentKeySSI, shipmentDB);
 
 		if(shipmentComments) {
-			const shipmentCommentDSU = await this.addCommentToDsu(shipmentComments, transitCommentsDSU.keySSI);
+			const shipmentCommentDSU = await this.addCommentToDsu(shipmentComments, shipmentDB.shipmentComments);
 		}
 
     	const shipmentReceivedDSUMessage = {
