@@ -52,17 +52,14 @@ export default class ScanShipmentController extends WebcController {
       this.model.isShipmentScannerActive = true;
     });
 
-    this.onTagClick('back-to-shipment-scan', () => {
+    let scanAgainShipmentHandler =   () => {
       this.model.isShipmentScannerActive = true;
       this.model.showWrongShipmentScanResult = false;
       this.model.showCorrectShipmentScanResult = false;
-    });
+    };
 
-    this.onTagClick('scan-again-kits', () => {
-      this.model.isShipmentScannerActive = true;
-      this.model.showWrongShipmentScanResult = false;
-      this.model.showCorrectShipmentScanResult = false;
-    });
+    this.onTagClick('back-to-shipment-scan', scanAgainShipmentHandler);
+    this.onTagClick('scan-again-shipment', scanAgainShipmentHandler);
 
     this.model.onChange('canScanShipment', this.step1NavigationHandler.bind(this));
     this.model.onChange('isShipmentScannerActive', this.step1NavigationHandler.bind(this));
@@ -88,17 +85,13 @@ export default class ScanShipmentController extends WebcController {
       this.model.isKitsScannerActive = true;
     });
 
-    this.onTagClick('back-to-kit-scan', () => {
+    let scanKitsAgainHandler = () => {
       this.model.isKitsScannerActive = true;
       this.model.showWrongKitScanResult = false;
       this.model.showCorrectKitScanResult = false;
-    });
-
-    this.onTagClick('scan-again-kits', () => {
-      this.model.isKitsScannerActive = true;
-      this.model.showWrongKitScanResult = false;
-      this.model.showCorrectKitScanResult = false;
-    });
+    };
+    this.onTagClick('back-to-kit-scan', scanKitsAgainHandler);
+    this.onTagClick('scan-again-kits', scanKitsAgainHandler);
 
     this.model.onChange('canScanKit', this.step2NavigationHandler.bind(this));
     this.model.onChange('isKitsScannerActive', this.step2NavigationHandler.bind(this));
