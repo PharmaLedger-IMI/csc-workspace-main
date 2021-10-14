@@ -58,6 +58,12 @@ export default class ScanShipmentController extends WebcController {
       this.model.showCorrectShipmentScanResult = false;
     });
 
+    this.onTagClick('scan-again-kits', () => {
+      this.model.isShipmentScannerActive = true;
+      this.model.showWrongShipmentScanResult = false;
+      this.model.showCorrectShipmentScanResult = false;
+    });
+
     this.model.onChange('canScanShipment', this.step1NavigationHandler.bind(this));
     this.model.onChange('isShipmentScannerActive', this.step1NavigationHandler.bind(this));
 
@@ -83,6 +89,12 @@ export default class ScanShipmentController extends WebcController {
     });
 
     this.onTagClick('back-to-kit-scan', () => {
+      this.model.isKitsScannerActive = true;
+      this.model.showWrongKitScanResult = false;
+      this.model.showCorrectKitScanResult = false;
+    });
+
+    this.onTagClick('scan-again-kits', () => {
       this.model.isKitsScannerActive = true;
       this.model.showWrongKitScanResult = false;
       this.model.showCorrectKitScanResult = false;
