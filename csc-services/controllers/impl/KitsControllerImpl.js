@@ -73,19 +73,6 @@ class KitsControllerImpl extends WebcController {
 		this.onTagClick('view-kit', async (model) => {
 			// TODO: view kit
 		});
-
-		this.onTagClick('debug-add-kits', async (model, target, event) => {
-			event.preventDefault();
-			event.stopImmediatePropagation();
-
-			console.log("Adding Kits");
-
-			for (const kit of kitsDummyData) {
-				await this.kitsService.addKit("SHIPMENT-ID-001" , kit);
-			}
-
-			this.init();
-		});
 	}
 
 	searchFilterHandler() {
