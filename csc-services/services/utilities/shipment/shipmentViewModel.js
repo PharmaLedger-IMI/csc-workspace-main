@@ -74,7 +74,7 @@ const shipmentViewModel = {
 		dimension: {
 			label: 'Dimension (m)',
 			height: {
-				label: 'Height',
+				label: 'H',
 				name: 'height',
 				required: true,
 				placeholder: 'Fill in the height',
@@ -84,7 +84,7 @@ const shipmentViewModel = {
 				value: ''
 			},
 			length: {
-				label: 'Length',
+				label: 'L',
 				name: 'length',
 				required: true,
 				placeholder: 'Fill in the length',
@@ -94,7 +94,7 @@ const shipmentViewModel = {
 				value: ''
 			},
 			width: {
-				label: 'Width',
+				label: 'W',
 				name: 'width',
 				required: true,
 				placeholder: 'Fill in the width',
