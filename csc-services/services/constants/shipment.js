@@ -323,7 +323,8 @@ const shipmentBusinessRequirements = {
 		name: "Shipper ID 2"
 	}, {
 		name: "Shipper ID 3"
-	}]
+	}],
+	dimensionUnit: "M"
 }
 
 module.exports = {
