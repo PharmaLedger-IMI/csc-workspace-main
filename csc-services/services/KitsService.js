@@ -17,7 +17,7 @@ class KitsService extends DSUService {
     this.DSUStorage = DSUStorage;
   }
 
-  async addStudyKitDataTODb(studyId,studyKitData){
+  async addStudyKitDataTODb(studyId, studyKitData){
     let studyKitsDb;
     try{
       await this.storageService.getRecord(this.KITS_TABLE, studyId);
@@ -35,19 +35,17 @@ class KitsService extends DSUService {
   }
 
   async updateStudyKitsDSU(studyId,  kitsDSUData, kitIds, progressUpdateCallback){
-    const studyIDPath = `${studyId}-kits`
-
     let studyKitsDSU;
     try{
-        studyKitsDSU = await this.getEntityAsync(studyIDPath, FoldersEnum.StudyKits);
+        let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, studyId);
+        studyKitsDSU = await this.getEntityAsync(studyKitDb.keySSI, FoldersEnum.StudyKits);
     }
-
     catch (e) {
       const initialData = {
         kits:[],
         studyId:studyId
       }
-      studyKitsDSU = await this.saveEntityAsync(initialData, studyIDPath);
+      studyKitsDSU = await this.saveEntityAsync(initialData, FoldersEnum.StudyKits);
     }
 
     for (let i = 0; i < kitIds.length; i++) {
@@ -65,7 +63,7 @@ class KitsService extends DSUService {
       progressUpdateCallback(undefined, i/kitIds.length);
     }
     studyKitsDSU.lastModified = Date.now();
-    studyKitsDSU = await this.updateEntityAsync(studyKitsDSU, studyIDPath);
+    studyKitsDSU = await this.updateEntityAsync(studyKitsDSU, FoldersEnum.StudyKits);
     return await this.addStudyKitDataTODb(studyId, studyKitsDSU);
 
   }
