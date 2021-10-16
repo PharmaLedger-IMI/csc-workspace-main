@@ -78,7 +78,10 @@ class StudiesKitsControllerImpl extends WebcController {
 
   async viewKitHandler() {
     this.onTagClick('view-kit', async (model) => {
-      // TODO: view kit
+      this.navigateToPageTag('study-kits', {
+        studyId: model.studyId,
+        orderId:model.orderId
+      });
     });
   }
 

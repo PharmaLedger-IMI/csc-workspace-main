@@ -50,7 +50,7 @@ class KitsService extends DSUService {
 
     for (let i = 0; i < kitIds.length; i++) {
       const data = {
-        kitId: kitIds[i],
+        kitId: kitIds[i].kitId,
         status: kitsStatusesEnum.AvailableForAssignment
       };
       const kitDSU  = await this.saveEntityAsync(data, FoldersEnum.Kits);
@@ -66,6 +66,14 @@ class KitsService extends DSUService {
     studyKitsDSU = await this.updateEntityAsync(studyKitsDSU, FoldersEnum.StudyKits);
     return await this.addStudyKitDataTODb(studyId, studyKitsDSU);
 
+  }
+
+  async getOrderKits(studyId, orderId){
+    let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, studyId);
+    const kits = studyKitDb.kits.filter((kit => {
+      return kit.orderId === orderId;
+    }));
+    return kits;
   }
 }
 

@@ -47,6 +47,13 @@
       "src": "shipment.html",
       "tag": "shipment",
       "indexed": false
+    },
+    {
+      "name": "Study Kits",
+      "path": "/study-kits",
+      "src": "study-kits.html",
+      "tag": "study-kits",
+      "indexed": false
     }
   ],
   "skin": "default"
