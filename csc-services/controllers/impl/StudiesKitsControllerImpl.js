@@ -31,7 +31,6 @@ class StudiesKitsControllerImpl extends WebcController {
       this.model.kitsListIsReady = false;
       const kitsStudies = await this.kitsService.getAllStudiesKits();
       this.kitsStudies = this.transformData(kitsStudies);
-      console.log("kits studies:", JSON.stringify(this.kitsStudies,null, 2));
       this.setKitsModel(this.kitsStudies);
       this.model.kitsListIsReady = true;
     } catch (error) {
@@ -92,7 +91,7 @@ class StudiesKitsControllerImpl extends WebcController {
   }
 
   filterData() {
-    let result = this.kits;
+    let result = this.kitsStudies;
     if (this.model.search.value && this.model.search.value !== '') {
       result = result.filter((x) =>
         x.studyId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
