@@ -60,7 +60,7 @@ class KitsService extends DSUService {
         orderId:kitsDSUData.orderId,
         shipmentId:kitsDSUData.shipmentId,
       })
-      progressUpdateCallback(undefined, i/kitIds.length);
+      progressUpdateCallback(undefined, (i+1)/kitIds.length);
     }
     studyKitsDSU.lastModified = Date.now();
     studyKitsDSU = await this.updateEntityAsync(studyKitsDSU, FoldersEnum.StudyKits);
