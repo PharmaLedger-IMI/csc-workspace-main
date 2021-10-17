@@ -1,18 +1,16 @@
 const kitsStatusesEnum = {
 	Received: 'Received',
-	AvailableForAssignment: 'AvailableForAssignment',
+	AvailableForAssignment: 'Available for Assignment',
 	Assigned: 'Assigned',
 	Dispensed: 'Dispensed',
 	Administrated: 'Administrated'
 };
 
 
-// TODO: we need this?
 const kitsPendingActionEnum = {
-	PendingReviewByCMO: 'Pending Review by CMO',
-	SponsorReviewOrApprove: 'Sponsor Review or Approve',
-	NoPendingActions: 'There are no any further pending actions',
-	PendingShipmentPreparation: 'Pending Shipment Preparation',
+	Assign: 'Assign',
+	Dispense: 'Dispense',
+	Administer: 'Administer',
 	NoFurtherActionsRequired: 'No further actions required'
 };
 

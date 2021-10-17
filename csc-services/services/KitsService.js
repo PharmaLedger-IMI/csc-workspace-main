@@ -51,7 +51,7 @@ class KitsService extends DSUService {
     for (let i = 0; i < kitIds.length; i++) {
       const data = {
         kitId: kitIds[i].kitId,
-        status: kitsStatusesEnum.AvailableForAssignment
+        status: kitsStatusesEnum.Received
       };
       const kitDSU  = await this.saveEntityAsync(data, FoldersEnum.Kits);
       studyKitsDSU.kits.push({
