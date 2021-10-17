@@ -2,7 +2,9 @@ const { ViewShipmentBaseController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentsService = cscServices.ShipmentService;
+const OrdersService = cscServices.OrderService;
 const CommunicationService = cscServices.CommunicationService;
+const momentService = cscServices.momentService;
 const { Roles } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
@@ -10,6 +12,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
   constructor(...props) {
     super(Roles.Courier,...props);
     let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.COU_IDENTITY);
+    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
     this.initViewModel();
     this.openFirstAccordion();
@@ -77,6 +80,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
 
   async initViewModel() {
     const model = {
+      orderModel: viewModelResolver('order'),
       shipmentModel: viewModelResolver('shipment'),
     };
 
@@ -99,8 +103,38 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     }
 
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
+
+    let order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
+    order = { ...this.transformOrderData(order) };
+    model.shipmentModel.order = order
+    console.log("ORDER " + JSON.stringify(model.shipmentModel.order));
     this.model = model;
     this.attachRefreshListeners();
+  }
+
+  transformOrderData(data) {
+    if (data) {
+      data.delivery_date = this.getDateTime(data.deliveryDate);
+
+      data.documents = [];
+      if (data.sponsorDocuments) {
+        data.sponsorDocuments.forEach((doc) => {
+          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
+          data.documents.push(doc);
+        });
+      }
+
+      if (data.cmoDocuments) {
+        data.cmoDocuments.forEach((doc) => {
+          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
+          data.documents.push(doc);
+        });
+      }
+
+      return data;
+    }
+
+    return {};
   }
 
   onAddShipmentCommentModalOpen(){
