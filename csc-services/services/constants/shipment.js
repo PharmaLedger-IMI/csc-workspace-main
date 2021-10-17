@@ -1,7 +1,7 @@
 const shipmentStatusesEnum = {
 	InPreparation: 'In Preparation',
 	ReadyForDispatch: 'Ready For Dispatch',
-	PickUpAtWarehouse: 'Pick-up at warehouse',
+	PickUpAtWarehouse: 'Pick-up At Warehouse',
 	InTransit: 'In Transit',
 	Delivered: 'Delivered',
 	Received: 'Received',
