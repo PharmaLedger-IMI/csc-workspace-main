@@ -106,8 +106,8 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
 
     let order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
     order = { ...this.transformOrderData(order) };
-    model.shipmentModel.order = order
-    console.log("ORDER " + JSON.stringify(model.shipmentModel.order));
+    model.orderModel.order = order
+    //console.log("MODEL " + JSON.stringify(model));
     this.model = model;
     this.attachRefreshListeners();
   }
