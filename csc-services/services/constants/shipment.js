@@ -1,7 +1,7 @@
 const shipmentStatusesEnum = {
 	InPreparation: 'In Preparation',
 	ReadyForDispatch: 'Ready For Dispatch',
-	PickUpAtWarehouse: 'Pick-up at warehouse',
+	PickUpAtWarehouse: 'Pick-up At Warehouse',
 	InTransit: 'In Transit',
 	Delivered: 'Delivered',
 	Received: 'Received',
@@ -323,7 +323,8 @@ const shipmentBusinessRequirements = {
 		name: "Shipper ID 2"
 	}, {
 		name: "Shipper ID 3"
-	}]
+	}],
+	dimensionUnit: "M"
 }
 
 module.exports = {

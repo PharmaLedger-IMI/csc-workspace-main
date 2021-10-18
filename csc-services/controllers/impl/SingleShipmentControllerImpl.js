@@ -1,6 +1,7 @@
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
+const KitsService = cscServices.KitsService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
@@ -25,6 +26,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     this.notificationsService = new NotificationsService(this.DSUStorage);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
+    this.kitsService = new KitsService(this.DSUStorage, communicationService);
 
     this.initViewModel();
     this.attachEventListeners();
@@ -150,6 +152,17 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
         }
       });
     });
+
+    this.onTagClick('add-study-kit',()=>{
+      console.log(this.model);
+      let studyId = this.model.orderModel.order.studyId;
+      let orderId = this.model.orderModel.order.orderId;
+      let shipmentId = this.model.shipmentModel.shipment.shipmentId;
+      let kits = this.model.shipmentModel.kits;
+      this.kitsService.updateStudyKitsDSU(studyId,{orderId,shipmentId},kits.kitIds,(err, progress)=>{
+          console.log(progress);
+      })
+    });
   }
 
   scanShipmentHandler() {
@@ -193,9 +206,14 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     }
 
     if (model.shipmentModel.shipment.receivedDSUKeySSI) {
-        const receivedDSU  = await this.shipmentService.getShipmentReceivedDSU(model.shipmentModel.shipment.receivedDSUKeySSI);
-        model.shipmentModel = {...model.shipmentModel, ...JSON.parse(JSON.stringify(receivedDSU))};
-        }
+      const receivedDSU = await this.shipmentService.getShipmentReceivedDSU(model.shipmentModel.shipment.receivedDSUKeySSI);
+      model.shipmentModel = { ...model.shipmentModel, ...JSON.parse(JSON.stringify(receivedDSU)) };
+      //TODO check this again if is needed after implementation of #378
+      if (this.role === Roles.Site) {
+        model.shipmentModel.kits = await this.ordersService.getKitIds(model.shipmentModel.shipment.kitIdSSI);
+        model.shipmentModel.isShipmentReceived = true;
+      }
+    }
 
     if(model.shipmentModel.shipment.shipmentDocuments){
       let shipmentDocuments  = await this.getShipmentDocuments(model.shipmentModel.shipment);

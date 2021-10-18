@@ -102,9 +102,9 @@ export default class EditShipmentController extends WebcController {
       this.shipmentData = this.prepareShipmentData();
 
       if (!this.shipmentData) {
-        this.showErrorModal("Please fill-in bill number, HS code.", "Invalid form", () => {}, () => {}, {
-          cancelButtonText: 'Close',
-          id: 'invalid-form-modal-courier'
+        this.showErrorModal("Please fill-in bill number, HS code and mandatory documents!", "Invalid form", () => {}, () => {}, {
+          disableCancelButton: true,
+          confirmButtonText: 'Close',
         });
         return;
       }
