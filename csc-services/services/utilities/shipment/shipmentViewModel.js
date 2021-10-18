@@ -185,14 +185,14 @@ const shipmentViewModel = {
             required: true,
             disabled: false,
             type: 'date',
-            value: '',
+            value: momentService(new Date()).format(constants.Commons.YearMonthDayPattern),
         },
         receivedTime: {
             name: 'received_time',
             required: true,
             disabled: false,
             type: 'time',
-            value: '',
+            value: momentService(new Date()).format(constants.Commons.HourFormatPattern),
         }
 	}
 };
