@@ -30,12 +30,8 @@ class TableTemplateControllerImpl extends WebcController {
   }
 
   sortDataByLastModification( data , prop , sortingDatesFn ){
-    if(data){
-      if(data[0]){
-        if(data[0].hasOwnProperty(prop)){
-          data = data.sort(sortingDatesFn);
-        }
-      }
+    if(data && (data[0]) && data[0].hasOwnProperty(prop)){
+      data = data.sort(sortingDatesFn);
     }
     return data;
   }
