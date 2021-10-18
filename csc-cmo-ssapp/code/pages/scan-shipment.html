@@ -57,9 +57,7 @@
                 <i class="fas fa-angle-left"></i>
                 Previous
               </button>
-              <button class="btn-default" data-tag="scan-again-kits"  disabled="@showCorrectShipmentScanResult" id="scan-again-kit">
-                Scan Again
-              </button>
+              <button class="btn-default" data-tag="scan-again-kits" disabled="@showCorrectShipmentScanResult" id="scan-again-kit">Scan Again</button>
               <button class="btn-default" data-tag="from_step_1_to_2" disabled="@showWrongShipmentScanResult" id="from_step_1_to_2">
                 Next
                 <i class="fas fa-angle-right"></i>
@@ -106,9 +104,7 @@
                 Previous
               </button>
 
-              <button class="btn-default" data-tag="scan-again-kits" disabled="@showCorrectKitScanResult" id="scan-again-kits">
-                Scan Again
-              </button>
+              <button class="btn-default" data-tag="scan-again-kits" disabled="@showCorrectKitScanResult" id="scan-again-kits">Scan Again</button>
 
               <button class="btn-default" data-tag="next-kit-scan" disabled="@showWrongKitScanResult" id="next-kit-scan">
                 Next
@@ -119,13 +115,14 @@
         </div>
 
         <div class="step-holder step-hidden" id="step-3-wrapper">
-          <webc-template class="full-flex-column" data-view-model="@" template="kit-summary"></webc-template>
+          <webc-template template="shipment/shipment-scan-details" data-view-model="@"></webc-template>
+          <webc-template class="full-flex-column" template="kit-summary"></webc-template>
           <div class="row-wrapper button-wrapper">
             <button class="btn-reset" data-tag="scan:reset">
               <i class="fas fa-times"></i>
               Clear Scans
             </button>
-            <button class="btn-default" data-tag="scan:submit" disabled='@submitDisabled'>
+            <button class="btn-default" data-tag="scan:submit" disabled="@submitDisabled">
               <i class="fas fa-check"></i>
               Submit
             </button>

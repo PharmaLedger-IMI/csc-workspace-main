@@ -16,6 +16,7 @@ const ShipmentsController = cscServices.getController('ShipmentsController', ACT
 const ScanShipmentModalController = cscServices.getController('ScanShipmentModalController', ACTOR);
 const TabNavigatorController = cscServices.getController('TabNavigatorController', ACTOR);
 const KitsController = cscServices.getController('KitsController', ACTOR);
+const KitSummaryController = cscServices.getController('KitSummaryController', ACTOR);
 const ViewShipmentBaseController = cscServices.getController('ViewShipmentBaseController');
 
 addControllers({
@@ -32,5 +33,6 @@ addControllers({
 	ScanShipmentModalController,
 	TabNavigatorController,
 	KitsController,
+	KitSummaryController,
 	ViewShipmentBaseController
 });

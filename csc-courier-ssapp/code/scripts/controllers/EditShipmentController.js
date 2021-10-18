@@ -247,7 +247,6 @@ export default class EditShipmentController extends WebcController {
 		this.model.shipment = this.originalShipment;
     this.model.form.documents = [];
     this.model.wizard = this.getWizardForm();
-    console.log(JSON.parse(JSON.stringify(this.model)));
   }
 
   prepareShipmentData() {

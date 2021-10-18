@@ -169,7 +169,6 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
       orderModel: viewModelResolver('order'),
       shipmentModel: viewModelResolver('shipment')
     };
-    model.shipmentModel.isShipmentReceived = false;
     let { keySSI } = this.history.location.state;
     model.keySSI = keySSI;
 
@@ -183,6 +182,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     model.orderModel.order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
     model.orderModel.order = { ...this.transformOrderData(model.orderModel.order) };
+    model.kitsData = { kitsSSI: model.orderModel.order.kitsSSI || null, kitIdKeySSIEncrypted: model.orderModel.order.kitIdKeySSIEncrypted || null};
 
     model.documents = [];
     if (model.orderModel.order.documents) {
@@ -195,8 +195,6 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     if (model.shipmentModel.shipment.receivedDSUKeySSI) {
         const receivedDSU  = await this.shipmentService.getShipmentReceivedDSU(model.shipmentModel.shipment.receivedDSUKeySSI);
         model.shipmentModel = {...model.shipmentModel, ...JSON.parse(JSON.stringify(receivedDSU))};
-        model.shipmentModel.kits = await this.ordersService.getKitIds(model.shipmentModel.shipment.kitIdSSI);
-        model.shipmentModel.isShipmentReceived = true;
         }
 
     if(model.shipmentModel.shipment.shipmentDocuments){
