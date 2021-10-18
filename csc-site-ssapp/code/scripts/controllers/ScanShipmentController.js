@@ -6,6 +6,7 @@ const OrderService = cscServices.OrderService;
 const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
 const { shipment, Roles, Topics } = cscServices.constants;
+const KitsService = cscServices.KitsService;
 
 
 class ScanShipmentController extends WebcController {
@@ -16,6 +17,7 @@ class ScanShipmentController extends WebcController {
     let communicationService = CommunicationService.getInstance(Roles.Courier);
     this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
     this.orderService = new OrderService(this.DSUStorage, communicationService);
+    this.kitsService = new KitsService(this.DSUStorage);
     this.model = { shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;
     this.retrieveKitIds(this.originalShipment.kitIdSSI);
@@ -32,8 +34,13 @@ class ScanShipmentController extends WebcController {
 
   async retrieveKitIds(kitIdSSI) {
     this.model.shipmentModel.kitsAreAvailable = false;
-    this.model.shipmentModel.kits = await this.orderService.getKitIds(kitIdSSI);
+    this.model.shipmentModel.kits = await this.getKits(kitIdSSI);
     this.model.shipmentModel.kitsAreAvailable = true;
+  }
+
+  async getKits(kitIdSSI) {
+    const kitDSU = await this.kitsService.getKitsDSU(kitIdSSI);
+    return kitDSU;
   }
 
   addModelChangeHandlers() {
