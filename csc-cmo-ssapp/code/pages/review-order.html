@@ -5,8 +5,8 @@
       <webc-template template="dashboard-menu"></webc-template>
     </section>
 
-    <section class="order-section">
-      <div class="order-navigation-section">
+    <section class="header-section">
+      <div class="navigation-section">
         <span class="nav-back" data-tag='nav-back'>
           <svg viewBox="0 0 52 52" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
             <path
@@ -17,25 +17,25 @@
 	    <span data-tag='dashboard'>Dashboard</span> / <span data-tag='dashboard'>Orders</span> / <span data-tag='view-order'>{{@order.orderId}}</span> / <strong>Review Order</strong>
       </div>
 
-      <div class="order-main-section">
+      <div class="body-main-section">
         <div class="row-wrapper">
           <div class="col-4 text-left">
             <div data-if="@order.status_approved">
-              <div class="order-status-box background-approved" slot="true">
+              <div class="entity-status-box background-approved" slot="true">
                 <div>Order Status:</div>
                 <div><b>{{@order.status_value}}</b></div>
                 <div>{{@order.status_date}}</div>
               </div>
             </div>
             <div data-if="@order.status_cancelled">
-              <div class="order-status-box background-cancelled" slot="true">
+              <div class="entity-status-box background-cancelled" slot="true">
                 <div>Order Status:</div>
                 <div><b>{{@order.status_value}}</b></div>
                 <div>{{@order.status_date}}</div>
               </div>
             </div>
             <div data-if="@order.status_normal">
-              <div class="order-status-box background-primary" slot="true">
+              <div class="entity-status-box background-primary" slot="true">
                 <div>Order Status:</div>
                 <div><b>{{@order.status_value}}</b></div>
                 <div>{{@order.status_date}}</div>
@@ -44,9 +44,9 @@
           </div>
 
           <div class="col-4 text-center">
-            <div class="order-title"><b>Review Order</b></div>
-            <div class="order-subtitle"><b>Pending Action:</b></div>
-            <div class="order-disclaimer">{{@order.pending_action}}</div>
+            <div class="entity-title"><b>Review Order</b></div>
+            <div class="entity-subtitle"><b>Pending Action:</b></div>
+            <div class="entity-disclaimer">{{@order.pending_action}}</div>
           </div>
         </div>
 

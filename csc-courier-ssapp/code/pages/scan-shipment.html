@@ -5,8 +5,8 @@
       <webc-template template='dashboard-menu'></webc-template>
     </section>
 
-    <section class='order-section'>
-      <div class='order-navigation-section'>
+    <section class='header-section'>
+      <div class='navigation-section'>
         <span class='nav-back' data-tag='nav-back'>
           <svg viewBox='0 0 52 52' x='0px' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' y='0px'>
             <path
@@ -18,7 +18,7 @@
         data-tag='view-shipment'>{{@shipment.shipmentId}}</span> / <strong>Scan Shipment</strong>
       </div>
 
-      <div class='order-main-section'>
+      <div class='body-main-section'>
         <div class='row'>
           <p style='width: 100%;text-align: center;'>Please proceed to scanning process to change the shipment status to
             <b>"Received"</b></p>
@@ -141,7 +141,7 @@
                     <div class='col-4'>
                       <label>{{@shipmentModel.form.dimension.height.label}}</label>
                       <input class='form-control form-control-sm' readonly name='@shipmentModel.form.dimension.name'
-                             placeholder='@shipmentModel.form.dimension.placeholder' type='text'
+                             placeholder='@shipmentModel.form.dimension.height.placeholder' type='text'
                              value='@shipment.dimension.dimensionHeight' />
                     </div>
 

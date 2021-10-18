@@ -105,8 +105,13 @@ class ScanShipmentController extends WebcController {
       payload.shipmentReceivedDate = this.model.shipmentModel.form.receivedDate.value;
       payload.shipmentReceivedTime = this.model.shipmentModel.form.receivedTime.value;
       payload.signature = true;
+      let receivedComment = {
+          date: new Date().getTime(),
+          entity: Roles.Site,
+          comment: this.model.shipmentModel.form.add_comment.value
+      }
 
-      await this.shipmentService.createAndMountReceivedDSU(this.model.shipment.shipmentSSI, payload, this.model.shipmentModel.form.add_comment.value);
+      await this.shipmentService.createAndMountReceivedDSU(this.model.shipment.shipmentSSI, payload, receivedComment);
       eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
 
       this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', { tag: 'shipment', state: { keySSI: this.model.shipment.shipmentSSI } }, 2000);

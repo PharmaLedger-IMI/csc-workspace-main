@@ -5,8 +5,8 @@
       <webc-template template='dashboard-menu'></webc-template>
     </section>
 
-    <section class='order-section'>
-      <div class='order-navigation-section'>
+    <section class='header-section'>
+      <div class='navigation-section'>
         <span class='nav-back' data-tag='nav-back'>
 					<svg viewBox='0 0 52 52' x='0px'
                xml:space='preserve' xmlns='http://www.w3.org/2000/svg'
@@ -18,18 +18,18 @@
         <span data-tag='dashboard'>Shipments</span> / <strong>{{@shipmentModel.shipment.shipmentId}}</strong>
       </div>
 
-      <div class='order-main-section'>
+      <div class='body-main-section'>
         <div class='row-wrapper'>
           <div class='col-4 text-left'>
             <div data-if='@shipmentModel.shipment.status_approved'>
-              <div class='order-status-box background-approved'>
+              <div class='entity-status-box background-approved'>
                 <div>Shipment Status:</div>
                 <div><b>{{@shipmentModel.shipment.status_value}}</b></div>
                 <div>{{@shipmentModel.shipment.status_date}}</div>
               </div>
             </div>
             <div data-if='@shipmentModel.shipment.status_normal'>
-              <div class='order-status-box background-primary'>
+              <div class='entity-status-box background-primary'>
                 <div>Shipment Status:</div>
                 <div><b>{{@shipmentModel.shipment.status_value}}</b></div>
                 <div>{{@shipmentModel.shipment.status_date}}</div>
@@ -38,9 +38,9 @@
           </div>
 
           <div class='col-4 text-center'>
-            <div class='order-title'><b>Shipment</b></div>
-            <div class='order-subtitle'><b>Pending Action:</b></div>
-            <div class='order-disclaimer'>{{@shipmentModel.shipment.pending_action}}</div>
+            <div class='entity-title'><b>Shipment</b></div>
+            <div class='entity-subtitle'><b>Pending Action:</b></div>
+            <div class='entity-disclaimer'>{{@shipmentModel.shipment.pending_action}}</div>
           </div>
 
           <div class='col-4 text-right'>
@@ -67,7 +67,7 @@
           </div>
         </div>
 
-        <div class='row-wrapper order-data-section'>
+        <div class='row-wrapper entity-data-section'>
           <!-- Shipment Details -->
           <div class='accordion-item' data-tag='toggle-accordion'>
             <svg enable-background='new 0 0 200 200' class='accordion-icon' version='1.1' viewBox='0 0 200 200' x='0px' xml:space='preserve'
@@ -79,7 +79,7 @@
             <span>Shipment Details</span>
           </div>
           <div class='accordion-item-holder'>
-            <webc-template data-view-model='@shipmentModel' template='shipment/shipment-details'></webc-template>
+            <webc-template data-view-model='@' template='shipment/shipment-order-details'></webc-template>
           </div>
 
           <!-- Attached Documents -->
