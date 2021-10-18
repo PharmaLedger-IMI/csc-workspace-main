@@ -115,25 +115,8 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
   transformOrderData(data) {
     if (data) {
       data.delivery_date = this.getDateTime(data.deliveryDate);
-
-      data.documents = [];
-      if (data.sponsorDocuments) {
-        data.sponsorDocuments.forEach((doc) => {
-          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
-          data.documents.push(doc);
-        });
-      }
-
-      if (data.cmoDocuments) {
-        data.cmoDocuments.forEach((doc) => {
-          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
-          data.documents.push(doc);
-        });
-      }
-
       return data;
     }
-
     return {};
   }
 
