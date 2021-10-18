@@ -53,9 +53,12 @@
 
           <div data-if="@enableStep1Navigation">
             <div class="row-wrapper button-wrapper">
-              <button class="btn-default" data-tag="back-to-shipment-scan" disabled="@showCorrectShipmentScanResult" id="back-to-shipment-scan">
+              <button class="btn-default" data-tag="back-to-shipment-scan" disabled="@showCorrectShipmentScanResult">
                 <i class="fas fa-angle-left"></i>
                 Previous
+              </button>
+              <button class="btn-default scan-again-button" data-tag="scan-again-shipment"  disabled="@showCorrectShipmentScanResult" >
+                Scan Again
               </button>
               <button class="btn-default" data-tag="from_step_1_to_2" disabled="@showWrongShipmentScanResult" id="from_step_1_to_2">
                 Next
@@ -98,11 +101,16 @@
 
           <div data-if="@enableStep2Navigation">
             <div class="row-wrapper button-wrapper">
-              <button class="btn-default" data-tag="back-to-kit-scan" disabled="@showCorrectKitScanResult" id="back-to-kits-scan">
+              <button class="btn-default" data-tag="back-to-kit-scan" disabled="@showCorrectKitScanResult">
                 <i class="fas fa-angle-left"></i>
                 Previous
               </button>
-              <button class="btn-default" data-tag="next-kit-scan" disabled="@showWrongKitScanResult" id="next-kit-scan">
+
+              <button class="btn-default scan-again-button" data-tag="scan-again-kits" disabled="@showCorrectKitScanResult">
+                Scan Again
+              </button>
+
+              <button class="btn-default" data-tag="next-kit-scan" disabled="@showWrongKitScanResult">
                 Next
                 <i class="fas fa-angle-right"></i>
               </button>

@@ -72,7 +72,7 @@ const shipmentViewModel = {
 			value: ''
 		},
 		dimension: {
-			label: 'Dimension (m)',
+			label: 'Dimension (' + shipmentBusinessRequirements.dimensionUnit + ')',
 			height: {
 				label: 'Height',
 				name: 'height',
@@ -80,6 +80,7 @@ const shipmentViewModel = {
 				placeholder: 'Fill in the height',
 				disabled: false,
 				type: 'number',
+				min: '0.0001',
 				value: ''
 			},
 			length: {
@@ -89,6 +90,7 @@ const shipmentViewModel = {
 				placeholder: 'Fill in the length',
 				disabled: false,
 				type: 'number',
+				min: '0.0001',
 				value: ''
 			},
 			width: {
@@ -98,6 +100,7 @@ const shipmentViewModel = {
 				placeholder: 'Fill in the width',
 				disabled: false,
 				type: 'number',
+				min: '0.0001',
 				value: ''
 			}
 		},

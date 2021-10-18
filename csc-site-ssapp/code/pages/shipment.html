@@ -115,10 +115,10 @@
 						</svg>
 						<span>Kits</span>
 					</div>
-					<div class='accordion-item-holder' data-if='@shipmentModel.shipment.isShipmentReceived'>
+					<div class='accordion-item-holder' data-if='@shipmentModel.isShipmentReceived'>
 						<span class='py-3 text-muted' slot='false'>Shipment not received yet</span>
-<!--						<webc-template data-view-model='@shipmentModel.order' slot='true'-->
-<!--									   template='kit-summary'></webc-template>-->
+						<webc-template data-view-model='@shipmentModel.kits' slot='true'
+									   template='kit-summary'></webc-template>
 					</div>
 
 					<div class='row-wrapper button-wrapper'>
@@ -129,6 +129,14 @@
 							</button>
 						</div>
 					</div>
+
+
+					<button class='btn-default' data-tag='add-study-kit'>
+						<span class='fas fa-icon fa-qrcode'></span>
+						Add STUDY KIT
+					</button>
+
+
 				</div>
 			</div>
 		</section>

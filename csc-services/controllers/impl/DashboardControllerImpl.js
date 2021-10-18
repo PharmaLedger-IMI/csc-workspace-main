@@ -260,8 +260,8 @@ class DashboardControllerImpl extends WebcController {
 			case shipmentStatusesEnum.Received: {
 				notificationRole = Roles.Site;
 				const messageData = data.message.data;
-				const { shipmentSSI } = messageData;
-				shipmentData = await this.shipmentService.updateShipmentDB(shipmentSSI);
+				const { receivedShipmentSSI, shipmentSSI } = messageData;
+				shipmentData = await this.shipmentService.mountShipmentReceivedDSU(shipmentSSI, receivedShipmentSSI);
 				break;
 			}
 			case shipmentsEventsEnum.InTransitNewComment: {
