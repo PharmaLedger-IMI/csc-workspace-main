@@ -1,12 +1,43 @@
 // eslint-disable-next-line no-undef
+const cscServices = require('csc-services');
 const { WebcController } = WebCardinal.controllers;
+const momentService = cscServices.momentService;
 
 class TableTemplateControllerImpl extends WebcController {
   constructor(role, ...props) {
     super(...props);
     this.role = role;
     this.attachEvents();
+    let sortingDatesFnAsc = this.sortingDatesFn('asc');
+    let sortingDatesFnDesc = this.sortingDatesFn('desc');
+    this.model.data = this.sortDataByLastModification(this.model.data, 'lastModified' , sortingDatesFnDesc);
     this.init();
+  }
+
+  sortingDatesFn(type){
+    return ( a, b ) => {
+
+      const compA = momentService(a).valueOf();
+      const compB = momentService(b).valueOf();
+
+      switch(type){
+        case('asc') :
+          return compA < compB ? 1 : -1;
+        case('desc') :
+          return compA > compB ? 1 : -1;
+      }
+    }
+  }
+
+  sortDataByLastModification( data , prop , sortingDatesFn ){
+    if(data){
+      if(data[0]){
+        if(data[0].hasOwnProperty(prop)){
+          data = data.sort(sortingDatesFn);
+        }
+      }
+    }
+    return data;
   }
 
   async init() {
