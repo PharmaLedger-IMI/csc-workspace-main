@@ -100,7 +100,6 @@ export default class EditShipmentController extends WebcController {
 
     this.onTagClick('form_submit', () => {
       this.shipmentData = this.prepareShipmentData();
-
       if (!this.shipmentData) {
         this.showErrorModal("Please fill-in bill number, HS code and mandatory documents!", "Invalid form", () => {}, () => {}, {
           disableCancelButton: true,
@@ -258,7 +257,7 @@ export default class EditShipmentController extends WebcController {
       comment: this.model.form.add_comment.value,
       date: new Date().getTime(),
     };
-    if (billNumber.value === '' || hsCode.value === '' || documents.length === 0) {
+    if (billNumber.value === '' || hsCode.value === '') {
       return null;
     }
 
