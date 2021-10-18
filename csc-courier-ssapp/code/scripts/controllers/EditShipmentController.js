@@ -13,7 +13,7 @@ export default class EditShipmentController extends WebcController {
   constructor(...props) {
     super(...props);
 
-	this.originalShipment = this.history.location.state.shipment;
+	  this.originalShipment = this.history.location.state.shipment;
     let communicationService = CommunicationService.getInstance(Roles.Courier);
     this.shipmentsService = new ShipmentService(this.DSUStorage, communicationService);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
@@ -131,10 +131,11 @@ export default class EditShipmentController extends WebcController {
   }
 
   async onSubmitYesResponse() {
+    window.WebCardinal.loader.hidden = false;
     let billingData = {...this.shipmentData.bill};
     let {keySSI}  = this.model.shipment;
     await this.shipmentsService.createAndMountShipmentTransitOtherDSUs(keySSI, billingData, this.shipmentData.documents, this.shipmentData.editComment);
-
+    window.WebCardinal.loader.hidden = true;
     this.showErrorModalAndRedirect('Shipment Edited, redirecting to dashboard...', 'Shipment Edit', {
       tag: 'shipment',
       state: { keySSI: keySSI }
@@ -180,10 +181,8 @@ export default class EditShipmentController extends WebcController {
     switch (validateStep) {
       case "shipmentDetails":
          return ((this.model.form.billNumber.value !== "") && ( this.model.form.hsCode.value !== ""));
-        break;
       case "submit":
         return ((this.model.form.billNumber.value !== "") && ( this.model.form.hsCode.value !== ""));
-        break;
     }
 
   }
