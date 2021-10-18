@@ -106,7 +106,7 @@ export default class EditShipmentController extends WebcController {
       this.showModal(content, title, confirmHandler, () => {}, modalOptions);
     });
     this.onTagClick('form_submit', () => {
-      this.shipmentData = this.prepareShipmentData();
+
 
       if (!this.isFormValidated("submit")) {
         return this.showErrorModal("Please fill-in bill number, HS code and mandatory documents!", "Invalid form", () => {}, () => {}, {
@@ -114,6 +114,8 @@ export default class EditShipmentController extends WebcController {
           confirmButtonText: 'Close',
         });
       }
+
+      this.shipmentData = this.prepareShipmentData();
 
       let title = 'Submit edit';
       let content = 'Are you sure you want to submit the edit?';
@@ -289,9 +291,6 @@ export default class EditShipmentController extends WebcController {
       comment: this.model.form.add_comment.value,
       date: new Date().getTime(),
     };
-    if (billNumber.value === '' || hsCode.value === '') {
-      return null;
-    }
 
     return {
       bill: { billNumber: billNumber.value, hsCode: hsCode.value },
