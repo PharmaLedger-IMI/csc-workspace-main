@@ -16,19 +16,21 @@ const SingleShipmentController = cscServices.getController('SingleShipmentContro
 const ShipmentsController = cscServices.getController('ShipmentsController', ACTOR);
 const ScanShipmentModalController = cscServices.getController('ScanShipmentModalController', ACTOR);
 const TabNavigatorController = cscServices.getController('TabNavigatorController', ACTOR);
+const KitSummaryController = cscServices.getController('KitSummaryController', ACTOR);
 
 addControllers({
-	TableTemplateController,
-	SingleOrderController,
-	HistoryModalController,
-	HeaderController,
-	NotificationsController,
-	DashboardMenuController,
-	DashboardController,
-	OrdersController,
-	ReviewOrderController,
-	SingleShipmentController,
-	ShipmentsController,
-	ScanShipmentModalController,
-	TabNavigatorController
+  TableTemplateController,
+  SingleOrderController,
+  HistoryModalController,
+  HeaderController,
+  NotificationsController,
+  DashboardMenuController,
+  DashboardController,
+  OrdersController,
+  ReviewOrderController,
+  SingleShipmentController,
+  ShipmentsController,
+  ScanShipmentModalController,
+  TabNavigatorController,
+  KitSummaryController,
 });

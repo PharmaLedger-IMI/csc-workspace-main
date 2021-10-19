@@ -129,7 +129,6 @@ class OrdersService extends DSUService {
         sponsorDocumentsKeySSI: sponsorDocuments.uid,
         cmoDocumentsKeySSI: cmoDocumentsDsu.uid,
         kitsSSI: kits.uid,
-        kits: kits.kitIds,
         kitsFilename: kits.file.name,
         commentsKeySSI: comments.uid,
       },
@@ -288,7 +287,6 @@ class OrdersService extends DSUService {
             sponsorDocumentsKeySSI: sponsorDocuments.uid,
             cmoDocumentsKeySSI: cmoDocuments.uid,
             kitsSSI: kits.uid,
-            kits: kits.kitIds,
             kitsFilename: kits.file.name,
             commentsKeySSI: comments.uid,
           },
@@ -374,10 +372,6 @@ class OrdersService extends DSUService {
     }
 
     return result;
-  }
-
-  async getKitIds(kitIdsSSI){
-    return await this.getEntityAsync(kitIdsSSI,FoldersEnum.Kits);
   }
 }
 
