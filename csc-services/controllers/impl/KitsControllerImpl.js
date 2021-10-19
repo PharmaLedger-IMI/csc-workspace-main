@@ -32,8 +32,8 @@ class KitsControllerImpl extends WebcController {
 	async getKits() {
 		try {
 			this.model.kitsListIsReady = false;
-			const kitsTemp = await this.kitsService.getOrderKits(this.model.studyId, this.model.orderId);
-			this.kits = this.transformData(kitsTemp);
+			const orderKits = await this.kitsService.getOrderKits(this.model.studyId, this.model.orderId);
+			this.kits = this.transformData(orderKits);
 			console.log("kits:", JSON.stringify(this.kits,null, 2));
 			this.setKitsModel(this.kits);
 			this.model.kitsListIsReady = true;
@@ -83,7 +83,7 @@ class KitsControllerImpl extends WebcController {
 
 	async viewKitHandler() {
 		this.onTagClick('view-kit', async (model) => {
-			// TODO: view kit
+			console.log("Kit Details",await this.kitsService.getKitDetails(model.keySSI));
 		});
 	}
 

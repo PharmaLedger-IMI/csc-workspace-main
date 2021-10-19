@@ -1,7 +1,6 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
 const ShipmentsService = require('./ShipmentsService.js');
-const EncryptionService = require('./lib/EncryptionService.js');
 const { FoldersEnum, kit } = require('./constants');
 const { kitsStatusesEnum } = kit;
 
@@ -81,8 +80,25 @@ class KitsService extends DSUService {
     return kits;
   }
 
-  getKitDetails(kitSSI){
+  async getKitDetails(kitSSI) {
+    const kitDetails = await this.getKitsDSU(kitSSI);
+    const shipments = await this.shipmentsService.getShipments();
+    const shipment = shipments.find((shipment) => {
+      return shipment.shipmentId === kitDetails.shipmentId;
+    });
 
+    const orderDsu = await this.getEntityAsync(shipment.orderSSI, FoldersEnum.Orders);
+    const shipmentComments = await this.getEntityAsync(shipment.shipmentComments, FoldersEnum.ShipmentComments);
+    const shipmentReceivedDsu = await this.getEntityAsync(shipment.receivedDSUKeySSI, FoldersEnum.ShipmentReceived);
+
+    kitDetails.studyId = orderDsu.studyId;
+    kitDetails.recipientName = shipment.recipientName;
+    kitDetails.temperatures = orderDsu.temperatures;
+    kitDetails.temperatureComments = orderDsu.temperature_comments;
+    kitDetails.shipmentComments = shipmentComments.comments;
+    kitDetails.shipmentActualTemperature = shipmentReceivedDsu.shipmentActualTemperature;
+    kitDetails.receivedDateTime = shipmentReceivedDsu.receivedDateTime;
+    return kitDetails;
   }
 }
 
