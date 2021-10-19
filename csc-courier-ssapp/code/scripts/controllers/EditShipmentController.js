@@ -13,7 +13,7 @@ export default class EditShipmentController extends WebcController {
   constructor(...props) {
     super(...props);
 
-	this.originalShipment = this.history.location.state.shipment;
+	  this.originalShipment = this.history.location.state.shipment;
     let communicationService = CommunicationService.getInstance(Roles.Courier);
     this.shipmentsService = new ShipmentService(this.DSUStorage, communicationService);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
@@ -106,16 +106,16 @@ export default class EditShipmentController extends WebcController {
       this.showModal(content, title, confirmHandler, () => {}, modalOptions);
     });
     this.onTagClick('form_submit', () => {
-      this.shipmentData = this.prepareShipmentData();
 
 
       if (!this.isFormValidated("submit")) {
         return this.showErrorModal("Please fill-in bill number, HS code and mandatory documents!", "Invalid form", () => {}, () => {}, {
           disableCancelButton: true,
           confirmButtonText: 'Close',
-
         });
       }
+
+      this.shipmentData = this.prepareShipmentData();
 
       let title = 'Submit edit';
       let content = 'Are you sure you want to submit the edit?';
@@ -131,10 +131,11 @@ export default class EditShipmentController extends WebcController {
   }
 
   async onSubmitYesResponse() {
+    window.WebCardinal.loader.hidden = false;
     let billingData = {...this.shipmentData.bill};
     let {keySSI}  = this.model.shipment;
     await this.shipmentsService.createAndMountShipmentTransitOtherDSUs(keySSI, billingData, this.shipmentData.documents, this.shipmentData.editComment);
-
+    window.WebCardinal.loader.hidden = true;
     this.showErrorModalAndRedirect('Shipment Edited, redirecting to dashboard...', 'Shipment Edit', {
       tag: 'shipment',
       state: { keySSI: keySSI }
@@ -180,10 +181,8 @@ export default class EditShipmentController extends WebcController {
     switch (validateStep) {
       case "shipmentDetails":
          return ((this.model.form.billNumber.value !== "") && ( this.model.form.hsCode.value !== ""));
-        break;
       case "submit":
         return ((this.model.form.billNumber.value !== "") && ( this.model.form.hsCode.value !== ""));
-        break;
     }
 
   }
@@ -280,7 +279,6 @@ export default class EditShipmentController extends WebcController {
 	this.model.shipment = this.originalShipment;
     this.model.form.documents = [];
     this.model.wizard = this.getWizardForm();
-    console.log(JSON.parse(JSON.stringify(this.model)));
   }
 
   prepareShipmentData() {
@@ -291,9 +289,6 @@ export default class EditShipmentController extends WebcController {
       comment: this.model.form.add_comment.value,
       date: new Date().getTime(),
     };
-    if (billNumber.value === '' || hsCode.value === '' || documents.length === 0) {
-      return null;
-    }
 
     return {
       bill: { billNumber: billNumber.value, hsCode: hsCode.value },
