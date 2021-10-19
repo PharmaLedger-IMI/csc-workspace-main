@@ -206,6 +206,8 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     if (model.shipmentModel.shipment.receivedDSUKeySSI) {
       const receivedDSU = await this.shipmentService.getShipmentReceivedDSU(model.shipmentModel.shipment.receivedDSUKeySSI);
       model.shipmentModel = { ...model.shipmentModel, ...JSON.parse(JSON.stringify(receivedDSU)) };
+      model.shipmentModel.receivedDate = momentService(model.shipmentModel.receivedDateTime).format(Commons.YMDDateTimeFormatPattern);
+      model.shipmentModel.receivedTime = momentService(model.shipmentModel.receivedDateTime).format(Commons.HourFormatPattern);
       //TODO check this again if is needed after implementation of #378
       if (this.role === Roles.Site) {
         model.shipmentModel.kits = await this.kitsService.getKitsDSU(model.shipmentModel.shipment.kitIdSSI);

@@ -74,13 +74,13 @@
 <div data-if='@shipmentModel.shipment.contextualContent.afterReceived'>
 	<div class='grid-column-wrapper'>
 		<label>Shipment Actual temperature observed</label>
-		<input class="form-control" value="@shipmentActualTemperature" readonly='readonly' />
+		<input class="form-control" value="@shipmentModel.shipmentActualTemperature" readonly='readonly' />
 		<label>{{@shipmentModel.form.receivedDate.label}}</label>
 		<div>
-			<input class='form-control form-control-sm' readonly='readonly'
-				   value='@shipmentReceivedDate' />
-			<input class='form-control form-control-sm' readonly='readonly'
-				   value='@shipmentReceivedTime' />
+			<input class='form-control form-control-sm' readonly='readonly' type='date'
+				   value='@shipmentModel.receivedDate' />
+			<input class='form-control form-control-sm' readonly='readonly' type='time'
+				   value='@shipmentModel.receivedTime' />
 		</div>
 	</div>
 </div>
