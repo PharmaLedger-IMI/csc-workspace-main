@@ -18,10 +18,7 @@ class KitsService extends DSUService {
     this.DSUStorage = DSUStorage;
   }
 
-  async getKitsDSU(kitsKeySSI, isEncrypted = false) {
-    if (isEncrypted) {
-      kitsKeySSI = await EncryptionService.decryptData(kitsKeySSI);
-    }
+  async getKitsDSU(kitsKeySSI) {
     const kitsDataDsu = await this.getEntityAsync(kitsKeySSI, FoldersEnum.Kits);
     return kitsDataDsu;
   }

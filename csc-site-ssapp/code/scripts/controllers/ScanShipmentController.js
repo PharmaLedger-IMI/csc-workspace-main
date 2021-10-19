@@ -36,6 +36,7 @@ class ScanShipmentController extends WebcController {
     this.model.shipmentModel.kitsAreAvailable = false;
     this.model.shipmentModel.kits = await this.getKits(kitIdSSI);
     this.model.shipmentModel.kitsAreAvailable = true;
+    this.model.kitsData = { kitsSSI: kitIdSSI};
   }
 
   async getKits(kitIdSSI) {
@@ -126,7 +127,7 @@ class ScanShipmentController extends WebcController {
       let order = await this.orderService.getOrder(this.model.shipment.orderSSI);
       let {studyId, orderId}  = order;
       let shipmentId = this.model.shipment.shipmentId;
-      let kits = await this.orderService.getKitIds(this.model.shipment.kitIdSSI);
+      let kits = await this.kitsService.getKitsDSU(this.model.shipment.kitIdSSI);
       await this.kitsService.updateStudyKitsDSU(studyId,{orderId,shipmentId},kits.kitIds,(err, progress)=>{
         //consume progress
         console.log(progress);

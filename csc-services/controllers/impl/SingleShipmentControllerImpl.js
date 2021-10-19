@@ -1,6 +1,7 @@
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
+const KitsService = cscServices.KitsService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
@@ -25,6 +26,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     this.notificationsService = new NotificationsService(this.DSUStorage);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
+    this.kitsService = new KitsService(this.DSUStorage, communicationService);
 
     this.initViewModel();
     this.attachEventListeners();
@@ -182,8 +184,17 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     model.orderModel.order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
     model.orderModel.order = { ...this.transformOrderData(model.orderModel.order) };
-    model.kitsData = { kitsSSI: model.orderModel.order.kitsSSI || null, kitIdKeySSIEncrypted: model.orderModel.order.kitIdKeySSIEncrypted || null};
 
+    //SPONSOR, CMO, has kitsIDSSI in the order, SITE has it in shipment
+    let kitsSSI;
+    if(this.role === Roles.Site){
+      kitsSSI = model.shipmentModel.shipment.kitIdSSI;
+    }
+    else{
+      kitsSSI = model.orderModel.order.kitsSSI
+    }
+
+    model.kitsData = { kitsSSI: kitsSSI};
     model.documents = [];
     if (model.orderModel.order.documents) {
       model.documents = model.documents.concat(model.orderModel.order.documents);
@@ -197,7 +208,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
       model.shipmentModel = { ...model.shipmentModel, ...JSON.parse(JSON.stringify(receivedDSU)) };
       //TODO check this again if is needed after implementation of #378
       if (this.role === Roles.Site) {
-        model.shipmentModel.kits = await this.ordersService.getKitIds(model.shipmentModel.shipment.kitIdSSI);
+        model.shipmentModel.kits = await this.kitsService.getKitsDSU(model.shipmentModel.shipment.kitIdSSI);
         model.shipmentModel.isShipmentReceived = true;
       }
     }

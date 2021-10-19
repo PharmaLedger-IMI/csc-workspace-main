@@ -22,7 +22,7 @@ class KitSummaryControllerImpl extends WebcController {
     this.onTagClick('download-kits-file', async (model) => {
       window.WebCardinal.loader.hidden = false;
       const fileName = model.file.name;
-      const { keySSI, isEncrypted } = this.getKitsSSI();
+      const keySSI  = this.model.kitsSSI;
       const path = FoldersEnum.Kits + '/' + keySSI + '/' + 'files';
       await this.fileDownloaderService.prepareDownloadFromDsu(path, fileName);
       this.fileDownloaderService.downloadFileToDevice(fileName);
@@ -31,17 +31,11 @@ class KitSummaryControllerImpl extends WebcController {
   }
 
   async getKits() {
-    const { keySSI, isEncrypted } = this.getKitsSSI();
-    const kits = await this.kitsService.getKitsDSU(keySSI, isEncrypted);
+    const keySSI = this.model.kitsSSI;
+    const kits = await this.kitsService.getKitsDSU(keySSI);
     this.model = { ...JSON.parse(JSON.stringify(this.model)), ...kits };
     this.model.kitsLoaded = true;
     this.model = JSON.parse(JSON.stringify(this.model));
-  }
-
-  getKitsSSI() {
-    const isEncrypted = this.model.kitsSSI ? false : true;
-    const keySSI = isEncrypted ? this.model.kitIdKeySSIEncrypted : this.model.kitsSSI;
-    return { keySSI, isEncrypted };
   }
 }
 
