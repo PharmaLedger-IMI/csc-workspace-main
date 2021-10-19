@@ -98,14 +98,14 @@ class ScanShipmentController extends WebcController {
   }
 
   async sign() {
-      let payload = {};
+      let payload = {
+            receivedDateTime: new Date().getTime()
+      };
       let {keySSI}  = this.model.shipment.shipmentSSI;
       this.model.disableSign = true;
       window.WebCardinal.loader.hidden = false;
       payload.shipmentId = this.model.shipment.shipmentId;
       payload.shipmentActualTemperature = this.model.shipmentModel.form.temperature.value;
-      payload.shipmentReceivedDate = this.model.shipmentModel.form.receivedDate.value;
-      payload.shipmentReceivedTime = this.model.shipmentModel.form.receivedTime.value;
       payload.signature = true;
       let receivedComment = {
           date: new Date().getTime(),

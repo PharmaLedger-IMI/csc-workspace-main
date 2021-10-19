@@ -78,10 +78,10 @@
 		<input class="form-control" value="@shipmentActualTemperature" readonly='readonly' />
 		<label>{{@form.receivedDate.label}}</label>
 		<div>
-			<input class='form-control form-control-sm' readonly='readonly'
-				   value='@shipmentReceivedDate' />
-			<input class='form-control form-control-sm' readonly='readonly'
-				   value='@shipmentReceivedTime' />
+			<input class='form-control form-control-sm' readonly='readonly' type='date'
+				   value='@receivedDate' />
+			<input class='form-control form-control-sm' readonly='readonly' type='time'
+				   value='@receivedTime' />
 		</div>
 	</div>
 </div>
