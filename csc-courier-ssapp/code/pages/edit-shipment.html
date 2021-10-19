@@ -20,19 +20,19 @@
       <div class="body-main-section">
         <div class="stepper-container">
           <!--First Step -->
-          <div class="step-element step-active" data-tag="step-1" id="step-1">1 - Shipment Details</div>
+          <div class="step-element step-active" data-tag="step-1" id="step-1" step-inactive='@formValidation.shipmentDetailsDisabled'>1 - Shipment Details</div>
           <!-- Line -->
           <div class="step-break-line"></div>
           <!--Second Step -->
-          <div class="step-element" data-tag="step-2" id="step-2">2 - Add Documents</div>
+          <div class="step-element" data-tag="step-2" id="step-2" step-inactive='@formValidation.shipmentDetailsDisabled'>2 - Add Documents</div>
           <!-- Line -->
           <div class="step-break-line"></div>
           <!--Third Step -->
-          <div class="step-element" data-tag="step-3" id="step-3">3 - Comments</div>
+          <div class="step-element" data-tag="step-3" id="step-3" step-inactive='@formValidation.shipmentDetailsDisabled'>3 - Comments</div>
           <!-- Line -->
           <div class="step-break-line"></div>
           <!--Fourth Step -->
-          <div class="step-element" data-tag="step-4" id="step-4">4 - Confirm</div>
+          <div class="step-element" data-tag="step-4" id="step-4" step-inactive='@formValidation.shipmentDetailsDisabled'>4 - Confirm</div>
         </div>
 
         <div class="step-holder-modal" id="step-1-wrapper">
