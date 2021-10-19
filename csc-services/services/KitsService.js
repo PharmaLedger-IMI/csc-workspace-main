@@ -55,7 +55,9 @@ class KitsService extends DSUService {
     for (let i = 0; i < kitIds.length; i++) {
       const data = {
         kitId: kitIds[i].kitId,
-        status: kitsStatusesEnum.Received,
+        status: [{status:kitsStatusesEnum.Received, date:Date.now()}],
+        orderId: kitsDSUData.orderId,
+        shipmentId: kitsDSUData.shipmentId,
       };
       const kitDSU = await this.saveEntityAsync(data, FoldersEnum.Kits);
       studyKitsDSU.kits.push({
@@ -77,6 +79,10 @@ class KitsService extends DSUService {
       return kit.orderId === orderId;
     });
     return kits;
+  }
+
+  getKitDetails(kitSSI){
+
   }
 }
 
