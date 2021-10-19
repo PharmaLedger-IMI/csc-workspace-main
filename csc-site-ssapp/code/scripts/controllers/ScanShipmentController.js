@@ -3,10 +3,10 @@ const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentService = cscServices.ShipmentService;
 const OrderService = cscServices.OrderService;
+const KitsService = cscServices.KitsService;
 const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
-const { shipment, Roles, Topics } = cscServices.constants;
-const KitsService = cscServices.KitsService;
+const { Roles, Topics } = cscServices.constants;
 
 
 class ScanShipmentController extends WebcController {
@@ -17,7 +17,7 @@ class ScanShipmentController extends WebcController {
     let communicationService = CommunicationService.getInstance(Roles.Courier);
     this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
     this.orderService = new OrderService(this.DSUStorage, communicationService);
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.kitsService = new KitsService(this.DSUStorage, communicationService);
     this.model = { shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;
     this.retrieveKitIds(this.originalShipment.kitIdSSI);
@@ -120,6 +120,18 @@ class ScanShipmentController extends WebcController {
 
       await this.shipmentService.createAndMountReceivedDSU(this.model.shipment.shipmentSSI, payload, receivedComment);
       eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
+
+
+      //TODO: add UI loader here:issue #437
+      let order = await this.orderService.getOrder(this.model.shipment.orderSSI);
+      let {studyId, orderId}  = order;
+      let shipmentId = this.model.shipment.shipmentId;
+      let kits = await this.orderService.getKitIds(this.model.shipment.kitIdSSI);
+      await this.kitsService.updateStudyKitsDSU(studyId,{orderId,shipmentId},kits.kitIds,(err, progress)=>{
+        //consume progress
+        console.log(progress);
+      })
+
 
       this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', { tag: 'shipment', state: { keySSI: this.model.shipment.shipmentSSI } }, 2000);
       window.WebCardinal.loader.hidden = true;
