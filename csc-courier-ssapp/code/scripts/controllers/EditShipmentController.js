@@ -13,14 +13,23 @@ export default class EditShipmentController extends WebcController {
   constructor(...props) {
     super(...props);
 
-		this.originalShipment = this.history.location.state.shipment;
+	  this.originalShipment = this.history.location.state.shipment;
     let communicationService = CommunicationService.getInstance(Roles.Courier);
     this.shipmentsService = new ShipmentService(this.DSUStorage, communicationService);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
 
     this.role = this.history.location.state.role;
-    this.attachEventHandlers();
     this.initViewModel();
+    this.initFormValidation();
+    this.attachEventHandlers();
+  }
+
+  initFormValidation(){
+    // For form validation
+    this.model.formValidation = {
+      shipmentDetailsDisabled: true,
+      submitDisabled: true
+    };
   }
 
   attachEventHandlers() {
@@ -29,6 +38,7 @@ export default class EditShipmentController extends WebcController {
     this.addFileHandler();
     this.attachFormActions();
   }
+
 
   addFileHandler() {
     this.on('add-file', (event) => {
@@ -49,7 +59,6 @@ export default class EditShipmentController extends WebcController {
         });
       }
     });
-
     this.onTagClick('remove-file', (document) => {
       if (document.canRemove === true) {
         const fileIdx = this.files.findIndex((x) => x.uuid === document.uuid);
@@ -59,7 +68,6 @@ export default class EditShipmentController extends WebcController {
         this.model.form.documents.splice(idx, 1);
       }
     });
-
     this.onTagClick('download-file', async (model, target, event) => {
       const uuid = target.getAttribute('data-custom') || null;
       if (uuid) {
@@ -97,17 +105,17 @@ export default class EditShipmentController extends WebcController {
 
       this.showModal(content, title, confirmHandler, () => {}, modalOptions);
     });
-
     this.onTagClick('form_submit', () => {
-      this.shipmentData = this.prepareShipmentData();
 
-      if (!this.shipmentData) {
-        this.showErrorModal("Please fill-in bill number, HS code and mandatory documents!", "Invalid form", () => {}, () => {}, {
+
+      if (!this.isFormValidated("submit")) {
+        return this.showErrorModal("Please fill-in bill number, HS code and mandatory documents!", "Invalid form", () => {}, () => {}, {
           disableCancelButton: true,
           confirmButtonText: 'Close',
         });
-        return;
       }
+
+      this.shipmentData = this.prepareShipmentData();
 
       let title = 'Submit edit';
       let content = 'Are you sure you want to submit the edit?';
@@ -123,10 +131,11 @@ export default class EditShipmentController extends WebcController {
   }
 
   async onSubmitYesResponse() {
+    window.WebCardinal.loader.hidden = false;
     let billingData = {...this.shipmentData.bill};
     let {keySSI}  = this.model.shipment;
     await this.shipmentsService.createAndMountShipmentTransitOtherDSUs(keySSI, billingData, this.shipmentData.documents, this.shipmentData.editComment);
-
+    window.WebCardinal.loader.hidden = true;
     this.showErrorModalAndRedirect('Shipment Edited, redirecting to dashboard...', 'Shipment Edit', {
       tag: 'shipment',
       state: { keySSI: keySSI }
@@ -153,6 +162,29 @@ export default class EditShipmentController extends WebcController {
         });
       }
     });
+
+    // When Bill Number Changes
+    this.model.onChange("form.billNumber.value", () => {
+      // Disable Shipment Details if the form is invalid
+      this.model.formValidation.shipmentDetailsDisabled = !this.isFormValidated("shipmentDetails");
+    });
+
+    // When Bill Number Changes
+    this.model.onChange("form.hsCode.value", () => {
+      // Disable Shipment Details if the form is invalid
+      this.model.formValidation.shipmentDetailsDisabled = !this.isFormValidated("shipmentDetails");
+    });
+  }
+
+  // Here you can validate the form by step or in the final submit
+  isFormValidated( validateStep ){
+    switch (validateStep) {
+      case "shipmentDetails":
+         return ((this.model.form.billNumber.value !== "") && ( this.model.form.hsCode.value !== ""));
+      case "submit":
+        return ((this.model.form.billNumber.value !== "") && ( this.model.form.hsCode.value !== ""));
+    }
+
   }
 
   makeStepActive(stepId, stepHolderId) {
@@ -244,7 +276,7 @@ export default class EditShipmentController extends WebcController {
     // TODO: where are the comments?
     this.model.allComments = JSON.parse(JSON.stringify([]));
     // this.model.shipment = await this.shipmentsService.getShipment(this.model.keySSI);
-		this.model.shipment = this.originalShipment;
+	this.model.shipment = this.originalShipment;
     this.model.form.documents = [];
     this.model.wizard = this.getWizardForm();
     console.log(JSON.parse(JSON.stringify(this.model)));
@@ -258,9 +290,6 @@ export default class EditShipmentController extends WebcController {
       comment: this.model.form.add_comment.value,
       date: new Date().getTime(),
     };
-    if (billNumber.value === '' || hsCode.value === '' || documents.length === 0) {
-      return null;
-    }
 
     return {
       bill: { billNumber: billNumber.value, hsCode: hsCode.value },
