@@ -1,53 +1,45 @@
-<div class="grid-column-wrapper">
-    <!-- Sponsor ID -->
-    <label>Sponsor ID:</label>
-    <input class="form-control form-control-sm" readonly="readonly" type="text" value="@sponsorId"/>
-
-    <!-- Study ID -->
-    <label>Study ID:</label>
-    <input class="form-control form-control-sm" readonly="readonly" type="text" value="@studyId"/>
-
-    <!-- <label>Medication List Version:</label>
-    <input class="form-control form-control-sm" disabled type="text" value="@medicationListVersion" /> -->
-
-    <!-- Kit ID List -->
-    <label>Kit ID List (.csv):</label>
-    <div>
-        <input class="form-control form-control-sm" readonly="readonly" value="@kitsFilename"/>
+<webc-container controller="KitSummaryController" data-view-model="@kitsData">
+  <div data-if="@kitsLoaded">
+    <div class="grid-column-wrapper">
+      <!-- Kit ID List -->
+      <label>Kit ID List (.csv):</label>
+      <div>
+        <input class="form-control form-control-sm" readonly="readonly" value="@file.name" />
         <button class="btn-download-small" data-custom="@kitsFilename" data-tag="download-kits-file">
-            <svg version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
-                 y="0px">
-                <path d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
-                        c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
-                        c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
-                        c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"/>
-            </svg>
+          <svg version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
+            <path
+              d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
+                            c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
+                            c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
+                            c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"
+            />
+          </svg>
         </button>
-    </div>
+      </div>
 
-    <!-- Quantity -->
-    <label>Quantity:</label>
-    <div>
-        <input class="form-control form-control-sm" readonly="readonly" type="text" value="@kits.length"/>
+      <!-- Quantity -->
+      <label>Quantity:</label>
+      <div>
+        <input class="form-control form-control-sm" readonly="readonly" type="text" value="@kitIds.length" />
         <label> Kits </label>
+      </div>
     </div>
-</div>
 
-<div class="responsive-table kits-table-wrapper">
-    <table class="table table-borderless kits-table">
+    <div class="responsive-table kits-table-wrapper">
+      <table class="table table-borderless kits-table">
         <thead>
-        <tr>
+          <tr>
             <th>Kit number</th>
             <th>Kit ID</th>
-        </tr>
+          </tr>
         </thead>
-        <tbody data-for="@kits">
-        <tr>
+        <tbody data-for="@kitIds">
+          <tr>
             <td>{{@kitNumber}}</td>
             <td>{{@kitId}}</td>
-        </tr>
+          </tr>
         </tbody>
-    </table>
-</div>
-
-  
+      </table>
+    </div>
+  </div>
+</webc-container>

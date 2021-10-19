@@ -4,6 +4,7 @@ const cscServices = require('csc-services');
 const FileDownloaderService = cscServices.FileDownloaderService;
 const ShipmentsService = cscServices.ShipmentService;
 const { Roles, FoldersEnum, Topics } = cscServices.constants;
+const KitsService = cscServices.KitsService;
 
 export default class ScanShipmentController extends WebcController {
   constructor(...props) {
@@ -13,8 +14,12 @@ export default class ScanShipmentController extends WebcController {
     this.model.submitDisabled = false;
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     this.shipmentsService = new ShipmentsService(this.DSUStorage);
+    this.kitsService = new KitsService(this.DSUStorage);
+    this.init();
+  }
 
-    this.initScanViewModel();
+  async init() {
+    await this.initScanViewModel();
     this.attachEventListeners();
     this.handleOnChange = true;
   }
@@ -126,8 +131,8 @@ export default class ScanShipmentController extends WebcController {
   }
 
   attachFormActions() {
-    this.onTagClick('scan:reset', (model, target, e) => {
-      this.initScanViewModel();
+    this.onTagClick('scan:reset', async (model, target, e) => {
+      await this.initScanViewModel();
       this.makeStepActive('step-1', 'step-1-wrapper', e);
       this.handleOnChange = false;
     });
@@ -225,14 +230,15 @@ export default class ScanShipmentController extends WebcController {
     });
   }
 
-  initScanViewModel() {
+  async initScanViewModel() {
+    await this.getKits();
+    this.model.kitsData = { kitsSSI: this.model.kitsSSI };
     this.model.wizard_form = [
       { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Scan Shipment', visible: true, validated: false },
       { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Scan Kits', visible: false, validated: false },
       { id: 'step-3', holder_id: 'step-3-wrapper', name: 'Confirmation', visible: false, validated: false },
     ];
 
-    this.model.showShipmentDetails = true;
     this.model.scannedShipmentData = '';
     this.model.isShipmentScanOk = false;
     this.model.canScanShipment = true;
@@ -249,5 +255,10 @@ export default class ScanShipmentController extends WebcController {
     this.model.isKitsScannerActive = false;
     this.model.showWrongKitScanResult = false;
     this.model.showCorrectKitScanResult = false;
+  }
+
+  async getKits() {
+    const kitDSU = await this.kitsService.getKitsDSU(this.model.kitsSSI);
+    this.model.kits = kitDSU.kitIds;
   }
 }
