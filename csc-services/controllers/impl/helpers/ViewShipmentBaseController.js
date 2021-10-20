@@ -235,6 +235,9 @@ class ViewShipmentBaseControllerImpl extends WebcController{
 
       case shipmentStatusesEnum.Received:
         return shipmentPendingActionEnum.ManageKits;
+
+      case shipmentStatusesEnum.ProofOfDelivery:
+        return shipmentPendingActionEnum.ManageKits;
     }
 
     return '-';

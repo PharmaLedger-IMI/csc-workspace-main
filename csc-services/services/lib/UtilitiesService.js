@@ -35,7 +35,7 @@ class UtilitiesService {
           // Set the normal statuses
           normalStatuses = [shipmentStatusesEnum.ReadyForDispatch, shipmentStatusesEnum.PickUpAtWarehouse, shipmentStatusesEnum.InTransit];
           // Set the Approved statuses
-          approvedStatuses = [shipmentStatusesEnum.Delivered];
+          approvedStatuses = [shipmentStatusesEnum.Delivered, shipmentStatusesEnum.ProofOfDelivery];
           break;
 
         // For Site
