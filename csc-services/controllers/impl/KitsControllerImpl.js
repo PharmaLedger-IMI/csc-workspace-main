@@ -32,8 +32,8 @@ class KitsControllerImpl extends WebcController {
 	async getKits() {
 		try {
 			this.model.kitsListIsReady = false;
-			const kitsTemp = await this.kitsService.getOrderKits(this.model.studyId, this.model.orderId);
-			this.kits = this.transformData(kitsTemp);
+			const orderKits = await this.kitsService.getOrderKits(this.model.studyId, this.model.orderId);
+			this.kits = this.transformData(orderKits);
 			console.log("kits:", JSON.stringify(this.kits,null, 2));
 			this.setKitsModel(this.kits);
 			this.model.kitsListIsReady = true;
@@ -45,8 +45,14 @@ class KitsControllerImpl extends WebcController {
 	transformData(data) {
 		if (data) {
 			data.forEach((item) => {
-				item.receivedDate = momentService(item.receivedDate).format(Commons.DateTimeFormatPattern);
-				item.lastModified = momentService(item.lastModified).format(Commons.DateTimeFormatPattern);
+
+				const latestStatus = item.status.sort(function(a, b) {
+					return new Date(b.date) - new Date(a.date);
+				})[0];
+
+				item.status_value = latestStatus.status;
+				item.receivedDate = momentService(item.status[0].date).format(Commons.DateTimeFormatPattern);
+				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
 				item.status_administered = item.status_value === kitsStatusesEnum.Administrated;
 				item.status_normal = !item.status_administered;
 			});
@@ -77,7 +83,7 @@ class KitsControllerImpl extends WebcController {
 
 	async viewKitHandler() {
 		this.onTagClick('view-kit', async (model) => {
-			// TODO: view kit
+			console.log("Kit Details",await this.kitsService.getKitDetails(model.keySSI));
 		});
 	}
 
