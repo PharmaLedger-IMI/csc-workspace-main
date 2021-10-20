@@ -93,6 +93,7 @@ class KitsControllerImpl extends WebcController {
 					kitComment: 'All good here'
 				});
 				console.log(updatedKit);
+				eventBusService.emitEventListeners(Topics.RefreshKits, null);
 			}, 3000);
 		});
 	}
