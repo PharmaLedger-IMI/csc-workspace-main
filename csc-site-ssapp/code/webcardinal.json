@@ -54,6 +54,13 @@
       "src": "study-kits.html",
       "tag": "study-kits",
       "indexed": false
+    },
+    {
+      "name": "Kit",
+      "path": "/kit",
+      "src": "kit.html",
+      "tag": "kit",
+      "indexed": false
     }
   ],
   "skin": "default"
