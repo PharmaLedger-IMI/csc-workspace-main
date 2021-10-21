@@ -3,9 +3,10 @@ const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentService = cscServices.ShipmentService;
 const OrderService = cscServices.OrderService;
+const KitsService = cscServices.KitsService;
 const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
-const { shipment, Roles, Topics } = cscServices.constants;
+const { Roles, Topics } = cscServices.constants;
 
 
 class ScanShipmentController extends WebcController {
@@ -16,6 +17,7 @@ class ScanShipmentController extends WebcController {
     let communicationService = CommunicationService.getInstance(Roles.Courier);
     this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
     this.orderService = new OrderService(this.DSUStorage, communicationService);
+    this.kitsService = new KitsService(this.DSUStorage, communicationService);
     this.model = { shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;
     this.retrieveKitIds(this.originalShipment.kitIdSSI);
@@ -32,8 +34,14 @@ class ScanShipmentController extends WebcController {
 
   async retrieveKitIds(kitIdSSI) {
     this.model.shipmentModel.kitsAreAvailable = false;
-    this.model.shipmentModel.kits = await this.orderService.getKitIds(kitIdSSI);
+    this.model.shipmentModel.kits = await this.getKits(kitIdSSI);
     this.model.shipmentModel.kitsAreAvailable = true;
+    this.model.kitsData = { kitsSSI: kitIdSSI};
+  }
+
+  async getKits(kitIdSSI) {
+    const kitDSU = await this.kitsService.getKitsDSU(kitIdSSI);
+    return kitDSU;
   }
 
   addModelChangeHandlers() {
@@ -96,14 +104,14 @@ class ScanShipmentController extends WebcController {
   }
 
   async sign() {
-      let payload = {};
+      let payload = {
+            receivedDateTime: new Date().getTime()
+      };
       let {keySSI}  = this.model.shipment.shipmentSSI;
       this.model.disableSign = true;
       window.WebCardinal.loader.hidden = false;
       payload.shipmentId = this.model.shipment.shipmentId;
       payload.shipmentActualTemperature = this.model.shipmentModel.form.temperature.value;
-      payload.shipmentReceivedDate = this.model.shipmentModel.form.receivedDate.value;
-      payload.shipmentReceivedTime = this.model.shipmentModel.form.receivedTime.value;
       payload.signature = true;
       let receivedComment = {
           date: new Date().getTime(),
@@ -114,6 +122,18 @@ class ScanShipmentController extends WebcController {
       await this.shipmentService.createAndMountReceivedDSU(this.model.shipment.shipmentSSI, payload, receivedComment);
       eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
 
+
+      //TODO: add UI loader here:issue #437
+      let order = await this.orderService.getOrder(this.model.shipment.orderSSI);
+      let {studyId, orderId}  = order;
+      let shipmentId = this.model.shipment.shipmentId;
+      let kits = await this.kitsService.getKitsDSU(this.model.shipment.kitIdSSI);
+      const studyKitData = await this.kitsService.updateStudyKitsDSU(studyId,{orderId,shipmentId},kits.kitIds,(err, progress)=>{
+        //consume progress
+        console.log(progress);
+      })
+
+      // TODO:  send a message to SPONSOR with the studyKitData.keySSI(studyKitDSU)
       this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', { tag: 'shipment', state: { keySSI: this.model.shipment.shipmentSSI } }, 2000);
       window.WebCardinal.loader.hidden = true;
   }

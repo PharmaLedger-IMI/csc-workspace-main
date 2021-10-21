@@ -1,10 +1,8 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
-const { Roles, messagesEnum, order, FoldersEnum, kit } = require('./constants');
-const kitsDummyData = kit.kitsDummyData;
-const CommunicationService = require('./lib/CommunicationService.js');
 const ShipmentsService = require('./ShipmentsService.js');
-const moment = require('./lib/moment.min');
+const { FoldersEnum, kit } = require('./constants');
+const { kitsStatusesEnum } = kit;
 
 class KitsService extends DSUService {
   KITS_TABLE = 'kits';
@@ -15,100 +13,117 @@ class KitsService extends DSUService {
       this.communicationService = communicationService;
     }
     this.storageService = getSharedStorage(DSUStorage);
-		this.shipmentsService = new ShipmentsService(DSUStorage);
+    this.shipmentsService = new ShipmentsService(DSUStorage);
     this.DSUStorage = DSUStorage;
   }
 
-	async getAllKits() {
-		const shipments = await this.shipmentsService.getShipments();
-		if (shipments && shipments.length > 0) {
-			let kits = [];
-			for (const shipment of shipments) {
-				const temp = await this.getKits(shipment.shipmentId);
-				if (temp && temp.length > 0) {
-					kits = [...kits, ...temp];
-				}
-			}
-			return kits;
-			// return kitsDummyData;
-		} else {
-      //TODO: remove at some point
-      const testingValues = await this.getKits("SHIPMENT-ID-001");
-      if (testingValues && testingValues.length > 0) {
-        return testingValues;
-      }
-			else return [];
-		}
-	}
+  async getKitsDSU(kitsKeySSI) {
+    const kitsDataDsu = await this.getEntityAsync(kitsKeySSI, FoldersEnum.Kits);
+    return kitsDataDsu;
+  }
 
-	async getKits(shipmentId) {
-    const result = await this.storageService.filter(`${this.KITS_TABLE}_${shipmentId}`);
+  async addStudyKitDataToDb(studyId, studyKitData) {
+    let studyKitsDb;
+    try {
+      await this.storageService.getRecord(this.KITS_TABLE, studyId);
+      studyKitsDb = await this.storageService.updateRecord(this.KITS_TABLE, studyId, studyKitData);
+    } catch (e) {
+      studyKitsDb = await this.storageService.insertRecord(this.KITS_TABLE, studyId, studyKitData);
+    }
+    return studyKitsDb;
+  }
+
+  async getAllStudiesKits() {
+    const result = await this.storageService.filter(this.KITS_TABLE);
     return result ? result : [];
   }
 
-	async getKit(shipmentId, kitId) {
-		const kit = await this.storageService.getRecord(`${this.KITS_TABLE}_${shipmentId}`, kitId);
-	}
+  async updateStudyKitsDSU(studyId, kitsDSUData, kitIds, progressUpdateCallback) {
+    let studyKitsDSU;
+    try {
+      let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, studyId);
+      studyKitsDSU = await this.getEntityAsync(studyKitDb.keySSI, FoldersEnum.StudyKits);
+    } catch (e) {
+      const initialData = {
+        kits: [],
+        studyId: studyId,
+      };
+      studyKitsDSU = await this.saveEntityAsync(initialData, FoldersEnum.StudyKits);
+    }
 
-	async addKit(shipmentId, data) {
-		const newRecord = await this.storageService.insertRecord(`${this.KITS_TABLE}_${shipmentId}`, data.kitId, data);
-    return newRecord;
-	}
-
-  async updateKit(shipmentId, data) {
-    const updatedRecord = await this.storageService.updateRecord(`${this.KITS_TABLE}_${shipmentId}`, data.kitId, data);
-    return updatedRecord;
+    for (let i = 0; i < kitIds.length; i++) {
+      const data = {
+        kitId: kitIds[i].kitId,
+        status: [{status:kitsStatusesEnum.Received, date:Date.now()}],
+        orderId: kitsDSUData.orderId,
+        shipmentId: kitsDSUData.shipmentId,
+        studyId: studyId,
+      };
+      const kitDSU = await this.saveEntityAsync(data, FoldersEnum.Kits);
+      studyKitsDSU.kits.push({
+        ...data,
+        kitKeySSI: kitDSU.keySSI,
+        orderId: kitsDSUData.orderId,
+        shipmentId: kitsDSUData.shipmentId,
+      });
+      progressUpdateCallback(undefined, (i + 1) / kitIds.length);
+    }
+    studyKitsDSU.lastModified = Date.now();
+    studyKitsDSU = await this.updateEntityAsync(studyKitsDSU, FoldersEnum.StudyKits);
+    return await this.addStudyKitDataToDb(studyId, studyKitsDSU);
   }
 
-  sendMessageToEntity(entity, operation, data, shortDescription) {
-    this.communicationService.sendMessage(entity, {
-      operation,
-      data,
-      shortDescription,
+  async getOrderKits(studyId, orderId) {
+    let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, studyId);
+    const kits = studyKitDb.kits.filter((kit) => {
+      return kit.orderId === orderId;
     });
+    return kits;
   }
 
-	// TODO: does not work until we decide form of the kitsId array
-	async updateKitsToDsu(kitsKeySSI, kitsData) {
-    const kitsDataDsu = await this.getEntityAsync(kitsKeySSI, FoldersEnum.Kits);
-		// TODO: does not work until we decide form of the kitsId array
-    const updatedDSU = await this.updateEntityAsync(
-      {
-        ...kitsDataDsu,
-				kitIds: kitsData
-      },
-      FoldersEnum.Kits
-    );
+  async getKitDetails(kitSSI) {
+    const kitDetails = await this.getKitsDSU(kitSSI);
+    const shipments = await this.shipmentsService.getShipments();
+    const shipment = shipments.find((shipment) => {
+      return shipment.shipmentId === kitDetails.shipmentId;
+    });
 
-    const result = await this.updateEntityAsync(updatedDSU, FoldersEnum.Kits);
-    return result;
+    const orderDsu = await this.getEntityAsync(shipment.orderSSI, FoldersEnum.Orders);
+    const shipmentComments = await this.getEntityAsync(shipment.shipmentComments, FoldersEnum.ShipmentComments);
+    const shipmentReceivedDsu = await this.getEntityAsync(shipment.receivedDSUKeySSI, FoldersEnum.ShipmentReceived);
+
+    kitDetails.studyId = orderDsu.studyId;
+    kitDetails.recipientName = shipment.recipientName;
+    kitDetails.temperatures = orderDsu.temperatures;
+    kitDetails.temperatureComments = orderDsu.temperature_comments;
+    kitDetails.shipmentComments = shipmentComments.comments;
+    kitDetails.shipmentActualTemperature = shipmentReceivedDsu.shipmentActualTemperature;
+    kitDetails.receivedDateTime = shipmentReceivedDsu.receivedDateTime;
+    return kitDetails;
   }
 
-	// TODO: does not work until we decide form of the kitsId array
-	async updateKitToDsu(kitsKeySSI, kitId, kitData) {
-    const kitsDataDsu = await this.getEntityAsync(kitsKeySSI, FoldersEnum.Kits);
-		const selectedKit = kitsDataDsu.find(x => x.kitId === kitId);
-    const updatedDSU = await this.updateEntityAsync(
-      {
-        ...kitsDataDsu,
-        // include array of kitIds with objects including new attributes needed ->
-				kitIds: [...kitsDataDsu.kitIds, ...kitData]
-      },
-      FoldersEnum.Kits
-    );
+  async updateKit(kitSSI, status, kitData){
+    //update KitDSU
+    let kitDSU = await this.getKitsDSU(kitSSI);
+    let newStatus ={
+      status:status,
+      date:Date.now()
+    }
+    kitDSU.status.push(newStatus);
 
-    const result = await this.updateEntityAsync(updatedDSU, FoldersEnum.Kits);
-    return result;
-  }
+    kitDSU = {...kitDSU, ...kitData};
+    kitDSU =  await this.updateEntityAsync(kitDSU,FoldersEnum.Kits);
 
-	// TODO: does not work until we decide form of the kitsId array
-  async updateKitToDbFromDSU(kitsKeySSI, kitId, shipmentId) {
-    const kit = await this.getEntityAsync(kitsKeySSI, FoldersEnum.Kits);
-    const kitFromDb = await this.storageService.getRecord(`${this.KITS_TABLE}_${shipmentId}`, kitId);
-    const updatedKit = kit.kitIds.find(x => x.kitId === kitId);
+    //update StudyKit DSU
+    let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, kitDSU.studyId);
+    let studyKitsDSU = await this.getEntityAsync(studyKitDb.keySSI, FoldersEnum.StudyKits);
 
-    const result = await this.updateKit(shipmentId, updatedKit);
-    return result;
+    studyKitsDSU.lastModified = Date.now();
+    let modifiedKit = studyKitsDSU.kits.find((kit)=>{return kit.kitKeySSI === kitSSI});
+    modifiedKit.status.push(newStatus);
+    await this.updateEntityAsync(studyKitsDSU, FoldersEnum.StudyKits);
+    //update kits database
+    return await this.addStudyKitDataToDb(kitDSU.studyId, studyKitsDSU);
   }
 }
 

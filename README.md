@@ -1,5 +1,8 @@
 \# UC2 - Clinical Supply Chain - csc-workspace-main
 
+### Code  Quality
+[![DeepScan grade](https://deepscan.io/api/teams/14657/projects/18078/branches/433370/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=14657&pid=18078&bid=433370)
+
 *csc-workspace-main*  bundles all the necessary dependencies for building and running Clinical Supply Chain SSApps in a single package.
 
 ( This workspace was originally forked from the https://github.com/PharmaLedger-IMI/epi-workspace )

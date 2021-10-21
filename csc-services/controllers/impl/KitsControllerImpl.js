@@ -5,7 +5,7 @@ const KitsService = cscServices.KitsService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const { Topics, Commons } = cscServices.constants;
-const { kitsTableHeaders, kitsStatusesEnum, kitsDummyData } = cscServices.constants.kit;
+const { kitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
 
 class KitsControllerImpl extends WebcController {
 
@@ -20,6 +20,9 @@ class KitsControllerImpl extends WebcController {
 	}
 
 	async init() {
+		let { studyId, orderId } = this.history.location.state;
+		this.model.studyId = studyId;
+		this.model.orderId = orderId;
 		await this.getKits();
 		eventBusService.addEventListener(Topics.RefreshKits, async (data) => {
 			await this.getKits();
@@ -29,8 +32,8 @@ class KitsControllerImpl extends WebcController {
 	async getKits() {
 		try {
 			this.model.kitsListIsReady = false;
-			const kitsTemp = await this.kitsService.getAllKits();
-			this.kits = this.transformData(kitsTemp);
+			const orderKits = await this.kitsService.getOrderKits(this.model.studyId, this.model.orderId);
+			this.kits = this.transformData(orderKits);
 			console.log("kits:", JSON.stringify(this.kits,null, 2));
 			this.setKitsModel(this.kits);
 			this.model.kitsListIsReady = true;
@@ -42,13 +45,15 @@ class KitsControllerImpl extends WebcController {
 	transformData(data) {
 		if (data) {
 			data.forEach((item) => {
-				item.receivedDate = momentService(item.receivedDate).format(Commons.DateTimeFormatPattern);
-				item.lastModified = momentService(item.lastModified).format(Commons.DateTimeFormatPattern);
 
+				const receivedStatus = item.status[0];
 				const latestStatus = item.status.sort(function(a, b) {
 					return new Date(b.date) - new Date(a.date);
 				})[0];
+
 				item.status_value = latestStatus.status;
+				item.receivedDate = momentService(receivedStatus.date).format(Commons.DateTimeFormatPattern);
+				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
 				item.status_administered = item.status_value === kitsStatusesEnum.Administrated;
 				item.status_normal = !item.status_administered;
 			});
@@ -61,6 +66,14 @@ class KitsControllerImpl extends WebcController {
 		this.attachExpressionHandlers();
 		this.viewKitHandler();
 		this.searchFilterHandler();
+
+		this.onTagClick('dashboard', () => {
+			this.navigateToPageTag('dashboard');
+		});
+
+		this.onTagClick('kits-management', () => {
+			this.navigateToPageTag('dashboard', { tab: Topics.Kits });
+		});
 	}
 
 	attachExpressionHandlers() {
@@ -71,20 +84,17 @@ class KitsControllerImpl extends WebcController {
 
 	async viewKitHandler() {
 		this.onTagClick('view-kit', async (model) => {
-			// TODO: view kit
-		});
 
-		this.onTagClick('debug-add-kits', async (model, target, event) => {
-			event.preventDefault();
-			event.stopImmediatePropagation();
+			console.log("Kit Details",await this.kitsService.getKitDetails(model.keySSI));
 
-			console.log("Adding Kits");
-
-			for (const kit of kitsDummyData) {
-				await this.kitsService.addKit("SHIPMENT-ID-001" , kit);
-			}
-
-			this.init();
+			setTimeout(async() => {
+				let updatedKit = await this.kitsService.updateKit(model.keySSI, kitsStatusesEnum.Assigned, {
+					kitActualTemperatureObserved: 'within range',
+					kitComment: 'All good here'
+				});
+				console.log(updatedKit);
+				eventBusService.emitEventListeners(Topics.RefreshKits, null);
+			}, 3000);
 		});
 	}
 
