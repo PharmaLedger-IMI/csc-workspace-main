@@ -97,7 +97,8 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
       }
 
       case Roles.Site: {
-        actions.canReceiveShipment = shipment.status_value === shipmentStatusesEnum.Delivered
+        actions.canReceiveShipment = shipment.status_value === shipmentStatusesEnum.Delivered;
+        actions.canManageKits = shipment.status_value === shipmentStatusesEnum.Received;
         this.attachSiteEventHandlers();
         break;
       }
@@ -151,6 +152,13 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
           ...this.model.toObject('shipmentModel.shipment')
         }
       });
+    });
+
+    this.onTagClick('manage-kits', async(model) => {
+          this.navigateToPageTag('study-kits', {
+                studyId: model.orderModel.order.studyId,
+                orderId: model.orderModel.order.orderId
+          });
     });
   }
 
