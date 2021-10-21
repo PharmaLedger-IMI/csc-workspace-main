@@ -465,7 +465,7 @@ class ShipmentsService extends DSUService {
             	shipmentStatus.status = shipmentStatusesEnum.ProofOfDelivery;
             }
             });
-          }
+        }
     		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
     	}
 
