@@ -148,7 +148,12 @@ class OrdersControllerImpl extends WebcController {
 			ordersListNotEmpty: true,
 			pagination: this.getPaginationViewModel(),
 			headers: orderTableHeaders,
-			tableLength: orderTableHeaders.length
+			tableLength: orderTableHeaders.length,
+			sorting: {
+				sorting: 'desc',
+				column: "lastModified",
+				type : 'date'
+			}
 		};
 	}
 

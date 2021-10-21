@@ -160,7 +160,12 @@ class ShipmentsControllerImpl extends WebcController {
       headers: tableHeaders,
       tableLength: tableHeaders.length,
       shipmentsArrayNotEmpty: true,
-      shipments: []
+      shipments: [],
+      sorting: {
+        sorting: 'desc',
+        column: "lastModified",
+        type : 'date'
+      }
     };
   }
 
@@ -193,7 +198,7 @@ class ShipmentsControllerImpl extends WebcController {
   }
 
   getPickupDateTime(scheduledPickupDate) {
-    if (scheduledPickupDate.date && scheduledPickupDate.time) {
+    if (scheduledPickupDate && scheduledPickupDate.date && scheduledPickupDate.time) {
       const timestamp = new Date(`${scheduledPickupDate.date} ${scheduledPickupDate.time}`).getTime();
       return momentService(timestamp).format(Commons.DateTimeFormatPattern);
     }else{

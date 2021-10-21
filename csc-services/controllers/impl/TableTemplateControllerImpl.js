@@ -8,36 +8,47 @@ class TableTemplateControllerImpl extends WebcController {
     super(...props);
     this.role = role;
     this.attachEvents();
-    let sortingDatesFnAsc = this.sortingDatesFn('asc');
-    let sortingDatesFnDesc = this.sortingDatesFn('desc');
-    this.model.data = this.sortDataByLastModification(this.model.data, 'lastModified' , sortingDatesFnDesc);
     this.init();
   }
 
-  sortingDatesFn(type){
+  sortingFn(column, sorting, type){
     return ( a, b ) => {
 
-      const compA = momentService(a).valueOf();
-      const compB = momentService(b).valueOf();
+      let compA = "";
+      let compB = "";
 
-      switch(type){
-        case('asc') :
-          return compA < compB ? 1 : -1;
-        case('desc') :
-          return compA > compB ? 1 : -1;
+      if(sorting && type && column){
+
+        switch(type){
+          case('date'):
+             compA = momentService(a[column]).valueOf();
+             compB = momentService(b[column]).valueOf();
+             break;
+          case('string'):
+             compA = a[column];
+             compB = b[column];
+             break;
+          case('number'):
+            compA = a[column];
+            compB = b[column];
+            break;
+        }
+
+        switch(sorting){
+          case('asc') :
+            return compA <= compB ? 1 : -1;
+          case('desc') :
+            return compA >= compB ? -1 : 1;
+        }
+
       }
     }
   }
 
-  sortDataByLastModification( data , prop , sortingDatesFn ){
-    if(data && (data[0]) && data[0].hasOwnProperty(prop)){
-      data = data.sort(sortingDatesFn);
-    }
-    return data;
-  }
-
   async init() {
     this.paginateData(this.model.data);
+    // Init Sort of Table
+    this.sortColumn(this.model.sorting.column , this.model.sorting.sorting, this.model.sorting.type)
   }
 
   attachEvents() {
@@ -116,7 +127,7 @@ class TableTemplateControllerImpl extends WebcController {
     }
   }
 
-  sortColumn(column) {
+  sortColumn(column, sorting, type) {
     if (column || this.model.headers.some((x) => x.asc || x.desc)) {
       if (!column) column = this.model.headers.find((x) => x.asc || x.desc).column;
 
@@ -127,8 +138,10 @@ class TableTemplateControllerImpl extends WebcController {
       if (headers[idx].notSortable) return;
 
       if (headers[idx].asc || headers[idx].desc) {
-        const data = JSON.parse(JSON.stringify(this.model.data));
-        data.reverse();
+        let data = JSON.parse(JSON.stringify(this.model.data));
+
+          data.reverse();
+
         this.model.data = data;
         this.model.headers = this.model.headers.map((x) => {
           if (x.column !== column) {
@@ -141,8 +154,14 @@ class TableTemplateControllerImpl extends WebcController {
             return { ...x, asc: false, desc: false };
           } else return { ...x, asc: true, desc: false };
         });
+
         const data = JSON.parse(JSON.stringify(this.model.data));
-        this.model.data = data.sort((a, b) => (a[column] >= b[column] ? 1 : -1));
+
+        if(sorting && type){
+          this.model.data = data.sort(this.sortingFn(column, sorting, type));
+        }else{
+          this.model.data = data.sort((a, b) => (a[column] >= b[column] ? 1 : -1));
+        }
       }
     } else {
       this.model.headers = this.model.headers.map((x) => ({ ...x, asc: false, desc: false }));
