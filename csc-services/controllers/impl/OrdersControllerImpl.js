@@ -149,7 +149,7 @@ class OrdersControllerImpl extends WebcController {
 			pagination: this.getPaginationViewModel(),
 			headers: orderTableHeaders,
 			tableLength: orderTableHeaders.length,
-			sorting: {
+			defaultSortingRule: {
 				sorting: 'desc',
 				column: "lastModified",
 				type : 'date'

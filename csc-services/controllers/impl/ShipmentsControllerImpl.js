@@ -161,7 +161,7 @@ class ShipmentsControllerImpl extends WebcController {
       tableLength: tableHeaders.length,
       shipmentsArrayNotEmpty: true,
       shipments: [],
-      sorting: {
+      defaultSortingRule: {
         sorting: 'desc',
         column: "lastModified",
         type : 'date'

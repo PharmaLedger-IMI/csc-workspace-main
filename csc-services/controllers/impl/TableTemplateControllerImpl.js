@@ -25,13 +25,10 @@ class TableTemplateControllerImpl extends WebcController {
              compB = momentService(b[column]).valueOf();
              break;
           case('string'):
+          case('number'):
              compA = a[column];
              compB = b[column];
              break;
-          case('number'):
-            compA = a[column];
-            compB = b[column];
-            break;
         }
 
         switch(sorting){
@@ -48,7 +45,7 @@ class TableTemplateControllerImpl extends WebcController {
   async init() {
     this.paginateData(this.model.data);
     // Init Sort of Table
-    this.sortColumn(this.model.sorting.column , this.model.sorting.sorting, this.model.sorting.type)
+    this.sortColumn(this.model.defaultSortingRule.column , this.model.defaultSortingRule.sorting, this.model.defaultSortingRule.type)
   }
 
   attachEvents() {
