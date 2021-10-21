@@ -19,6 +19,8 @@ module.exports = {
                 return require('./services/utilities').getOrderViewModel();
             case 'shipment':
                 return require('./services/utilities').getShipmentViewModel();
+            case 'kit':
+                return require('./services/utilities').getKitViewModel();
             default:
                 throw new Error('Requested view model not found');
         }
