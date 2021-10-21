@@ -46,12 +46,13 @@ class KitsControllerImpl extends WebcController {
 		if (data) {
 			data.forEach((item) => {
 
+				const receivedStatus = item.status[0];
 				const latestStatus = item.status.sort(function(a, b) {
 					return new Date(b.date) - new Date(a.date);
 				})[0];
 
 				item.status_value = latestStatus.status;
-				item.receivedDate = momentService(item.status[0].date).format(Commons.DateTimeFormatPattern);
+				item.receivedDate = momentService(receivedStatus.date).format(Commons.DateTimeFormatPattern);
 				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
 				item.status_administered = item.status_value === kitsStatusesEnum.Administrated;
 				item.status_normal = !item.status_administered;
@@ -83,7 +84,17 @@ class KitsControllerImpl extends WebcController {
 
 	async viewKitHandler() {
 		this.onTagClick('view-kit', async (model) => {
+
 			console.log("Kit Details",await this.kitsService.getKitDetails(model.keySSI));
+
+			setTimeout(async() => {
+				let updatedKit = await this.kitsService.updateKit(model.keySSI, kitsStatusesEnum.Assigned, {
+					kitActualTemperatureObserved: 'within range',
+					kitComment: 'All good here'
+				});
+				console.log(updatedKit);
+				eventBusService.emitEventListeners(Topics.RefreshKits, null);
+			}, 3000);
 		});
 	}
 

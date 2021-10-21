@@ -128,12 +128,12 @@ class ScanShipmentController extends WebcController {
       let {studyId, orderId}  = order;
       let shipmentId = this.model.shipment.shipmentId;
       let kits = await this.kitsService.getKitsDSU(this.model.shipment.kitIdSSI);
-      await this.kitsService.updateStudyKitsDSU(studyId,{orderId,shipmentId},kits.kitIds,(err, progress)=>{
+      const studyKitData = await this.kitsService.updateStudyKitsDSU(studyId,{orderId,shipmentId},kits.kitIds,(err, progress)=>{
         //consume progress
         console.log(progress);
       })
 
-
+      // TODO:  send a message to SPONSOR with the studyKitData.keySSI(studyKitDSU)
       this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', { tag: 'shipment', state: { keySSI: this.model.shipment.shipmentSSI } }, 2000);
       window.WebCardinal.loader.hidden = true;
   }

@@ -22,7 +22,7 @@ class KitsService extends DSUService {
     return kitsDataDsu;
   }
 
-  async addStudyKitDataTODb(studyId, studyKitData) {
+  async addStudyKitDataToDb(studyId, studyKitData) {
     let studyKitsDb;
     try {
       await this.storageService.getRecord(this.KITS_TABLE, studyId);
@@ -57,6 +57,7 @@ class KitsService extends DSUService {
         status: [{status:kitsStatusesEnum.Received, date:Date.now()}],
         orderId: kitsDSUData.orderId,
         shipmentId: kitsDSUData.shipmentId,
+        studyId: studyId,
       };
       const kitDSU = await this.saveEntityAsync(data, FoldersEnum.Kits);
       studyKitsDSU.kits.push({
@@ -69,7 +70,7 @@ class KitsService extends DSUService {
     }
     studyKitsDSU.lastModified = Date.now();
     studyKitsDSU = await this.updateEntityAsync(studyKitsDSU, FoldersEnum.StudyKits);
-    return await this.addStudyKitDataTODb(studyId, studyKitsDSU);
+    return await this.addStudyKitDataToDb(studyId, studyKitsDSU);
   }
 
   async getOrderKits(studyId, orderId) {
@@ -99,6 +100,30 @@ class KitsService extends DSUService {
     kitDetails.shipmentActualTemperature = shipmentReceivedDsu.shipmentActualTemperature;
     kitDetails.receivedDateTime = shipmentReceivedDsu.receivedDateTime;
     return kitDetails;
+  }
+
+  async updateKit(kitSSI, status, kitData){
+    //update KitDSU
+    let kitDSU = await this.getKitsDSU(kitSSI);
+    let newStatus ={
+      status:status,
+      date:Date.now()
+    }
+    kitDSU.status.push(newStatus);
+
+    kitDSU = {...kitDSU, ...kitData};
+    kitDSU =  await this.updateEntityAsync(kitDSU,FoldersEnum.Kits);
+
+    //update StudyKit DSU
+    let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, kitDSU.studyId);
+    let studyKitsDSU = await this.getEntityAsync(studyKitDb.keySSI, FoldersEnum.StudyKits);
+
+    studyKitsDSU.lastModified = Date.now();
+    let modifiedKit = studyKitsDSU.kits.find((kit)=>{return kit.kitKeySSI === kitSSI});
+    modifiedKit.status.push(newStatus);
+    await this.updateEntityAsync(studyKitsDSU, FoldersEnum.StudyKits);
+    //update kits database
+    return await this.addStudyKitDataToDb(kitDSU.studyId, studyKitsDSU);
   }
 }
 
