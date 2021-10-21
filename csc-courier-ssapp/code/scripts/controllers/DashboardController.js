@@ -103,8 +103,8 @@ class DashboardController extends WebcController {
       	notificationRole = Roles.Site;
       	shipmentStatus = data.message.operation;
       	const messageData = data.message.data;
-      	const { receivedShipmentSSI, shipmentSSI } = messageData;
-        shipmentData = await this.shipmentService.mountShipmentReceivedDSU(shipmentSSI, receivedShipmentSSI, this.role);
+      	const { shipmentSSI } = messageData;
+        shipmentData = await this.shipmentService.shipmentReceivedForCourier(shipmentSSI, this.role);
       	break;
       }
     }

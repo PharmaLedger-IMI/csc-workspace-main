@@ -270,11 +270,11 @@ class ShipmentsService extends DSUService {
 			shipmentReceivedDSUMessage,
 			shipmentStatusesEnum.Received
 		);
-
+        const courierMessage = { shipmentSSI: shipmentKeySSI };
 		this.sendMessageToEntity(
         	CommunicationService.identities.CSC.COU_IDENTITY,
         	shipmentStatusesEnum.ProofOfDelivery,
-        	shipmentReceivedDSUMessage,
+        	courierMessage,
         	shipmentStatusesEnum.ProofOfDelivery
         );
 	}
@@ -446,25 +446,28 @@ class ShipmentsService extends DSUService {
 		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
 	}
 
-	async mountShipmentReceivedDSU(shipmentSSI, receivedShipmentSSI, role) {
+	async mountShipmentReceivedDSU(shipmentSSI, receivedShipmentSSI) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
 		await this.mountEntityAsync(receivedShipmentSSI, FoldersEnum.ShipmentReceived);
 		shipmentDB.receivedDSUKeySSI = receivedShipmentSSI;
 		const status = await this.getEntityAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
 		shipmentDB.status = status.history;
-		if (role === Roles.Courier) {
-        	let shipmentDSU = await this.getEntityAsync(shipmentSSI, FoldersEnum.Shipments);
-        	shipmentDSU.shipmentId = shipmentDB.shipmentId;
-
-        	shipmentDB.status.forEach(shipmentStatus => {
-        	if (shipmentStatus.status === shipmentStatusesEnum.Received) {
-        		shipmentStatus.status = shipmentStatusesEnum.ProofOfDelivery;
-        	}
-        	});
-        	await this.updateEntityAsync(shipmentDSU, FoldersEnum.Shipments);
-        }
 		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
 	}
+
+	async shipmentReceivedForCourier(shipmentSSI, role) {
+    	let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
+    	const status = await this.getEntityAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
+    	shipmentDB.status = status.history;
+    	if (role === Roles.Courier) {
+            shipmentDB.status.forEach(shipmentStatus => {
+            if (shipmentStatus.status === shipmentStatusesEnum.Received) {
+            	shipmentStatus.status = shipmentStatusesEnum.ProofOfDelivery;
+            }
+            });
+          }
+    		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
+    	}
 
 	async updateLocalShipment(shipmentSSI, newShipmentData = {}) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
