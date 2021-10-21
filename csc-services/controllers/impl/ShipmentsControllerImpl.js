@@ -195,9 +195,9 @@ class ShipmentsControllerImpl extends WebcController {
     if (scheduledPickupDate.date && scheduledPickupDate.time) {
       const timestamp = new Date(`${scheduledPickupDate.date} ${scheduledPickupDate.time}`).getTime();
       return momentService(timestamp).format(Commons.DateTimeFormatPattern);
+    }else{
+      return '-';
     }
-
-    return '-';
   }
 
   getTableHeaders() {
