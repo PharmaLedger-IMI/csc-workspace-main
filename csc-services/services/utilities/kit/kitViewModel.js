@@ -65,7 +65,7 @@ const kitViewModel = {
 			value: ''
 		},
 		receivedDate: {
-            label: 'Received Date/Time',
+            label: 'Shipment Received Date/Time',
             name: 'received_date',
             required: true,
             disabled: false,
