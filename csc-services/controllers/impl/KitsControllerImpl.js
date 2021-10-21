@@ -84,17 +84,17 @@ class KitsControllerImpl extends WebcController {
 
 	async viewKitHandler() {
 		this.onTagClick('view-kit', async (model) => {
-			
-			this.navigateToPageTag('kit', { keySSI: model.keySSI });
-			//let kit = await this.kitsService.getKitDetails(model.keySSI)
 
-			// setTimeout(async() => {
-			// 	let updatedKit = await this.kitsService.updateKit(model.keySSI, kitsStatusesEnum.Assigned, {
-			// 		kitActualTemperatureObserved: 'within range',
-			// 		kitComment: 'All good here'
-			// 	});
-			// 	console.log(updatedKit);
-			// }, 3000);
+			console.log("Kit Details",await this.kitsService.getKitDetails(model.keySSI));
+
+			setTimeout(async() => {
+				let updatedKit = await this.kitsService.updateKit(model.keySSI, kitsStatusesEnum.Assigned, {
+					kitActualTemperatureObserved: 'within range',
+					kitComment: 'All good here'
+				});
+				console.log(updatedKit);
+				eventBusService.emitEventListeners(Topics.RefreshKits, null);
+			}, 3000);
 		});
 	}
 
