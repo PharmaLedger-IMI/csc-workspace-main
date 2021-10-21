@@ -79,12 +79,6 @@ class SiteSingleKitController extends WebcController {
 
       data.pending_action = this.getPendingAction(data.status_value);
 
-      // if (data.shipmentComments) {
-      //     data.shipmentComments.forEach((comment) => {
-      //       comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
-      //     });
-      //   }
-
       return data;
     }
 
