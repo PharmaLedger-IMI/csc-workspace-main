@@ -51,7 +51,7 @@ class OrdersControllerImpl extends WebcController {
 				item.status_approved = item.status_value === orderStatusesEnum.Approved;
 				item.status_cancelled = item.status_value === orderStatusesEnum.Canceled;
 				item.status_normal = !item.status_approved && !item.status_cancelled;
-				item.status_date = momentService(latestStatus.date).format(Commons.DateTimeFormatPattern);
+				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
 			});
 		}
 
@@ -148,7 +148,12 @@ class OrdersControllerImpl extends WebcController {
 			ordersListNotEmpty: true,
 			pagination: this.getPaginationViewModel(),
 			headers: orderTableHeaders,
-			tableLength: orderTableHeaders.length
+			tableLength: orderTableHeaders.length,
+			sorting: {
+				sorting: 'desc',
+				column: "lastModified",
+				type : 'date'
+			}
 		};
 	}
 
