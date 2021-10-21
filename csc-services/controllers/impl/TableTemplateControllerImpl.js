@@ -45,7 +45,9 @@ class TableTemplateControllerImpl extends WebcController {
   async init() {
     this.paginateData(this.model.data);
     // Init Sort of Table
-    this.sortColumn(this.model.defaultSortingRule.column , this.model.defaultSortingRule.sorting, this.model.defaultSortingRule.type)
+    if (this.model.defaultSortingRule) {
+      this.sortColumn(this.model.defaultSortingRule.column, this.model.defaultSortingRule.sorting, this.model.defaultSortingRule.type);
+    }
   }
 
   attachEvents() {
