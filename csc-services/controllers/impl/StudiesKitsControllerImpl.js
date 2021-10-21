@@ -5,7 +5,7 @@ const KitsService = cscServices.KitsService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const { Topics, Commons } = cscServices.constants;
-const { studiesKitsTableHeaders } = cscServices.constants.kit;
+const { studiesKitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
 
 class StudiesKitsControllerImpl extends WebcController {
 
@@ -38,8 +38,12 @@ class StudiesKitsControllerImpl extends WebcController {
     }
   }
 
+  filterKitsByLastStatus(kits, status){
+    return kits.filter(kit => kit.status[kit.status.length-1].status === status)
+  }
+
   transformData(data) {
-    const ordersKits = {}
+    const ordersKits = {};
     data.forEach(studyData => {
       for (let i = 0; i < studyData.kits.length; i++) {
         if (!ordersKits[studyData.kits[i].orderId]) {
@@ -55,12 +59,12 @@ class StudiesKitsControllerImpl extends WebcController {
     }
 
     studiesKits.forEach((item) => {
-        item.lastModified = momentService(item.lastModified).format(Commons.DateTimeFormatPattern);
-        item.kitsNumber = item.kits.length;
-        item.kitsAvailable = item.kits.length;
-        item.kitsAssigned = item.kits.length;
-        item.kitsDispensed = item.kits.length;
-      });
+      item.lastModified = momentService(item.lastModified).format(Commons.DateTimeFormatPattern);
+      item.kitsNumber = item.kits.length;
+      item.kitsAvailable = this.filterKitsByLastStatus(item.kits,kitsStatusesEnum.AvailableForAssignment).length;
+      item.kitsAssigned = this.filterKitsByLastStatus(item.kits,kitsStatusesEnum.Assigned).length;
+      item.kitsDispensed = this.filterKitsByLastStatus(item.kits,kitsStatusesEnum.Dispensed).length;
+    });
     return studiesKits;
   }
 
