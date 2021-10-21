@@ -112,7 +112,7 @@ class KitsControllerImpl extends WebcController {
 			result = result.filter((x) => 
 				x.kitId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
 				x.shipmentId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
-				x.investigatorId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
+				x.investigatorId && x.investigatorId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
 				x.status_value.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1
 			);
 		}
@@ -134,7 +134,13 @@ class KitsControllerImpl extends WebcController {
 			kitsListNotEmpty: true,
 			pagination: this.getPaginationViewModel(),
 			headers: kitsTableHeaders,
-			tableLength: kitsTableHeaders.length
+			tableLength: kitsTableHeaders.length,
+			defaultSortingRule: {
+				sorting: 'desc',
+				column: "lastModified",
+				type : 'date'
+			}
+
 		};
 	}
 
