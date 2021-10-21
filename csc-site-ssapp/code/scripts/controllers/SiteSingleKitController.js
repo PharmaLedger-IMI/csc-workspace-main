@@ -39,7 +39,6 @@ class SiteSingleKitController extends WebcController {
 
     this.model = model;
     //console.log("Kit Details", JSON.stringify(this.model.kitModel));
-
   }
 
   getShipmentComments(kit) {
@@ -78,10 +77,8 @@ class SiteSingleKitController extends WebcController {
       }
 
       data.pending_action = this.getPendingAction(data.status_value);
-
       return data;
     }
-
     return {};
   }
 
@@ -118,7 +115,5 @@ class SiteSingleKitController extends WebcController {
     targetIcon.classList.toggle('rotate-icon');
     panel.style.maxHeight = '1000px';
   }
-
-
 }
 export default SiteSingleKitController;
