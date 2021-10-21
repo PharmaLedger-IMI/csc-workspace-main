@@ -5,6 +5,7 @@ const shipmentStatusesEnum = {
 	InTransit: 'In Transit',
 	Delivered: 'Delivered',
 	Received: 'Received',
+	ProofOfDelivery: 'Proof Of Delivery',
 	ShipmentCancelled: 'Order & Shipment Cancelled',
 	Cancelled: 'Cancelled',
 	Dispatched: 'Dispatched'

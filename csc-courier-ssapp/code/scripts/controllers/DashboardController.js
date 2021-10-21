@@ -99,6 +99,14 @@ class DashboardController extends WebcController {
         shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusSSI);
         break;
       }
+      case shipmentStatusesEnum.ProofOfDelivery: {
+      	notificationRole = Roles.Site;
+      	shipmentStatus = data.message.operation;
+      	const messageData = data.message.data;
+      	const { shipmentSSI } = messageData;
+        shipmentData = await this.shipmentService.shipmentReceivedForCourier(shipmentSSI, this.role);
+      	break;
+      }
     }
 
     return [shipmentData, shipmentStatus, notificationRole];
