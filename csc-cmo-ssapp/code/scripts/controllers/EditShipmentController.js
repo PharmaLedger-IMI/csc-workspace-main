@@ -23,6 +23,32 @@ export default class EditShipmentController extends WebcController {
 
 		this.attachEventHandlers();
 		this.initViewModel();
+
+
+		// If form is validated
+		this.model.isFormValidated = true;
+
+	}
+
+	validateForm() {
+		let validated = true;
+
+		if(this.model.shipmentModel.form){
+
+			// Validation For Dimension Values
+			let keys = Object.keys(this.model.shipmentModel.form.dimension);
+			if(keys){
+				keys.forEach( (key) => {
+					if(this.model.shipmentModel.form.dimension[key].value !== undefined){
+						if(this.model.shipmentModel.form.dimension[key].value.search('-') !== -1){
+							this.model.shipmentModel.form.dimension[key].value = this.model.shipmentModel.form.dimension[key].value.replace('-','');
+						}
+					}
+				});
+			}
+
+			this.model.isFormValidated = validated;
+		}
 	}
 
 	attachEventHandlers() {
@@ -30,6 +56,7 @@ export default class EditShipmentController extends WebcController {
 		this.attachNavigationHandlers();
 		this.attachFormActions();
 		this.navigationHandlers();
+		this.attachModelChanges();
 	}
 
 	navigationHandlers() {
@@ -64,6 +91,12 @@ export default class EditShipmentController extends WebcController {
 	resetEditOfShipment() {
 		this.model.shipmentModel.form = viewModelResolver('shipment').form;
 		this.makeStepActive('step-1', 'step-1-wrapper');
+	}
+
+	attachModelChanges() {
+		this.model.onChange('shipmentModel.form.dimension', () => {
+			this.validateForm();
+		});
 	}
 
 	attachFormActions() {
