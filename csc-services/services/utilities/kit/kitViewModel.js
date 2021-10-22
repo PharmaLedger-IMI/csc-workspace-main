@@ -1,9 +1,14 @@
-const constants = require("csc-services").constants;
+const constants = require('csc-services').constants;
 const orderBusinessRequirements = constants.order.orderBusinessRequirements;
+const kitBusinessRequirements = constants.kit.kitBusinessRequirements;
+const { patientsId, doseTypes, doseVolumes, visitIds, dispensingPartyIds } = kitBusinessRequirements;
 const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
+const DAYS_AHEAD = orderBusinessRequirements.DeliveryDateDaysAhead;
+const momentService = require("csc-services").momentService;
 
 const kitViewModel = {
-	form: {
+
+  form: {
         kitNumber: {
 			label: 'Kit Number',
 			name: 'kit-number',
@@ -128,7 +133,71 @@ const kitViewModel = {
 			disabled: false,
 			value: '',
 		},
+		patientId: {
+			label: 'Patient ID',
+			name: 'patient-id',
+			id: 'patient-id',
+			required: true,
+			placeholder: 'Patient ID',
+			disabled: false,
+			options: patientsId.map((x) => {return {label:x.name, value:x.name}}),
+			value: '',
+		},
+		doseType: {
+             label: 'Dose Type',
+             name: 'dose-type',
+             id: 'dose-type',
+             required: true,
+             placeholder: 'e.g. Syringe',
+             disabled: false,
+             options: doseTypes.map((x) => {return {label:x.name, value:x.name}}),
+             value: '',
+        },
+		doseVolume: {
+        	label: 'Dose Volume(mL)',
+        	name: 'dose-volume',
+        	id: 'dose-volume',
+        	required: true,
+        	placeholder: 'e.g. 10',
+        	disabled: false,
+        	options: doseVolumes.map((x) => {return {label:x.name, value:x.name}}),
+        	value: '',
+        },
+    	visitId: {
+            label: 'Visit ID',
+            name: 'visit-id',
+            id: 'visit-id',
+            required: true,
+            placeholder: 'select visit ID',
+            disabled: false,
+            options: visitIds.map((x) => {return {label:x.name, value:x.name}}),
+            value: '',
+        },
+        visit_date: {
+             label: 'Visit Date/Time',
+             name: 'visit_date',
+             required: true,
+             disabled: false,
+             value: '',
+             min: momentService(new Date()).add(DAYS_AHEAD, 'days').format(constants.Commons.YearMonthDayPattern)
+        },
+        visit_time: {
+             name: 'visit_time',
+             equired: true,
+             disabled: false,
+             value: '',
+        },
+        dispensingPartyId: {
+              label: 'Dispensing Party ID',
+              name: 'dispensing-id',
+              id: 'dispensing-id',
+              required: true,
+              placeholder: '',
+              options: dispensingPartyIds.map((x) => {return {label:x.name, value:x.name}}),
+              value: '',
+        },
 	}
+
 };
 
 module.exports = kitViewModel;

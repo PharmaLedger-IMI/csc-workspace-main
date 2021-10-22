@@ -34,7 +34,6 @@ class KitsControllerImpl extends WebcController {
 			this.model.kitsListIsReady = false;
 			const orderKits = await this.kitsService.getOrderKits(this.model.studyId, this.model.orderId);
 			this.kits = this.transformData(orderKits);
-			console.log("kits:", JSON.stringify(this.kits,null, 2));
 			this.setKitsModel(this.kits);
 			this.model.kitsListIsReady = true;
 		} catch (error) {
@@ -85,19 +84,7 @@ class KitsControllerImpl extends WebcController {
 
 	async viewKitHandler() {
 		this.onTagClick('view-kit', async (model) => {
-
 			this.navigateToPageTag('kit', { keySSI: model.keySSI });
-
-			// console.log("Kit Details",await this.kitsService.getKitDetails(model.keySSI));
-
-			// setTimeout(async() => {
-			// 	let updatedKit = await this.kitsService.updateKit(model.keySSI, kitsStatusesEnum.Assigned, {
-			// 		kitActualTemperatureObserved: 'within range',
-			// 		kitComment: 'All good here'
-			// 	});
-			// 	console.log(updatedKit);
-			// 	eventBusService.emitEventListeners(Topics.RefreshKits, null);
-			// }, 3000);
 		});
 	}
 
