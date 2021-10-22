@@ -20,13 +20,28 @@ class SiteSingleKitController extends WebcController {
 
   attachEventListeners() {
     this.toggleAccordionItemHandler();
-    this.onTagClick('manage-kit', async(model) => {
-              this.navigateToPageTag('dispense-kit', {
-                studyId: model.kitModel.kit.studyId,
-                orderId: model.kitModel.kit.orderId
-              });
+  }
+
+  attachSiteEventHandlers(){
+    this.onTagClick('manage-kit', () => {
+      this.navigateToPageTag('scan-kit', {
+        kit: {
+          kitId: this.model.kitModel.kit.kitId,
+          ...this.model.toObject('kitModel.kit')
+        }
+      });
+    });
+
+    this.onTagClick('assign-kit', () => {
+      this.navigateToPageTag('scan-kit', {
+        kit: {
+          kitId: this.model.kitModel.kit.kitId,
+          ...this.model.toObject('kitModel.kit')
+        }
+      });
     });
   }
+  
 
   async initViewModel() {
     const model = {
@@ -41,15 +56,20 @@ class SiteSingleKitController extends WebcController {
     if (model.kitModel.kit.shipmentComments) {
       model.kitModel.kit.comments = this.getShipmentComments(model.kitModel.kit);
     }
-
+    model.actions = this.setKitActions(model.kitModel.kit);
     this.model = model;
+  }
 
+  setKitActions(kit) {
+    const actions = {};
+    actions.canAssignKit = kit.status_value === kitsStatusesEnum.AvailableForAssignment;
+    actions.canManageKit = kit.status_value === kitsStatusesEnum.Received;
+    this.attachSiteEventHandlers();
+    return actions;
   }
 
   getShipmentComments(kit) {
-    console.log("Shipment Comments 2", JSON.stringify(kit.shipmentComments));
     let comments = kit.shipmentComments;
-    console.log("Shipment Comments 3", JSON.stringify(comments));
     comments.forEach((comment) => {
       comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
     });

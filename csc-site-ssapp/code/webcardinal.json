@@ -68,6 +68,13 @@
       "src": "dispense-kit.html",
       "tag": "dispense-kit",
       "indexed": false
+    },
+    {
+      "name": "Scan Kit",
+      "path": "./scan-kit",
+      "src": "scan-kit.html",
+      "indexed": false,
+      "tag": "scan-kit"
     }
   ],
   "skin": "default"

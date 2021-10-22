@@ -133,6 +133,19 @@ const kitViewModel = {
 			disabled: false,
 			value: '',
 		},
+		temperature: [
+			{ value: "Within Range", text: "Within Range" },
+			{ value: "Out of Range", text: "Out of Range" },
+		],
+		comments: [],
+		add_comment: {
+			label: 'Add a Comment',
+			name: 'add_comment',
+			required: true,
+			placeholder: 'Add a comment',
+			disabled: false,
+			value: '',
+		},
 		patientId: {
 			label: 'Patient ID',
 			name: 'patient-id',
