@@ -1,4 +1,4 @@
-const constants = require("csc-services").constants;
+const constants = require('csc-services').constants;
 const orderBusinessRequirements = constants.order.orderBusinessRequirements;
 const kitBusinessRequirements = constants.kit.kitBusinessRequirements;
 const { patientsId, doseTypes, doseVolumes, visitIds, dispensingPartyIds } = kitBusinessRequirements;
@@ -7,7 +7,8 @@ const DAYS_AHEAD = orderBusinessRequirements.DeliveryDateDaysAhead;
 const momentService = require("csc-services").momentService;
 
 const kitViewModel = {
-	form: {
+
+  form: {
         kitNumber: {
 			label: 'Kit Number',
 			name: 'kit-number',
@@ -196,6 +197,7 @@ const kitViewModel = {
               value: '',
         },
 	}
+
 };
 
 module.exports = kitViewModel;

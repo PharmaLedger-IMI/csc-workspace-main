@@ -2,9 +2,10 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const KitsService = cscServices.KitsService;
 const viewModelResolver = cscServices.viewModelResolver;
-const { shipmentStatusesEnum, shipmentPendingActionEnum } = cscServices.constants.shipment;
+const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const momentService = cscServices.momentService;
 const { Commons } = cscServices.constants;
+const {kitsStatusesEnum, kitsPendingActionEnum} = cscServices.constants.kit;
 
 class SiteSingleKitController extends WebcController {
 
@@ -42,7 +43,7 @@ class SiteSingleKitController extends WebcController {
     }
 
     this.model = model;
-//    console.log("Kit Details", JSON.stringify(this.model));
+
   }
 
   getShipmentComments(kit) {
@@ -88,11 +89,15 @@ class SiteSingleKitController extends WebcController {
 
   getPendingAction(status_value) {
     switch (status_value) {
-      case shipmentStatusesEnum.Received:
-        return shipmentPendingActionEnum.ManageKits;
+      case kitsStatusesEnum.Received:
+        return kitsPendingActionEnum.ManageKit;
+      case kitsStatusesEnum.AvailableForAssignment:
+        return kitsPendingActionEnum.Assign;
+      case kitsStatusesEnum.Assigned:
+        return kitsPendingActionEnum.Administer;
     }
 
-    return '-';
+    return kitsPendingActionEnum.NoFurtherActionsRequired;
   }
 
   toggleAccordionItemHandler() {

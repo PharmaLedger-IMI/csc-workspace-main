@@ -33,9 +33,9 @@ class UtilitiesService {
         // For Courier
         case Roles.Courier:
           // Set the normal statuses
-          normalStatuses = [shipmentStatusesEnum.ReadyForDispatch, shipmentStatusesEnum.PickUpAtWarehouse, shipmentStatusesEnum.InTransit];
+          normalStatuses = [shipmentStatusesEnum.ReadyForDispatch, shipmentStatusesEnum.PickUpAtWarehouse, shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered];
           // Set the Approved statuses
-          approvedStatuses = [shipmentStatusesEnum.Delivered, shipmentStatusesEnum.ProofOfDelivery];
+          approvedStatuses = [shipmentStatusesEnum.ProofOfDelivery];
           break;
 
         // For Site
