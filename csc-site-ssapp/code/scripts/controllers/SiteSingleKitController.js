@@ -20,7 +20,11 @@ class SiteSingleKitController extends WebcController {
 
   attachEventListeners() {
     this.toggleAccordionItemHandler();
-    this.onTagClick('manage-kit', () => {
+    this.onTagClick('manage-kit', async(model) => {
+              this.navigateToPageTag('dispense-kit', {
+                studyId: model.kitModel.kit.studyId,
+                orderId: model.kitModel.kit.orderId
+              });
     });
   }
 
@@ -39,6 +43,7 @@ class SiteSingleKitController extends WebcController {
     }
 
     this.model = model;
+
   }
 
   getShipmentComments(kit) {
