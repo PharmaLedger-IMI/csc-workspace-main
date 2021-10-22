@@ -61,6 +61,13 @@
       "src": "kit.html",
       "tag": "kit",
       "indexed": false
+    },
+    {
+      "name": "Dispense Kit",
+      "path": "/dispense-kit",
+      "src": "dispense-kit.html",
+      "tag": "dispense-kit",
+      "indexed": false
     }
   ],
   "skin": "default"

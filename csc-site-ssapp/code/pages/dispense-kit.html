@@ -1,0 +1,85 @@
+<webc-container controller='DispenseKitController'>
+    <main class='full-flex-column'>
+        <section>
+            <webc-template template='header-template'></webc-template>
+            <webc-template template='dashboard-menu'></webc-template>
+        </section>
+
+        <section class='header-section'>
+            <div class='navigation-section'>
+          <span class='nav-back' data-tag='nav-back'>
+                      <svg viewBox='0 0 52 52' x='0px'
+                           xml:space='preserve' xmlns='http://www.w3.org/2000/svg'
+                           y='0px'>
+                          <path
+                                  d='M50,24H6.83L27.41,3.41a2,2,0,0,0,0-2.82,2,2,0,0,0-2.82,0l-24,24a1.79,1.79,0,0,0-.25.31A1.19,1.19,0,0,0,.25,25c0,.07-.07.13-.1.2l-.06.2a.84.84,0,0,0,0,.17,2,2,0,0,0,0,.78.84.84,0,0,0,0,.17l.06.2c0,.07.07.13.1.2a1.19,1.19,0,0,0,.09.15,1.79,1.79,0,0,0,.25.31l24,24a2,2,0,1,0,2.82-2.82L6.83,28H50a2,2,0,0,0,0-4Z' />
+                      </svg>
+          </span>
+<!--                <span data-tag='dashboard'>Kits</span> / <strong>{{@kitModel.kit.kitId}} Kit-1234</strong>-->
+                <span data-tag='dashboard'>Dashboard</span> / <span data-tag='kits-management'>Kits Management</span> / <span>{{@studyId}} - {{@orderId}}</span> / <strong>Kits</strong>
+            </div>
+            <div class='body-main-section'>
+
+                    <div class='entity-title'><center><b>Dispense Kits</b></center></div>
+<!--                <div class="grid-column-wrapper">-->
+                <div class="form-group">
+                    <label>{{@kitModel.form.patientId.label}}</label>
+                    <select class="form-control form-control-sm" data-for="@kitModel.form.patientId.options" id="@kitModel.form.patientId.name" name="@kitModel.form.patientId.name" value="@kitModel.form.patientId.value">
+                        <option value="@value">{{@label}}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>{{@kitModel.form.doseType.label}}</label>
+                    <select class="form-control form-control-sm" data-for="@kitModel.form.doseType.options" id="@kitModel.form.doseType.name" name="@kitModel.form.doseType.name" value="@kitModel.form.doseType.value">
+                        <option value="@value">{{@label}}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>{{@kitModel.form.doseVolume.label}}</label>
+                    <select class="form-control form-control-sm" data-for="@kitModel.form.doseVolume.options" id="@kitModel.form.doseVolume.name" name="@kitModel.form.doseVolume.name" value="@kitModel.form.doseVolume.value">
+                        <option value="@value">{{@label}}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>{{@kitModel.form.visitId.label}}</label>
+                    <select class="form-control form-control-sm" data-for="@kitModel.form.visitId.options" id="@kitModel.form.visitId.name" name="@kitModel.form.visitId.name" value="@kitModel.form.visitId.value">
+                        <option value="@value">{{@label}}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>{{@kitModel.form.visit_date.label}}</label>
+                    <div class="row">
+                        <div class="col-8">
+                            <input class="form-control" data-view-model="@kitModel.form.visit_date" type="date" />
+                        </div>
+                        <div class="col-4">
+                            <input class="form-control" data-view-model="@kitModel.form.visit_time" type="time" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>{{@kitModel.form.dispensingPartyId.label}}</label>
+                    <select class="form-control form-control-sm" data-for="@kitModel.form.dispensingPartyId.options" id="@kitModel.form.dispensingPartyId.name" name="@kitModel.form.dispensingPartyId.name" value="@kitModel.form.dispensingPartyId.value">
+                        <option value="@value">{{@label}}</option>
+                    </select>
+                </div>
+
+                <div class='row-wrapper button-wrapper'>
+<!--                        <div data-if='@actions.canManageKits'>-->
+                            <button class='btn-default' data-tag='dispense-kits'>
+                                <span class='fas fa-medkit mr-2'></span>
+                                Dispense Kits
+                            </button>
+<!--                        </div>-->
+                </div>
+
+            </div>
+<!--            </div>-->
+        </section>
+    </main>
+</webc-container>

@@ -6,53 +6,30 @@ const { shipmentStatusesEnum, shipmentPendingActionEnum } = cscServices.constant
 const momentService = cscServices.momentService;
 const { Commons } = cscServices.constants;
 
-class SiteSingleKitController extends WebcController {
+class DispenseKitController extends WebcController {
 
   constructor(...props) {
     super(...props);
 
     this.kitsService = new KitsService(this.DSUStorage);
     this.initViewModel();
-    this.openFirstAccordion();
-    this.attachEventListeners();
-  }
-
-  attachEventListeners() {
-    this.toggleAccordionItemHandler();
-    this.onTagClick('manage-kit', async(model) => {
-              this.navigateToPageTag('dispense-kit', {
-                studyId: model.kitModel.kit.studyId,
-                orderId: model.kitModel.kit.orderId
-              });
-    });
+//    this.openFirstAccordion();
+//    this.attachEventListeners();
   }
 
   async initViewModel() {
     const model = {
       kitModel: viewModelResolver('kit')
     };
-
-    let { keySSI } = this.history.location.state;
-    model.keySSI = keySSI;
-    model.kitModel.kit = await this.kitsService.getKitDetails(model.keySSI);
-    model.kitModel.kit = { ...this.transformKitData(model.kitModel.kit) };
-
-    if (model.kitModel.kit.shipmentComments) {
-      model.kitModel.kit.comments = this.getShipmentComments(model.kitModel.kit);
-    }
+      let { studyId, orderId } = this.history.location.state;
+      this.model.studyId = studyId;
+      this.model.orderId = orderId;
+//    let { keySSI } = this.history.location.state;
+//    model.keySSI = keySSI;
+//    model.kitModel.kit = await this.kitsService.getKitDetails(model.keySSI);
 
     this.model = model;
 //    console.log("Kit Details", JSON.stringify(this.model));
-  }
-
-  getShipmentComments(kit) {
-    console.log("Shipment Comments 2", JSON.stringify(kit.shipmentComments));
-    let comments = kit.shipmentComments;
-    console.log("Shipment Comments 3", JSON.stringify(comments));
-    comments.forEach((comment) => {
-      comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
-    });
-    return comments;
   }
 
   getDateTime(timestamp) {
@@ -60,30 +37,6 @@ class SiteSingleKitController extends WebcController {
       date: momentService(timestamp).format(Commons.YMDDateTimeFormatPattern),
       time: momentService(timestamp).format(Commons.HourFormatPattern)
     };
-  }
-
-  transformKitData(data) {
-    if (data) {
-      data.status_value = data.status.sort((function (a, b) {
-        return new Date(b.date) - new Date(a.date);
-      }))[0].status;
-
-      if (data.status_value === shipmentStatusesEnum.Received) {
-        data.status_value = shipmentStatusesEnum.Received;
-      }
-
-      data.status_date = momentService(data.status.sort((function (a, b) {
-        return new Date(b.date) - new Date(a.date);
-      }))[0].date).format(Commons.DateTimeFormatPattern);
-
-      if (data.receivedDateTime) {
-        data.receivedDateTime = this.getDateTime(data.receivedDateTime)
-      }
-
-      data.pending_action = this.getPendingAction(data.status_value);
-      return data;
-    }
-    return {};
   }
 
   getPendingAction(status_value) {
@@ -120,4 +73,4 @@ class SiteSingleKitController extends WebcController {
     panel.style.maxHeight = '1000px';
   }
 }
-export default SiteSingleKitController;
+export default DispenseKitController;
