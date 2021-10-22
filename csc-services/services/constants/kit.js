@@ -8,6 +8,7 @@ const kitsStatusesEnum = {
 
 
 const kitsPendingActionEnum = {
+	ManageKit:"Manage Kit",
 	Assign: 'Assign',
 	Dispense: 'Dispense',
 	Administer: 'Administer',
