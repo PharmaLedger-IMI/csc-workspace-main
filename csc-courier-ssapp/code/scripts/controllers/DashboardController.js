@@ -104,7 +104,7 @@ class DashboardController extends WebcController {
       	shipmentStatus = data.message.operation;
       	const messageData = data.message.data;
       	const { shipmentSSI } = messageData;
-        shipmentData = await this.shipmentService.shipmentReceivedForCourier(shipmentSSI, this.role);
+        shipmentData = await this.shipmentService.updateShipmentStatus(shipmentSSI, this.role);
       	break;
       }
     }

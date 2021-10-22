@@ -455,7 +455,7 @@ class ShipmentsService extends DSUService {
 		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
 	}
 
-	async shipmentReceivedForCourier(shipmentSSI, role) {
+	async updateShipmentStatus(shipmentSSI, role) {
     	let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
     	const status = await this.getEntityAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
     	shipmentDB.status = status.history;
