@@ -270,6 +270,13 @@ class ShipmentsService extends DSUService {
 			shipmentReceivedDSUMessage,
 			shipmentStatusesEnum.Received
 		);
+        const courierMessage = { shipmentSSI: shipmentKeySSI };
+		this.sendMessageToEntity(
+        	CommunicationService.identities.CSC.COU_IDENTITY,
+        	shipmentStatusesEnum.ProofOfDelivery,
+        	courierMessage,
+        	shipmentStatusesEnum.ProofOfDelivery
+        );
 	}
 
 	//add new data to shipmentTransitDSU and update shipment status
@@ -447,6 +454,20 @@ class ShipmentsService extends DSUService {
 		shipmentDB.status = status.history;
 		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
 	}
+
+	async shipmentReceivedForCourier(shipmentSSI, role) {
+    	let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
+    	const status = await this.getEntityAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
+    	shipmentDB.status = status.history;
+    	if (role === Roles.Courier) {
+            shipmentDB.status.forEach(shipmentStatus => {
+            if (shipmentStatus.status === shipmentStatusesEnum.Received) {
+            	shipmentStatus.status = shipmentStatusesEnum.ProofOfDelivery;
+            }
+            });
+        }
+    		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
+    	}
 
 	async updateLocalShipment(shipmentSSI, newShipmentData = {}) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);

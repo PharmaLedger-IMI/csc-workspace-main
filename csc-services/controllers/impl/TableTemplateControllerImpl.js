@@ -1,5 +1,7 @@
 // eslint-disable-next-line no-undef
+const cscServices = require('csc-services');
 const { WebcController } = WebCardinal.controllers;
+const momentService = cscServices.momentService;
 
 class TableTemplateControllerImpl extends WebcController {
   constructor(role, ...props) {
@@ -9,8 +11,43 @@ class TableTemplateControllerImpl extends WebcController {
     this.init();
   }
 
+  sortingFn(column, sorting, type){
+    return ( a, b ) => {
+
+      let compA = "";
+      let compB = "";
+
+      if(sorting && type && column){
+
+        switch(type){
+          case('date'):
+             compA = momentService(a[column]).valueOf();
+             compB = momentService(b[column]).valueOf();
+             break;
+          case('string'):
+          case('number'):
+             compA = a[column];
+             compB = b[column];
+             break;
+        }
+
+        switch(sorting){
+          case('asc') :
+            return compA <= compB ? 1 : -1;
+          case('desc') :
+            return compA >= compB ? -1 : 1;
+        }
+
+      }
+    }
+  }
+
   async init() {
     this.paginateData(this.model.data);
+    // Init Sort of Table
+    if (this.model.defaultSortingRule) {
+      this.sortColumn(this.model.defaultSortingRule.column, this.model.defaultSortingRule.sorting, this.model.defaultSortingRule.type);
+    }
   }
 
   attachEvents() {
@@ -89,7 +126,7 @@ class TableTemplateControllerImpl extends WebcController {
     }
   }
 
-  sortColumn(column) {
+  sortColumn(column, sorting, type) {
     if (column || this.model.headers.some((x) => x.asc || x.desc)) {
       if (!column) column = this.model.headers.find((x) => x.asc || x.desc).column;
 
@@ -100,8 +137,10 @@ class TableTemplateControllerImpl extends WebcController {
       if (headers[idx].notSortable) return;
 
       if (headers[idx].asc || headers[idx].desc) {
-        const data = JSON.parse(JSON.stringify(this.model.data));
-        data.reverse();
+        let data = JSON.parse(JSON.stringify(this.model.data));
+
+          data.reverse();
+
         this.model.data = data;
         this.model.headers = this.model.headers.map((x) => {
           if (x.column !== column) {
@@ -114,8 +153,14 @@ class TableTemplateControllerImpl extends WebcController {
             return { ...x, asc: false, desc: false };
           } else return { ...x, asc: true, desc: false };
         });
+
         const data = JSON.parse(JSON.stringify(this.model.data));
-        this.model.data = data.sort((a, b) => (a[column] >= b[column] ? 1 : -1));
+
+        if(sorting && type){
+          this.model.data = data.sort(this.sortingFn(column, sorting, type));
+        }else{
+          this.model.data = data.sort((a, b) => (a[column] >= b[column] ? 1 : -1));
+        }
       }
     } else {
       this.model.headers = this.model.headers.map((x) => ({ ...x, asc: false, desc: false }));

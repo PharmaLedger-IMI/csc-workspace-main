@@ -123,7 +123,12 @@ class StudiesKitsControllerImpl extends WebcController {
       kitsListNotEmpty: true,
       pagination: this.getPaginationViewModel(),
       headers: studiesKitsTableHeaders,
-      tableLength: studiesKitsTableHeaders.length
+      tableLength: studiesKitsTableHeaders.length,
+      defaultSortingRule: {
+        sorting: 'desc',
+        column: "lastModified",
+        type : 'date'
+      }
     };
   }
 

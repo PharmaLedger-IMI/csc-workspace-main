@@ -51,6 +51,7 @@ class KitsControllerImpl extends WebcController {
 					return new Date(b.date) - new Date(a.date);
 				})[0];
 
+				item.investigatorId = data.investigatorId?data.investigatorId:"-";
 				item.status_value = latestStatus.status;
 				item.receivedDate = momentService(receivedStatus.date).format(Commons.DateTimeFormatPattern);
 				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
@@ -111,7 +112,7 @@ class KitsControllerImpl extends WebcController {
 	filterData() {
 		let result = this.kits;
 		if (this.model.search.value && this.model.search.value !== '') {
-			result = result.filter((x) => 
+			result = result.filter((x) =>
 				x.kitId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
 				x.shipmentId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
 				x.investigatorId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
@@ -136,7 +137,13 @@ class KitsControllerImpl extends WebcController {
 			kitsListNotEmpty: true,
 			pagination: this.getPaginationViewModel(),
 			headers: kitsTableHeaders,
-			tableLength: kitsTableHeaders.length
+			tableLength: kitsTableHeaders.length,
+			defaultSortingRule: {
+				sorting: 'desc',
+				column: "lastModified",
+				type : 'date'
+			}
+
 		};
 	}
 
