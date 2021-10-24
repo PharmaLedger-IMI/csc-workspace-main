@@ -33,7 +33,7 @@ class SiteSingleKitController extends WebcController {
     });
 
     this.onTagClick('assign-kit', () => {
-      this.navigateToPageTag('scan-kit', {
+      this.navigateToPageTag('assign-kit', {
         kit: {
           kitId: this.model.kitModel.kit.kitId,
           ...this.model.toObject('kitModel.kit')
@@ -58,6 +58,7 @@ class SiteSingleKitController extends WebcController {
     }
     model.actions = this.setKitActions(model.kitModel.kit);
     this.model = model;
+    console.log("this.model " + JSON.stringify(this.model));
   }
 
   setKitActions(kit) {

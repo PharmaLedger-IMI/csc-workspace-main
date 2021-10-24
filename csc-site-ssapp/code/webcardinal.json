@@ -75,6 +75,13 @@
       "src": "scan-kit.html",
       "indexed": false,
       "tag": "scan-kit"
+    },
+    {
+      "name": "Assign Kit",
+      "path": "./assign-kit",
+      "src": "assign-kit.html",
+      "indexed": false,
+      "tag": "assign-kit"
     }
   ],
   "skin": "default"

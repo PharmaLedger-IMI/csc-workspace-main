@@ -1,7 +1,7 @@
 const constants = require('csc-services').constants;
 const orderBusinessRequirements = constants.order.orderBusinessRequirements;
 const kitBusinessRequirements = constants.kit.kitBusinessRequirements;
-const { patientsId, doseTypes, doseVolumes, visitIds, dispensingPartyIds } = kitBusinessRequirements;
+const { patientsId, doseTypes, doseVolumes, visitIds, dispensingPartyIds, investigatorIds } = kitBusinessRequirements;
 const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
 const DAYS_AHEAD = orderBusinessRequirements.DeliveryDateDaysAhead;
 const momentService = require("csc-services").momentService;
@@ -209,6 +209,15 @@ const kitViewModel = {
               options: dispensingPartyIds.map((x) => {return {label:x.name, value:x.name}}),
               value: '',
         },
+		investigatorId: {
+			label: 'Investigator ID',
+			name: 'investigator-id',
+			id: 'investigator-id',
+			required: true,
+			placeholder: '',
+			options: investigatorIds.map((x) => {return {label:x.name, value:x.name}}),
+			value: '',
+	  },
 	}
 
 };
