@@ -33,7 +33,16 @@ class SiteSingleKitController extends WebcController {
     });
 
     this.onTagClick('assign-kit', () => {
-      this.navigateToPageTag('scan-kit', {
+      this.navigateToPageTag('assign-kit', {
+        kit: {
+          kitId: this.model.kitModel.kit.kitId,
+          ...this.model.toObject('kitModel.kit')
+        }
+      });
+    });
+
+    this.onTagClick('dispense-kit', () => {
+      this.navigateToPageTag('dispense-kit', {
         kit: {
           kitId: this.model.kitModel.kit.kitId,
           ...this.model.toObject('kitModel.kit')
@@ -62,6 +71,7 @@ class SiteSingleKitController extends WebcController {
 
   setKitActions(kit) {
     const actions = {};
+    actions.canDispenseKit = kit.status_value === kitsStatusesEnum.Assigned;
     actions.canAssignKit = kit.status_value === kitsStatusesEnum.AvailableForAssignment;
     actions.canManageKit = kit.status_value === kitsStatusesEnum.Received;
     this.attachSiteEventHandlers();
