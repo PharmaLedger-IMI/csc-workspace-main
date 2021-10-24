@@ -76,10 +76,21 @@
             </div>
           </div>
           <div class='row-wrapper button-wrapper'>
-                  <button class='btn-default' data-tag='manage-kit'>
-                    <span class='fas fa-icon fa-qrcode'></span>
-                    Manage Kit
-                  </button>
+            <div data-if='@actions.canManageKit'>
+            <button class='btn-default' data-tag='manage-kit'>
+              <span class='fas fa-icon fa-qrcode'></span>
+              Manage Kit
+            </button>
+          </div>
+          </div>
+          </div>
+          <div class='row-wrapper button-wrapper'>
+            <div data-if='@actions.canAssignKit'>
+              <button class='btn-default' data-tag='assign-kit'>
+                <span class='fas fa-medkit mr-2'></span>
+                Assign Kits
+              </button>
+            </div>
           </div>
         </div>
         </div>
