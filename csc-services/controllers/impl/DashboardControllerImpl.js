@@ -6,10 +6,12 @@ const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
-const { order, shipment, Roles, Topics } = cscServices.constants;
+const { order, shipment, Roles, Topics, kit } = cscServices.constants;
 const { NotificationTypes } = cscServices.constants.notifications;
 const { orderStatusesEnum } = order;
 const { shipmentStatusesEnum , shipmentsEventsEnum} = shipment;
+const { kitsMessagesEnum } = kit;
+const KitsService = cscServices.KitsService;
 
 const csIdentities = {};
 csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
@@ -26,6 +28,7 @@ class DashboardControllerImpl extends WebcController {
 		this.shipmentService = new ShipmentsService(this.DSUStorage);
 		this.communicationService = CommunicationService.getInstance(csIdentities[role]);
 		this.notificationsService = new NotificationsService(this.DSUStorage, this.communicationService);
+		this.kitsService = new KitsService(this.DSUStorage);
 
 		let selectedTab;
 
@@ -78,6 +81,7 @@ class DashboardControllerImpl extends WebcController {
 
 			await this.handleOrderMessages(data);
 			await this.handleShipmentMessages(data);
+			await this.handleKitsMessages(data);
 		});
 	}
 
@@ -140,6 +144,18 @@ class DashboardControllerImpl extends WebcController {
 		}
 		
 		console.log('notification added', notification, notificationResult);
+	}
+
+	async handleKitsMessages(data) {
+		data = JSON.parse(data);
+		console.log('message received', data);
+		const [kitsData, notificationRole] = await this.processKitsMessage(data);
+		if (!kitsData || !notificationRole) {
+			return;
+		}
+
+		// TODO: to be used on view kits on sponsor
+		// eventBusService.emitEventListeners(Topics.RefreshKits, null);
 	}
 
 	async processOrderMessage(data) {
@@ -273,6 +289,21 @@ class DashboardControllerImpl extends WebcController {
 		}
 
 		return [shipmentData, shipmentStatus, notificationRole];
+	}
+
+	async processKitsMessage(data) {
+		let kitsData;
+		let kitsMessage = data.message.operation;
+		let notificationRole;
+
+		switch (kitsMessage) {
+			case kitsMessagesEnum.ShipmentSigned: {
+				notificationRole = Roles.Site;
+				const { studyKeySSI } = data.message.data;
+				kitsData = await this.kitsService.getStudyKitsDSUAndUpdate(studyKeySSI);
+				return [kitsData, notificationRole];
+			}
+		}
 	}
 }
 

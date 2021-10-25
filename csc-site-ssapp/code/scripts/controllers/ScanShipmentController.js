@@ -6,18 +6,17 @@ const OrderService = cscServices.OrderService;
 const KitsService = cscServices.KitsService;
 const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
-const { Roles, Topics } = cscServices.constants;
-
-
+const { Roles, Topics, kit } = cscServices.constants;
+const { kitsMessagesEnum } = kit;
 class ScanShipmentController extends WebcController {
 
   constructor(...props) {
     super(...props);
     this.originalShipment = this.history.location.state.shipment;
-    let communicationService = CommunicationService.getInstance(Roles.Courier);
-    this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
-    this.orderService = new OrderService(this.DSUStorage, communicationService);
-    this.kitsService = new KitsService(this.DSUStorage, communicationService);
+    this.communicationService = CommunicationService.getInstance(Roles.Site);
+    this.shipmentService = new ShipmentService(this.DSUStorage, this.communicationService);
+    this.orderService = new OrderService(this.DSUStorage, this.communicationService);
+    this.kitsService = new KitsService(this.DSUStorage, this.communicationService);
     this.model = { shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;
     this.retrieveKitIds(this.originalShipment.kitIdSSI);
@@ -133,7 +132,13 @@ class ScanShipmentController extends WebcController {
         console.log(progress);
       })
 
-      // TODO:  send a message to SPONSOR with the studyKitData.keySSI(studyKitDSU)
+      this.communicationService.sendMessage(CommunicationService.identities.CSC.SPONSOR_IDENTITY, {
+        operation: kitsMessagesEnum.ShipmentSigned,
+        data: {
+          studyKeySSI: studyKitData.keySSI
+        },
+        shortDescription: 'Shipment Signed'
+      });
       this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', { tag: 'shipment', state: { keySSI: this.model.shipment.shipmentSSI } }, 2000);
       window.WebCardinal.loader.hidden = true;
   }

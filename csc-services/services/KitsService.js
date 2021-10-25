@@ -22,6 +22,7 @@ class KitsService extends DSUService {
     return kitsDataDsu;
   }
 
+  // TODO: Fotis: Rafael why separate arg studyId? Isn't studyId inside studyKitData?
   async addStudyKitDataToDb(studyId, studyKitData) {
     let studyKitsDb;
     try {
@@ -124,6 +125,18 @@ class KitsService extends DSUService {
     await this.updateEntityAsync(studyKitsDSU, FoldersEnum.StudyKits);
     //update kits database
     return await this.addStudyKitDataToDb(kitDSU.studyId, studyKitsDSU);
+  }
+
+  async getStudyKitsDSUAndUpdate(studyKeySSI) {
+    let studyKitsDSU;
+    try {
+      studyKitsDSU = await this.getEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
+    } catch (e) {
+      await this.mountEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
+      studyKitsDSU = await this.getEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
+    }
+
+    return await this.addStudyKitDataToDb(studyKitsDSU.studyId, studyKitsDSU);
   }
 }
 
