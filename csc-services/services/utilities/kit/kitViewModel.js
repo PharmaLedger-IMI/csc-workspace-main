@@ -1,7 +1,7 @@
 const constants = require('csc-services').constants;
 const orderBusinessRequirements = constants.order.orderBusinessRequirements;
 const kitBusinessRequirements = constants.kit.kitBusinessRequirements;
-const { patientsId, doseTypes, doseVolumes, visitIds, dispensingPartyIds } = kitBusinessRequirements;
+const { patientsId, doseTypes, doseVolumes, visitIds, dispensingPartyIds, investigatorIds } = kitBusinessRequirements;
 const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
 const DAYS_AHEAD = orderBusinessRequirements.DeliveryDateDaysAhead;
 const momentService = require("csc-services").momentService;
@@ -125,11 +125,27 @@ const kitViewModel = {
 			disabled: false,
 			value: '',
 		},
-		temperature_observed: {
-			label: 'Actual Temperature Observed',
-			name: 'Temperature Observed',
+		kit_comment: {
+			label: 'Kit Comment',
+			name: 'kit_comment',
 			required: true,
-			placeholder: 'Temperature Observed',
+			placeholder: 'Kit comment',
+			disabled: false,
+			value: '',
+		},
+		temperature_observed: {
+			label: 'Shipment Actual Temperature Observed',
+			name: 'Shipment Temperature Observed',
+			required: true,
+			placeholder: 'Shipment Temperature Observed',
+			disabled: false,
+			value: '',
+		},
+		kit_temperature_observed: {
+			label: 'Kit Actual Temperature Observed',
+			name: 'Kit Temperature Observed',
+			required: true,
+			placeholder: 'Kit Temperature Observed',
 			disabled: false,
 			value: '',
 		},
@@ -209,6 +225,15 @@ const kitViewModel = {
               options: dispensingPartyIds.map((x) => {return {label:x.name, value:x.name}}),
               value: '',
         },
+		investigatorId: {
+			label: 'Investigator ID',
+			name: 'investigator-id',
+			id: 'investigator-id',
+			required: true,
+			placeholder: '',
+			options: investigatorIds.map((x) => {return {label:x.name, value:x.name}}),
+			value: '',
+	  },
 	}
 
 };
