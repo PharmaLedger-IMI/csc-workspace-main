@@ -25,7 +25,7 @@
 
                 <div class="form-group">
                     <label>{{@kitModel.form.investigatorId.label}}</label>
-                    <select class="form-control form-control-sm" data-for="@kitModel.form.investigatorId.options"
+                    <select class="form-control form-control-sm" style="width: 50%;" data-for="@kitModel.form.investigatorId.options"
                         id="@kitModel.form.investigatorId.name" name="@kitModel.form.investigatorId.name"
                         value="@kitModel.form.investigatorId.value">
                         <option value="@value">{{@label}}</option>
@@ -33,7 +33,7 @@
                 </div>
 
                 <div class='row-wrapper button-wrapper'>
-                    <button class='btn-default' data-tag='dispense-kits'>
+                    <button class='btn-default' data-tag='assign-kit'>
                         <span class='fas fa-medkit mr-2'></span>
                         Assign Kit
                     </button>

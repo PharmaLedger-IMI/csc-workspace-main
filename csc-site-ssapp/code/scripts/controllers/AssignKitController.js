@@ -23,7 +23,7 @@ class AssignKitController extends WebcController {
   }
 
   initHandlers() {
-    this.onTagEvent('sign_button', 'click', (e) => {
+    this.onTagEvent('assign-kit', 'click', (e) => {
       this.sign();
     });
   }
