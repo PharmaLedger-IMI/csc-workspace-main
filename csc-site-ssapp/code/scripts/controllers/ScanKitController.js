@@ -95,13 +95,14 @@ class ScanKitController extends WebcController {
       entity: Roles.Site,
       comment: this.model.kitModel.form.add_comment.value
     }
-    await this.kitsService.updateKit(this.model.kit.keySSI, kitsStatusesEnum.AvailableForAssignment, {
-        kitActualTemperatureObserved: this.model.kitModel.form.temperature.value,
-        kitComment: receivedComment
-      });
-    eventBusService.emitEventListeners(Topics.RefreshKits, null);
 
-    this.showErrorModalAndRedirect('Kit is marked as available for assignment', 'Kit available for assignment', { tag: 'kit', state: { keySSI: this.model.kit.keySSI } }, 2000);
+    await this.kitsService.updateKit(this.model.kit.keySSI, kitsStatusesEnum.AvailableForAssignment, {
+      kitActualTemperatureObserved: this.model.kitModel.form.temperature.value,
+      kitComment: receivedComment
+    });
+
+    eventBusService.emitEventListeners(Topics.RefreshKits, null);
+    this.showErrorModalAndRedirect('Kit is marked as available for assignment', 'Kit Available', { tag: 'kit', state: { keySSI: this.model.kit.keySSI } }, 2000);
 
     window.WebCardinal.loader.hidden = true;
   }
