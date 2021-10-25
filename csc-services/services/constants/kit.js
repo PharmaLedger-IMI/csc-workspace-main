@@ -15,6 +15,10 @@ const kitsPendingActionEnum = {
 	NoFurtherActionsRequired: 'No further actions required'
 };
 
+const kitsMessagesEnum = {
+	ShipmentSigned: 'Shipment Signed By Site',
+}
+
 const studiesKitsTableHeaders = [
 	{
 		column: 'studyId',
@@ -159,4 +163,5 @@ module.exports = {
 	studiesKitsTableHeaders,
 	kitsPendingActionEnum,
 	kitBusinessRequirements,
+	kitsMessagesEnum
 };
