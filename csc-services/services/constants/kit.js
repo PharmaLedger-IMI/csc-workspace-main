@@ -15,6 +15,10 @@ const kitsPendingActionEnum = {
 	NoFurtherActionsRequired: 'No further actions required'
 };
 
+const kitsMessagesEnum = {
+	ShipmentSigned: 'Shipment Signed By Site',
+}
+
 const studiesKitsTableHeaders = [
 	{
 		column: 'studyId',
@@ -150,7 +154,8 @@ const kitBusinessRequirements = {
 	doseTypes : [{name: "Syringe"},{name: "Dose Type 2"}],
 	doseVolumes : [{name: "10"},{name: "20"}],
     visitIds : [{name: "Visit ID 1"},{name: "Visit ID 2"}],
-    dispensingPartyIds : [{name: "Dispensing Party ID 1"},{name: "Dispensing Party ID 2"}]
+    dispensingPartyIds : [{name: "Dispensing Party ID 1"},{name: "Dispensing Party ID 2"}],
+	investigatorIds : [{name: "Investigator ID 1"},{name: "Investigator ID 2"}]
 }
 
 module.exports = {
@@ -159,4 +164,5 @@ module.exports = {
 	studiesKitsTableHeaders,
 	kitsPendingActionEnum,
 	kitBusinessRequirements,
+	kitsMessagesEnum
 };

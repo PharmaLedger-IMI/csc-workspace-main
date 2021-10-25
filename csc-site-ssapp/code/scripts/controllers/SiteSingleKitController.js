@@ -50,9 +50,11 @@ class SiteSingleKitController extends WebcController {
       });
     });
 
+
     this.onTagEvent('history-button', 'click', (e) => {
         this.onShowHistoryClick();
     });
+
   }
 
   async initViewModel() {
@@ -68,8 +70,12 @@ class SiteSingleKitController extends WebcController {
     if (model.kitModel.kit.shipmentComments) {
       model.kitModel.kit.comments = this.getShipmentComments(model.kitModel.kit);
     }
+    if (model.kitModel.kit.kitComment) {
+      model.kitModel.kit.kitcomments = this.getKitComments(model.kitModel.kit);
+    }
     model.actions = this.setKitActions(model.kitModel.kit);
     this.model = model;
+    console.log("this.model " + JSON.stringify(this.model));
   }
 
   setKitActions(kit) {
@@ -77,6 +83,7 @@ class SiteSingleKitController extends WebcController {
     actions.canDispenseKit = kit.status_value === kitsStatusesEnum.Assigned;
     actions.canAssignKit = kit.status_value === kitsStatusesEnum.AvailableForAssignment;
     actions.canManageKit = kit.status_value === kitsStatusesEnum.Received;
+    actions.canDispenseKit = kit.status_value === kitsStatusesEnum.Assigned;
     this.attachSiteEventHandlers();
     return actions;
   }
@@ -87,6 +94,12 @@ class SiteSingleKitController extends WebcController {
       comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
     });
     return comments;
+  }
+
+  getKitComments(kit) {
+    let comment = kit.kitComment;
+    comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
+    return comment;
   }
 
   getDateTime(timestamp) {
@@ -127,7 +140,7 @@ class SiteSingleKitController extends WebcController {
       case kitsStatusesEnum.AvailableForAssignment:
         return kitsPendingActionEnum.Assign;
       case kitsStatusesEnum.Assigned:
-        return kitsPendingActionEnum.Administer;
+        return kitsPendingActionEnum.Dispense;
     }
 
     return kitsPendingActionEnum.NoFurtherActionsRequired;
