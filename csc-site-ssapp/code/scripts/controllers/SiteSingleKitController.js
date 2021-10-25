@@ -136,7 +136,7 @@ class SiteSingleKitController extends WebcController {
       case kitsStatusesEnum.AvailableForAssignment:
         return kitsPendingActionEnum.Assign;
       case kitsStatusesEnum.Assigned:
-        return kitsPendingActionEnum.Administer;
+        return kitsPendingActionEnum.Dispense;
     }
 
     return kitsPendingActionEnum.NoFurtherActionsRequired;
