@@ -107,7 +107,6 @@ class ScanShipmentController extends WebcController {
       let payload = {
             receivedDateTime: new Date().getTime()
       };
-      let {keySSI}  = this.model.shipment.shipmentSSI;
       this.model.disableSign = true;
       window.WebCardinal.loader.hidden = false;
       payload.shipmentId = this.model.shipment.shipmentId;
