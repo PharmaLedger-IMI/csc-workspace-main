@@ -4,7 +4,7 @@ const KitsService = cscServices.KitsService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const momentService = cscServices.momentService;
-const { Commons } = cscServices.constants;
+const { Commons, Topics } = cscServices.constants;
 const {kitsStatusesEnum, kitsPendingActionEnum} = cscServices.constants.kit;
 
 class SiteSingleKitController extends WebcController {
@@ -49,8 +49,11 @@ class SiteSingleKitController extends WebcController {
         }
       });
     });
+
+    this.onTagEvent('history-button', 'click', (e) => {
+        this.onShowHistoryClick();
+    });
   }
-  
 
   async initViewModel() {
     const model = {
@@ -154,5 +157,27 @@ class SiteSingleKitController extends WebcController {
     targetIcon.classList.toggle('rotate-icon');
     panel.style.maxHeight = '1000px';
   }
+
+  onShowHistoryClick() {
+      let { kitModel } = this.model.toObject();
+
+      const historyModel = {
+        kit: kitModel.kit,
+        currentPage: Topics.Kits
+      };
+
+      this.createWebcModal({
+        template: 'kitHistoryModal',
+        controller: 'kitHistoryModalController',
+        model: historyModel,
+        disableBackdropClosing: false,
+        disableFooter: true,
+        disableExpanding: true,
+        disableClosing: false,
+        disableCancelButton: true,
+        expanded: false,
+        centered: true
+      });
+    }
 }
 export default SiteSingleKitController;
