@@ -76,6 +76,7 @@ class SiteSingleKitController extends WebcController {
 
   setKitActions(kit) {
     const actions = {};
+    actions.canDispenseKit = kit.status_value === kitsStatusesEnum.Assigned;
     actions.canAssignKit = kit.status_value === kitsStatusesEnum.AvailableForAssignment;
     actions.canManageKit = kit.status_value === kitsStatusesEnum.Received;
     actions.canDispenseKit = kit.status_value === kitsStatusesEnum.Assigned;
