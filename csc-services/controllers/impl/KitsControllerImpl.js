@@ -66,6 +66,8 @@ class KitsControllerImpl extends WebcController {
 		this.attachExpressionHandlers();
 		this.viewKitHandler();
 		this.searchFilterHandler();
+		this.filterChangedHandler();
+    	this.filterClearedHandler();
 
 		this.onTagClick('dashboard', () => {
 			this.navigateToPageTag('dashboard');
@@ -96,8 +98,34 @@ class KitsControllerImpl extends WebcController {
 		});
 	}
 
+	filterChangedHandler() {
+		this.onTagClick('filters-changed', async (model, target) => {
+		  const selectedFilter = target.getAttribute('data-custom') || null;
+		  if (selectedFilter) {
+			this.querySelector(`#filter-${this.model.filter}`).classList.remove('selected');
+			this.model.filter = selectedFilter;
+			this.querySelector(`#filter-${this.model.filter}`).classList.add('selected');
+			this.filterData();
+		  }
+		});
+	  }
+	
+	  filterClearedHandler() {
+		this.onTagClick('filters-cleared', async () => {
+		  this.querySelector(`#filter-${this.model.filter}`).classList.remove('selected');
+		  this.model.filter = '';
+		  this.querySelector(`#filter-${this.model.filter}`).classList.add('selected');
+		  this.model.search.value = null;
+		  this.filterData();
+		});
+	  }
+
 	filterData() {
 		let result = this.kits;
+		if (this.model.filter) {
+			console.log("FILTER " + this.model.filter);
+			result = result.filter((x) => x.status_value === kitsStatusesEnum[this.model.filter]);
+		  }
 		if (this.model.search.value && this.model.search.value !== '') {
 			result = result.filter((x) =>
 				x.kitId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
