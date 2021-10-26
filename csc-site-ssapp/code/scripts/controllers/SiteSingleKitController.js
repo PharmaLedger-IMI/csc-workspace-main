@@ -21,6 +21,25 @@ class SiteSingleKitController extends WebcController {
 
   attachEventListeners() {
     this.toggleAccordionItemHandler();
+    this.navigationHandlers();
+  }
+
+  navigationHandlers() {
+    this.onTagClick('dashboard', () => {
+      this.navigateToPageTag('dashboard', { tab: Topics.Shipment });
+    });
+
+    this.onTagClick('kits-management', () => {
+      this.navigateToPageTag('dashboard', { tab: Topics.Kits });
+    });
+
+    this.onTagClick('view-study-kits', () => {
+      this.navigateToPageTag('study-kits', {
+        studyId: this.model.kitModel.kit.studyId,
+        orderId: this.model.kitModel.kit.orderId
+      });
+    });
+
   }
 
   attachSiteEventHandlers(){
