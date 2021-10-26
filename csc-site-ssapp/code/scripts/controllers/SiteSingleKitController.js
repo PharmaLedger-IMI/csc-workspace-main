@@ -6,6 +6,7 @@ const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const momentService = cscServices.momentService;
 const { Commons, Topics } = cscServices.constants;
 const {kitsStatusesEnum, kitsPendingActionEnum} = cscServices.constants.kit;
+const kitStatusesService = cscServices.KitStatusesService;
 
 class SiteSingleKitController extends WebcController {
 
@@ -128,6 +129,19 @@ class SiteSingleKitController extends WebcController {
       }
 
       data.pending_action = this.getPendingAction(data.status_value);
+      const statuses = kitStatusesService.getNormalAndApproveKitStatusByRole('Site');
+      const normalStatuses = statuses.normalKitStatuses;
+      const approvedStatuses = statuses.approvedKitStatuses;
+      data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
+      data.status_cancelled = data.status_value === kitsStatusesEnum.Cancelled;
+      data.status_normal = normalStatuses.indexOf(data.status_value) !== -1;
+      data.contextualContent = {
+         afterReceived: data.status.findIndex(el => el.status === kitsStatusesEnum.Received) !== -1,
+         afterAvailableForAssignment: data.status.findIndex(el => el.status === kitsStatusesEnum.AvailableForAssignment) !== -1,
+         afterAssigned: data.status.findIndex(el => el.status === kitsStatusesEnum.Assigned) !== -1,
+         afterDispensed: data.status.findIndex(el => el.status === kitsStatusesEnum.Dispensed) !== -1,
+         afterAdministrated: data.status.findIndex(el => el.status === kitsStatusesEnum.Administrated) !== -1
+       };
       return data;
     }
     return {};
