@@ -111,13 +111,18 @@
               <div class='col-12'>
                 <div class='form-group'>
                   <label>{{@kitModel.form.keep_between_temperature.label}}</label>
-                  <input class='form-control form-control-sm' readonly='readonly'
-                         name='@kitModel.form.keep_between_temperature_min.name'
-                         type='text' value='@kit.temperatures.min' />
-                  <label>{{@form.keep_between_temperature.andLabel}}</label>
-                  <input class='form-control form-control-sm' readonly='readonly'
-                         name='@kitModel.form.keep_between_temperature_max.name'
-                         type='text' value='@kit.temperatures.max' />
+                  <div class='row'>
+                    <div class='col-6'>
+                      <input class='form-control form-control-sm' readonly='readonly'
+                             name='@kitModel.form.keep_between_temperature_min.name'
+                             type='text' value='@kit.temperatures.min' />
+                    </div>
+                    <div class='col-6'>
+                      <input class='form-control form-control-sm' readonly='readonly'
+                             name='@kitModel.form.keep_between_temperature_max.name'
+                             type='text' value='@kit.temperatures.max' />
+                    </div>
+                  </div>
                 </div>
               </div>
 
