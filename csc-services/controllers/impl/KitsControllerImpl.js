@@ -123,7 +123,6 @@ class KitsControllerImpl extends WebcController {
 	filterData() {
 		let result = this.kits;
 		if (this.model.filter) {
-			console.log("FILTER " + this.model.filter);
 			result = result.filter((x) => x.status_value === kitsStatusesEnum[this.model.filter]);
 		  }
 		if (this.model.search.value && this.model.search.value !== '') {
