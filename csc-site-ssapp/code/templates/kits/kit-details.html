@@ -55,22 +55,27 @@
    <!-- Shipment Actual Temperature Observed -->
    <label>{{@form.temperature_observed.label}}</label>
    <input class="form-control form-control-sm" readonly="readonly" name="@form.temperature_observed.name" placeholder="@form.temperature_observed.placeholder" type="text" value="@kit.shipmentActualTemperature" />
- 
+
+</div>
+
+<div data-if='@kit.contextualContent.afterAvailableForAssignment'>
+    <div class="grid-column-wrapper">
     <!-- Kit Actual Temperature Observed -->
     <label>{{@form.kit_temperature_observed.label}}</label>
     <input class="form-control form-control-sm" readonly="readonly" name="@form.kit_temperature_observed.name" placeholder="@form.kit_temperature_observed.placeholder" type="text" value="@kit.kitActualTemperatureObserved" />
-  
+
     <!-- Kit Comments -->
-  <label>{{@form.kit_comment.label}}</label>
-  <div class='overflow-auto'>
-    <div class='container d-flex' data-if='@kit.kitcomments'>
-      <span class='py-3 text-muted' slot='false'>There is no comment added.</span>
-      <div class="comments-container py-5 flex-column" data-if="@kit.kitcomments" slot='true'>
-        <div class="comment">
-          <div class="identity"><small>{{@kit.kitcomments.entity}}</small>, <small>{{@kit.kitcomments.date}}</small></div>
-          <div>{{@kit.kitcomments.comment}}</div>
+    <label>{{@form.kit_comment.label}}</label>
+    <div class='overflow-auto'>
+        <div class='container d-flex' data-if='@kit.kitcomments'>
+            <span class='py-3 text-muted' slot='false'>There is no comment added.</span>
+            <div class="comments-container py-5 flex-column" data-if="@kit.kitcomments" slot='true'>
+                <div class="comment">
+                    <div class="identity"><small>{{@kit.kitcomments.entity}}</small>, <small>{{@kit.kitcomments.date}}</small></div>
+                    <div>{{@kit.kitcomments.comment}}</div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+    </div>
 </div>
