@@ -79,3 +79,10 @@
     </div>
     </div>
 </div>
+
+<div data-if='@kit.contextualContent.afterAssigned'>
+    <div class="grid-column-wrapper">
+        <label>{{@form.investigatorId.label}}</label>
+        <input class="form-control form-control-sm" readonly="readonly" name="@form.investigatorId.name" value="@kit.InvestigatorId" />
+    </div>
+</div>
