@@ -1,6 +1,5 @@
 const { Roles } = require('../constants');
 const {shipmentStatusesEnum} = require('../constants/shipment');
-const {kitsStatusesEnum} = require('../constants/kit');
 
 class UtilitiesService {
 
@@ -41,9 +40,9 @@ class UtilitiesService {
         // For Site
         case Roles.Site:
           // Set the normal statuses
-          normalStatuses = [shipmentStatusesEnum.InTransit,shipmentStatusesEnum.Delivered,kitsStatusesEnum.AvailableForAssignment,kitsStatusesEnum.Assigned,kitsStatusesEnum.Dispensed];
+          normalStatuses = [shipmentStatusesEnum.InTransit,shipmentStatusesEnum.Delivered];
           // Set the Approved statuses
-          approvedStatuses = [shipmentStatusesEnum.Received,kitsStatusesEnum.Received];
+          approvedStatuses = [shipmentStatusesEnum.Received];
           break;
       }
     }
@@ -53,30 +52,6 @@ class UtilitiesService {
       approvedStatuses: approvedStatuses
     }
   }
-
-  getNormalAndApproveKitStatusByRole( role ) {
-
-      let normalKitStatuses = [];
-      let approvedKitStatuses = [];
-
-      if(role){
-        switch (role) {
-          case Roles.Sponsor:
-            normalKitStatuses = [kitsStatusesEnum.AvailableForAssignment,kitsStatusesEnum.Assigned,kitsStatusesEnum.Received];
-            approvedKitStatuses = [kitsStatusesEnum.Dispensed];
-            break;
-          case Roles.Site:
-            normalKitStatuses = [kitsStatusesEnum.AvailableForAssignment,kitsStatusesEnum.Assigned,kitsStatusesEnum.Received];
-            approvedKitStatuses = [kitsStatusesEnum.Dispensed];
-            break;
-        }
-      }
-
-      return {
-        normalKitStatuses : normalKitStatuses,
-        approvedKitStatuses: approvedKitStatuses
-      }
-    }
 }
 
 const utilitiesService = new UtilitiesService();
