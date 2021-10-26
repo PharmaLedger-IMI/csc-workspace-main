@@ -101,7 +101,6 @@ class ScanShipmentController extends WebcController {
     });
 
   }
-
   async sign() {
       let payload = {
             receivedDateTime: new Date().getTime()
@@ -121,16 +120,13 @@ class ScanShipmentController extends WebcController {
       eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
 
 
-      //TODO: add UI loader here:issue #437
       let order = await this.orderService.getOrder(this.model.shipment.orderSSI);
       let {studyId, orderId}  = order;
       let shipmentId = this.model.shipment.shipmentId;
       let kits = await this.kitsService.getKitsDSU(this.model.shipment.kitIdSSI);
-      const studyKitData = await this.kitsService.updateStudyKitsDSU(studyId,{orderId,shipmentId},kits.kitIds,(err, progress)=>{
-        //consume progress
-        console.log(progress);
-      })
 
+
+    let redirectToShipmentView = () => {
       this.communicationService.sendMessage(CommunicationService.identities.CSC.SPONSOR_IDENTITY, {
         operation: kitsMessagesEnum.ShipmentSigned,
         data: {
@@ -138,8 +134,38 @@ class ScanShipmentController extends WebcController {
         },
         shortDescription: 'Shipment Signed'
       });
-      this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', { tag: 'shipment', state: { keySSI: this.model.shipment.shipmentSSI } }, 2000);
-      window.WebCardinal.loader.hidden = true;
+
+      this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', {
+        tag: 'shipment',
+        state: { keySSI: this.model.shipment.shipmentSSI }
+      }, 2000);
+
+    };
+
+    this.model.kitsMounting = {
+      progress: 0,
+      importInProgress:true,
+      eta:"-"
+    };
+
+    window.WebCardinal.loader.hidden = true;
+    this.showModalFromTemplate("kitMountingProgressModal",redirectToShipmentView.bind(this),redirectToShipmentView.bind(this),{
+      controller: 'KitMountingProgressController',
+      modalTitle:`Shipment ${shipmentId}: Kits Import`,
+      disableExpanding: true,
+      disableBackdropClosing: true,
+      disableClosing: true,
+      disableCancelButton: true,
+      model:this.model
+    })
+
+    const studyKitData = await this.kitsService.updateStudyKitsDSU(studyId, {
+      orderId,
+      shipmentId
+    }, kits.kitIds, (err, progress) => {
+      this.model.kitsMounting.progress = parseInt(progress*100);
+    });
+
   }
 
   makeStepActive(step_id, step_holder_id, e) {
