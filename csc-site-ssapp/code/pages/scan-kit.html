@@ -1,153 +1,168 @@
-<webc-container controller="ScanKitController">
-  <main class="full-flex-column">
+<webc-container controller='ScanKitController'>
+  <main class='full-flex-column'>
     <section>
-      <webc-template template="header-template"></webc-template>
-      <webc-template template="dashboard-menu"></webc-template>
+      <webc-template template='header-template'></webc-template>
+      <webc-template template='dashboard-menu'></webc-template>
     </section>
 
-    <section class="header-section">
-      <div class="navigation-section">
-        <span class="nav-back" data-tag="nav-back">
-          <svg viewBox="0 0 52 52" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
+    <section class='header-section'>
+      <div class='navigation-section'>
+        <span class='nav-back' data-tag='nav-back'>
+          <svg viewBox='0 0 52 52' x='0px' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' y='0px'>
             <path
-              d="M50,24H6.83L27.41,3.41a2,2,0,0,0,0-2.82,2,2,0,0,0-2.82,0l-24,24a1.79,1.79,0,0,0-.25.31A1.19,1.19,0,0,0,.25,25c0,.07-.07.13-.1.2l-.06.2a.84.84,0,0,0,0,.17,2,2,0,0,0,0,.78.84.84,0,0,0,0,.17l.06.2c0,.07.07.13.1.2a1.19,1.19,0,0,0,.09.15,1.79,1.79,0,0,0,.25.31l24,24a2,2,0,1,0,2.82-2.82L6.83,28H50a2,2,0,0,0,0-4Z"
+              d='M50,24H6.83L27.41,3.41a2,2,0,0,0,0-2.82,2,2,0,0,0-2.82,0l-24,24a1.79,1.79,0,0,0-.25.31A1.19,1.19,0,0,0,.25,25c0,.07-.07.13-.1.2l-.06.2a.84.84,0,0,0,0,.17,2,2,0,0,0,0,.78.84.84,0,0,0,0,.17l.06.2c0,.07.07.13.1.2a1.19,1.19,0,0,0,.09.15,1.79,1.79,0,0,0,.25.31l24,24a2,2,0,1,0,2.82-2.82L6.83,28H50a2,2,0,0,0,0-4Z'
             />
           </svg>
         </span>
-        <span data-tag="dashboard">Dashboard</span> / <span data-tag="dashboard">Kits</span> / <span data-tag="view-kit">{{@kit.kitId}}</span>        / <strong>Scan Kit</strong>
+        <span data-tag='dashboard'>Dashboard</span> / <span data-tag='dashboard'>Kits</span> / <span
+        data-tag='view-kit'>{{@kit.kitId}}</span> / <strong>Scan Kit</strong>
       </div>
 
       <div class='body-main-section'>
-        <div class="row">
+        <div class='row'>
           <div class='stepper-container'>
             <button id='step-1' data-tag='step-1' class='step-element step-active'>1 - Scan Kit</button>
-            <button id='step-2' data-tag='step-2' disabled='@formIsInvalid' class='step-element'>2 - Add Details</button>
-            <button id='step-3' data-tag='step-3' disabled='@formIsInvalid' class='step-element'>3 - Confirmation</button>
+            <button id='step-2' data-tag='step-2' disabled='@formIsInvalid' class='step-element'>2 - Add Details
+            </button>
+            <button id='step-3' data-tag='step-3' disabled='@formIsInvalid' class='step-element'>3 - Confirmation
+            </button>
           </div>
 
-          <div class="step-holder " id="step-1-wrapper">
-              <div data-if="@isScannerActive">
+          <div class='step-holder ' id='step-1-wrapper'>
+            <div data-if='@isScannerActive'>
+              <div slot='true'>
+                <psk-barcode-scanner title='Barcode Scanner' data='@scannedData'></psk-barcode-scanner>
+              </div>
+
+              <div slot='false' data-if='@scanSuccess'>
                 <div slot='true'>
-                    <psk-barcode-scanner title="Barcode Scanner" data="@scannedData"></psk-barcode-scanner>
+                  <i class='fas fa-check fa-10x' style='color: #00345b'></i>
+                  <label class='scan-modal-label'> Kit Scan Successful ! </label>
                 </div>
 
-                <div slot='false' data-if="@scanSuccess">
-                  <div slot="true">
-                      <i class="fas fa-check fa-10x" style="color: #00345b"></i>
-                      <label class="scan-modal-label"> Kit Scan Successful ! </label>
-                  </div>
-
-                  <div slot="false">
-                      <span class="fas fa-times fa-10x" style="color: #ef6c00"></span>
-                      <label class="scan-modal-label">Wrong Kit Code Scanned. Please try again !</label>
-                      <button slot="false" class="btn-default" data-tag="start-scanner">Scan Again</button>
-                  </div>
+                <div slot='false'>
+                  <span class='fas fa-times fa-10x' style='color: #ef6c00'></span>
+                  <label class='scan-modal-label'>Wrong Kit Code Scanned. Please try again !</label>
+                  <button slot='false' class='btn-default' data-tag='start-scanner'>Scan Again</button>
                 </div>
               </div>
+            </div>
 
-              <div class="row-wrapper button-wrapper">
-                <button disabled='@formIsInvalid' class="btn-default" data-tag="from_step_1_to_2"
-                        id="from_step_1_to_2"> Next
-                  <i class="fas fa-angle-right"></i>
-                </button>
-              </div>
-      
+            <div class='row-wrapper button-wrapper'>
+              <button disabled='@formIsInvalid' class='btn-default' data-tag='from_step_1_to_2'
+                      id='from_step_1_to_2'> Next
+                <i class='fas fa-angle-right'></i>
+              </button>
+            </div>
+
           </div>
 
-          <div class="step-holder-modal step-hidden" id="step-2-wrapper">
-            <div class="row comments-container">
-              <div class="col-lg-12 col-xl-6">
-                <div class="form-group">
-                    <label>Actual temperature observed</label><br>
-                      <select class="form-control" data-for="@kitModel.form.temperature" id="temperature" name="temperature" value="@kitModel.form.temperature.value">
-                        <option value="@value">{{ @text }}</option>
-                      </select>
+          <div class='step-holder-modal step-hidden' id='step-2-wrapper'>
+            <div class='row comments-container'>
+              <div class='col-lg-12 col-xl-6'>
+                <div class='form-group'>
+                  <label>Actual temperature observed</label><br>
+                  <select class='form-control' data-for='@kitModel.form.temperature' id='temperature' name='temperature'
+                          value='@kitModel.form.temperature.value'>
+                    <option value='@value'>{{ @text }}</option>
+                  </select>
                 </div>
               </div>
 
               <!-- Comments Submission -->
-              <div class="col-lg-12 col-xl-6">
-                  <!-- Add Comment -->
-                  <div class="form-group">
-                    <label>{{@kitModel.form.add_comment.label}}</label>
-                    <input class="form-control" name="@kitModel.form.add_comment.name" placeholder="@kitModel.form.add_comment.placeholder" required="@kitModel.form.add_comment.required"
-                      type="text" value="@kitModel.form.add_comment.value" />
+              <div class='col-lg-12 col-xl-6'>
+                <!-- Add Comment -->
+                <div class='form-group'>
+                  <label>{{@kitModel.form.add_comment.label}}</label>
+                  <input class='form-control' name='@kitModel.form.add_comment.name'
+                         placeholder='@kitModel.form.add_comment.placeholder'
+                         required='@kitModel.form.add_comment.required'
+                         type='text' value='@kitModel.form.add_comment.value' />
+                </div>
               </div>
-            </div>
 
-            <!-- Navigation Between Steps-->
-            <div class="row-wrapper button-wrapper">
-              <button class="btn-default" data-tag="from_step_2_to_1" id="from_step_2_to_1">
-                <i class="fas fa-angle-left"></i>
-                Previous
-              </button>
-              <!-- Next Button -->
-                <button disabled='@formIsInvalid' class="btn-default" data-tag="from_step_2_to_3" id="from_step_2_to_3">
+              <!-- Navigation Between Steps-->
+              <div class='row-wrapper button-wrapper'>
+                <button class='btn-default' data-tag='from_step_2_to_1' id='from_step_2_to_1'>
+                  <i class='fas fa-angle-left'></i>
+                  Previous
+                </button>
+                <!-- Next Button -->
+                <button disabled='@formIsInvalid' class='btn-default' data-tag='from_step_2_to_3' id='from_step_2_to_3'>
                   Next
-                <i class="fas fa-angle-right"></i>
+                  <i class='fas fa-angle-right'></i>
                 </button>
               </div>
             </div>
           </div>
 
-          <div class="step-holder step-hidden" id="step-3-wrapper">
+          <div class='step-holder step-hidden' id='step-3-wrapper'>
             <div class='row'>
               <div class='col-12'>
-                <div class="form-group">
-                <!-- Kit ID -->
+                <div class='form-group'>
+                  <!-- Kit ID -->
                   <label>{{@kitModel.form.kitId.label}}</label>
-                  <input class="form-control form-control-sm" readonly name="@kitModel.form.kitId.name" placeholder="@kitModel.form.kitId.placeholder"
-                    type="text" value="@kit.kitId" />
+                  <input class='form-control form-control-sm' readonly name='@kitModel.form.kitId.name'
+                         placeholder='@kitModel.form.kitId.placeholder'
+                         type='text' value='@kit.kitId' />
                 </div>
               </div>
 
               <div class='col-12'>
-                <div class="form-group">
+                <div class='form-group'>
                   <label>{{@kitModel.form.keep_between_temperature.label}}</label>
-                  <input class="form-control form-control-sm" readonly="readonly" name="@kitModel.form.keep_between_temperature_min.name"
-                    type="text" value="@kit.temperatures.min" />
+                  <input class='form-control form-control-sm' readonly='readonly'
+                         name='@kitModel.form.keep_between_temperature_min.name'
+                         type='text' value='@kit.temperatures.min' />
                   <label>{{@form.keep_between_temperature.andLabel}}</label>
-                  <input class="form-control form-control-sm" readonly="readonly" name="@kitModel.form.keep_between_temperature_max.name"
-                    type="text" value="@kit.temperatures.max" />
+                  <input class='form-control form-control-sm' readonly='readonly'
+                         name='@kitModel.form.keep_between_temperature_max.name'
+                         type='text' value='@kit.temperatures.max' />
                 </div>
               </div>
 
               <div class='col-12'>
-                <div class="form-group">
+                <div class='form-group'>
                   <label>{{@kitModel.form.temperature_comments.label}}</label>
-                  <input class="form-control form-control-sm" readonly="readonly" name="@kitModel.form.temperature_comments.name" placeholder="@kitModel.form.temperature_comments.placeholder" type="text" value="@kit.temperatureComments" />
+                  <input class='form-control form-control-sm' readonly='readonly'
+                         name='@kitModel.form.temperature_comments.name'
+                         placeholder='@kitModel.form.temperature_comments.placeholder' type='text'
+                         value='@kit.temperatureComments' />
                 </div>
               </div>
 
               <div class='col-12'>
-                <div class="form-group">
+                <div class='form-group'>
                   <label>Shipment Actual temperature observed</label>
-                  <input class="form-control form-control-sm" readonly name="temperature" type="text" value="@kitModel.form.temperature.value"
+                  <input class='form-control form-control-sm' readonly name='temperature' type='text'
+                         value='@kitModel.form.temperature.value'
                   />
                 </div>
               </div>
 
               <div class='col-12'>
-                <div class="form-group">
+                <div class='form-group'>
                   <label>Comments</label>
-                  <input class="form-control form-control-sm" readonly name="@kitModel.form.add_comment.name" type="text" value="@kitModel.form.add_comment.value"
+                  <input class='form-control form-control-sm' readonly name='@kitModel.form.add_comment.name'
+                         type='text' value='@kitModel.form.add_comment.value'
                   />
                 </div>
               </div>
 
-            </div>
 
-            <!-- Navigation Between Steps-->
-            <div class="row-wrapper button-wrapper">
-              <button class="btn-default" data-tag="from_step_3_to_2" id="from_step_3_to_2">
-                <i class="fas fa-angle-left"></i>
+              <!-- Navigation Between Steps-->
+              <div class='row-wrapper button-wrapper'>
+                <button class='btn-default' data-tag='from_step_3_to_2' id='from_step_3_to_2'>
+                  <i class='fas fa-angle-left'></i>
                   Previous
-              </button>
-              <button disabled='@formIsInvalid' class="btn-default" data-tag="sign_button" id="sign_button" disabled="@disableSign">
-                <!--<i class="fas fa-check"></i>-->
+                </button>
+                <button class='btn-default' data-tag='sign_button' id='sign_button'
+                        disabled='@disableSign'>
+                  <!--<i class="fas fa-check"></i>-->
                   Sign
-                  <i class="fas fa-angle-right"></i>
-              </button>
+                  <i class='fas fa-angle-right'></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
