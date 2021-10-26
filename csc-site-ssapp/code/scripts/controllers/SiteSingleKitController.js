@@ -181,7 +181,7 @@ class SiteSingleKitController extends WebcController {
 
       this.createWebcModal({
         template: 'kitHistoryModal',
-        controller: 'kitHistoryModalController',
+        controller: 'KitHistoryModalController',
         model: historyModel,
         disableBackdropClosing: false,
         disableFooter: true,

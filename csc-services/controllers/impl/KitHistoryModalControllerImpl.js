@@ -8,7 +8,7 @@ const { kitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
 const kitStatusesService = cscServices.KitStatusesService;
 
 
-class kitHistoryModalControllerImpl extends WebcController {
+class KitHistoryModalControllerImpl extends WebcController {
 
 	constructor(role, ...props) {
 		super(...props);
@@ -60,4 +60,4 @@ class kitHistoryModalControllerImpl extends WebcController {
 }
 
 const controllersRegistry = require('../ControllersRegistry').getControllersRegistry();
-controllersRegistry.registerController('kitHistoryModalController', kitHistoryModalControllerImpl);
+controllersRegistry.registerController('KitHistoryModalController', KitHistoryModalControllerImpl);

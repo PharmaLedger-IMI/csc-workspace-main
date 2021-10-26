@@ -15,4 +15,4 @@ require('./TabNavigatorControllerImpl');
 require('./KitsControllerImpl');
 require('./KitSummaryControllerImpl');
 require('./StudiesKitsControllerImpl');
-require('./kitHistoryModalControllerImpl');
+require('./KitHistoryModalControllerImpl');
