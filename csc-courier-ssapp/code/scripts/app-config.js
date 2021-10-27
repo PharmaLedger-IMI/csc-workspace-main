@@ -8,7 +8,7 @@ const HistoryModalController = cscServices.getController('HistoryModalController
 const HeaderController = cscServices.getController('HeaderController', ACTOR);
 const NotificationsController = cscServices.getController('NotificationsController', ACTOR);
 const DashboardMenuController = cscServices.getController('DashboardMenuController', ACTOR);
-const BaseShipmentsController = cscServices.getController('ShipmentsController', ACTOR);
+const ShipmentsController = cscServices.getController('ShipmentsController', ACTOR);
 const ViewShipmentBaseController = cscServices.getController('ViewShipmentBaseController');
 
 addControllers({
@@ -17,6 +17,6 @@ addControllers({
 	HeaderController,
 	NotificationsController,
 	DashboardMenuController,
-	BaseShipmentsController,
+	ShipmentsController,
 	ViewShipmentBaseController
 });
