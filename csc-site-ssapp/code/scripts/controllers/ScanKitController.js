@@ -20,23 +20,44 @@ class ScanKitController extends WebcController {
     console.log("originalKit " + JSON.stringify(this.model.kit));
     this.model.disableSign = false;
 
-    this.onTagEvent("start-scanner", 'click', () => {
-      this.model.isScannerActive = true;
-    });
-
     this.initScanViewModel();
     this.initStepperNavigationHandlers();
-    this.addModelChangeHandlers();
+    this.attachKitScannerHandlers();
   }
 
-  addModelChangeHandlers() {
-    this.model.onChange("scannedData", () => {
-      let correctValue = this.model.kit.kitId;
-      this.model.scanSuccess = this.model.scannedData === correctValue;
-      this.model.formIsInvalid = !this.model.scanSuccess;
-      this.model.isScannerActive = false;
+  attachKitScannerHandlers() {
+    this.onTagClick('open-kit-scanner', () => {
+      this.model.canScanKit = false;
+      this.model.isKitScannerActive = true;
+    });
+
+    let scanAgainKitHandler =   () => {
+      this.model.isKitScannerActive = true;
+      this.model.showWrongKitScanResult = false;
+      this.model.showCorrectKitScanResult = false;
+    };
+
+    this.onTagClick('back-to-kit-scan', scanAgainKitHandler);
+    this.onTagClick('scan-again-kit', scanAgainKitHandler);
+
+    this.model.onChange('canScanKit', this.step1NavigationHandler.bind(this));
+    this.model.onChange('isKitScannerActive', this.step1NavigationHandler.bind(this));
+
+    this.model.onChange('scannedKitData', () => {
+        console.log('[SCAN] ', this.model.scannedKitData);
+        this.model.isKitScannerActive = false;
+        this.model.isKitScanOk = this.model.scannedKitData === this.model.kit.kitId;
+        this.model.showWrongKitScanResult = !this.model.isKitScanOk;
+        this.model.showCorrectKitScanResult = this.model.isKitScanOk;
+        this.model.formIsInvalid = !this.model.isKitScanOk;
     });
   }
+
+  step1NavigationHandler() {
+    this.model.enableStep1Navigation = this.model.canScanKit === false && this.model.isKitScannerActive === false;
+  }
+
+
 
   initStepperNavigationHandlers() {
     this.onTagEvent('step-1', 'click', (e) => {
@@ -146,9 +167,13 @@ class ScanKitController extends WebcController {
       { id: 'from_step_2_to_3', name: 'Next', visible: true, validated: false },
       { id: 'from_step_3_to_2', name: 'Previous', visible: true, validated: false },
     ];
-    this.model.isScannerActive = true;
-    this.model.scannedData = '';
-    this.model.scanSuccess = false;
+
+    this.model.scannedKitData = '';
+    this.model.isKitScanOk = false;
+    this.model.canScanKit = true;
+    this.model.isKitScannerActive = false;
+    this.model.showWrongKitScanResult = false;
+    this.model.showCorrectKitScanResult = false;
   }
 }
 
