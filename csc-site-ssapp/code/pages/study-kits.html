@@ -50,35 +50,36 @@
       <div class="row-wrapper full-flex-column">
         <div class="table-container-wrapper full-flex-column">
 
-
-      <webc-container controller='TableTemplateController' data-view-model='@'>
-        <div class='pagination-container'>
-          <!-- Search bar -->
-          <div class='col-6 col-lg-3 search-bar'>
-            <span class='fas fa-search'></span>
-            <input class='form-control' data-view-model='@search' id='search-field' />
-          </div>
-          <!-- Page number -->
-          <div class='col-12 col-lg-6 d-flex justify-content-lg-end justify-content-between p-0'>
-            <div class='d-flex pagination-wrapper'>
-              <button data-tag='go-to-first-page' disabled='@pagination.previous'>
-                <span aria-hidden='true'>&laquo;</span>
-              </button>
-              <button data-tag='go-to-previous-page' disabled='@pagination.previous'>
-                <span aria-hidden='true'>&lsaquo;</span>
-              </button>
-              <div class='page-numbers' data-for='@pagination.slicedPages'>
-                <button data-active-page='@active' data-tag='navigate-to-page'>
-                  {{@label}}
-                </button>
-              </div>
-              <button data-tag='go-to-next-page' disabled='@pagination.next'>
-                <span aria-hidden='true'>&rsaquo;</span>
-              </button>
-              <button data-tag='go-to-last-page' disabled='@pagination.next'>
-                <span aria-hidden='true'>&raquo;</span>
-              </button>
-            </div>
+          <div class="full-flex-column" data-if='@kitsListIsReady'>
+            <div class="full-flex-column" slot="true" data-if="@kitsListNotEmpty">
+              <webc-container controller='TableTemplateController' slot="true" data-view-model='@'>
+                <div class='pagination-container'>
+                  <!-- Search bar -->
+                  <div class='col-6 col-lg-3 search-bar'>
+                    <span class='fas fa-search'></span>
+                    <input class='form-control' data-view-model='@search' id='search-field' />
+                  </div>
+                    <!-- Page number -->
+                    <div class='col-12 col-lg-6 d-flex justify-content-lg-end justify-content-between p-0'>
+                      <div class='d-flex pagination-wrapper'>
+                        <button data-tag='go-to-first-page' disabled='@pagination.previous'>
+                          <span aria-hidden='true'>&laquo;</span>
+                        </button>
+                        <button data-tag='go-to-previous-page' disabled='@pagination.previous'>
+                          <span aria-hidden='true'>&lsaquo;</span>
+                        </button>
+                        <div class='page-numbers' data-for='@pagination.slicedPages'>
+                          <button data-active-page='@active' data-tag='navigate-to-page'>
+                            {{@label}}
+                          </button>
+                        </div>
+                        <button data-tag='go-to-next-page' disabled='@pagination.next'>
+                        <span aria-hidden='true'>&rsaquo;</span>
+                        </button>
+                        <button data-tag='go-to-last-page' disabled='@pagination.next'>
+                        <span aria-hidden='true'>&raquo;</span>
+                        </button>
+                      </div>
 
             <!-- Number of results per page selector  -->
             <div class='d-flex align-items-center justify-content-center'>
@@ -86,8 +87,7 @@
               <span>&nbsp;Items Per Page</span>
             </div>
           </div>
-        </div>
-
+                </div>
         <div class='responsive-table'>
           <table class='table table-borderless'>
             <thead>
@@ -131,6 +131,10 @@
           </table>
         </div>
       </webc-container>
+              <div slot="false" class='no-data-info full-flex-column'>No kits available.</div>
+            </div>
+            <webc-spinner slot='false'></webc-spinner>
+          </div>
         </div>
       </div>
     </section>
