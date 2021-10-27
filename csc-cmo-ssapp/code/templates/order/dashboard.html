@@ -32,9 +32,8 @@
 
             <!-- Table area -->
             <div class="full-flex-column" data-if='@ordersListIsReady'>
-                <div class="full-flex-column" slot="true" data-if="@ordersListNotEmpty">
-                    <webc-template data-view-model="@" slot="true" template="table-template"></webc-template>
-                    <div slot="false" class='no-data-info full-flex-column'>No orders available.</div>
+                <div class="full-flex-column" slot="true">
+                    <webc-template data-view-model="@" template="table-template"></webc-template>
                 </div>
                 <webc-spinner slot='false'></webc-spinner>
             </div>
