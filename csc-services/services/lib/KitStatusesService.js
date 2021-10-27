@@ -1,27 +1,13 @@
-const { Roles } = require('../constants');
 const {kitsStatusesEnum} = require('../constants/kit');
 
 class KitStatusesService {
 
   constructor() {}
 
-  getNormalAndApproveKitStatusByRole( role ) {
+  getKitStatuses() {
 
-      let normalKitStatuses = [];
-      let approvedKitStatuses = [];
-
-      if(role){
-        switch (role) {
-          case Roles.Sponsor:
-            normalKitStatuses = [kitsStatusesEnum.AvailableForAssignment,kitsStatusesEnum.Assigned,kitsStatusesEnum.Received];
-            approvedKitStatuses = [kitsStatusesEnum.Dispensed];
-            break;
-          case Roles.Site:
-            normalKitStatuses = [kitsStatusesEnum.AvailableForAssignment,kitsStatusesEnum.Assigned,kitsStatusesEnum.Received];
-            approvedKitStatuses = [kitsStatusesEnum.Dispensed];
-            break;
-        }
-      }
+      let normalKitStatuses = [kitsStatusesEnum.AvailableForAssignment,kitsStatusesEnum.Assigned,kitsStatusesEnum.Received];
+      let approvedKitStatuses = [kitsStatusesEnum.Dispensed];
 
       return {
         normalKitStatuses : normalKitStatuses,

@@ -39,7 +39,7 @@ class KitHistoryModalControllerImpl extends WebcController {
 			kit.status = [...kit.status.sort((function(a, b) {
 				return new Date(a.date) - new Date(b.date);
 			}))];
-			const statuses = kitStatusesService.getNormalAndApproveKitStatusByRole(this.role);
+			const statuses = kitStatusesService.getKitStatuses();
 
 			kit.status.forEach(item => {
 				item.approved = statuses.approvedKitStatuses.indexOf(item.status) !== -1;
