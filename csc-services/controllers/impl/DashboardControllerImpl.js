@@ -301,9 +301,10 @@ class DashboardControllerImpl extends WebcController {
 				notificationRole = Roles.Site;
 				const { studyKeySSI } = data.message.data;
 				kitsData = await this.kitsService.getStudyKitsDSUAndUpdate(studyKeySSI);
-				return [kitsData, notificationRole];
+				break;
 			}
 		}
+		return [kitsData, notificationRole];
 	}
 }
 

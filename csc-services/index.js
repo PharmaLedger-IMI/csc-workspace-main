@@ -6,6 +6,7 @@ module.exports = {
     EventBusService: require('./services/lib/EventBusService'),
     NotificationsService: require('./services/lib/NotificationService'),
     UtilitiesService: require('./services/lib/UtilitiesService'),
+    KitStatusesService: require('./services/lib/KitStatusesService'),
     CommunicationService: require('./services/lib/CommunicationService'),
     ProfileService: require('./services/lib/ProfileService'),
     constants: require('./services/constants'),

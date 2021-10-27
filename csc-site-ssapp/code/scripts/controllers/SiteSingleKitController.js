@@ -4,8 +4,9 @@ const KitsService = cscServices.KitsService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const momentService = cscServices.momentService;
-const { Commons } = cscServices.constants;
+const { Commons, Topics } = cscServices.constants;
 const {kitsStatusesEnum, kitsPendingActionEnum} = cscServices.constants.kit;
+const kitStatusesService = cscServices.KitStatusesService;
 
 class SiteSingleKitController extends WebcController {
 
@@ -20,6 +21,25 @@ class SiteSingleKitController extends WebcController {
 
   attachEventListeners() {
     this.toggleAccordionItemHandler();
+    this.navigationHandlers();
+  }
+
+  navigationHandlers() {
+    this.onTagClick('dashboard', () => {
+      this.navigateToPageTag('dashboard', { tab: Topics.Shipment });
+    });
+
+    this.onTagClick('kits-management', () => {
+      this.navigateToPageTag('dashboard', { tab: Topics.Kits });
+    });
+
+    this.onTagClick('view-study-kits', () => {
+      this.navigateToPageTag('study-kits', {
+        studyId: this.model.kitModel.kit.studyId,
+        orderId: this.model.kitModel.kit.orderId
+      });
+    });
+
   }
 
   attachSiteEventHandlers(){
@@ -50,8 +70,12 @@ class SiteSingleKitController extends WebcController {
       });
     });
 
+
+    this.onTagEvent('history-button', 'click', (e) => {
+        this.onShowHistoryClick();
+    });
+
   }
-  
 
   async initViewModel() {
     const model = {
@@ -124,6 +148,19 @@ class SiteSingleKitController extends WebcController {
       }
 
       data.pending_action = this.getPendingAction(data.status_value);
+      const statuses = kitStatusesService.getNormalAndApproveKitStatusByRole('Site');
+      const normalStatuses = statuses.normalKitStatuses;
+      const approvedStatuses = statuses.approvedKitStatuses;
+      data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
+      data.status_cancelled = data.status_value === kitsStatusesEnum.Cancelled;
+      data.status_normal = normalStatuses.indexOf(data.status_value) !== -1;
+      data.contextualContent = {
+         afterReceived: data.status.findIndex(el => el.status === kitsStatusesEnum.Received) !== -1,
+         afterAvailableForAssignment: data.status.findIndex(el => el.status === kitsStatusesEnum.AvailableForAssignment) !== -1,
+         afterAssigned: data.status.findIndex(el => el.status === kitsStatusesEnum.Assigned) !== -1,
+         afterDispensed: data.status.findIndex(el => el.status === kitsStatusesEnum.Dispensed) !== -1,
+         afterAdministrated: data.status.findIndex(el => el.status === kitsStatusesEnum.Administrated) !== -1
+       };
       return data;
     }
     return {};
@@ -166,5 +203,27 @@ class SiteSingleKitController extends WebcController {
     targetIcon.classList.toggle('rotate-icon');
     panel.style.maxHeight = '1000px';
   }
+
+  onShowHistoryClick() {
+      let { kitModel } = this.model.toObject();
+
+      const historyModel = {
+        kit: kitModel.kit,
+        currentPage: Topics.Kits
+      };
+
+      this.createWebcModal({
+        template: 'kitHistoryModal',
+        controller: 'KitHistoryModalController',
+        model: historyModel,
+        disableBackdropClosing: false,
+        disableFooter: true,
+        disableExpanding: true,
+        disableClosing: false,
+        disableCancelButton: true,
+        expanded: false,
+        centered: true
+      });
+    }
 }
 export default SiteSingleKitController;

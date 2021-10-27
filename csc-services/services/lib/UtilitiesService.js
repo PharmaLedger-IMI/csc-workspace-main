@@ -6,7 +6,6 @@ class UtilitiesService {
   // Constructor of the service
   constructor() {}
 
-
   getNormalAndApproveStatusByRole( role ) {
 
     let normalStatuses = [];
