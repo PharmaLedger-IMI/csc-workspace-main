@@ -149,15 +149,10 @@ const kitsTableHeaders = [
 	}
 ];
 
-const kitBusinessRequirements = {
-	investigatorIds : [{name: "Investigator ID 1"},{name: "Investigator ID 2"}]
-}
-
 module.exports = {
 	kitsStatusesEnum,
 	kitsTableHeaders,
 	studiesKitsTableHeaders,
 	kitsPendingActionEnum,
-	kitBusinessRequirements,
 	kitsMessagesEnum
 };

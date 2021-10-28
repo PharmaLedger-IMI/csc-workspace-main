@@ -18,18 +18,16 @@
             </div>
             <div class='body-main-section'>
 
-                <div class='entity-title'>
-                    <center><b>Assign Kit</b></center>
+                <div class='entity-title text-center'>
+                   <b>Assign Kit</b>
                 </div>
 
 
-                <div class="form-group">
+                <div class="form-group button-wrapper">
                     <label>{{@kitModel.form.investigatorId.label}}</label>
-                    <select class="form-control form-control-sm" style="width: 50%;" data-for="@kitModel.form.investigatorId.options"
-                        id="@kitModel.form.investigatorId.name" name="@kitModel.form.investigatorId.name"
-                        value="@kitModel.form.investigatorId.value">
-                        <option value="@value">{{@label}}</option>
-                    </select>
+                    <input class='form-control form-control-sm' style="width: 50%;" name='@kitModel.form.investigatorId.name'
+                     placeholder='@kitModel.form.investigatorId.placeholder' type='text'
+                     value='@kitModel.form.investigatorId.value' />
                 </div>
 
                 <div class='row-wrapper button-wrapper'>
