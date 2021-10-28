@@ -50,8 +50,6 @@
       <div class="row-wrapper full-flex-column">
         <div class="table-container-wrapper full-flex-column">
 
-          <div class="full-flex-column" data-if='@kitsListIsReady'>
-            <div class="full-flex-column" slot="true" data-if="@kitsListNotEmpty">
               <webc-container controller='TableTemplateController' slot="true" data-view-model='@'>
                 <div class='pagination-container'>
                   <!-- Search bar -->
@@ -131,10 +129,6 @@
           </table>
         </div>
       </webc-container>
-              <div slot="false" class='no-data-info full-flex-column'>No kits available.</div>
-            </div>
-            <webc-spinner slot='false'></webc-spinner>
-          </div>
         </div>
       </div>
     </section>
