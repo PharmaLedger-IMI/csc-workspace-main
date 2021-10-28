@@ -19,7 +19,6 @@
       </div>
 
       <div class='body-main-section'>
-        <div class='row'>
           <div class='stepper-container'>
             <button id='step-1' data-tag='step-1' class='step-element step-active'>1 - Scan Kit</button>
             <button id='step-2' data-tag='step-2' disabled='@formIsInvalid' class='step-element'>2 - Add Details
@@ -28,33 +27,46 @@
             </button>
           </div>
 
-          <div class='step-holder ' id='step-1-wrapper'>
-            <div data-if='@isScannerActive'>
-              <div slot='true'>
-                <psk-barcode-scanner title='Barcode Scanner' data='@scannedData'></psk-barcode-scanner>
-              </div>
-
-              <div slot='false' data-if='@scanSuccess'>
-                <div slot='true'>
-                  <i class='fas fa-check fa-10x' style='color: #00345b'></i>
-                  <label class='scan-modal-label'> Kit Scan Successful ! </label>
-                </div>
-
-                <div slot='false'>
-                  <span class='fas fa-times fa-10x' style='color: #ef6c00'></span>
-                  <label class='scan-modal-label'>Wrong Kit Code Scanned. Please try again !</label>
-                  <button slot='false' class='btn-default' data-tag='start-scanner'>Scan Again</button>
-                </div>
+          <div class="step-holder-modal" id="step-1-wrapper">
+            <div class="d-flex flex-column align-items-center" data-if="@canScanKit">
+              <label class="scan-modal-label"> Please find the QR code on kit and scan it. </label>
+            </div>
+  
+            <div class="d-flex justify-content-center" data-if="@isKitScannerActive">
+              <psk-barcode-scanner data="@scannedKitData" normal-size></psk-barcode-scanner>
+            </div>
+  
+            <div class="d-flex flex-column align-items-center" data-if="@showWrongKitScanResult">
+              <span class="fas fa-times fa-10x" style="color: #ef6c00"></span>
+              <label class="scan-modal-label">Wrong Kit Code Scanned. Please try again!</label>
+            </div>
+  
+            <div class="d-flex flex-column align-items-center" data-if="@showCorrectKitScanResult">
+              <i class="fas fa-check fa-10x" style="color: #00345b"></i>
+              <label class="scan-modal-label"> Kit Scan Successful! </label>
+            </div>
+  
+            <div data-if="@canScanKit">
+              <div class="row-wrapper button-wrapper">
+                <button class="btn-default" data-tag="open-kit-scanner">SCAN</button>
               </div>
             </div>
-
-            <div class='row-wrapper button-wrapper'>
-              <button disabled='@formIsInvalid' class='btn-default' data-tag='from_step_1_to_2'
-                      id='from_step_1_to_2'> Next
-                <i class='fas fa-angle-right'></i>
-              </button>
+  
+            <div data-if="@enableStep1Navigation">
+              <div class="row-wrapper button-wrapper">
+                <button class="btn-default" data-tag="back-to-kit-scan" disabled="@showCorrectKitScanResult">
+                  <i class="fas fa-angle-left"></i>
+                  Previous
+                </button>
+                <button class="btn-default scan-again-button" data-tag="scan-again-kit"  disabled="@showCorrectKitScanResult" >
+                  Scan Again
+                </button>
+                <button class="btn-default" data-tag="from_step_1_to_2" disabled="@showWrongKitScanResult" id="from_step_1_to_2">
+                  Next
+                  <i class="fas fa-angle-right"></i>
+                </button>
+              </div>
             </div>
-
           </div>
 
           <div class='step-holder-modal step-hidden' id='step-2-wrapper'>
@@ -170,7 +182,6 @@
               </div>
             </div>
           </div>
-        </div>
       </div>
     </section>
   </main>

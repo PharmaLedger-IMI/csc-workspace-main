@@ -20,13 +20,41 @@ class DeliverShipmentController extends WebcController {
     this.model.shipment = this.originalShipment;
     this.model.disableSign = false;
 
-    this.onTagEvent("start-scanner", 'click', () => {
-      this.model.isScannerActive = true;
-    });
-
     this.initStepperNavigationHandlers();
     this.addModelChangeHandlers();
     this.navigationHandlers();
+    this.attachShipmentScannerHandlers();
+  }
+
+  attachShipmentScannerHandlers() {
+    this.onTagClick('open-shipment-scanner', () => {
+      this.model.canScanShipment = false;
+      this.model.isShipmentScannerActive = true;
+    });
+
+    let scanAgainShipmentHandler =   () => {
+      this.model.isShipmentScannerActive = true;
+      this.model.showWrongShipmentScanResult = false;
+      this.model.showCorrectShipmentScanResult = false;
+    };
+
+    this.onTagClick('back-to-shipment-scan', scanAgainShipmentHandler);
+    this.onTagClick('scan-again-shipment', scanAgainShipmentHandler);
+
+    this.model.onChange('canScanShipment', this.step1NavigationHandler.bind(this));
+    this.model.onChange('isShipmentScannerActive', this.step1NavigationHandler.bind(this));
+
+    this.model.onChange('scannedShipmentData', () => {
+        console.log('[SCAN] ', this.model.scannedShipmentData);
+        this.model.isShipmentScannerActive = false;
+        this.model.isShipmentScanOk = this.model.scannedShipmentData === this.model.shipment.shipmentId;
+        this.model.showWrongShipmentScanResult = !this.model.isShipmentScanOk;
+        this.model.showCorrectShipmentScanResult = this.model.isShipmentScanOk;
+    });
+  }
+
+  step1NavigationHandler() {
+    this.model.enableStep1Navigation = this.model.canScanShipment === false && this.model.isShipmentScannerActive === false;
   }
 
   navigationHandlers() {
@@ -40,13 +68,6 @@ class DeliverShipmentController extends WebcController {
   }
 
   addModelChangeHandlers() {
-    this.model.onChange("scannedData", () => {
-      let correctValue = this.model.shipment.shipmentId;
-      this.model.scanSuccess = this.model.scannedData === correctValue;
-      this.model.formIsInvalid = !this.model.scanSuccess;
-      this.model.isScannerActive = false;
-    });
-
     this.recipientHandler = () => {
       this.model.formIsInvalid = this.model.form.recipientName.value.trim() === '';
     };
@@ -109,9 +130,7 @@ class DeliverShipmentController extends WebcController {
 
   getModel() {
     return {
-      isScannerActive: false,
-      formIsInvalid: true,
-      scannedData: ''
+      formIsInvalid: true
     }
   }
 
@@ -156,9 +175,12 @@ class DeliverShipmentController extends WebcController {
         { id: 'from_step_3_to_2', name: 'Previous', visible: true, validated: false },
       ],
       form: viewModelResolver('shipment').form,
-      isScannerActive: true,
-      scannedData: '',
-      scanSuccess: false,
+      scannedShipmentData: '',
+      isShipmentScanOk: false,
+      canScanShipment: true,
+      isShipmentScannerActive: false,
+      showWrongShipmentScanResult: false,
+      showCorrectShipmentScanResult: false,
     };
 
     return model;
