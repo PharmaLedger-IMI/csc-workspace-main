@@ -5,7 +5,7 @@ const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const { Topics, Commons, Roles } = cscServices.constants;
 const { kitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
-const kitStatusesService = cscServices.KitStatusesService;
+const statusesService = cscServices.StatusesService;
 
 
 class KitHistoryModalControllerImpl extends WebcController {
@@ -39,7 +39,7 @@ class KitHistoryModalControllerImpl extends WebcController {
 			kit.status = [...kit.status.sort((function(a, b) {
 				return new Date(a.date) - new Date(b.date);
 			}))];
-			const statuses = kitStatusesService.getKitStatuses();
+			const statuses = statusesService.getKitStatuses();
 
 			kit.status.forEach(item => {
 				item.approved = statuses.approvedKitStatuses.indexOf(item.status) !== -1;

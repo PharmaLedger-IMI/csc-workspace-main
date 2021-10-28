@@ -6,7 +6,7 @@ const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const momentService = cscServices.momentService;
 const { Commons, Topics } = cscServices.constants;
 const {kitsStatusesEnum, kitsPendingActionEnum} = cscServices.constants.kit;
-const kitStatusesService = cscServices.KitStatusesService;
+const statusesService = cscServices.StatusesService;
 
 class SiteSingleKitController extends WebcController {
 
@@ -148,7 +148,7 @@ class SiteSingleKitController extends WebcController {
       }
 
       data.pending_action = this.getPendingAction(data.status_value);
-      const statuses = kitStatusesService.getKitStatuses();
+      const statuses = statusesService.getKitStatuses();
       const normalStatuses = statuses.normalKitStatuses;
       const approvedStatuses = statuses.approvedKitStatuses;
       data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
