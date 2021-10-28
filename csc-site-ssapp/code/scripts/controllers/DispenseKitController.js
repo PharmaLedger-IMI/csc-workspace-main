@@ -18,24 +18,27 @@ class DispenseKitController extends WebcController {
   }
 
   async initViewModel() {
+
+    let { studyId, orderId } = this.history.location.state.kit;
+
     const model = {
       kitModel: viewModelResolver('kit'),
-      userName: ''
+      userName: '',
+      studyId: studyId,
+      orderId: orderId
     };
-      let { studyId, orderId } = this.history.location.state.kit;
-      this.model.studyId = studyId;
-      this.model.orderId = orderId;
- 	  this.profileService = new ProfileService(this.DSUStorage);
- 	  this.profileService.getUserDetails((err, userDetails) => {
- 			if (err) {
- 				return console.log('[UserDetails] [ERROR]', err);
- 			}
- 			this.model.userName = userDetails.username;
- 	  });
 
-    this.model = model;
-    console.log('Model : ', JSON.stringify(this.model));
+    this.profileService = new ProfileService(this.DSUStorage);
+    this.profileService.getUserDetails((err, userDetails) => {
+      if (err) {
+        return console.log('[UserDetails] [ERROR]', err);
+      }
+      model.userName = userDetails.username;
+      this.model = model;
+    });
+
   }
 
 }
+
 export default DispenseKitController;
