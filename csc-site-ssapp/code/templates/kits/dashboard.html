@@ -4,9 +4,8 @@
 					<webc-template template="tab-navigator"></webc-template>
 
 					<div class="full-flex-column" data-if='@kitsListIsReady'>
-							<div class="full-flex-column" slot="true" data-if="@kitsListNotEmpty">
-									<webc-template data-view-model="@" slot="true" template="kits/manage-kits"></webc-template>
-									<div slot="false" class='no-data-info full-flex-column'>No kits available.</div>
+							<div class="full-flex-column" slot="true" >
+									<webc-template data-view-model="@" template="kits/manage-kits"></webc-template>
 							</div>
 							<webc-spinner slot='false'></webc-spinner>
 					</div>

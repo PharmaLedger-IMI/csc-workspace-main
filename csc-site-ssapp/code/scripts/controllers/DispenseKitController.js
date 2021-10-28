@@ -1,5 +1,6 @@
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
+const ProfileService = cscServices.ProfileService;
 const KitsService = cscServices.KitsService;
 const viewModelResolver = cscServices.viewModelResolver;
 
@@ -18,13 +19,22 @@ class DispenseKitController extends WebcController {
 
   async initViewModel() {
     const model = {
-      kitModel: viewModelResolver('kit')
+      kitModel: viewModelResolver('kit'),
+      userName: ''
     };
       let { studyId, orderId } = this.history.location.state.kit;
       this.model.studyId = studyId;
       this.model.orderId = orderId;
+ 	  this.profileService = new ProfileService(this.DSUStorage);
+ 	  this.profileService.getUserDetails((err, userDetails) => {
+ 			if (err) {
+ 				return console.log('[UserDetails] [ERROR]', err);
+ 			}
+ 			this.model.userName = userDetails.username;
+ 	  });
 
     this.model = model;
+    console.log('Model : ', JSON.stringify(this.model));
   }
 
 }

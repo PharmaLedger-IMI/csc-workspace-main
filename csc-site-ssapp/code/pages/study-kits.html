@@ -53,6 +53,8 @@
 
     <div class="row-wrapper full-flex-column">
       <div class="table-container-wrapper full-flex-column">
+        <div class="full-flex-column" data-if='@kitsListIsReady'>
+         <div class="full-flex-column" slot="true">
         <webc-container controller='TableTemplateController' data-view-model='@'>
           <div class='pagination-container'>
             <!-- Search bar -->
@@ -61,8 +63,8 @@
               <input class='form-control' data-view-model='@search' id='search-field' />
             </div>
             <!-- Page number -->
-            <div class='col-12 col-lg-6 d-flex justify-content-lg-end justify-content-between p-0'>
-              <div class='d-flex pagination-wrapper'>
+            <div class='col-12 col-lg-6 d-flex justify-content-lg-end justify-content-between p-0' data-if="@kitsListNotEmpty">
+              <div class='d-flex pagination-wrapper' slot="true">
                 <button data-tag='go-to-first-page' disabled='@pagination.previous'>
                   <span aria-hidden='true'>&laquo;</span>
                 </button>
@@ -83,15 +85,15 @@
               </div>
 
               <!-- Number of results per page selector  -->
-              <div class='d-flex align-items-center justify-content-center'>
+              <div class='d-flex align-items-center justify-content-center' slot="true">
                 <psk-select event-name='set-items-per-page' view-model='@pagination.itemsPerPageOptions'></psk-select>
                 <span>&nbsp;Items Per Page</span>
               </div>
             </div>
           </div>
 
-          <div class='responsive-table'>
-            <table class='table table-borderless'>
+          <div class='responsive-table full-flex-column' data-if="@kitsListNotEmpty">
+            <table class='table table-borderless' slot='true'>
               <thead>
               <tr data-for='@headers'>
                 <th>
@@ -131,8 +133,12 @@
               </tr>
               </tbody>
             </table>
+            <div slot="false" class='no-data-info full-flex-column'>No kits available.</div>
           </div>
         </webc-container>
+        </div>
+        <webc-spinner slot='false'></webc-spinner>
+      </div>
       </div>
     </div>
   </main>
