@@ -21,14 +21,22 @@
         <div class='body-main-section'>
           <div class='row-wrapper'>
             <div class='col-4 text-left'>
-              <div>
+              <div data-if="@kitModel.kit.status_approved">
                 <div class='entity-status-box background-approved'>
                   <div>Kit Status:</div>
                   <div><b>{{@kitModel.kit.status_value}}</b></div>
                   <div>{{@kitModel.kit.status_date}}</div>
                 </div>
               </div>
+              <div data-if="@kitModel.kit.status_normal">
+                <div class='entity-status-box background-primary'>
+                  <div>Kit Status:</div>
+                  <div><b>{{@kitModel.kit.status_value}}</b></div>
+                  <div>{{@kitModel.kit.status_date}}</div>
+                </div>
+              </div>
             </div>
+            
   
             <div class='col-4 text-center'>
               <div class='entity-title'><b>Kit</b></div>
