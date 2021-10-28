@@ -287,7 +287,7 @@ const shipmentCourierTableHeaders = [
 	},
 	{
 		column: 'schedulePickupDate',
-		label: 'Schedule Pickup Date/Time',
+		label: 'Scheduled Pickup Date/Time',
 		notSortable: false,
 		type: 'date',
 		asc: null,

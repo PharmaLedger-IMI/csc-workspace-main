@@ -2,7 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const momentService = cscServices.momentService;
 const { Topics, Commons } = cscServices.constants;
-const kitStatusesService = cscServices.KitStatusesService;
+const statusesService = cscServices.StatusesService;
 
 
 class KitHistoryModalControllerImpl extends WebcController {
@@ -36,7 +36,7 @@ class KitHistoryModalControllerImpl extends WebcController {
 			kit.status = [...kit.status.sort((function(a, b) {
 				return new Date(a.date) - new Date(b.date);
 			}))];
-			const statuses = kitStatusesService.getKitStatuses();
+			const statuses = statusesService.getKitStatuses();
 
 			kit.status.forEach(item => {
 				item.approved = statuses.approvedKitStatuses.indexOf(item.status) !== -1;
