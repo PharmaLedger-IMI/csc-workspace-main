@@ -1,4 +1,4 @@
-<webc-container controller='DispenseKitController'>
+<webc-container controller='DispenseKitController' xmlns="http://www.w3.org/1999/html">
   <main class='full-flex-column'>
     <section>
       <webc-template template='header-template'></webc-template>
@@ -27,59 +27,39 @@
         <!--                <div class="grid-column-wrapper">-->
         <div class='form-group'>
           <label>{{@kitModel.form.patientId.label}}</label>
-          <select class='form-control form-control-sm' data-for='@kitModel.form.patientId.options'
-                  id='@kitModel.form.patientId.name' name='@kitModel.form.patientId.name'
-                  value='@kitModel.form.patientId.value'>
-            <option value='@value'>{{@label}}</option>
-          </select>
+          <input class="form-control form-control-sm" name="@kitModel.form.patientId.name" placeholder="@kitModel.form.patientId.placeholder" value="@kitModel.form.patientId.value" />
         </div>
 
         <div class='form-group'>
           <label>{{@kitModel.form.doseType.label}}</label>
-          <select class='form-control form-control-sm' data-for='@kitModel.form.doseType.options'
-                  id='@kitModel.form.doseType.name' name='@kitModel.form.doseType.name'
-                  value='@kitModel.form.doseType.value'>
-            <option value='@value'>{{@label}}</option>
-          </select>
+          <input class="form-control form-control-sm" name="@kitModel.form.doseType.name" placeholder="@kitModel.form.doseType.placeholder" value="@kitModel.form.doseType.value" />
         </div>
 
         <div class='form-group'>
           <label>{{@kitModel.form.doseVolume.label}}</label>
-          <select class='form-control form-control-sm' data-for='@kitModel.form.doseVolume.options'
-                  id='@kitModel.form.doseVolume.name' name='@kitModel.form.doseVolume.name'
-                  value='@kitModel.form.doseVolume.value'>
-            <option value='@value'>{{@label}}</option>
-          </select>
+          <input class="form-control form-control-sm" name="@kitModel.form.doseVolume.name" placeholder="@kitModel.form.doseVolume.placeholder" value="@kitModel.form.doseVolume.value" type="number"/>
         </div>
 
         <div class='form-group'>
           <label>{{@kitModel.form.visitId.label}}</label>
-          <select class='form-control form-control-sm' data-for='@kitModel.form.visitId.options'
-                  id='@kitModel.form.visitId.name' name='@kitModel.form.visitId.name'
-                  value='@kitModel.form.visitId.value'>
-            <option value='@value'>{{@label}}</option>
-          </select>
+          <input class="form-control form-control-sm" name="@kitModel.form.visitId.name" placeholder="@kitModel.form.visitId.placeholder" value="@kitModel.form.visitId.value" />
         </div>
 
         <div class='form-group'>
           <label>{{@kitModel.form.visit_date.label}}</label>
           <div class='row'>
             <div class='col-8'>
-              <input class='form-control' data-view-model='@kitModel.form.visit_date' type='date' />
+              <input class='form-control' data-view-model='@kitModel.form.visit_date' type='date' readonly />
             </div>
             <div class='col-4'>
-              <input class='form-control' data-view-model='@kitModel.form.visit_time' type='time' />
+              <input class='form-control' data-view-model='@kitModel.form.visit_time' type='time' readonly />
             </div>
           </div>
         </div>
 
         <div class='form-group'>
           <label>{{@kitModel.form.dispensingPartyId.label}}</label>
-          <select class='form-control form-control-sm' data-for='@kitModel.form.dispensingPartyId.options'
-                  id='@kitModel.form.dispensingPartyId.name' name='@kitModel.form.dispensingPartyId.name'
-                  value='@kitModel.form.dispensingPartyId.value'>
-            <option value='@value'>{{@label}}</option>
-          </select>
+          <input class="form-control form-control-sm" readonly name="@kitModel.form.dispensingPartyId.name" placeholder="@kitModel.form.dispensingPartyId.placeholder" value="@userName" />
         </div>
 
         <div class='row-wrapper button-wrapper'>
