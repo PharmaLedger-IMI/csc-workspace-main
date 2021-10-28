@@ -1,11 +1,8 @@
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
-const KitsService = cscServices.KitsService;
-const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
-const { Topics, Commons, Roles } = cscServices.constants;
-const { kitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
-const kitStatusesService = cscServices.KitStatusesService;
+const { Topics, Commons } = cscServices.constants;
+const statusesService = cscServices.StatusesService;
 
 
 class KitHistoryModalControllerImpl extends WebcController {
@@ -39,16 +36,12 @@ class KitHistoryModalControllerImpl extends WebcController {
 			kit.status = [...kit.status.sort((function(a, b) {
 				return new Date(a.date) - new Date(b.date);
 			}))];
-			const statuses = kitStatusesService.getKitStatuses();
+			const statuses = statusesService.getKitStatuses();
 
 			kit.status.forEach(item => {
 				item.approved = statuses.approvedKitStatuses.indexOf(item.status) !== -1;
 				item.normal = statuses.normalKitStatuses.indexOf(item.status) !== -1;
 				item.date = momentService(item.date).format(Commons.DateTimeFormatPattern);
-//				if (item.status === kitsStatusesEnum.kitCancelled) {
-//					item.status = kitsStatusesEnum.Cancelled;
-//					item.cancelled = true;
-//				}
 			});
 		} else {
 			kit.kitId = '-';

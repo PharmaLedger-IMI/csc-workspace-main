@@ -2,7 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const momentService = cscServices.momentService;
-const utilitiesService = cscServices.UtilitiesService;
+const statusesService = cscServices.StatusesService;
 const { Commons, Topics, Roles } = cscServices.constants;
 const { orderStatusesEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
@@ -88,7 +88,7 @@ class HistoryModalControllerImpl extends WebcController {
 				return new Date(a.date) - new Date(b.date);
 			}))];
 
-			const statuses = utilitiesService.getNormalAndApproveStatusByRole(this.role);
+			const statuses = statusesService.getShipmentStatusesByRole(this.role);
 
 			shipment.status.forEach(item => {
 				item.approved = statuses.approvedStatuses.indexOf(item.status) !== -1;
