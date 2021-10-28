@@ -16,3 +16,4 @@ require('./KitsControllerImpl');
 require('./KitSummaryControllerImpl');
 require('./StudiesKitsControllerImpl');
 require('./KitHistoryModalControllerImpl');
+require('./ProgressStatusControllerImpl');
