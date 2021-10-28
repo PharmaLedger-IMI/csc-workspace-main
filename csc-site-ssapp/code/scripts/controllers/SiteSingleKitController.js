@@ -148,7 +148,7 @@ class SiteSingleKitController extends WebcController {
       }
 
       data.pending_action = this.getPendingAction(data.status_value);
-      const statuses = kitStatusesService.getNormalAndApproveKitStatusByRole('Site');
+      const statuses = kitStatusesService.getKitStatuses();
       const normalStatuses = statuses.normalKitStatuses;
       const approvedStatuses = statuses.approvedKitStatuses;
       data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;

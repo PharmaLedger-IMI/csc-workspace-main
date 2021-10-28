@@ -21,6 +21,10 @@
 			        id='filter-Delivered'>
 				Delivered
 			</button>
+			<button class='btn-filter' data-custom='ProofOfDelivery' data-tag='filters-changed'
+							id='filter-ProofOfDelivery'>
+				Proof Of Delivery
+			</button>
 		</div>
 	</div>
 	<!--Test Scan Shipment -->
@@ -30,9 +34,8 @@
 			<!-- Table area -->
 
 			<div class="full-flex-column" data-if='@shipmentsListIsReady'>
-				<div class="full-flex-column" slot="true" data-if="@shipmentsListNotEmpty">
-					<webc-template data-view-model="@" slot="true" template="shipment/table-template-shipment"></webc-template>
-					<div slot="false" class='no-data-info full-flex-column'>No shipments available.</div>
+				<div class="full-flex-column" slot="true">
+					<webc-template data-view-model="@" template="shipment/table-template-shipment"></webc-template>
 				</div>
 				<webc-spinner slot='false'></webc-spinner>
 			</div>
