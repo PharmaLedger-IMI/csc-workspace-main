@@ -47,6 +47,7 @@ class ShipmentsService extends DSUService {
 		const shipmentModel = {
 			orderSSI: data.orderSSI,
 			requestDate: data.requestDate,
+			deliveryDate: data.deliveryDate,
 			orderId: data.orderId,
 			sponsorId: data.sponsorId,
 			shipmentId: data.orderId,
