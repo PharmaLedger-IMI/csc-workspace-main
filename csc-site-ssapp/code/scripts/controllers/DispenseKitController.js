@@ -4,6 +4,8 @@ const ProfileService = cscServices.ProfileService;
 const KitsService = cscServices.KitsService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { kitsStatusesEnum } = cscServices.constants.kit;
+const eventBusService = cscServices.EventBusService;
+const { Topics } = cscServices.constants;
 
 class DispenseKitController extends WebcController {
 
@@ -11,7 +13,7 @@ class DispenseKitController extends WebcController {
     super(...props);
     this.kitsService = new KitsService(this.DSUStorage);
     this.initViewModel();
-    this.attachEvents();
+    this.initHandlers();
   }
 
   async initViewModel() {
@@ -38,18 +40,23 @@ class DispenseKitController extends WebcController {
 
   }
 
-   attachEvents(){
-     this.dispenseKitHandler();
-  }
-
-   dispenseKitHandler(){
-    this.onTagClick("dispense-kit",  async () => {
-      const kitData = this.getkitData();
-       await this.kitsService.updateKit(this.model.kitSSI, kitsStatusesEnum.Dispensed, kitData);
-        this.navigateToPageTag('kit', {
-          keySSI: this.model.kitSSI
+    initHandlers() {
+        this.onTagEvent('dispense-kit', 'click', (e) => {
+            this.dispenseKit();
         });
-    });
+    }
+
+   async dispenseKit() {
+       window.WebCardinal.loader.hidden = false;
+
+       const kitData = this.getkitData();
+       await this.kitsService.updateKit(this.model.kitSSI, kitsStatusesEnum.Dispensed, kitData);
+
+        eventBusService.emitEventListeners(Topics.RefreshKits, null);
+
+        this.showErrorModalAndRedirect('Kit is marked as dispensed', 'Kit Dispensed', { tag: 'kit', state: { keySSI: this.model.kitSSI } }, 2000);
+
+        window.WebCardinal.loader.hidden = true;
   }
 
   getkitData() {
