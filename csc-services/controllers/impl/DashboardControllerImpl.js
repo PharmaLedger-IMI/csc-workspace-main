@@ -301,6 +301,55 @@ class DashboardControllerImpl extends WebcController {
 				notificationRole = Roles.Site;
 				const { studyKeySSI } = data.message.data;
 				kitsData = await this.kitsService.getStudyKitsDSUAndUpdate(studyKeySSI);
+
+
+				const importKits = () => {
+
+					let redirectToKits = () => {
+						this.showErrorModalAndRedirect('Study Kits can be managed now.', 'Kits were received', {
+							tag: 'dashboard',
+							state: { tab: Topics.Kits }
+						}, 2000);
+
+					};
+
+					this.model.kitsMounting = {
+						progress: 0,
+						importInProgress: true,
+						eta: '-'
+					};
+
+					this.showModalFromTemplate('kitMountingProgressModal', redirectToKits.bind(this), redirectToKits.bind(this), {
+						controller: 'KitMountingProgressController',
+						modalTitle: `Shipment ${kitsData.shipmentId}: Kits Import`,
+						disableExpanding: true,
+						disableBackdropClosing: true,
+						disableClosing: true,
+						disableCancelButton: true,
+						model: this.model
+					});
+
+					this.kitsService.mountStudyKits(studyKeySSI,(err, progress)=>{
+						this.model.kitsMounting.progress = parseInt(progress*100);
+					})
+				};
+
+				this.showModal(
+					"New kits were received by the SITE. Do you want to import them now. This operation may take some time?",
+					'Kits Import',
+					importKits,
+					()=>{
+						//#518
+						// add a flag in db that kits were not imported in order to let user to import them later
+					},
+					{
+						disableExpanding: true,
+						cancelButtonText: 'Later',
+						confirmButtonText: 'Start Import',
+						id: 'confirm-modal',
+					}
+				);
+
 				break;
 			}
 		}

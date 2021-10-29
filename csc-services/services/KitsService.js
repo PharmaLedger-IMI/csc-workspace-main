@@ -138,6 +138,16 @@ class KitsService extends DSUService {
 
     return await this.addStudyKitDataToDb(studyKitsDSU.studyId, studyKitsDSU);
   }
+
+  async mountStudyKits(studyKeySSI, progressCallback){
+    const studyKitsDSU = await this.getEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
+    //use batch-mode?
+    for (let i = 0; i < studyKitsDSU.kits.length; i++) {
+        let kit = studyKitsDSU.kits[i];
+        await this.mountEntityAsync(kit.kitKeySSI, FoldersEnum.Kits);
+        progressCallback(undefined, (i + 1) / studyKitsDSU.kits.length)
+    }
+  }
 }
 
 module.exports = KitsService;
