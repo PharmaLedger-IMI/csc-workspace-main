@@ -18,16 +18,16 @@ class DispenseKitController extends WebcController {
 
   async initViewModel() {
 
-   let { studyId, orderId, keySSI } = this.history.location.state.kit;
+    let { studyId, orderId, keySSI } = this.history.location.state.kit;
 
     const model = {
       kitModel: viewModelResolver('kit'),
       userName: '',
       studyId: studyId,
       orderId: orderId,
-      kitSSI:  keySSI
+      kitSSI: keySSI
     };
-   
+
 
     this.profileService = new ProfileService(this.DSUStorage);
     this.profileService.getUserDetails((err, userDetails) => {
@@ -40,26 +40,27 @@ class DispenseKitController extends WebcController {
 
   }
 
-    initHandlers() {
-        this.onTagEvent('dispense-kit', 'click', (e) => {
-            this.dispenseKit();
-        });
-    }
-
-   async dispenseKit() {
-       window.WebCardinal.loader.hidden = false;
-
-       const kitData = this.getkitData();
-       await this.kitsService.updateKit(this.model.kitSSI, kitsStatusesEnum.Dispensed, kitData);
-
-        eventBusService.emitEventListeners(Topics.RefreshKits, null);
-
-        this.showErrorModalAndRedirect('Kit is marked as dispensed', 'Kit Dispensed', { tag: 'kit', state: { keySSI: this.model.kitSSI } }, 2000);
-
-        window.WebCardinal.loader.hidden = true;
+  initHandlers() {
+    this.onTagEvent('dispense-kit', 'click', (e) => {
+      this.dispenseKit();
+    });
   }
 
-  getkitData() {
+  async dispenseKit() {
+    window.WebCardinal.loader.hidden = false;
+
+    const dispensedData = this.getDispensedData();
+    await this.kitsService.updateKit(this.model.kitSSI, kitsStatusesEnum.Dispensed, dispensedData);
+
+    eventBusService.emitEventListeners(Topics.RefreshKits, null);
+    this.showErrorModalAndRedirect('Kit is marked as dispensed', 'Kit Dispensed', {
+      tag: 'kit',
+      state: { keySSI: this.model.kitSSI }
+    }, 2000);
+    window.WebCardinal.loader.hidden = true;
+  }
+
+  getDispensedData() {
     return {
       patientId: this.model.kitModel.form.patientId.value,
       doseType: this.model.kitModel.form.doseType.value,
@@ -67,8 +68,8 @@ class DispenseKitController extends WebcController {
       visitId: this.model.kitModel.form.visitId.value,
       dispensingPartyId: this.model.kitModel.form.dispensingPartyId.value,
       receivedDate: this.model.kitModel.form.receivedDate.value,
-      receivedTime: this.model.kitModel.form.receivedTime.value,
-    }
+      receivedTime: this.model.kitModel.form.receivedTime.value
+    };
   }
 }
 
