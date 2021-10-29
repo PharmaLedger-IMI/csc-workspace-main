@@ -86,3 +86,7 @@
         <input class="form-control form-control-sm" readonly="readonly" name="@form.investigatorId.name" value="@kit.InvestigatorId" />
     </div>
 </div>
+
+<div data-if='@kit.contextualContent.afterDispensed'>
+    <webc-template data-view-model='@' template='kits/dispense-details'></webc-template>
+</div>

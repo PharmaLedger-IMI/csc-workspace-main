@@ -186,10 +186,10 @@ class SiteSingleKitController extends WebcController {
       targetIcon.classList.toggle('rotate-icon');
 
       const panel = target.nextElementSibling;
-      if (panel.style.maxHeight === '1000px') {
+      if (panel.style.maxHeight === '1200px') {
         panel.style.maxHeight = '0px';
       } else {
-        panel.style.maxHeight = '1000px';
+        panel.style.maxHeight = '1200px';
       }
     });
   }
@@ -201,7 +201,7 @@ class SiteSingleKitController extends WebcController {
 
     accordion.classList.toggle('accordion-item-active');
     targetIcon.classList.toggle('rotate-icon');
-    panel.style.maxHeight = '1000px';
+    panel.style.maxHeight = '1200px';
   }
 
   onShowHistoryClick() {
