@@ -89,7 +89,7 @@ class ShipmentsControllerImpl extends WebcController {
 
         item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
         item.requestDate = item.requestDate ? momentService(item.requestDate).format(Commons.DateTimeFormatPattern) : '-';
-        item.deliveryDate = item.deliveryDate.date + ',' + item.deliveryDate.time;
+        item.deliveryDate = item.deliveryDate ? momentService(item.deliveryDate).format(Commons.DateTimeFormatPattern) : '-';
         item.scheduledPickupDate = this.getPickupDateTime(item.scheduledPickupDateTime);
       });
     }
@@ -139,7 +139,7 @@ class ShipmentsControllerImpl extends WebcController {
       result = result.filter((x) => x.status_value === shipmentStatusesEnum[this.model.filter]);
     }
     if (this.model.search.value && this.model.search.value !== '') {
-      result = result.filter((x) => x.orderId.toUpperCase().search(this.model.search.value.toUpperCase()) !== -1);
+      result = result.filter((x) => x.orderId.toUpperCase().search(escape(this.model.search.value.toUpperCase())) !== -1);
     }
 
     this.setShipmentsModel(result);
