@@ -1,5 +1,6 @@
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
+const ProfileService = cscServices.ProfileService;
 const KitsService = cscServices.KitsService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { kitsStatusesEnum } = cscServices.constants.kit;
@@ -14,15 +15,27 @@ class DispenseKitController extends WebcController {
   }
 
   async initViewModel() {
-    const model = {
-      kitModel: viewModelResolver('kit')
-    };
-      let { studyId, orderId, keySSI } = this.history.location.state.kit;
-      this.model.studyId = studyId;
-      this.model.orderId = orderId;
-      this.model.kitSSI = keySSI;
 
-    this.model = model;
+   let { studyId, orderId, keySSI } = this.history.location.state.kit;
+
+    const model = {
+      kitModel: viewModelResolver('kit'),
+      userName: '',
+      studyId: studyId,
+      orderId: orderId,
+      keySSI:keySSI
+    };
+   
+
+    this.profileService = new ProfileService(this.DSUStorage);
+    this.profileService.getUserDetails((err, userDetails) => {
+      if (err) {
+        return console.log('[UserDetails] [ERROR]', err);
+      }
+      model.userName = userDetails.username;
+      this.model = model;
+    });
+
   }
 
    attachEvents(){
@@ -50,6 +63,6 @@ class DispenseKitController extends WebcController {
       receivedTime: this.model.kitModel.form.receivedTime.value,
     }
   }
-
 }
+
 export default DispenseKitController;

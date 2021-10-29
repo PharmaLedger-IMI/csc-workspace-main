@@ -38,8 +38,8 @@ class StudiesKitsControllerImpl extends WebcController {
     }
   }
 
-  filterKitsByLastStatus(kits, status){
-    return kits.filter(kit => kit.status[kit.status.length-1].status === status)
+  filterKitsByStatus(kits, status){
+    return kits.filter(kit => kit.status.find((statusItem) => statusItem.status === status));
   }
 
   transformData(data) {
@@ -61,9 +61,18 @@ class StudiesKitsControllerImpl extends WebcController {
     studiesKits.forEach((item) => {
       item.lastModified = momentService(item.lastModified).format(Commons.DateTimeFormatPattern);
       item.kitsNumber = item.kits.length;
-      item.kitsAvailable = this.filterKitsByLastStatus(item.kits,kitsStatusesEnum.AvailableForAssignment).length;
-      item.kitsAssigned = this.filterKitsByLastStatus(item.kits,kitsStatusesEnum.Assigned).length;
-      item.kitsDispensed = this.filterKitsByLastStatus(item.kits,kitsStatusesEnum.Dispensed).length;
+      item.kitsAvailable = {
+        progress: this.filterKitsByStatus(item.kits, kitsStatusesEnum.AvailableForAssignment).length,
+        total: item.kitsNumber
+      };
+      item.kitsAssigned = {
+        progress: this.filterKitsByStatus(item.kits, kitsStatusesEnum.Assigned).length,
+        total: item.kitsNumber
+      };
+      item.kitsDispensed = {
+        progress: this.filterKitsByStatus(item.kits, kitsStatusesEnum.Dispensed).length,
+        total: item.kitsNumber
+      };
     });
     return studiesKits;
   }

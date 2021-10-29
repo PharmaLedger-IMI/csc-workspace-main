@@ -18,7 +18,6 @@
       </div>
 
       <div class='body-main-section'>
-        <div class="row">
          <p style='width: 100%;text-align: center;'>Please proceed to scanning process to change the shipment status to <b>"Received"</b></p>
 
           <div class='stepper-container'>
@@ -27,34 +26,48 @@
             <button id='step-3' data-tag='step-3' disabled='@formIsInvalid' class='step-element'>3 - Confirmation</button>
           </div>
 
-          <div class="step-holder " id="step-1-wrapper">
-              <div data-if="@isScannerActive">
-                <div slot='true'>
-                    <psk-barcode-scanner title="Barcode Scanner" data="@scannedData"></psk-barcode-scanner>
-                </div>
-
-                <div slot='false' data-if="@scanSuccess">
-                  <div slot="true">
-                      <i class="fas fa-check fa-10x" style="color: #00345b"></i>
-                      <label class="scan-modal-label"> Shipment Scan Successful ! </label>
-                  </div>
-
-                  <div slot="false">
-                      <span class="fas fa-times fa-10x" style="color: #ef6c00"></span>
-                      <label class="scan-modal-label">Wrong Shipment Code Scanned. Please try again !</label>
-                      <button slot="false" class="btn-default" data-tag="start-scanner">Scan Again</button>
-                  </div>
-                </div>
-              </div>
-
+          <div class="step-holder-modal" id="step-1-wrapper">
+            <div class="d-flex flex-column align-items-center" data-if="@canScanShipment">
+              <label class="scan-modal-label"> Please find the QR code on shipment container and scan it. </label>
+            </div>
+  
+            <div class="d-flex justify-content-center" data-if="@isShipmentScannerActive">
+              <psk-barcode-scanner data="@scannedShipmentData" normal-size></psk-barcode-scanner>
+            </div>
+  
+            <div class="d-flex flex-column align-items-center" data-if="@showWrongShipmentScanResult">
+              <span class="fas fa-times fa-10x" style="color: #ef6c00"></span>
+              <label class="scan-modal-label">Wrong Shipment Code Scanned. Please try again!</label>
+            </div>
+  
+            <div class="d-flex flex-column align-items-center" data-if="@showCorrectShipmentScanResult">
+              <i class="fas fa-check fa-10x" style="color: #00345b"></i>
+              <label class="scan-modal-label"> Shipment Scan Successful! </label>
+            </div>
+  
+            <div data-if="@canScanShipment">
               <div class="row-wrapper button-wrapper">
-                <button disabled='@formIsInvalid' class="btn-default" data-tag="from_step_1_to_2"
-                        id="from_step_1_to_2"> Next
+                <button class="btn-default" data-tag="open-shipment-scanner">SCAN</button>
+              </div>
+            </div>
+  
+            <div data-if="@enableStep1Navigation">
+              <div class="row-wrapper button-wrapper">
+                <button class="btn-default" data-tag="back-to-shipment-scan" disabled="@showCorrectShipmentScanResult">
+                  <i class="fas fa-angle-left"></i>
+                  Previous
+                </button>
+                <button class="btn-default scan-again-button" data-tag="scan-again-shipment"  disabled="@showCorrectShipmentScanResult" >
+                  Scan Again
+                </button>
+                <button class="btn-default" data-tag="from_step_1_to_2" disabled="@showWrongShipmentScanResult" id="from_step_1_to_2">
+                  Next
                   <i class="fas fa-angle-right"></i>
                 </button>
               </div>
-      
+            </div>
           </div>
+
 
           <div class="step-holder-modal step-hidden" id="step-2-wrapper">
             <div class="row comments-container">
@@ -177,7 +190,6 @@
             </div>
             </div>
           </div>
-        </div>
       </div>
     </section>
   </main>

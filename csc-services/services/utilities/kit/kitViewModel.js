@@ -1,7 +1,5 @@
 const constants = require('csc-services').constants;
 const orderBusinessRequirements = constants.order.orderBusinessRequirements;
-const kitBusinessRequirements = constants.kit.kitBusinessRequirements;
-const { patientsId, doseTypes, doseVolumes, visitIds, dispensingPartyIds, investigatorIds } = kitBusinessRequirements;
 const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
 const DAYS_AHEAD = orderBusinessRequirements.DeliveryDateDaysAhead;
 const momentService = require("csc-services").momentService;
@@ -169,7 +167,7 @@ const kitViewModel = {
 			required: true,
 			placeholder: 'Patient ID',
 			disabled: false,
-			options: patientsId.map((x) => {return {label:x.name, value:x.name}}),
+			type: 'text',
 			value: '',
 		},
 		doseType: {
@@ -179,7 +177,6 @@ const kitViewModel = {
              required: true,
              placeholder: 'e.g. Syringe',
              disabled: false,
-             options: doseTypes.map((x) => {return {label:x.name, value:x.name}}),
              value: '',
         },
 		doseVolume: {
@@ -189,17 +186,16 @@ const kitViewModel = {
         	required: true,
         	placeholder: 'e.g. 10',
         	disabled: false,
-        	options: doseVolumes.map((x) => {return {label:x.name, value:x.name}}),
         	value: '',
+        	min: '0'
         },
     	visitId: {
             label: 'Visit ID',
             name: 'visit-id',
             id: 'visit-id',
             required: true,
-            placeholder: 'select visit ID',
+            placeholder: 'Enter visit ID',
             disabled: false,
-            options: visitIds.map((x) => {return {label:x.name, value:x.name}}),
             value: '',
         },
         visit_date: {
@@ -207,22 +203,20 @@ const kitViewModel = {
              name: 'visit_date',
              required: true,
              disabled: false,
-             value: '',
+             value: momentService(new Date()).format(constants.Commons.YearMonthDayPattern),
              min: momentService(new Date()).add(DAYS_AHEAD, 'days').format(constants.Commons.YearMonthDayPattern)
         },
         visit_time: {
              name: 'visit_time',
-             equired: true,
              disabled: false,
-             value: '',
+             value: momentService(new Date()).format(constants.Commons.HourFormatPattern),
         },
         dispensingPartyId: {
               label: 'Dispensing Party ID',
               name: 'dispensing-id',
               id: 'dispensing-id',
               required: true,
-              placeholder: '',
-              options: dispensingPartyIds.map((x) => {return {label:x.name, value:x.name}}),
+              placeholder: 'Dispensing Party ID',
               value: '',
         },
 		investigatorId: {
@@ -230,8 +224,8 @@ const kitViewModel = {
 			name: 'investigator-id',
 			id: 'investigator-id',
 			required: true,
-			placeholder: '',
-			options: investigatorIds.map((x) => {return {label:x.name, value:x.name}}),
+			placeholder: 'Investigator ID',
+			type: 'text',
 			value: '',
 	  },
 	}

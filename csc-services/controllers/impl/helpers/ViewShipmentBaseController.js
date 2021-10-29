@@ -6,7 +6,7 @@ const ShipmentService = cscServices.ShipmentService;
 const { shipmentStatusesEnum, shipmentPendingActionEnum } = cscServices.constants.shipment;
 const momentService = cscServices.momentService;
 const { Commons, FoldersEnum, Topics, Roles } = cscServices.constants;
-const utilitiesService = cscServices.UtilitiesService;
+const statusesService = cscServices.StatusesService;
 
 class ViewShipmentBaseControllerImpl extends WebcController{
 
@@ -148,7 +148,7 @@ class ViewShipmentBaseControllerImpl extends WebcController{
         data.deliveryDateTime = this.getDateTime (data.deliveryDateTime)
       }
 
-      const statuses = utilitiesService.getNormalAndApproveStatusByRole(this.role);
+      const statuses = statusesService.getShipmentStatusesByRole(this.role);
       const normalStatuses = statuses.normalStatuses;
       const approvedStatuses = statuses.approvedStatuses;
       data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;

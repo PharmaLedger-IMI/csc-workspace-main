@@ -1,12 +1,12 @@
 const { Roles } = require('../constants');
-const {shipmentStatusesEnum} = require('../constants/shipment');
+const { shipmentStatusesEnum } = require('../constants/shipment');
+const { kitsStatusesEnum } = require('../constants/kit');
 
-class UtilitiesService {
+class StatusesService {
 
-  // Constructor of the service
   constructor() {}
 
-  getNormalAndApproveStatusByRole( role ) {
+  getShipmentStatusesByRole( role ) {
 
     let normalStatuses = [];
     let approvedStatuses = [];
@@ -52,8 +52,19 @@ class UtilitiesService {
       approvedStatuses: approvedStatuses
     }
   }
+
+  getKitStatuses() {
+
+        let normalKitStatuses = [kitsStatusesEnum.AvailableForAssignment,kitsStatusesEnum.Assigned,kitsStatusesEnum.Received];
+        let approvedKitStatuses = [kitsStatusesEnum.Dispensed];
+
+        return {
+          normalKitStatuses : normalKitStatuses,
+          approvedKitStatuses: approvedKitStatuses
+        }
+      }
 }
 
-const utilitiesService = new UtilitiesService();
+const statusesService = new StatusesService();
 
-module.exports = utilitiesService;
+module.exports = statusesService;

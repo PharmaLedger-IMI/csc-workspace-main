@@ -2,7 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 
-const utilitiesService = cscServices.UtilitiesService;
+const statusesService = cscServices.StatusesService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const ShipmentService = cscServices.ShipmentService;
@@ -12,7 +12,8 @@ const {
   shipmentStatusesEnum,
   shipmentCMOTableHeaders,
   shipmentSiteTableHeaders,
-  shipmentSponsorTableHeaders
+  shipmentSponsorTableHeaders,
+  shipmentCourierTableHeaders
 } = cscServices.constants.shipment;
 
 class ShipmentsControllerImpl extends WebcController {
@@ -27,7 +28,6 @@ class ShipmentsControllerImpl extends WebcController {
 
     this.init();
     this.attachEvents();
-    this.attachEventHandlers();
   }
 
   async init() {
@@ -67,7 +67,7 @@ class ShipmentsControllerImpl extends WebcController {
   transformData(data) {
     if (data) {
 
-      const statuses = utilitiesService.getNormalAndApproveStatusByRole(this.role);
+      const statuses = statusesService.getShipmentStatusesByRole(this.role);
       const normalStatuses = statuses.normalStatuses;
       const approvedStatuses = statuses.approvedStatuses;
 
@@ -146,6 +146,7 @@ class ShipmentsControllerImpl extends WebcController {
   }
 
   attachEventHandlers() {
+    //TODO due to many shipments changes the expression handler is triggered more than once
     this.model.addExpression('shipmentsListNotEmpty', () => {
       return this.model.shipments && Array.isArray(this.model.shipments) && this.model.shipments.length > 0;
     }, 'shipments');
@@ -159,7 +160,6 @@ class ShipmentsControllerImpl extends WebcController {
       pagination: this.getPaginationViewModel(),
       headers: tableHeaders,
       tableLength: tableHeaders.length,
-      shipmentsArrayNotEmpty: true,
       shipments: [],
       defaultSortingRule: {
         sorting: 'desc',
@@ -216,6 +216,9 @@ class ShipmentsControllerImpl extends WebcController {
       }
       case Roles.Sponsor: {
         return shipmentSponsorTableHeaders;
+      }
+      case Roles.Courier:{
+        return shipmentCourierTableHeaders
       }
     }
 

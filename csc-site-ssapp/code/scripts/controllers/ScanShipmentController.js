@@ -22,13 +22,41 @@ class ScanShipmentController extends WebcController {
     this.retrieveKitIds(this.originalShipment.kitIdSSI);
     this.model.disableSign = false;
 
-    this.onTagEvent("start-scanner", 'click', () => {
-      this.model.isScannerActive = true;
-    });
-
     this.initScanViewModel();
     this.initStepperNavigationHandlers();
-    this.addModelChangeHandlers();
+    this.attachShipmentScannerHandlers();
+  }
+
+  attachShipmentScannerHandlers() {
+    this.onTagClick('open-shipment-scanner', () => {
+      this.model.canScanShipment = false;
+      this.model.isShipmentScannerActive = true;
+    });
+
+    let scanAgainShipmentHandler =   () => {
+      this.model.isShipmentScannerActive = true;
+      this.model.showWrongShipmentScanResult = false;
+      this.model.showCorrectShipmentScanResult = false;
+    };
+
+    this.onTagClick('back-to-shipment-scan', scanAgainShipmentHandler);
+    this.onTagClick('scan-again-shipment', scanAgainShipmentHandler);
+
+    this.model.onChange('canScanShipment', this.step1NavigationHandler.bind(this));
+    this.model.onChange('isShipmentScannerActive', this.step1NavigationHandler.bind(this));
+
+    this.model.onChange('scannedShipmentData', () => {
+        console.log('[SCAN] ', this.model.scannedShipmentData);
+        this.model.isShipmentScannerActive = false;
+        this.model.isShipmentScanOk = this.model.scannedShipmentData === this.model.shipment.shipmentId;
+        this.model.showWrongShipmentScanResult = !this.model.isShipmentScanOk;
+        this.model.showCorrectShipmentScanResult = this.model.isShipmentScanOk;
+        this.model.formIsInvalid = !this.model.isShipmentScanOk;
+    });
+  }
+
+  step1NavigationHandler() {
+    this.model.enableStep1Navigation = this.model.canScanShipment === false && this.model.isShipmentScannerActive === false;
   }
 
   async retrieveKitIds(kitIdSSI) {
@@ -41,15 +69,6 @@ class ScanShipmentController extends WebcController {
   async getKits(kitIdSSI) {
     const kitDSU = await this.kitsService.getKitsDSU(kitIdSSI);
     return kitDSU;
-  }
-
-  addModelChangeHandlers() {
-    this.model.onChange("scannedData", () => {
-      let correctValue = this.model.shipment.shipmentId;
-      this.model.scanSuccess = this.model.scannedData === correctValue;
-      this.model.formIsInvalid = !this.model.scanSuccess;
-      this.model.isScannerActive = false;
-    });
   }
 
   initStepperNavigationHandlers() {
@@ -207,9 +226,12 @@ class ScanShipmentController extends WebcController {
       { id: 'from_step_2_to_3', name: 'Next', visible: true, validated: false },
       { id: 'from_step_3_to_2', name: 'Previous', visible: true, validated: false },
     ];
-    this.model.isScannerActive = true;
-    this.model.scannedData = '';
-    this.model.scanSuccess = false;
+    this.model.scannedShipmentData = '';
+    this.model.isShipmentScanOk = false;
+    this.model.canScanShipment = true;
+    this.model.isShipmentScannerActive = false;
+    this.model.showWrongShipmentScanResult = false;
+    this.model.showCorrectShipmentScanResult = false;
   }
 }
 
