@@ -23,7 +23,7 @@ class DispenseKitController extends WebcController {
       userName: '',
       studyId: studyId,
       orderId: orderId,
-      keySSI:keySSI
+      kitSSI:  keySSI
     };
    
 
