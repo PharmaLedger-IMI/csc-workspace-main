@@ -101,8 +101,8 @@ class StudiesKitsControllerImpl extends WebcController {
     let result = this.kitsStudies;
     if (this.model.search.value && this.model.search.value !== '') {
       result = result.filter((x) =>
-        x.studyId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
-        x.orderId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1
+        x.studyId.toString().toUpperCase().search(escape(this.model.search.value.toUpperCase())) !== -1 ||
+        x.orderId.toString().toUpperCase().search(escape(this.model.search.value.toUpperCase())) !== -1
       );
     }
 

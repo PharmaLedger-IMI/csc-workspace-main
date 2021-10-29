@@ -127,10 +127,10 @@ class KitsControllerImpl extends WebcController {
 		  }
 		if (this.model.search.value && this.model.search.value !== '') {
 			result = result.filter((x) =>
-				x.kitId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
-				x.shipmentId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
-				x.investigatorId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
-				x.status_value.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1
+				x.kitId.toString().toUpperCase().search(escape(this.model.search.value.toUpperCase())) !== -1 ||
+				x.shipmentId.toString().toUpperCase().search(escape(this.model.search.value.toUpperCase())) !== -1 ||
+				x.investigatorId.toString().toUpperCase().search(escape(this.model.search.value.toUpperCase())) !== -1 ||
+				x.status_value.toString().toUpperCase().search(escape(this.model.search.value.toUpperCase())) !== -1
 			);
 		}
 

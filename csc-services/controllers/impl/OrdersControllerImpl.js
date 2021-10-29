@@ -128,7 +128,7 @@ class OrdersControllerImpl extends WebcController {
 			result = result.filter((x) => x.status_value === orderStatusesEnum[this.model.filter]);
 		}
 		if (this.model.search.value && this.model.search.value !== '') {
-			result = result.filter((x) => x.orderId.toUpperCase().search(this.model.search.value.toUpperCase()) !== -1);
+			result = result.filter((x) => x.orderId.toUpperCase().search(escape(this.model.search.value.toUpperCase())) !== -1);
 		}
 
 		this.setOrdersModel(result);
