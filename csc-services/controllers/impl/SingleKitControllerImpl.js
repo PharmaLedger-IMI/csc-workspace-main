@@ -4,14 +4,15 @@ const KitsService = cscServices.KitsService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const momentService = cscServices.momentService;
-const { Commons, Topics } = cscServices.constants;
+const { Commons, Topics, Roles } = cscServices.constants;
 const {kitsStatusesEnum, kitsPendingActionEnum} = cscServices.constants.kit;
 const statusesService = cscServices.StatusesService;
 
-class SiteSingleKitController extends WebcController {
+class SingleKitControllerImpl extends WebcController {
 
-  constructor(...props) {
+  constructor(actor, ...props) {
     super(...props);
+    this.actor = actor;
 
     this.kitsService = new KitsService(this.DSUStorage);
     this.initViewModel();
@@ -93,9 +94,11 @@ class SiteSingleKitController extends WebcController {
     if (model.kitModel.kit.kitComment) {
       model.kitModel.kit.kitcomments = this.getKitComments(model.kitModel.kit);
     }
-    model.actions = this.setKitActions(model.kitModel.kit);
+    if(this.actor === Roles.Site){
+      model.actions = this.setKitActions(model.kitModel.kit);
+    }
+
     this.model = model;
-    console.log("this.model " + JSON.stringify(this.model));
   }
 
   setKitActions(kit) {
@@ -226,4 +229,6 @@ class SiteSingleKitController extends WebcController {
       });
     }
 }
-export default SiteSingleKitController;
+
+const controllersRegistry = require('../ControllersRegistry').getControllersRegistry();
+controllersRegistry.registerController('SingleKitController', SingleKitControllerImpl);

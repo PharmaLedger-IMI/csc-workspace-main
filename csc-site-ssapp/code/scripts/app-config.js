@@ -21,6 +21,7 @@ const KitsController = cscServices.getController('KitsController', ACTOR);
 const StudiesKitsController = cscServices.getController('StudiesKitsController', ACTOR);
 const KitHistoryModalController = cscServices.getController('KitHistoryModalController', ACTOR);
 const ProgressStatusController = cscServices.getController('ProgressStatusController', ACTOR);
+const SingleKitController = cscServices.getController('SingleKitController', ACTOR);
 
 addControllers({
   TableTemplateController,
@@ -40,5 +41,6 @@ addControllers({
   ViewShipmentBaseController,
   StudiesKitsController,
   KitHistoryModalController,
-  ProgressStatusController
+  ProgressStatusController,
+  SingleKitController
 });

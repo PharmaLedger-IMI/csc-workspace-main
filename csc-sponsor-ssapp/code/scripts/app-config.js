@@ -16,6 +16,8 @@ const ShipmentsController = cscServices.getController('ShipmentsController', ACT
 const TabNavigatorController = cscServices.getController('TabNavigatorController', ACTOR);
 const KitsController = cscServices.getController('KitsController', ACTOR);
 const KitSummaryController = cscServices.getController('KitSummaryController', ACTOR);
+const StudiesKitsController = cscServices.getController('StudiesKitsController', ACTOR);
+const SingleKitController = cscServices.getController('SingleKitController', ACTOR);
 
 addControllers({
   TableTemplateController,
@@ -31,4 +33,6 @@ addControllers({
   TabNavigatorController,
   KitsController,
   KitSummaryController,
+  StudiesKitsController,
+  SingleKitController
 });
