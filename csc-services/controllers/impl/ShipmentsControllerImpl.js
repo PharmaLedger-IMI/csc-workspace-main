@@ -66,7 +66,6 @@ class ShipmentsControllerImpl extends WebcController {
 
   transformData(data) {
     if (data) {
-
       const statuses = statusesService.getShipmentStatusesByRole(this.role);
       const normalStatuses = statuses.normalStatuses;
       const approvedStatuses = statuses.approvedStatuses;
@@ -90,6 +89,7 @@ class ShipmentsControllerImpl extends WebcController {
 
         item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
         item.requestDate = item.requestDate ? momentService(item.requestDate).format(Commons.DateTimeFormatPattern) : '-';
+        item.deliveryDate = item.deliveryDate ? momentService(item.deliveryDate).format(Commons.DateTimeFormatPattern) : '-';
         item.scheduledPickupDate = this.getPickupDateTime(item.scheduledPickupDateTime);
       });
     }

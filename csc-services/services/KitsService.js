@@ -1,6 +1,7 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
 const ShipmentsService = require('./ShipmentsService.js');
+const CommunicationService = require('./lib/CommunicationService.js');
 const { FoldersEnum, kit } = require('./constants');
 const { kitsStatusesEnum } = kit;
 
@@ -122,9 +123,23 @@ class KitsService extends DSUService {
     studyKitsDSU.lastModified = Date.now();
     let modifiedKit = studyKitsDSU.kits.find((kit)=>{return kit.kitKeySSI === kitSSI});
     modifiedKit.status.push(newStatus);
+
+    if(status === kitsStatusesEnum.Assigned) {
+      modifiedKit.investigatorId = kitData.investigatorId;
+    }
+
     await this.updateEntityAsync(studyKitsDSU, FoldersEnum.StudyKits);
     //update kits database
-    return await this.addStudyKitDataToDb(kitDSU.studyId, studyKitsDSU);
+    const kitRecord =  await this.addStudyKitDataToDb(kitDSU.studyId, studyKitsDSU);
+
+    this.communicationService.sendMessage(CommunicationService.identities.CSC.SPONSOR_IDENTITY, {
+        operation: status,
+        data: { kitSSI: kitSSI },
+        shortDescription: status
+      }
+    );
+
+    return kitRecord;
   }
 
   async getStudyKitsDSUAndUpdate(studyKeySSI) {
@@ -137,6 +152,29 @@ class KitsService extends DSUService {
     }
 
     return await this.addStudyKitDataToDb(studyKitsDSU.studyId, studyKitsDSU);
+  }
+
+  async mountStudyKits(studyKeySSI, progressCallback){
+    const studyKitsDSU = await this.getEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
+    //use batch-mode?
+    for (let i = 0; i < studyKitsDSU.kits.length; i++) {
+        let kit = studyKitsDSU.kits[i];
+        await this.mountEntityAsync(kit.kitKeySSI, FoldersEnum.Kits);
+        progressCallback(undefined, (i + 1) / studyKitsDSU.kits.length)
+    }
+  }
+
+  async updateStudyKitRecordKitSSI(kitSSI, status) {
+    const kitDetails = await this.getKitsDSU(kitSSI);
+    let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, kitDetails.studyId);
+    let modifiedKit = studyKitDb.kits.find((kit) => {
+      return kit.kitKeySSI === kitSSI;
+    });
+    modifiedKit.status = kitDetails.status;
+    if (status === kitsStatusesEnum.Assigned) {
+      modifiedKit.investigatorId = kitDetails.investigatorId;
+    }
+    return await this.storageService.updateRecord(this.KITS_TABLE, kitDetails.studyId, studyKitDb);
   }
 }
 
