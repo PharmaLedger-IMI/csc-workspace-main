@@ -6,7 +6,6 @@ const statusesService = cscServices.StatusesService;
 const { Commons, Topics, Roles } = cscServices.constants;
 const { orderStatusesEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum  } = cscServices.constants.shipment;
-const { kitsStatusesEnum } = cscServices.constants.kit;
 
 class HistoryModalControllerImpl extends WebcController {
 
@@ -57,7 +56,6 @@ class HistoryModalControllerImpl extends WebcController {
 			displayViewShipmentButton: this.model.shipment && this.model.currentPage !== Topics.Shipment,
 			displayViewKitsButton: this.model.kits && this.model.currentPage !== Topics.Kits
 		};
-		console.log(this.transformKitData());
 	}
 
 	transformOrderData() {
@@ -112,52 +110,51 @@ class HistoryModalControllerImpl extends WebcController {
 	}
 
 	transformKitData() {
-		const kits = this.model.toObject('kits') || {};
+		const kits = this.model.toObject('kits')
 
 		let final = [];
 		const object = { status: [] };
 
-		if(kits){
-			kits.forEach((kit) =>{
-				if(kit.status){
-					kit.status.forEach( (item) => {
+		if (kits) {
+			kits.forEach((kit) => {
+				if (kit.status) {
+					kit.status.forEach((item) => {
 
-						if(!final[item.status]){
+						if (!final[item.status]) {
 							final[item.status] = {};
 						}
 
 						final[item.status].status = item.status;
 
-						if(!final[item.status].count){
+						if (!final[item.status].count) {
 							final[item.status].count = 1;
-						}else{
-							final[item.status].count+=1;
+						} else {
+							final[item.status].count += 1;
 						}
 
-						if(!final[item.status].date){
+						if (!final[item.status].date) {
 							final[item.status].date = [];
-						}else{
+						} else {
 							final[item.status].date.push(item.date);
 						}
-
-
 					});
 				}
-			})
+			});
+
+			const statuses = statusesService.getKitStatuses();
+
+			Object.keys(final).forEach(key => {
+				if (Object.keys(final[key]).length !== 0) {
+					final[key].approved = statuses.approvedKitStatuses.indexOf(final[key].status) !== -1;
+					final[key].normal = statuses.normalKitStatuses.indexOf(final[key].status) !== -1;
+					final[key].date = momentService(Math.max(...final[key].date)).format(Commons.DateTimeFormatPattern);
+					object.status.push(final[key]);
+				}
+			});
 		}
 
-		const statuses = statusesService.getKitStatuses();
-
-		Object.keys(final).forEach( key => {
-			if(Object.keys(final[key]).length !== 0){
-				final[key].approved = statuses.approvedKitStatuses.indexOf(final[key].status) !== -1;
-				final[key].normal = statuses.normalKitStatuses.indexOf(final[key].status) !== -1;
-				final[key].date = momentService(Math.max(...final[key].date)).format(Commons.DateTimeFormatPattern);
-				object.status.push(final[key]);
-			}
-		});
-
 		return object;
+
 	}
 
 
