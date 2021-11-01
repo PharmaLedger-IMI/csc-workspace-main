@@ -30,9 +30,13 @@ class DispenseKitController extends WebcController {
 
     this.onTagClick('view-study-kits', () => {
       this.navigateToPageTag('study-kits', {
-        studyId: this.model.kitModel.kit.studyId,
-        orderId: this.model.kitModel.kit.orderId
+        studyId: this.model.studyId,
+        orderId: this.model.orderId
       });
+    });
+
+    this.onTagClick('view-kit', () => {
+      this.navigateToPageTag('kit', { keySSI: this.model.kitSSI });
     });
 
   }
