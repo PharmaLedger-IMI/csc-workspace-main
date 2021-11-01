@@ -6,8 +6,8 @@ const statusesService = cscServices.StatusesService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const ShipmentService = cscServices.ShipmentService;
-
-const { Topics, Commons, Roles } = cscServices.constants;
+const searchService = cscServices.SearchService;
+const { Topics, Commons, Roles, searchEnum } = cscServices.constants;
 const {
   shipmentStatusesEnum,
   shipmentCMOTableHeaders,
@@ -135,13 +135,7 @@ class ShipmentsControllerImpl extends WebcController {
 
   filterData() {
     let result = this.shipments;
-    if (this.model.filter) {
-      result = result.filter((x) => x.status_value === shipmentStatusesEnum[this.model.filter]);
-    }
-    if (this.model.search.value && this.model.search.value !== '') {
-      result = result.filter((x) => x.orderId.toUpperCase().search(escape(this.model.search.value.toUpperCase())) !== -1);
-    }
-
+    result = searchService.filterData(result, this.model.filter, this.model.search.value, searchEnum.Shipment);
     this.setShipmentsModel(result);
   }
 

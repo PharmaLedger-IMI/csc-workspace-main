@@ -4,7 +4,8 @@ const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
-const { Topics, Commons } = cscServices.constants;
+const searchService = cscServices.SearchService;
+const { Topics, Commons, searchEnum } = cscServices.constants;
 const { orderTableHeaders, orderStatusesEnum } = cscServices.constants.order;
 
 class OrdersControllerImpl extends WebcController {
@@ -123,14 +124,7 @@ class OrdersControllerImpl extends WebcController {
 
 	filterData() {
 		let result = this.orders;
-
-		if (this.model.filter) {
-			result = result.filter((x) => x.status_value === orderStatusesEnum[this.model.filter]);
-		}
-		if (this.model.search.value && this.model.search.value !== '') {
-			result = result.filter((x) => x.orderId.toUpperCase().search(escape(this.model.search.value.toUpperCase())) !== -1);
-		}
-
+		result = searchService.filterData(result, this.model.filter, this.model.search.value, searchEnum.Order);
 		this.setOrdersModel(result);
 	}
 

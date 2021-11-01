@@ -4,7 +4,8 @@ const cscServices = require('csc-services');
 const KitsService = cscServices.KitsService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
-const { Topics, Commons } = cscServices.constants;
+const searchService = cscServices.SearchService;
+const { Topics, Commons, searchEnum } = cscServices.constants;
 const { studiesKitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
 
 class StudiesKitsControllerImpl extends WebcController {
@@ -99,13 +100,7 @@ class StudiesKitsControllerImpl extends WebcController {
 
   filterData() {
     let result = this.kitsStudies;
-    if (this.model.search.value && this.model.search.value !== '') {
-      result = result.filter((x) =>
-        x.studyId.toString().toUpperCase().search(escape(this.model.search.value.toUpperCase())) !== -1 ||
-        x.orderId.toString().toUpperCase().search(escape(this.model.search.value.toUpperCase())) !== -1
-      );
-    }
-
+    result = searchService.filterData(result, this.model.filter, this.model.search.value, searchEnum.KitsStudies);
     this.setKitsModel(result);
   }
 

@@ -12,6 +12,7 @@ module.exports = {
     momentService: require('./services/lib/moment.min'),
     FileDownloaderService: require('./services/lib/FileDownloaderService'),
     utils: require('./services/lib/utils'),
+    SearchService: require('./services/lib/SearchService'),
 
     viewModelResolver: function (viewModel) {
         switch (viewModel) {
