@@ -98,6 +98,15 @@ class ScanKitController extends WebcController {
       this.navigateToPageTag('kit', { keySSI: this.model.kit.keySSI });
     });
 
+    this.onTagClick('view-study-kits', () => {
+
+      this.navigateToPageTag('study-kits', {
+        studyId: this.model.kit.studyId,
+        orderId: this.model.kit.orderId
+      });
+
+    });
+
     this.onTagClick('nav-back', () => {
       this.history.goBack();
     });
