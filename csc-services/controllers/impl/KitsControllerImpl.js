@@ -50,7 +50,7 @@ class KitsControllerImpl extends WebcController {
 					return new Date(b.date) - new Date(a.date);
 				})[0];
 
-				item.investigatorId = data.investigatorId?data.investigatorId:"-";
+				item.investigatorId = item.investigatorId?item.investigatorId:"-";
 				item.status_value = latestStatus.status;
 				item.receivedDate = momentService(receivedStatus.date).format(Commons.DateTimeFormatPattern);
 				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
