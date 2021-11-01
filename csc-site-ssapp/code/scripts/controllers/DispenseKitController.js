@@ -16,18 +16,37 @@ class DispenseKitController extends WebcController {
     this.kitsService = new KitsService(this.DSUStorage,communicationService);
     this.initViewModel();
     this.initHandlers();
+    this.navigationHandlers();
+  }
+
+  navigationHandlers() {
+    this.onTagClick('dashboard', () => {
+      this.navigateToPageTag('dashboard', { tab: Topics.Shipment });
+    });
+
+    this.onTagClick('kits-management', () => {
+      this.navigateToPageTag('dashboard', { tab: Topics.Kits });
+    });
+
+    this.onTagClick('view-study-kits', () => {
+      this.navigateToPageTag('study-kits', {
+        studyId: this.model.kitModel.kit.studyId,
+        orderId: this.model.kitModel.kit.orderId
+      });
+    });
+
   }
 
   async initViewModel() {
-
-    let { studyId, orderId, keySSI } = this.history.location.state.kit;
+    let { studyId, orderId, keySSI, kitId } = this.history.location.state.kit;
 
     const model = {
       kitModel: viewModelResolver('kit'),
       userName: '',
       studyId: studyId,
       orderId: orderId,
-      kitSSI: keySSI
+      kitSSI: keySSI,
+      kitId: kitId
     };
 
 
