@@ -2,6 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const ProfileService = cscServices.ProfileService;
 const KitsService = cscServices.KitsService;
+const CommunicationService = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { kitsStatusesEnum } = cscServices.constants.kit;
 const eventBusService = cscServices.EventBusService;
@@ -11,7 +12,8 @@ class DispenseKitController extends WebcController {
 
   constructor(...props) {
     super(...props);
-    this.kitsService = new KitsService(this.DSUStorage);
+    let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SITE_IDENTITY);
+    this.kitsService = new KitsService(this.DSUStorage,communicationService);
     this.initViewModel();
     this.initHandlers();
   }
