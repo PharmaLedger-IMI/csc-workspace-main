@@ -51,24 +51,16 @@ class KitsControllerImpl extends WebcController {
 					return new Date(b.date) - new Date(a.date);
 				})[0];
 
-				item.investigatorId = item.investigatorId?item.investigatorId:"-";
+				item.investigatorId = item.investigatorId ? item.investigatorId : '-';
 				const statuses = statusesService.getKitStatuses();
-                const normalStatuses = statuses.normalKitStatuses;
-                const approvedStatuses = statuses.approvedKitStatuses;
+				const normalStatuses = statuses.normalKitStatuses;
+				const approvedStatuses = statuses.approvedKitStatuses;
 				item.status_value = latestStatus.status;
 				item.receivedDate = momentService(receivedStatus.date).format(Commons.DateTimeFormatPattern);
 				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
-//				item.status_administered = item.status_value === kitsStatusesEnum.Administrated;
-                item.status_administered = approvedStatuses.indexOf(item.status_value) !== -1;
-				item.status_normal = !item.status_administered;
+				item.status_approved = approvedStatuses.indexOf(item.status_value) !== -1;
 				item.status_normal = normalStatuses.indexOf(item.status_value) !== -1;
-                item.contextualContent = {
-                    afterReceived: item.status.findIndex(el => el.status === kitsStatusesEnum.Received) !== -1,
-                    afterAvailableForAssignment: item.status.findIndex(el => el.status === kitsStatusesEnum.AvailableForAssignment) !== -1,
-                    afterAssigned: item.status.findIndex(el => el.status === kitsStatusesEnum.Assigned) !== -1,
-                    afterDispensed: item.status.findIndex(el => el.status === kitsStatusesEnum.Dispensed) !== -1,
-                    afterAdministrated: item.status.findIndex(el => el.status === kitsStatusesEnum.Administrated) !== -1
-                };
+
 			});
 
 		}
