@@ -161,8 +161,7 @@ class SingleKitControllerImpl extends WebcController {
          afterReceived: data.status.findIndex(el => el.status === kitsStatusesEnum.Received) !== -1,
          afterAvailableForAssignment: data.status.findIndex(el => el.status === kitsStatusesEnum.AvailableForAssignment) !== -1,
          afterAssigned: data.status.findIndex(el => el.status === kitsStatusesEnum.Assigned) !== -1,
-         afterDispensed: data.status.findIndex(el => el.status === kitsStatusesEnum.Dispensed) !== -1,
-         afterAdministrated: data.status.findIndex(el => el.status === kitsStatusesEnum.Administrated) !== -1
+         afterDispensed: data.status.findIndex(el => el.status === kitsStatusesEnum.Dispensed) !== -1
        };
       return data;
     }
