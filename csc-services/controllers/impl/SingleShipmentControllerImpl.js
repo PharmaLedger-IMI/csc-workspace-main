@@ -40,7 +40,6 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     this.toggleAccordionItemHandler();
 
     this.editShipmentHandler();
-    this.cancelOrderHandler();
     this.navigationHandlers();
   }
 

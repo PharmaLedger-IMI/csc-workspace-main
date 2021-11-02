@@ -41,9 +41,12 @@ class HistoryModalControllerImpl extends WebcController {
 
 	attachViewKitsHandler() {
 		this.onTagClick('view-kits', () => {
-			this.navigateToPageTag('kits', {
-				keySSI: this.model.kits.keySSI
+
+			this.navigateToPageTag('study-kits', {
+				studyId: this.model.kits.studyId,
+				orderId: this.model.kits.orderId
 			});
+
 		});
 	}
 
@@ -111,13 +114,15 @@ class HistoryModalControllerImpl extends WebcController {
 
 	transformKitData() {
 		const kits = this.model.toObject('kits')
-
 		let final = [];
-		const object = { status: [] };
+		const object = { status: [] , orderId : "" , studyId: ""};
 
 		if (kits) {
 			kits.forEach((kit) => {
 				if (kit.status) {
+					object.orderId = kit.orderId;
+					object.studyId = kit.studyId;
+
 					kit.status.forEach((item) => {
 
 						if (!final[item.status]) {
@@ -134,6 +139,7 @@ class HistoryModalControllerImpl extends WebcController {
 
 						if (!final[item.status].date) {
 							final[item.status].date = [];
+							final[item.status].date.push(item.date);
 						} else {
 							final[item.status].date.push(item.date);
 						}

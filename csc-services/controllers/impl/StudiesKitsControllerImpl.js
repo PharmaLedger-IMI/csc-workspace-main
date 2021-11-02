@@ -5,14 +5,14 @@ const KitsService = cscServices.KitsService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const SearchService = cscServices.SearchService;
-const { Topics, Commons } = cscServices.constants;
+const { Topics, Commons, Roles } = cscServices.constants;
 const { studiesKitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
 
 class StudiesKitsControllerImpl extends WebcController {
 
   constructor(role, ...props) {
     super(...props);
-
+    this.role = role;
     this.kitsService = new KitsService(this.DSUStorage);
     this.searchService = new SearchService(kitsStatusesEnum, ['studyId','orderId']);
     this.model = this.getKitsViewModel();
@@ -81,7 +81,7 @@ class StudiesKitsControllerImpl extends WebcController {
 
   attachEvents() {
     this.attachExpressionHandlers();
-    this.viewKitHandler();
+    this.addKitButtonsHandlers();
     this.searchFilterHandler();
   }
 
@@ -91,14 +91,62 @@ class StudiesKitsControllerImpl extends WebcController {
     }, 'kits');
   }
 
-  async viewKitHandler() {
+  async addKitButtonsHandlers() {
+
     this.onTagClick('view-kit', async (model) => {
       this.navigateToPageTag('study-kits', {
         studyId: model.studyId,
         orderId:model.orderId
       });
     });
+
+    //only Sponsor should be able to synchronize
+    if(this.role === Roles.Sponsor){
+      this.onTagClick('synchronize-study-kits', async (model) => {
+        const synchronizeKits = async () => {
+          this.model.kitsMounting = {
+            progress: 0,
+            importInProgress: true,
+            eta: '-'
+          };
+
+          let redirectToStudyKits = async () => {
+            await this.kitsService.markStudyKitsAsSynchronized(model.studyId);
+            eventBusService.emitEventListeners(Topics.RefreshKits, null);
+          };
+
+          this.showModalFromTemplate('kitMountingProgressModal', redirectToStudyKits.bind(this), redirectToStudyKits.bind(this), {
+            controller: 'KitMountingProgressController',
+            modalTitle: `Study ${model.studyId}: Kits Synchronization`,
+            disableExpanding: true,
+            disableBackdropClosing: true,
+            disableClosing: true,
+            disableCancelButton: true,
+            model: this.model
+          });
+
+          await this.kitsService.mountStudyKits(model.keySSI, (err, progress) => {
+            this.model.kitsMounting.progress = parseInt(progress * 100);
+          });
+        };
+
+        this.showModal(
+          'New kits were received by the SITE. You have to synchronize them before continuing. This operation may take some time',
+          'Kits Synchronization',
+          synchronizeKits,
+          () => {
+          },
+          {
+            disableExpanding: true,
+            cancelButtonText: 'Not now',
+            confirmButtonText: 'Synchronize now',
+            id: 'confirm-modal'
+          }
+        );
+      });
+    }
   }
+
 
   searchFilterHandler() {
     this.model.onChange('search.value', () => {
