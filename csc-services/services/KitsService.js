@@ -40,6 +40,12 @@ class KitsService extends DSUService {
     return result ? result : [];
   }
 
+  async markStudyKitsAsSynchronized(studyId){
+    let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, studyId);
+    studyKitDb.synchronized = true;
+    return await this.storageService.updateRecord(this.KITS_TABLE, studyId, studyKitDb);
+  }
+
   async updateStudyKitsDSU(studyId, kitsDSUData, kitIds, progressUpdateCallback) {
     let studyKitsDSU;
     try {
@@ -150,7 +156,8 @@ class KitsService extends DSUService {
       await this.mountEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
       studyKitsDSU = await this.getEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
     }
-
+    //synchronization will be performed later on user demand
+    studyKitsDSU.synchronized = false;
     return await this.addStudyKitDataToDb(studyKitsDSU.studyId, studyKitsDSU);
   }
 
@@ -165,7 +172,14 @@ class KitsService extends DSUService {
   }
 
   async updateStudyKitRecordKitSSI(kitSSI, status) {
-    const kitDetails = await this.getKitsDSU(kitSSI);
+    let kitDetails;
+     // kits were not synchronized yet so mount this kit it anyway
+     try{
+       kitDetails = await this.getKitsDSU(kitSSI);
+     }
+     catch (e){
+       kitDetails = await this.mountEntityAsync(kitSSI, FoldersEnum.Kits);
+     }
     let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, kitDetails.studyId);
     let modifiedKit = studyKitDb.kits.find((kit) => {
       return kit.kitKeySSI === kitSSI;
