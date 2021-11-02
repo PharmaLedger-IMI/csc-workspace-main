@@ -98,6 +98,10 @@ class SingleKitControllerImpl extends WebcController {
       model.actions = this.setKitActions(model.kitModel.kit);
     }
 
+    if(this.actor === Roles.Sponsor){
+      model.actions = this.setKitActions(model.kitModel.kit);
+    }
+
     this.model = model;
   }
 
