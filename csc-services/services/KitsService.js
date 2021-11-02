@@ -172,7 +172,14 @@ class KitsService extends DSUService {
   }
 
   async updateStudyKitRecordKitSSI(kitSSI, status) {
-    const kitDetails = await this.getKitsDSU(kitSSI);
+    let kitDetails;
+     // kits were not synchronized yet so mount this kit it anyway
+     try{
+       kitDetails = await this.getKitsDSU(kitSSI);
+     }
+     catch (e){
+       kitDetails = await this.mountEntityAsync(kitSSI, FoldersEnum.Kits);
+     }
     let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, kitDetails.studyId);
     let modifiedKit = studyKitDb.kits.find((kit) => {
       return kit.kitKeySSI === kitSSI;
