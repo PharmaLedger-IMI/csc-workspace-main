@@ -4,6 +4,7 @@ const cscServices = require('csc-services');
 const KitsService = cscServices.KitsService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
+const SearchService = cscServices.SearchService;
 const { Topics, Commons } = cscServices.constants;
 const { kitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
 const statusesService = cscServices.StatusesService;
@@ -14,6 +15,7 @@ class KitsControllerImpl extends WebcController {
 		super(...props);
 
 		this.kitsService = new KitsService(this.DSUStorage);
+		this.searchService = new SearchService(kitsStatusesEnum, ['kitId','shipmentId','investigatorId']);
 		this.model = this.getKitsViewModel();
 		this.model.kitsListIsReady = false;
 		this.attachEvents();
@@ -127,18 +129,7 @@ class KitsControllerImpl extends WebcController {
 
 	filterData() {
 		let result = this.kits;
-		if (this.model.filter) {
-			result = result.filter((x) => x.status_value === kitsStatusesEnum[this.model.filter]);
-		  }
-		if (this.model.search.value && this.model.search.value !== '') {
-			result = result.filter((x) =>
-				x.kitId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
-				x.shipmentId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
-				x.investigatorId.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1 ||
-				x.status_value.toString().toUpperCase().search(this.model.search.value.toUpperCase()) !== -1
-			);
-		}
-
+		result = this.searchService.filterData(result, this.model.filter, this.model.search.value);
 		this.setKitsModel(result);
 	}
 
