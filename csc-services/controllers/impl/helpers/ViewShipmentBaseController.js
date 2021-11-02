@@ -7,6 +7,7 @@ const { shipmentStatusesEnum, shipmentPendingActionEnum } = cscServices.constant
 const momentService = cscServices.momentService;
 const { Commons, FoldersEnum, Topics, Roles } = cscServices.constants;
 const statusesService = cscServices.StatusesService;
+const KitsService = cscServices.KitsService;
 
 class ViewShipmentBaseControllerImpl extends WebcController{
 
@@ -14,6 +15,7 @@ class ViewShipmentBaseControllerImpl extends WebcController{
     super(...props);
     this.role = role;
     this.shipmentService = new ShipmentService(this.DSUStorage);
+    this.kitsService = new KitsService(this.DSUStorage);
     this.addedRefreshListeners = false;
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
   }
@@ -99,8 +101,9 @@ class ViewShipmentBaseControllerImpl extends WebcController{
     });
   }
 
-  onShowHistoryClick() {
-    let { orderModel, shipmentModel } = this.model.toObject();
+  async onShowHistoryClick() {
+    let { orderModel, shipmentModel, kitsData } = this.model.toObject();
+    
     const historyModel = {
       shipment: shipmentModel.shipment,
       currentPage: Topics.Shipment
@@ -108,6 +111,11 @@ class ViewShipmentBaseControllerImpl extends WebcController{
     if(orderModel){
       historyModel.order = orderModel.order
     }
+
+     if(kitsData){
+       historyModel.kits = await this.kitsService.getOrderKits(orderModel.order.studyId, orderModel.order.orderId);
+     }
+
 
     this.createWebcModal({
       template: 'historyModal',

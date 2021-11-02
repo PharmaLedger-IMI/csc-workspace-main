@@ -5,13 +5,14 @@ const momentService = cscServices.momentService;
 const statusesService = cscServices.StatusesService;
 const { Commons, Topics, Roles } = cscServices.constants;
 const { orderStatusesEnum } = cscServices.constants.order;
-const { shipmentStatusesEnum } = cscServices.constants.shipment;
+const { shipmentStatusesEnum  } = cscServices.constants.shipment;
 
 class HistoryModalControllerImpl extends WebcController {
 
 	constructor(role, ...props) {
 		super(...props);
 		this.role = role;
+
 		this.model = this.transformData();
 		this.attachEventHandlers();
 	}
@@ -50,6 +51,7 @@ class HistoryModalControllerImpl extends WebcController {
 		return {
 			order: this.transformOrderData(),
 			shipment: this.transformShipmentData(),
+			kits: this.transformKitData(),
 			displayViewOrderButton: this.model.order && this.model.currentPage !== Topics.Order,
 			displayViewShipmentButton: this.model.shipment && this.model.currentPage !== Topics.Shipment,
 			displayViewKitsButton: this.model.kits && this.model.currentPage !== Topics.Kits
@@ -106,6 +108,57 @@ class HistoryModalControllerImpl extends WebcController {
 
 		return shipment;
 	}
+
+	transformKitData() {
+		const kits = this.model.toObject('kits')
+
+		let final = [];
+		const object = { status: [] };
+
+		if (kits) {
+			kits.forEach((kit) => {
+				if (kit.status) {
+					kit.status.forEach((item) => {
+
+						if (!final[item.status]) {
+							final[item.status] = {};
+						}
+
+						final[item.status].status = item.status;
+
+						if (!final[item.status].count) {
+							final[item.status].count = 1;
+						} else {
+							final[item.status].count += 1;
+						}
+
+						if (!final[item.status].date) {
+							final[item.status].date = [];
+						} else {
+							final[item.status].date.push(item.date);
+						}
+					});
+				}
+			});
+
+			const statuses = statusesService.getKitStatuses();
+
+			Object.keys(final).forEach(key => {
+				if (Object.keys(final[key]).length !== 0) {
+					final[key].approved = statuses.approvedKitStatuses.indexOf(final[key].status) !== -1;
+					final[key].normal = statuses.normalKitStatuses.indexOf(final[key].status) !== -1;
+					final[key].date = momentService(Math.max(...final[key].date)).format(Commons.DateTimeFormatPattern);
+					object.status.push(final[key]);
+				}
+			});
+		}
+
+		return object;
+
+	}
+
+
+
 }
 
 const controllersRegistry = require('../ControllersRegistry').getControllersRegistry();

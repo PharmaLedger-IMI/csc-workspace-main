@@ -11,7 +11,6 @@ const kitsPendingActionEnum = {
 	ManageKit:"Manage Kit",
 	Assign: 'Assign',
 	Dispense: 'Dispense',
-	Administer: 'Administer',
 	NoFurtherActionsRequired: 'No further actions required'
 };
 
