@@ -5,9 +5,9 @@ const cscServices = require('csc-services');
 const statusesService = cscServices.StatusesService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
+const SearchService = cscServices.SearchService;
 const ShipmentService = cscServices.ShipmentService;
-const searchService = cscServices.SearchService;
-const { Topics, Commons, Roles, searchEnum } = cscServices.constants;
+const { Topics, Commons, Roles } = cscServices.constants;
 const {
   shipmentStatusesEnum,
   shipmentCMOTableHeaders,
@@ -25,6 +25,7 @@ class ShipmentsControllerImpl extends WebcController {
     this.model = this.getShipmentsViewModel();
     this.model.shipmentsListIsReady = false;
     this.shipmentService = new ShipmentService(this.DSUStorage);
+    this.searchService = new SearchService(shipmentStatusesEnum, ['orderId']);
 
     this.init();
     this.attachEvents();
@@ -135,7 +136,7 @@ class ShipmentsControllerImpl extends WebcController {
 
   filterData() {
     let result = this.shipments;
-    result = searchService.filterData(result, this.model.filter, this.model.search.value, searchEnum.Shipment);
+    result = this.searchService.filterData(result, this.model.filter, this.model.search.value);
     this.setShipmentsModel(result);
   }
 

@@ -4,8 +4,8 @@ const cscServices = require('csc-services');
 const KitsService = cscServices.KitsService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
-const searchService = cscServices.SearchService;
-const { Topics, Commons, searchEnum } = cscServices.constants;
+const SearchService = cscServices.SearchService;
+const { Topics, Commons } = cscServices.constants;
 const { studiesKitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
 
 class StudiesKitsControllerImpl extends WebcController {
@@ -14,6 +14,7 @@ class StudiesKitsControllerImpl extends WebcController {
     super(...props);
 
     this.kitsService = new KitsService(this.DSUStorage);
+    this.searchService = new SearchService(kitsStatusesEnum, ['studyId','orderId']);
     this.model = this.getKitsViewModel();
     this.model.kitsListIsReady = false;
     this.attachEvents();
@@ -100,7 +101,7 @@ class StudiesKitsControllerImpl extends WebcController {
 
   filterData() {
     let result = this.kitsStudies;
-    result = searchService.filterData(result, this.model.filter, this.model.search.value, searchEnum.KitsStudies);
+    result = this.searchService.filterData(result, null, this.model.search.value);
     this.setKitsModel(result);
   }
 

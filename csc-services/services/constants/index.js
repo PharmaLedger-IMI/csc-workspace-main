@@ -9,7 +9,6 @@ const folders = require('./folders');
 const buttons = require('./buttons');
 const commons = require('./commons');
 const documentTypes = require('./documentTypes');
-const search = require('./search');
 
 module.exports = {
 	...messages,
@@ -22,6 +21,5 @@ module.exports = {
 	...folders,
 	...buttons,
 	...commons,
-	...documentTypes,
-	...search
+	...documentTypes
 };
