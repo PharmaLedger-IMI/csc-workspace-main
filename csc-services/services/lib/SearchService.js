@@ -16,7 +16,7 @@ class SearchService {
       
             result = result.filter((x) => {
               const matches = this.searchedProperties.filter((property) => {
-                x[property].toLowerCase().indexOf(searchValue.toLowerCase()) !== -1;
+                return x[property].toLowerCase().indexOf(searchValue.toLowerCase()) !== -1;
               });
               return matches.length > 0;
             });
