@@ -1,7 +1,0 @@
-{
-	"python.linting.ignorePatterns": [
-		".vscode/*.py",
-		"**/site-packages/**/*.py",
-		"**/build"
-	]
-}
