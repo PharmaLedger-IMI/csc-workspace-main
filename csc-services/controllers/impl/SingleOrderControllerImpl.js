@@ -230,12 +230,6 @@ class SingleOrderControllerImpl extends WebcController {
     if (data) {
       data.documents = [];
 
-      if (data.sponsorDocuments) {
-        data.sponsorDocuments.forEach((item) => {
-          item.date = momentService(item.data).format(Commons.DateTimeFormatPattern);
-        });
-      }
-
       data.status_value = data.status.sort(function(a, b) {
         return new Date(b.date) - new Date(a.date);
       })[0].status;
