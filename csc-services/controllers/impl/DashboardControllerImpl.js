@@ -10,7 +10,7 @@ const { order, shipment, Roles, Topics, kit } = cscServices.constants;
 const { NotificationTypes } = cscServices.constants.notifications;
 const { orderStatusesEnum } = order;
 const { shipmentStatusesEnum , shipmentsEventsEnum} = shipment;
-const { kitsMessagesEnum } = kit;
+const { kitsMessagesEnum, kitsStatusesEnum } = kit;
 const KitsService = cscServices.KitsService;
 
 const csIdentities = {};
@@ -155,7 +155,7 @@ class DashboardControllerImpl extends WebcController {
 		}
 
 		// TODO: to be used on view kits on sponsor
-		// eventBusService.emitEventListeners(Topics.RefreshKits, null);
+		eventBusService.emitEventListeners(Topics.RefreshKits, null);
 	}
 
 	async processOrderMessage(data) {
@@ -294,13 +294,20 @@ class DashboardControllerImpl extends WebcController {
 	async processKitsMessage(data) {
 		let kitsData;
 		let kitsMessage = data.message.operation;
-		let notificationRole;
+		let notificationRole = Roles.Site;
 
 		switch (kitsMessage) {
 			case kitsMessagesEnum.ShipmentSigned: {
-				notificationRole = Roles.Site;
 				const { studyKeySSI } = data.message.data;
 				kitsData = await this.kitsService.getStudyKitsDSUAndUpdate(studyKeySSI);
+				break;
+			}
+
+			case kitsStatusesEnum.AvailableForAssignment:
+			case kitsStatusesEnum.Assigned:
+			case kitsStatusesEnum.Dispensed: {
+				const { kitSSI } = data.message.data;
+				kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI, kitsMessage);
 				break;
 			}
 		}

@@ -1,0 +1,39 @@
+<main>
+
+  <div data-if='@kitsMounting.importInProgress'>
+    <div class='alert alert-warning' role='alert' slot='true'>
+      Please do not close this page while the import is in progress. ETA: {{@kitsMounting.eta}}
+    </div>
+    <div class='alert alert-success' role='alert' slot='false'>
+      Import finished successfully
+    </div>
+
+  </div>
+
+  <div class='form-group'>
+    <div class="progress">
+      <div id="importKitsProgress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width: 0.1%">{{@kitsMounting.progress}}%</div>
+    </div>
+  </div>
+</main>
+
+<footer class="modal-action-menu" slot="footer">
+  <button class='confirm' disabled='@kitsMounting.importInProgress' data-confirm>Close</button>
+</footer>
+
+<style>
+    button.confirm{
+        border-radius: 3px;
+        padding: 0.5rem 1.1rem;
+        margin:0 0.5rem;
+        border: none;
+        font-size: 1rem;
+    }
+    button.confirm[disabled]{
+        opacity: 0.5;
+    }
+    button.confirm {
+        color: #FAFAFA;
+        background-color: #5e7fe1
+    }
+</style>

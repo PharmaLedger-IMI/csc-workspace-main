@@ -7,6 +7,7 @@ const momentService = cscServices.momentService;
 const SearchService = cscServices.SearchService;
 const { Topics, Commons } = cscServices.constants;
 const { kitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
+const statusesService = cscServices.StatusesService;
 
 class KitsControllerImpl extends WebcController {
 
@@ -52,15 +53,19 @@ class KitsControllerImpl extends WebcController {
 					return new Date(b.date) - new Date(a.date);
 				})[0];
 
-				item.investigatorId = data.investigatorId?data.investigatorId:"-";
+				item.investigatorId = item.investigatorId ? item.investigatorId : '-';
+				const statuses = statusesService.getKitStatuses();
+				const normalStatuses = statuses.normalKitStatuses;
+				const approvedStatuses = statuses.approvedKitStatuses;
 				item.status_value = latestStatus.status;
 				item.receivedDate = momentService(receivedStatus.date).format(Commons.DateTimeFormatPattern);
 				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
-				item.status_administered = item.status_value === kitsStatusesEnum.Administrated;
-				item.status_normal = !item.status_administered;
-			});
-		}
+				item.status_approved = approvedStatuses.indexOf(item.status_value) !== -1;
+				item.status_normal = normalStatuses.indexOf(item.status_value) !== -1;
 
+			});
+
+		}
 		return data;
 	}
 

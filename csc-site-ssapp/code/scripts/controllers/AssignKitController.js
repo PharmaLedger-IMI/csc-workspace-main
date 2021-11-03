@@ -4,7 +4,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const KitsService = cscServices.KitsService;
 const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
-const { Roles, Topics } = cscServices.constants;
+const {  Topics } = cscServices.constants;
 const { kitsStatusesEnum } = cscServices.constants.kit;
 
 
@@ -13,7 +13,7 @@ class AssignKitController extends WebcController {
   constructor(...props) {
     super(...props);
     this.originalKit = this.history.location.state.kit;
-    let communicationService = CommunicationService.getInstance(Roles.Site);
+    let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SITE_IDENTITY);
     this.kitsService = new KitsService(this.DSUStorage, communicationService);
     this.model = { kitModel: viewModelResolver('kit') };
     this.model.kit = this.originalKit;
@@ -33,7 +33,7 @@ class AssignKitController extends WebcController {
     window.WebCardinal.loader.hidden = false;
     
     await this.kitsService.updateKit(this.model.kit.keySSI, kitsStatusesEnum.Assigned, {
-      InvestigatorId: this.model.kitModel.form.investigatorId.value
+      investigatorId: this.model.kitModel.form.investigatorId.value
     });
     eventBusService.emitEventListeners(Topics.RefreshKits, null);
 

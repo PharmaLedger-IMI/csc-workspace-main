@@ -13,7 +13,7 @@
 </div>
 
 <main class='full-flex-column justify-content-between'>
-	<div class='row'>
+	<div class='row justify-content-center'>
 		<div class='col-4 text-center'>
 			<div class='history-orders'>
 				<svg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='200px'
@@ -31,10 +31,20 @@
 	          </svg>
 				<strong>Shipment: {{@shipment.shipmentId}}</strong>
 			</div>
-
 			<div data-if='@shipment'>
 				<div data-for='@shipment.status'>
-					<div class='history-connector'></div>
+
+					<div data-if='@approved'>
+						<div slot='true' class='history-connector'></div>
+					</div>
+
+					<div data-if='@cancelled'>
+						<div slot='true' class='history-connector'></div>
+					</div>
+
+					<div data-if='@normal'>
+						<div slot='true' class='history-connector'></div>
+					</div>
 
 					<div data-if='@approved'>
 						<div slot='true' class='history-status background-approved'>
@@ -58,7 +68,6 @@
 					</div>
 				</div>
 			</div>
-
 		</div>
 		<div class='col-4 text-center'>
 			<div class='history-orders'>
@@ -81,14 +90,14 @@
 					<div data-if='@approved'>
 						<div slot='true' class='history-status background-approved'>
 							<div class='history-date'>{{@date}}</div>
-							<div><b>{{@status}}</b></div>
+							<div><b>{{@status}}:</b> {{@count}}</div>
 						</div>
 					</div>
 
 					<div data-if='@normal'>
 						<div slot='true' class='history-status background-primary'>
 							<div class='history-date'>{{@date}}</div>
-							<div><b>{{@status}}</b></div>
+							<div><b>{{@status}}:</b> {{@count}}</div>
 						</div>
 					</div>
 				</div>
