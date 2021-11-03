@@ -33,6 +33,9 @@ class ShipmentsControllerImpl extends WebcController {
 
   async init() {
     await this.getShipments();
+    this.searchFilterHandler();
+    this.filterChangedHandler();
+    this.filterClearedHandler();
     eventBusService.addEventListener(Topics.RefreshShipments, async (data) => {
       await this.getShipments();
     });
@@ -59,10 +62,6 @@ class ShipmentsControllerImpl extends WebcController {
   attachEvents() {
     this.attachEventHandlers();
     this.viewShipmentHandler();
-
-    this.searchFilterHandler();
-    this.filterChangedHandler();
-    this.filterClearedHandler();
   }
 
   transformData(data) {

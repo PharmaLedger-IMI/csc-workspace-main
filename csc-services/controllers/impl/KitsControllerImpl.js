@@ -27,6 +27,9 @@ class KitsControllerImpl extends WebcController {
 		this.model.studyId = studyId;
 		this.model.orderId = orderId;
 		await this.getKits();
+		this.searchFilterHandler();
+		this.filterChangedHandler();
+		this.filterClearedHandler();
 		eventBusService.addEventListener(Topics.RefreshKits, async (data) => {
 			await this.getKits();
 		});
@@ -72,9 +75,6 @@ class KitsControllerImpl extends WebcController {
 	attachEvents() {
 		this.attachExpressionHandlers();
 		this.viewKitHandler();
-		this.searchFilterHandler();
-		this.filterChangedHandler();
-    	this.filterClearedHandler();
 
 		this.onTagClick('dashboard', () => {
 			this.navigateToPageTag('dashboard');
