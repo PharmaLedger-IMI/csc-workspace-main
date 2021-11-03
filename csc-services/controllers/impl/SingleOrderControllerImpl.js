@@ -85,13 +85,6 @@ class SingleOrderControllerImpl extends WebcController {
       }
     });
 
-    this.onTagClick('download-kits-file', async (model, target, event) => {
-      const filename = target.getAttribute('data-custom') || null;
-      if (filename) {
-        await this.downloadFile(filename, FoldersEnum.Kits, model.order.kitsSSI);
-      }
-    });
-
     this.navigationHandlers();
    
   }
