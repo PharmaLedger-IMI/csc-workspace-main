@@ -22,22 +22,6 @@
   <label>{{@form.inputs.order_id.label}}</label>
   <input class="form-control form-control-sm" readonly="readonly" name="@form.inputs.order_id.name" type="text" value="@order.orderId" />
 
-  <!-- Kit ID List -->
-  <label>{{@form.inputs.kit_id_list.label}}</label>
-  <div>
-    <input class="form-control form-control-sm" readonly="readonly" name="@form.inputs.kit_id_list.name" type="text" value="@order.kitsFilename" />
-    <button class="btn-download-small" data-tag="download-kits-file" data-custom="@order.kitsFilename">
-      <svg version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" y="0px">
-        <path
-          d="M92.857,112.246V90.761c0-3.955,3.219-7.171,7.16-7.171l0,0c3.939,0,7.174,3.216,7.174,7.171v21.485h12.814
-                  c3.229,0,4.809,3.871,2.514,6.095l-19.996,19.997c-1.434,1.427-3.652,1.427-5.084,0l-19.992-19.997
-                  c-2.227-2.224-0.65-6.095,2.578-6.095H92.857z M64.174,67.751L64.174,67.751c0,3.943,3.244,7.159,7.16,7.159h57.324
-                  c3.936,0,7.168-3.216,7.168-7.159l0,0c0-3.937-3.232-7.159-7.168-7.159H71.334C67.418,60.592,64.174,63.815,64.174,67.751z"
-        />
-      </svg>
-    </button>
-  </div>
-
   <!-- Site ID -->
   <label>{{@form.inputs.site_id.label}}</label>
   <input class="form-control form-control-sm" readonly="readonly" name="@form.inputs.site_id.name" type="text" value="@order.siteId" />
