@@ -153,18 +153,22 @@ class DashboardControllerImpl extends WebcController {
 		if (!kitsData || !notificationRole) {
 			return;
 		}
+
+		//all kits will have the same orderId
+		const orderId = kitsData.kits[0].orderId;
 		const notification = {
 			operation: NotificationTypes.UpdateKitStatus,
-			kitId: kitsData.kitId,
+			studyId: kitsData.studyId,
+			orderId: orderId,
 			read: false,
-			status: 'Received',
+			status: "Kits were received",
 			keySSI: data.message.data.studyKeySSI,
 			role: notificationRole,
-			did: kitsData.sponsorId,
+			did: "-",
 			date: new Date().getTime()
 		};
 
-		const notificationResult = await this.notificationsService.insertNotification(notification);
+		await this.notificationsService.insertNotification(notification);
 		// TODO: to be used on view kits on sponsor
 		eventBusService.emitEventListeners(Topics.RefreshKits, null);
 	}
