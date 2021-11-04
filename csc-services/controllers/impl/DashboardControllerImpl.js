@@ -153,7 +153,18 @@ class DashboardControllerImpl extends WebcController {
 		if (!kitsData || !notificationRole) {
 			return;
 		}
+		const notification = {
+			operation: NotificationTypes.UpdateKitStatus,
+			kitId: kitsData.kitId,
+			read: false,
+			status: 'Received',
+			keySSI: data.message.data.studyKeySSI,
+			role: notificationRole,
+			did: kitsData.sponsorId,
+			date: new Date().getTime()
+		};
 
+		const notificationResult = await this.notificationsService.insertNotification(notification);
 		// TODO: to be used on view kits on sponsor
 		eventBusService.emitEventListeners(Topics.RefreshKits, null);
 	}
