@@ -154,22 +154,6 @@ class DashboardControllerImpl extends WebcController {
 			return;
 		}
 
-		//all kits will have the same orderId
-		const orderId = kitsData.kits[0].orderId;
-		const notification = {
-			operation: NotificationTypes.UpdateKitStatus,
-			studyId: kitsData.studyId,
-			orderId: orderId,
-			read: false,
-			status: "Kits were received",
-			keySSI: data.message.data.studyKeySSI,
-			role: notificationRole,
-			did: "-",
-			date: new Date().getTime()
-		};
-
-		await this.notificationsService.insertNotification(notification);
-		// TODO: to be used on view kits on sponsor
 		eventBusService.emitEventListeners(Topics.RefreshKits, null);
 	}
 
@@ -315,6 +299,22 @@ class DashboardControllerImpl extends WebcController {
 			case kitsMessagesEnum.ShipmentSigned: {
 				const { studyKeySSI } = data.message.data;
 				kitsData = await this.kitsService.getStudyKitsDSUAndUpdate(studyKeySSI);
+
+				//all kits will have the same orderId
+				const orderId = kitsData.kits[0].orderId;
+				const notification = {
+					operation: NotificationTypes.UpdateKitStatus,
+					studyId: kitsData.studyId,
+					orderId: orderId,
+					read: false,
+					status: "Kits were received",
+					keySSI: data.message.data.studyKeySSI,
+					role: notificationRole,
+					did: "-",
+					date: new Date().getTime()
+				};
+
+				await this.notificationsService.insertNotification(notification);
 				break;
 			}
 
