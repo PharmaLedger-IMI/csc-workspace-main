@@ -40,6 +40,10 @@ class KitsService extends DSUService {
     return result ? result : [];
   }
 
+  async getStudyKits(studyId){
+    return await this.storageService.getRecord(this.KITS_TABLE, studyId);
+  }
+
   async markStudyKitsAsSynchronized(studyId){
     let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, studyId);
     studyKitDb.synchronized = true;
