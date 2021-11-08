@@ -112,9 +112,16 @@ class ViewShipmentBaseControllerImpl extends WebcController{
       historyModel.order = orderModel.order
     }
 
-     if(kitsData){
-       historyModel.kits = await this.kitsService.getOrderKits(orderModel.order.studyId, orderModel.order.orderId);
-     }
+    //only sponsor and site have access to kits dashboard
+    if (kitsData && [Roles.Sponsor, Roles.Site].indexOf(this.role) !== -1) {
+      try{
+        historyModel.kits = await this.kitsService.getOrderKits(orderModel.order.studyId, orderModel.order.orderId);
+      }
+      catch (e){
+        historyModel.kits = []
+      }
+
+    }
 
 
     this.createWebcModal({
