@@ -50,8 +50,8 @@ class NotificationsControllerImpl extends WebcController {
 					break;
 				}
 				case NotificationTypes.UpdateKitStatus: {
-					details.type = NotificationTypesEnum.Kit;
-					details.id = notification.kitId;
+					details.type = NotificationTypesEnum.StudyKits;
+					details.id = notification.studyId;
 					break;
 				}
 			}
@@ -66,27 +66,36 @@ class NotificationsControllerImpl extends WebcController {
 			const { keySSI, operation } = model;
 			if (keySSI && operation) {
 				let pageTag;
+				let state;
 				switch (operation) {
 					case NotificationTypes.UpdateOrderStatus: {
 						pageTag = 'order';
-						break;
+						state = {
+							keySSI: keySSI
+						}
+							break;
 					}
 
 					case NotificationTypes.UpdateShipmentStatus: {
 						pageTag = 'shipment';
+						state = {
+							keySSI: keySSI
+						}
 						break;
 					}
 
 					case NotificationTypes.UpdateKitStatus: {
-						pageTag = 'kit';
+						pageTag = 'study-kits';
+						state = {
+							orderId: model.orderId,
+							studyId: model.studyId
+						};
 						break;
 					}
 				}
 
 				if (pageTag) {
-					this.navigateToPageTag(pageTag, {
-						keySSI: keySSI
-					});
+					this.navigateToPageTag(pageTag, state);
 				}
 			}
 		});

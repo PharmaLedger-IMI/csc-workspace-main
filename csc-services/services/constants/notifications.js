@@ -7,7 +7,7 @@ const NotificationTypes = {
 const NotificationTypesEnum = {
 	Order: 'Order',
 	Shipment: 'Shipment',
-	Kit: 'Kit'
+	StudyKits: 'Study Kits'
 };
 
 module.exports = {

@@ -33,7 +33,7 @@ class TableTemplateControllerImpl extends WebcController {
 
         switch(sorting){
           case('asc') :
-            return compA <= compB ? 1 : -1;
+            return compA <= compB ? -1 : 1;
           case('desc') :
             return compA >= compB ? -1 : 1;
         }
@@ -44,10 +44,6 @@ class TableTemplateControllerImpl extends WebcController {
 
   async init() {
     this.paginateData(this.model.data);
-    // Init Sort of Table
-    if (this.model.defaultSortingRule) {
-      this.sortColumn(this.model.defaultSortingRule.column, this.model.defaultSortingRule.sorting, this.model.defaultSortingRule.type);
-    }
   }
 
   attachEvents() {
@@ -99,6 +95,11 @@ class TableTemplateControllerImpl extends WebcController {
   paginateData(data, page = 1) {
     //no need for lodash
     data = JSON.parse(JSON.stringify(data));
+
+    if (this.model.defaultSortingRule) {
+      data = data.sort(this.sortingFn(this.model.defaultSortingRule.column, this.model.defaultSortingRule.sorting, this.model.defaultSortingRule.type));
+    }
+
     if (data && data.length > 0) {
       const itemsPerPage = this.model.pagination.itemsPerPage;
       const length = data.length;
@@ -127,6 +128,10 @@ class TableTemplateControllerImpl extends WebcController {
   }
 
   sortColumn(column, sorting, type) {
+    //we retract the defaultSortingRule if any
+    if (typeof this.model.defaultSortingRule === 'object') {
+      this.model.defaultSortingRule = false;
+    }
     if (column || this.model.headers.some((x) => x.asc || x.desc)) {
       if (!column) column = this.model.headers.find((x) => x.asc || x.desc).column;
 

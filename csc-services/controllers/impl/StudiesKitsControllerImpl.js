@@ -23,6 +23,7 @@ class StudiesKitsControllerImpl extends WebcController {
 
   async init() {
     await this.getKits();
+    this.searchFilterHandler();
     eventBusService.addEventListener(Topics.RefreshKits, async (data) => {
       await this.getKits();
     });
@@ -82,7 +83,6 @@ class StudiesKitsControllerImpl extends WebcController {
   attachEvents() {
     this.attachExpressionHandlers();
     this.addKitButtonsHandlers();
-    this.searchFilterHandler();
   }
 
   attachExpressionHandlers() {

@@ -85,21 +85,5 @@
 		  }
 	  ]
 	}
-  ],
-	"docs": [
-		{
-			"name": "Documentation",
-			"src": ".",
-			"actions": [
-				{
-					"type": "execute",
-					"cmd": "node ./node_modules/markdown-include/bin/cli.js ./mdCompile.json"
-				},
-				{
-					"type": "execute",
-					"cmd": "jsdoc -c jsdocs.json -t \"$(npm root -g)/better-docs\""
-				}
-			]
-		}
-	]
+  ]
 }

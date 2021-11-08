@@ -26,10 +26,63 @@ class KitsControllerImpl extends WebcController {
 		let { studyId, orderId } = this.history.location.state;
 		this.model.studyId = studyId;
 		this.model.orderId = orderId;
+
+		const studyKits = await this.kitsService.getStudyKits(studyId);
+
+		if(!studyKits.synchronized){
+			 this.synchronizeKits(studyKits)
+		}
+
 		await this.getKits();
+		this.searchFilterHandler();
+		this.filterChangedHandler();
+		this.filterClearedHandler();
 		eventBusService.addEventListener(Topics.RefreshKits, async (data) => {
 			await this.getKits();
 		});
+	}
+
+	synchronizeKits(studyKits){
+		const synchronizeKits = async () => {
+			this.model.kitsMounting = {
+				progress: 0,
+				importInProgress: true,
+				eta: '-'
+			};
+
+			let redirectToStudyKits = async () => {
+				await this.kitsService.markStudyKitsAsSynchronized(this.model.studyId);
+			};
+
+			this.showModalFromTemplate('kitMountingProgressModal', redirectToStudyKits.bind(this), redirectToStudyKits.bind(this), {
+				controller: 'KitMountingProgressController',
+				modalTitle: `Study ${this.model.studyId}: Kits Synchronization`,
+				disableExpanding: true,
+				disableBackdropClosing: true,
+				disableClosing: true,
+				disableCancelButton: true,
+				model: this.model
+			});
+
+			await this.kitsService.mountStudyKits(studyKits.keySSI, (err, progress) => {
+				this.model.kitsMounting.progress = parseInt(progress * 100);
+			});
+		};
+
+		this.showModal(
+			'New kits were received by the SITE. You have to synchronize them before continuing. This operation may take some time',
+			'Kits Synchronization',
+			synchronizeKits,
+			() => {
+				this.navigateToPageTag('dashboard', { tab: Topics.Kits });
+			},
+			{
+				disableExpanding: true,
+				cancelButtonText: 'Not now',
+				confirmButtonText: 'Synchronize now',
+				id: 'confirm-modal'
+			}
+		);
 	}
 
 	async getKits() {
@@ -72,9 +125,6 @@ class KitsControllerImpl extends WebcController {
 	attachEvents() {
 		this.attachExpressionHandlers();
 		this.viewKitHandler();
-		this.searchFilterHandler();
-		this.filterChangedHandler();
-    	this.filterClearedHandler();
 
 		this.onTagClick('dashboard', () => {
 			this.navigateToPageTag('dashboard');

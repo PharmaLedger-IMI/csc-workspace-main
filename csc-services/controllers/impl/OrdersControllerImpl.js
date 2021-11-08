@@ -23,6 +23,9 @@ class OrdersControllerImpl extends WebcController {
 
 	async init() {
 		await this.getOrders();
+		this.searchFilterHandler();
+		this.filterChangedHandler();
+		this.filterClearedHandler();
 		eventBusService.addEventListener(Topics.RefreshOrders, async (data) => {
 			await this.getOrders();
 		});
@@ -63,10 +66,6 @@ class OrdersControllerImpl extends WebcController {
 	attachEvents() {
 		this.attachExpressionHandlers();
 		this.viewOrderHandler();
-
-		this.searchFilterHandler();
-		this.filterChangedHandler();
-		this.filterClearedHandler();
 	}
 
 	attachExpressionHandlers() {
