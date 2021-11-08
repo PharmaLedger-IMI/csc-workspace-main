@@ -5,7 +5,7 @@ const OrdersService = cscServices.OrderService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const SearchService = cscServices.SearchService;
-const { Topics, Commons } = cscServices.constants;
+const { Topics, Commons, SearchEnum } = cscServices.constants;
 const { orderTableHeaders, orderStatusesEnum } = cscServices.constants.order;
 
 class OrdersControllerImpl extends WebcController {
@@ -14,12 +14,26 @@ class OrdersControllerImpl extends WebcController {
 		super(...props);
 
 		this.ordersService = new OrdersService(this.DSUStorage);
-		this.searchService = new SearchService(orderStatusesEnum, ['orderId']);
+		this.searchService = new SearchService(orderStatusesEnum, this.getSearchedProperties());
 		this.model = this.getOrdersViewModel();
 		this.model.ordersListIsReady = false;
 		this.attachEvents();
 		this.init();
 	}
+
+	getSearchedProperties(){
+		let searchedProperties = [];
+		searchedProperties.push(SearchEnum.OrderId);
+		searchedProperties.push(SearchEnum.StudyId);
+		searchedProperties.push(SearchEnum.SiteId);
+		searchedProperties.push(SearchEnum.SponsorId);
+		searchedProperties.push(SearchEnum.OrderStatus);
+		searchedProperties.push(SearchEnum.RequestDate);
+		searchedProperties.push(SearchEnum.DeliveryDate);
+		searchedProperties.push(SearchEnum.LastModified);
+		return searchedProperties;
+	}
+
 
 	async init() {
 		await this.getOrders();

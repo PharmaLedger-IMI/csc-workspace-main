@@ -7,7 +7,7 @@ const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const SearchService = cscServices.SearchService;
 const ShipmentService = cscServices.ShipmentService;
-const { Topics, Commons, Roles } = cscServices.constants;
+const { Topics, Commons, Roles, SearchEnum } = cscServices.constants;
 const {
   shipmentStatusesEnum,
   shipmentCMOTableHeaders,
@@ -25,11 +25,26 @@ class ShipmentsControllerImpl extends WebcController {
     this.model = this.getShipmentsViewModel();
     this.model.shipmentsListIsReady = false;
     this.shipmentService = new ShipmentService(this.DSUStorage);
-    this.searchService = new SearchService(shipmentStatusesEnum, ['orderId']);
+    this.searchService = new SearchService(shipmentStatusesEnum, this.getSearchedProperties());
 
     this.init();
     this.attachEvents();
   }
+
+  getSearchedProperties(){
+		let searchedProperties = [];
+		searchedProperties.push(SearchEnum.OrderId);
+		searchedProperties.push(SearchEnum.ShipmentId);
+		searchedProperties.push(SearchEnum.ShipperId);
+		searchedProperties.push(SearchEnum.Origin);
+		searchedProperties.push(SearchEnum.Type);
+		searchedProperties.push(SearchEnum.RecipientName);
+		searchedProperties.push(SearchEnum.ShipmentRequestDate);
+    searchedProperties.push(SearchEnum.ShipmentDeliveryDate);
+    searchedProperties.push(SearchEnum.ShipmentStatus);
+		searchedProperties.push(SearchEnum.LastModified);
+		return searchedProperties;
+	}
 
   async init() {
     await this.getShipments();

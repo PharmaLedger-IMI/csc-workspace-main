@@ -5,7 +5,7 @@ const KitsService = cscServices.KitsService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const SearchService = cscServices.SearchService;
-const { Topics, Commons } = cscServices.constants;
+const { Topics, Commons, SearchEnum } = cscServices.constants;
 const { kitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
 const statusesService = cscServices.StatusesService;
 
@@ -15,11 +15,20 @@ class KitsControllerImpl extends WebcController {
 		super(...props);
 
 		this.kitsService = new KitsService(this.DSUStorage);
-		this.searchService = new SearchService(kitsStatusesEnum, ['kitId','shipmentId','investigatorId']);
+		this.searchService = new SearchService(kitsStatusesEnum, this.getSearchedProperties());
 		this.model = this.getKitsViewModel();
 		this.model.kitsListIsReady = false;
 		this.attachEvents();
 		this.init();
+	}
+
+	getSearchedProperties(){
+		let searchedProperties = [];
+		searchedProperties.push(SearchEnum.kitId);
+		searchedProperties.push(SearchEnum.ShipmentId);
+		searchedProperties.push(SearchEnum.InvestigatorId);
+		searchedProperties.push(SearchEnum.LastModified);
+		return searchedProperties;
 	}
 
 	async init() {

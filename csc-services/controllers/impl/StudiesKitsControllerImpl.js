@@ -5,7 +5,7 @@ const KitsService = cscServices.KitsService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const SearchService = cscServices.SearchService;
-const { Topics, Commons, Roles } = cscServices.constants;
+const { Topics, Commons, Roles, SearchEnum } = cscServices.constants;
 const { studiesKitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
 
 class StudiesKitsControllerImpl extends WebcController {
@@ -14,12 +14,20 @@ class StudiesKitsControllerImpl extends WebcController {
     super(...props);
     this.role = role;
     this.kitsService = new KitsService(this.DSUStorage);
-    this.searchService = new SearchService(kitsStatusesEnum, ['studyId','orderId']);
+    this.searchService = new SearchService(kitsStatusesEnum, this.getSearchedProperties());
     this.model = this.getKitsViewModel();
     this.model.kitsListIsReady = false;
     this.attachEvents();
     this.init();
   }
+
+  getSearchedProperties(){
+		let searchedProperties = [];
+		searchedProperties.push(SearchEnum.OrderId);
+		searchedProperties.push(SearchEnum.StudyId);
+		searchedProperties.push(SearchEnum.LastModified);
+		return searchedProperties;
+	}
 
   async init() {
     await this.getKits();
