@@ -5,7 +5,7 @@ const KitsService = cscServices.KitsService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const SearchService = cscServices.SearchService;
-const { Topics, Commons } = cscServices.constants;
+const { Topics, Commons, Roles } = cscServices.constants;
 const { kitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
 const statusesService = cscServices.StatusesService;
 
@@ -13,7 +13,7 @@ class KitsControllerImpl extends WebcController {
 
 	constructor(role, ...props) {
 		super(...props);
-
+		this.role = role;
 		this.kitsService = new KitsService(this.DSUStorage);
 		this.searchService = new SearchService(kitsStatusesEnum, ['kitId','shipmentId','investigatorId']);
 		this.model = this.getKitsViewModel();
@@ -29,7 +29,7 @@ class KitsControllerImpl extends WebcController {
 
 		const studyKits = await this.kitsService.getStudyKits(studyId);
 
-		if(!studyKits.synchronized){
+		if(!studyKits.synchronized && this.role === Roles.Sponsor){
 			 this.synchronizeKits(studyKits)
 		}
 
