@@ -18,3 +18,4 @@ require('./StudiesKitsControllerImpl');
 require('./KitHistoryModalControllerImpl');
 require('./ProgressStatusControllerImpl');
 require('./SingleKitControllerImpl');
+require('./KitMountingProgressControllerImpl');
