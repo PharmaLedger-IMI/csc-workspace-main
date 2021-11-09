@@ -10,6 +10,7 @@ const momentService = cscServices.momentService;
 const { Roles, Topics, ButtonsEnum, Commons, FoldersEnum } = cscServices.constants;
 const { orderStatusesEnum, orderPendingActionEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
+const KitsService = cscServices.KitsService;
 
 const csIdentities = {};
 csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
@@ -36,6 +37,7 @@ class SingleOrderControllerImpl extends WebcController {
     let communicationService = CommunicationService.getInstance(csIdentities[role]);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
+    this.kitsService = new KitsService(this.DSUStorage);
 
     this.model.keySSI = keySSI;
 
@@ -150,13 +152,22 @@ class SingleOrderControllerImpl extends WebcController {
     }
   }
 
-  onShowHistoryClick() {
+  async onShowHistoryClick() {
     let { order, shipment } = this.model.toObject();
     const historyModel = {
       order: order,
       shipment: shipment,
       currentPage: Topics.Order
     };
+
+    if (this.role === Roles.Sponsor) {
+      try{
+        historyModel.kits = await this.kitsService.getOrderKits(order.studyId, order.orderId);
+      }
+      catch (e){
+        historyModel.kits = []
+      }
+    }
 
     this.createWebcModal({
       template: 'historyModal',

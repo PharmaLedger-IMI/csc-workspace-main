@@ -1,4 +1,14 @@
-\# UC2 - Clinical Supply Chain - csc-workspace-main
+## UC2 - Clinical Supply Chain - csc-workspace-main
+
+## Releases
+### UAT_v1 (8.11.2021) (65aea12b57ce8bebc6468b0e3367ccbca838af56)
+   In order to install the release commit:
+   1. git clone https://github.com/PharmaLedger-IMI/csc-workspace-main.git
+   2. cd csc-workspace-main   
+   2. git checkout 65aea12b57ce8bebc6468b0e3367ccbca838af56
+   3. npm install
+   4. npm run server
+   5. *In new terminal*: npm run build-all
 
 ### Code  Quality
 [![DeepScan grade](https://deepscan.io/api/teams/14657/projects/18078/branches/433370/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=14657&pid=18078&bid=433370)
