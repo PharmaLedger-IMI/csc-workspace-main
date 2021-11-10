@@ -7,7 +7,7 @@ const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const SearchService = cscServices.SearchService;
 const ShipmentService = cscServices.ShipmentService;
-const { Topics, Commons, Roles, SearchEnum } = cscServices.constants;
+const { Topics, Commons, Roles } = cscServices.constants;
 const {
   shipmentStatusesEnum,
   shipmentCMOTableHeaders,
@@ -25,24 +25,36 @@ class ShipmentsControllerImpl extends WebcController {
     this.model = this.getShipmentsViewModel();
     this.model.shipmentsListIsReady = false;
     this.shipmentService = new ShipmentService(this.DSUStorage);
-    this.searchService = new SearchService(shipmentStatusesEnum, this.getSearchedProperties());
+    
+    this.searchedProps = this.getSearchedProps();
+    this.searchService = new SearchService(shipmentStatusesEnum, this.getSearchedProperties(this.searchedProps));
 
     this.init();
     this.attachEvents();
   }
 
-  getSearchedProperties(){
-		let searchedProperties = [];
-		searchedProperties.push(SearchEnum.OrderId);
-		searchedProperties.push(SearchEnum.ShipmentId);
-		searchedProperties.push(SearchEnum.ShipperId);
-		searchedProperties.push(SearchEnum.Origin);
-		searchedProperties.push(SearchEnum.Type);
-		searchedProperties.push(SearchEnum.RecipientName);
-		searchedProperties.push(SearchEnum.ShipmentRequestDate);
-    searchedProperties.push(SearchEnum.ShipmentDeliveryDate);
-    searchedProperties.push(SearchEnum.ShipmentStatus);
-		searchedProperties.push(SearchEnum.LastModified);
+  getSearchedProps() {
+    switch (this.role) {
+      case Roles.CMO: {
+        return shipmentCMOTableHeaders.map( header => header.value);
+      }
+      case Roles.Site: {
+        return shipmentSiteTableHeaders.map( header => header.value);
+      }
+      case Roles.Sponsor: {
+        return shipmentSponsorTableHeaders.map( header => header.value);
+      }
+      case Roles.Courier:{
+        return shipmentCourierTableHeaders.map( header => header.value);
+      }
+    }
+
+    return;
+  }
+
+
+  getSearchedProperties(searchedProps){
+		let searchedProperties = searchedProps.filter(function (e) {return e != null;});
 		return searchedProperties;
 	}
 
