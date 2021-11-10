@@ -26,32 +26,13 @@ class ShipmentsControllerImpl extends WebcController {
     this.model.shipmentsListIsReady = false;
     this.shipmentService = new ShipmentService(this.DSUStorage);
     
-    this.searchedProps = this.getSearchedProps();
+    const tableHeaders = this.getTableHeaders();
+    this.searchedProps = tableHeaders.map( header => header.value);
     this.searchService = new SearchService(shipmentStatusesEnum, this.getSearchedProperties(this.searchedProps));
 
     this.init();
     this.attachEvents();
   }
-
-  getSearchedProps() {
-    switch (this.role) {
-      case Roles.CMO: {
-        return shipmentCMOTableHeaders.map( header => header.value);
-      }
-      case Roles.Site: {
-        return shipmentSiteTableHeaders.map( header => header.value);
-      }
-      case Roles.Sponsor: {
-        return shipmentSponsorTableHeaders.map( header => header.value);
-      }
-      case Roles.Courier:{
-        return shipmentCourierTableHeaders.map( header => header.value);
-      }
-    }
-
-    return;
-  }
-
 
   getSearchedProperties(searchedProps){
 		let searchedProperties = searchedProps.filter(function (e) {return e != null;});
