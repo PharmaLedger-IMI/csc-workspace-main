@@ -15,17 +15,12 @@ class KitsControllerImpl extends WebcController {
 		super(...props);
 
 		this.kitsService = new KitsService(this.DSUStorage);
-		this.searchedProps = kitsTableHeaders.map( header => header.value);
-		this.searchService = new SearchService(kitsStatusesEnum, this.getSearchedProperties(this.searchedProps));
+		this.searchedProps = kitsTableHeaders.filter(header=>header.notSortable===false).map( header => header.value);
+		this.searchService = new SearchService(kitsStatusesEnum, this.searchedProps);
 		this.model = this.getKitsViewModel();
 		this.model.kitsListIsReady = false;
 		this.attachEvents();
 		this.init();
-	}
-
-	getSearchedProperties(searchedProps){
-		let searchedProperties = searchedProps.filter(function (e) {return e != null;});
-		return searchedProperties;
 	}
 
 	async init() {

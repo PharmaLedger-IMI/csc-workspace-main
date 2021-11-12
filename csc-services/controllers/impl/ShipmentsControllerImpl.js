@@ -27,17 +27,12 @@ class ShipmentsControllerImpl extends WebcController {
     this.shipmentService = new ShipmentService(this.DSUStorage);
     
     const tableHeaders = this.getTableHeaders();
-    this.searchedProps = tableHeaders.map( header => header.value);
-    this.searchService = new SearchService(shipmentStatusesEnum, this.getSearchedProperties(this.searchedProps));
+    this.searchedProps = tableHeaders.filter(header=>header.notSortable===false).map( header => header.value);
+    this.searchService = new SearchService(shipmentStatusesEnum, this.searchedProps);
 
     this.init();
     this.attachEvents();
   }
-
-  getSearchedProperties(searchedProps){
-		let searchedProperties = searchedProps.filter(function (e) {return e != null;});
-		return searchedProperties;
-	}
 
   async init() {
     await this.getShipments();

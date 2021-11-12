@@ -4,7 +4,7 @@ class SearchService {
 
     constructor(itemStatusesEnum, searchedProperties) { 
         this.itemStatusesEnum = itemStatusesEnum;
-        this.searchedProperties = searchedProperties;
+        this.searchedProperties = searchedProperties.filter(function (e) {return e != null;});
     }
 
     filterData(result, filter, searchValue) {

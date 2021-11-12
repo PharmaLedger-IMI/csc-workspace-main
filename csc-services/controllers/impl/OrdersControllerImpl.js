@@ -14,17 +14,12 @@ class OrdersControllerImpl extends WebcController {
 		super(...props);
 
 		this.ordersService = new OrdersService(this.DSUStorage);
-		this.searchedProps = orderTableHeaders.map( header => header.value);
-		this.searchService = new SearchService(orderStatusesEnum, this.getSearchedProperties(this.searchedProps));
+		this.searchedProps = orderTableHeaders.filter(header=>header.notSortable===false).map( header => header.value);
+		this.searchService = new SearchService(orderStatusesEnum, this.searchedProps);
 		this.model = this.getOrdersViewModel();
 		this.model.ordersListIsReady = false;
 		this.attachEvents();
 		this.init();
-	}
-
-	getSearchedProperties(searchedProps){
-		let searchedProperties = searchedProps.filter(function (e) {return e != null;});
-		return searchedProperties;
 	}
 
 	async init() {
