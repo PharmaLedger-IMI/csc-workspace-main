@@ -14,7 +14,7 @@ class OrdersControllerImpl extends WebcController {
 		super(...props);
 
 		this.ordersService = new OrdersService(this.DSUStorage);
-		this.searchedProps = orderTableHeaders.filter(header=>header.notSortable===false).map( header => header.value);
+		this.searchedProps = orderTableHeaders.filter(header=>header.notSortable===false).map( header => header.column);
 		this.searchService = new SearchService(orderStatusesEnum, this.searchedProps);
 		this.model = this.getOrdersViewModel();
 		this.model.ordersListIsReady = false;

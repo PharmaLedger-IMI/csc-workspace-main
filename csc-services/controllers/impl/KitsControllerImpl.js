@@ -15,7 +15,7 @@ class KitsControllerImpl extends WebcController {
 		super(...props);
 
 		this.kitsService = new KitsService(this.DSUStorage);
-		this.searchedProps = kitsTableHeaders.filter(header=>header.notSortable===false).map( header => header.value);
+		this.searchedProps = kitsTableHeaders.filter(header=>header.notSortable===false).map( header => header.column);
 		this.searchService = new SearchService(kitsStatusesEnum, this.searchedProps);
 		this.model = this.getKitsViewModel();
 		this.model.kitsListIsReady = false;

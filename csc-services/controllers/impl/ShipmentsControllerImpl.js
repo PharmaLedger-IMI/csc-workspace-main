@@ -27,7 +27,7 @@ class ShipmentsControllerImpl extends WebcController {
     this.shipmentService = new ShipmentService(this.DSUStorage);
     
     const tableHeaders = this.getTableHeaders();
-    this.searchedProps = tableHeaders.filter(header=>header.notSortable===false).map( header => header.value);
+    this.searchedProps = tableHeaders.filter(header=>header.notSortable===false).map( header => header.column);
     this.searchService = new SearchService(shipmentStatusesEnum, this.searchedProps);
 
     this.init();

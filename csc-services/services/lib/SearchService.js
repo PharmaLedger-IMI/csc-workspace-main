@@ -4,7 +4,11 @@ class SearchService {
 
     constructor(itemStatusesEnum, searchedProperties) { 
         this.itemStatusesEnum = itemStatusesEnum;
-        this.searchedProperties = searchedProperties.filter(function (e) {return e != null;});
+        let forDeletion = ['requestDate', 'deliveryDate','requestDeliveryDate','schedulePickupDate','numberOfKits','available','assigned','dispensed'];
+        this.searchedProperties = searchedProperties
+                                  .filter(item => !forDeletion.includes(item))
+                                  .map(function(item) { return item == 'status' ? 'status_value' : item; })
+                                  .map(function(item) { return item == 'shipperID' ? 'shipperId' : item; });
     }
 
     filterData(result, filter, searchValue) {
