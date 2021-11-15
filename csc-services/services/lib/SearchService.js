@@ -4,11 +4,7 @@ class SearchService {
 
     constructor(itemStatusesEnum, searchedProperties) { 
         this.itemStatusesEnum = itemStatusesEnum;
-        let forDeletion = ['requestDate', 'deliveryDate','requestDeliveryDate','schedulePickupDate','numberOfKits','available','assigned','dispensed'];
-        this.searchedProperties = searchedProperties
-                                  .filter(item => !forDeletion.includes(item))
-                                  .map(function(item) { return item == 'status' ? 'status_value' : item; })
-                                  .map(function(item) { return item == 'shipperID' ? 'shipperId' : item; });
+        this.searchedProperties = searchedProperties;
     }
 
     filterData(result, filter, searchValue) {

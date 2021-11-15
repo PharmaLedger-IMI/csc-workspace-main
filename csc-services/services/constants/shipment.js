@@ -34,7 +34,7 @@ const shipmentCMOTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'shipperID',
+		column: 'shipperId',
 		label: 'Shipper ID',
 		notSortable: false,
 		type: 'string',
@@ -60,7 +60,7 @@ const shipmentCMOTableHeaders = [
 	{
 		column: 'requestDeliveryDate',
 		label: 'Requested Delivery Date/Time',
-		notSortable: false,
+		notSortable: true,
 		type: 'date',
 		asc: null,
 		desc: null
@@ -68,7 +68,7 @@ const shipmentCMOTableHeaders = [
 	{
 		column: 'schedulePickupDate',
 		label: 'Schedule Pickup Date/Time',
-		notSortable: false,
+		notSortable: true,
 		type: 'date',
 		asc: null,
 		desc: null
@@ -76,7 +76,7 @@ const shipmentCMOTableHeaders = [
 	{
 		column: 'status',
 		label: 'Shipment Status',
-		notSortable: false,
+		notSortable: true,
 		type: 'string',
 		asc: null,
 		desc: null
@@ -107,7 +107,7 @@ const shipmentSiteTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'shipperID',
+		column: 'shipperId',
 		label: 'Shipper ID',
 		notSortable: false,
 		type: 'string',
@@ -141,7 +141,7 @@ const shipmentSiteTableHeaders = [
 	{
 		column: 'requestDeliveryDate',
 		label: 'Requested Delivery Date/Time',
-		notSortable: false,
+		notSortable: true,
 		type: 'date',
 		asc: null,
 		desc: null
@@ -149,7 +149,7 @@ const shipmentSiteTableHeaders = [
 	{
 		column: 'status',
 		label: 'Shipment Status',
-		notSortable: false,
+		notSortable: true,
 		type: 'string',
 		asc: null,
 		desc: null
@@ -180,7 +180,7 @@ const shipmentSponsorTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'shipperID',
+		column: 'shipperId',
 		label: 'Shipper ID',
 		notSortable: false,
 		type: 'string',
@@ -214,7 +214,7 @@ const shipmentSponsorTableHeaders = [
 	{
 		column: 'requestDeliveryDate',
 		label: 'Requested Delivery Date/Time',
-		notSortable: false,
+		notSortable: true,
 		type: 'date',
 		asc: null,
 		desc: null
@@ -222,7 +222,7 @@ const shipmentSponsorTableHeaders = [
 	{
 		column: 'schedulePickupDate',
 		label: 'Schedule Pickup Date/Time',
-		notSortable: false,
+		notSortable: true,
 		type: 'date',
 		asc: null,
 		desc: null
@@ -230,7 +230,7 @@ const shipmentSponsorTableHeaders = [
 	{
 		column: 'status',
 		label: 'Shipment Status',
-		notSortable: false,
+		notSortable: true,
 		type: 'string',
 		asc: null,
 		desc: null
@@ -288,7 +288,7 @@ const shipmentCourierTableHeaders = [
 	{
 		column: 'schedulePickupDate',
 		label: 'Scheduled Pickup Date/Time',
-		notSortable: false,
+		notSortable: true,
 		type: 'date',
 		asc: null,
 		desc: null
@@ -296,7 +296,7 @@ const shipmentCourierTableHeaders = [
 	{
 		column: 'status',
 		label: 'Shipment Status',
-		notSortable: false,
+		notSortable: true,
 		type: 'string',
 		asc: null,
 		desc: null

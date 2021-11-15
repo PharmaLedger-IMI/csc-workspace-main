@@ -38,7 +38,7 @@ const studiesKitsTableHeaders = [
 	{
 		column: 'numberOfKits',
 		label: 'Number of Kits',
-		notSortable: false,
+		notSortable: true,
 		type: 'number',
 		asc: null,
 		desc: null
@@ -46,7 +46,7 @@ const studiesKitsTableHeaders = [
 	{
 		column: 'available',
 		label: 'Available',
-		notSortable: false,
+		notSortable: true,
 		type: 'number',
 		asc: null,
 		desc: null
@@ -54,7 +54,7 @@ const studiesKitsTableHeaders = [
 	{
 		column: 'assigned',
 		label: 'Assigned',
-		notSortable: false,
+		notSortable: true,
 		type: 'number',
 		asc: null,
 		desc: null
@@ -62,7 +62,7 @@ const studiesKitsTableHeaders = [
 	{
 		column: 'dispensed',
 		label: 'Dispensed',
-		notSortable: false,
+		notSortable: true,
 		type: 'number',
 		asc: null,
 		desc: null
@@ -119,7 +119,7 @@ const kitsTableHeaders = [
 	{
 		column: 'receivedDate',
 		label: 'Received Date',
-		notSortable: false,
+		notSortable: true,
 		type: 'date',
 		asc: null,
 		desc: null
@@ -127,7 +127,7 @@ const kitsTableHeaders = [
 	{
 		column: 'status',
 		label: 'Kit Status',
-		notSortable: false,
+		notSortable: true,
 		type: 'string',
 		asc: null,
 		desc: null
