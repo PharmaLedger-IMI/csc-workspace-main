@@ -14,8 +14,7 @@ class StudiesKitsControllerImpl extends WebcController {
     super(...props);
     this.role = role;
     this.kitsService = new KitsService(this.DSUStorage);
-    this.searchedProps = studiesKitsTableHeaders.filter(header=>header.notSortable===false).map( header => header.column);
-    this.searchService = new SearchService(kitsStatusesEnum, this.searchedProps);
+    this.searchService = new SearchService(kitsStatusesEnum, studiesKitsTableHeaders);
     this.model = this.getKitsViewModel();
     this.model.kitsListIsReady = false;
     this.attachEvents();
