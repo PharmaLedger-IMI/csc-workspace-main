@@ -20,8 +20,7 @@ const orderTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'orderId'
+		desc: null
 	},
 	{
 		column: 'sponsorId',
@@ -29,8 +28,7 @@ const orderTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'sponsorId'
+		desc: null
 	},
 	{
 		column: 'studyId',
@@ -38,8 +36,7 @@ const orderTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'studyId'
+		desc: null
 	},
 	{
 		column: 'siteId',
@@ -47,8 +44,7 @@ const orderTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'siteId'
+		desc: null
 	},
 	{
 		column: 'requestDate',
@@ -56,8 +52,7 @@ const orderTableHeaders = [
 		notSortable: false,
 		type: 'date',
 		asc: null,
-		desc: null,
-		value: 'requestDate_value'
+		desc: null
 	},
 	{
 		column: 'deliveryDate',
@@ -65,8 +60,7 @@ const orderTableHeaders = [
 		notSortable: false,
 		type: 'date',
 		asc: null,
-		desc: null,
-		value: 'deliveryDate_value'
+		desc: null
 	},
 	{
 		column: 'status',
@@ -74,8 +68,7 @@ const orderTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'status_value'
+		desc: null
 	},
 	{
 		column: 'lastModified',
@@ -83,8 +76,7 @@ const orderTableHeaders = [
 		type: 'date',
 		notSortable: false,
 		asc: null,
-		desc: null,
-		value: 'lastModified'
+		desc: null
 	},
 	{
 		column: null,
