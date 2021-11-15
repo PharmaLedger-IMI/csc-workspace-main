@@ -25,8 +25,7 @@ const studiesKitsTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'studyId'
+		desc: null
 	},
 	{
 		column: 'orderId',
@@ -34,8 +33,7 @@ const studiesKitsTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'orderId'
+		desc: null
 	},
 	{
 		column: 'numberOfKits',
@@ -43,8 +41,7 @@ const studiesKitsTableHeaders = [
 		notSortable: false,
 		type: 'number',
 		asc: null,
-		desc: null,
-		value: 'orderId'
+		desc: null
 	},
 	{
 		column: 'available',
@@ -52,8 +49,7 @@ const studiesKitsTableHeaders = [
 		notSortable: false,
 		type: 'number',
 		asc: null,
-		desc: null,
-		value: 'orderId'
+		desc: null
 	},
 	{
 		column: 'assigned',
@@ -61,8 +57,7 @@ const studiesKitsTableHeaders = [
 		notSortable: false,
 		type: 'number',
 		asc: null,
-		desc: null,
-		value: 'orderId'
+		desc: null
 	},
 	{
 		column: 'dispensed',
@@ -70,8 +65,7 @@ const studiesKitsTableHeaders = [
 		notSortable: false,
 		type: 'number',
 		asc: null,
-		desc: null,
-		value: 'orderId'
+		desc: null
 	},
 	{
 		column: 'lastModified',
@@ -79,8 +73,7 @@ const studiesKitsTableHeaders = [
 		type: 'date',
 		notSortable: false,
 		asc: null,
-		desc: null,
-		value: 'lastModified'
+		desc: null
 	},
 	{
 		column: null,
@@ -97,8 +90,7 @@ const kitsTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'kitId'
+		desc: null
 	},
 	{
 		column: 'shipmentId',
@@ -106,8 +98,7 @@ const kitsTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'shipmentId'
+		desc: null
 	},
 	{
 		column: 'orderId',
@@ -115,8 +106,7 @@ const kitsTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'orderId'
+		desc: null
 	},
 	{
 		column: 'investigatorId',
@@ -124,8 +114,7 @@ const kitsTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'investigatorId'
+		desc: null
 	},
 	{
 		column: 'receivedDate',
@@ -133,8 +122,7 @@ const kitsTableHeaders = [
 		notSortable: false,
 		type: 'date',
 		asc: null,
-		desc: null,
-		value: 'receivedDate'
+		desc: null
 	},
 	{
 		column: 'status',
@@ -142,8 +130,7 @@ const kitsTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'status_value'
+		desc: null
 	},
 	{
 		column: 'lastModified',
@@ -151,8 +138,7 @@ const kitsTableHeaders = [
 		type: 'date',
 		notSortable: false,
 		asc: null,
-		desc: null,
-		value: 'lastModified'
+		desc: null
 	},
 	{
 		column: null,
