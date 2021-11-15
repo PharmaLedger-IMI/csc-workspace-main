@@ -31,8 +31,7 @@ const shipmentCMOTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'orderId'
+		desc: null
 	},
 	{
 		column: 'shipperID',
@@ -40,8 +39,7 @@ const shipmentCMOTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'shipperId'
+		desc: null
 	},
 	{
 		column: 'origin',
@@ -49,8 +47,7 @@ const shipmentCMOTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'origin'
+		desc: null
 	},
 	{
 		column: 'type',
@@ -58,8 +55,7 @@ const shipmentCMOTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'type'
+		desc: null
 	},
 	{
 		column: 'requestDeliveryDate',
@@ -67,8 +63,7 @@ const shipmentCMOTableHeaders = [
 		notSortable: false,
 		type: 'date',
 		asc: null,
-		desc: null,
-		value: 'deliveryDate'
+		desc: null
 	},
 	{
 		column: 'schedulePickupDate',
@@ -76,8 +71,7 @@ const shipmentCMOTableHeaders = [
 		notSortable: false,
 		type: 'date',
 		asc: null,
-		desc: null,
-		value: 'scheduledPickupDate'
+		desc: null
 	},
 	{
 		column: 'status',
@@ -85,8 +79,7 @@ const shipmentCMOTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'status_value'
+		desc: null
 	},
 	{
 		column: 'lastModified',
@@ -94,8 +87,7 @@ const shipmentCMOTableHeaders = [
 		type: 'date',
 		notSortable: false,
 		asc: null,
-		desc: null,
-		value: 'lastModified'
+		desc: null
 	},
 	{
 		column: null,
@@ -112,8 +104,7 @@ const shipmentSiteTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'shipmentId'
+		desc: null
 	},
 	{
 		column: 'shipperID',
@@ -121,8 +112,7 @@ const shipmentSiteTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'shipperId'
+		desc: null
 	},
 	{
 		column: 'origin',
@@ -130,8 +120,7 @@ const shipmentSiteTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'origin'
+		desc: null
 	},
 	{
 		column: 'type',
@@ -139,8 +128,7 @@ const shipmentSiteTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'type'
+		desc: null
 	},
 	{
 		column: 'recipientName',
@@ -148,8 +136,7 @@ const shipmentSiteTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'recipientName'
+		desc: null
 	},
 	{
 		column: 'requestDeliveryDate',
@@ -157,8 +144,7 @@ const shipmentSiteTableHeaders = [
 		notSortable: false,
 		type: 'date',
 		asc: null,
-		desc: null,
-		value: 'deliveryDate'
+		desc: null
 	},
 	{
 		column: 'status',
@@ -166,8 +152,7 @@ const shipmentSiteTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'status_value'
+		desc: null
 	},
 	{
 		column: 'lastModified',
@@ -175,8 +160,7 @@ const shipmentSiteTableHeaders = [
 		type: 'date',
 		notSortable: false,
 		asc: null,
-		desc: null,
-		value: 'lastModified'
+		desc: null
 	},
 	{
 		column: null,
@@ -193,8 +177,7 @@ const shipmentSponsorTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'shipmentId'
+		desc: null
 	},
 	{
 		column: 'shipperID',
@@ -202,8 +185,7 @@ const shipmentSponsorTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'shipperId'
+		desc: null
 	},
 	{
 		column: 'origin',
@@ -211,8 +193,7 @@ const shipmentSponsorTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'origin'
+		desc: null
 	},
 	{
 		column: 'type',
@@ -220,8 +201,7 @@ const shipmentSponsorTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'type'
+		desc: null
 	},
 	{
 		column: 'recipientName',
@@ -229,8 +209,7 @@ const shipmentSponsorTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'recipientName'
+		desc: null
 	},
 	{
 		column: 'requestDeliveryDate',
@@ -238,8 +217,7 @@ const shipmentSponsorTableHeaders = [
 		notSortable: false,
 		type: 'date',
 		asc: null,
-		desc: null,
-		value: 'deliveryDate'
+		desc: null
 	},
 	{
 		column: 'schedulePickupDate',
@@ -247,8 +225,7 @@ const shipmentSponsorTableHeaders = [
 		notSortable: false,
 		type: 'date',
 		asc: null,
-		desc: null,
-		value: 'scheduledPickupDate'
+		desc: null
 	},
 	{
 		column: 'status',
@@ -256,8 +233,7 @@ const shipmentSponsorTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'status_value'
+		desc: null
 	},
 	{
 		column: 'lastModified',
@@ -265,8 +241,7 @@ const shipmentSponsorTableHeaders = [
 		type: 'date',
 		notSortable: false,
 		asc: null,
-		desc: null,
-		value: 'lastModified'
+		desc: null
 	},
 	{
 		column: null,
@@ -284,8 +259,7 @@ const shipmentCourierTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'orderId'
+		desc: null
 	},
 	{
 		column: 'shipmentId',
@@ -293,8 +267,7 @@ const shipmentCourierTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'shipmentId'
+		desc: null
 	},
 	{
 		column: 'origin',
@@ -302,8 +275,7 @@ const shipmentCourierTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'origin'
+		desc: null
 	},
 	{
 		column: 'type',
@@ -311,8 +283,7 @@ const shipmentCourierTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'type'
+		desc: null
 	},
 	{
 		column: 'schedulePickupDate',
@@ -320,8 +291,7 @@ const shipmentCourierTableHeaders = [
 		notSortable: false,
 		type: 'date',
 		asc: null,
-		desc: null,
-		value: 'scheduledPickupDate'
+		desc: null
 	},
 	{
 		column: 'status',
@@ -329,8 +299,7 @@ const shipmentCourierTableHeaders = [
 		notSortable: false,
 		type: 'string',
 		asc: null,
-		desc: null,
-		value: 'status_value'
+		desc: null
 	},
 	{
 		column: 'lastModified',
@@ -338,8 +307,7 @@ const shipmentCourierTableHeaders = [
 		type: 'date',
 		notSortable: false,
 		asc: null,
-		desc: null,
-		value: 'lastModified'
+		desc: null
 	},
 	{
 		column: null,
