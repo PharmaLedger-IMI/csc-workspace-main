@@ -180,7 +180,7 @@ class OrdersService extends DSUService {
         kitIds: [],
         file: null,
       },
-      FoldersEnum.Kits
+      FoldersEnum.KitIds
     );
 
     const commentsDsu = await this.saveEntityAsync(
