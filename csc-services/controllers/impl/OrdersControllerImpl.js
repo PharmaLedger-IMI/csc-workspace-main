@@ -14,7 +14,7 @@ class OrdersControllerImpl extends WebcController {
 		super(...props);
 
 		this.ordersService = new OrdersService(this.DSUStorage);
-		this.searchService = new SearchService(orderStatusesEnum, ['orderId']);
+		this.searchService = new SearchService(orderStatusesEnum, orderTableHeaders);
 		this.model = this.getOrdersViewModel();
 		this.model.ordersListIsReady = false;
 		this.attachEvents();

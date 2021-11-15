@@ -49,7 +49,7 @@ const orderTableHeaders = [
 	{
 		column: 'requestDate',
 		label: 'Request Date',
-		notSortable: false,
+		notSortable: true,
 		type: 'date',
 		asc: null,
 		desc: null
@@ -57,7 +57,7 @@ const orderTableHeaders = [
 	{
 		column: 'deliveryDate',
 		label: 'Requested Delivery Date/Time',
-		notSortable: false,
+		notSortable: true,
 		type: 'date',
 		asc: null,
 		desc: null
@@ -65,7 +65,7 @@ const orderTableHeaders = [
 	{
 		column: 'status',
 		label: 'Order Status',
-		notSortable: false,
+		notSortable: true,
 		type: 'string',
 		asc: null,
 		desc: null

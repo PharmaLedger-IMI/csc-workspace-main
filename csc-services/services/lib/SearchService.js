@@ -2,9 +2,9 @@
 
 class SearchService {
 
-    constructor(itemStatusesEnum, searchedProperties) { 
+    constructor(itemStatusesEnum, tableHeaders) { 
         this.itemStatusesEnum = itemStatusesEnum;
-        this.searchedProperties = searchedProperties;
+        this.searchedProperties = tableHeaders.filter(header=>header.notSortable===false).map( header => header.column);
     }
 
     filterData(result, filter, searchValue) {
