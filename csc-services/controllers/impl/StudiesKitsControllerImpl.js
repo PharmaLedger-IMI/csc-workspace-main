@@ -74,7 +74,8 @@ class StudiesKitsControllerImpl extends WebcController {
       };
       item.kitsDispensed = {
         progress: this.filterKitsByStatus(item.kits, kitsStatusesEnum.Dispensed).length,
-        total: item.kitsNumber
+        total: item.kitsNumber,
+        approved: true
       };
     });
     return studiesKits;
