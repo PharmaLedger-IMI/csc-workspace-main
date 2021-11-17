@@ -83,8 +83,8 @@
 				<span><b>Kits</b></span>
 			</div>
 
-			<div data-if='@kits'>
-				<div data-for='@kits.status'>
+			<div data-if='@displayViewKitsButton'>
+				<div data-for='@kits.status' slot='true'>
 					<div class='history-connector'></div>
 
 					<div data-if='@approved'>
@@ -101,11 +101,12 @@
 						</div>
 					</div>
 				</div>
+				<div slot='false' class='m-3'><i>No kits are available yet</i></div>
 			</div>
 		</div>
 	</div>
 
-	<div class='row-wrapper button-wrapper'>
+	<div class='row-wrapper button-wrapper justify-content-center align-items-center'>
 		<div class="col-4 d-flex justify-content-center" data-if='@displayViewShipmentButton'>
 			<button class='btn-default' data-tag='view-shipment'>
 				<svg class='view-more-icon' enable-background='new 0 0 200 200' height='200px' id='Layer_1'

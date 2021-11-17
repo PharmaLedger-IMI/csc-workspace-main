@@ -57,7 +57,7 @@ class HistoryModalControllerImpl extends WebcController {
 			kits: this.transformKitData(),
 			displayViewOrderButton: this.model.order && this.model.currentPage !== Topics.Order,
 			displayViewShipmentButton: this.model.shipment && this.model.currentPage !== Topics.Shipment,
-			displayViewKitsButton: this.model.kits && this.model.currentPage !== Topics.Kits
+			displayViewKitsButton: this.model.kits && this.model.kits.length > 0
 		};
 	}
 
@@ -116,7 +116,6 @@ class HistoryModalControllerImpl extends WebcController {
 		const kits = this.model.toObject('kits')
 		let final = [];
 		const object = { status: [] , orderId : "" , studyId: ""};
-
 		if (kits) {
 			kits.forEach((kit) => {
 				if (kit.status) {

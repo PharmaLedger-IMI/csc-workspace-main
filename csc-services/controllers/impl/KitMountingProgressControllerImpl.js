@@ -2,9 +2,9 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const momentService = cscServices.momentService;
 
-class KitMountingProgressController extends WebcController {
+class KitMountingProgressControllerImpl extends WebcController {
 
-  constructor(...props) {
+  constructor(role, ...props) {
     super(...props);
    }
 
@@ -31,4 +31,5 @@ class KitMountingProgressController extends WebcController {
 
 }
 
-export default KitMountingProgressController;
+const controllersRegistry = require('../ControllersRegistry').getControllersRegistry();
+controllersRegistry.registerController('KitMountingProgressController', KitMountingProgressControllerImpl);
