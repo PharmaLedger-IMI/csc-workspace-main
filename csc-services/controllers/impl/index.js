@@ -18,3 +18,5 @@ require('./StudiesKitsControllerImpl');
 require('./KitHistoryModalControllerImpl');
 require('./ProgressStatusControllerImpl');
 require('./SingleKitControllerImpl');
+require('./helpers/AccordionController');
+
