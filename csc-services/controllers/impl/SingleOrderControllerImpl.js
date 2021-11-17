@@ -1,4 +1,4 @@
-const AccordionController  = require("./helpers/AccordionController");
+const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
@@ -10,13 +10,14 @@ const momentService = cscServices.momentService;
 const { Roles, Topics, ButtonsEnum, Commons, FoldersEnum } = cscServices.constants;
 const { orderStatusesEnum, orderPendingActionEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
+const KitsService = cscServices.KitsService;
 
 const csIdentities = {};
 csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
 csIdentities[Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
 csIdentities[Roles.Site] = CommunicationService.identities.CSC.SITE_IDENTITY;
 
-class SingleOrderControllerImpl extends AccordionController {
+class SingleOrderControllerImpl extends WebcController {
   constructor(role, ...props) {
     super(...props);
     this.role = role;
@@ -36,6 +37,7 @@ class SingleOrderControllerImpl extends AccordionController {
     let communicationService = CommunicationService.getInstance(csIdentities[role]);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
+    this.kitsService = new KitsService(this.DSUStorage);
 
     this.model.keySSI = keySSI;
 
@@ -99,6 +101,46 @@ class SingleOrderControllerImpl extends AccordionController {
     });
   }
 
+  toggleAccordionItem(el) {
+    const element = document.getElementById(el);
+
+    const icon = document.getElementById(el + '_icon');
+    element.classList.toggle('accordion-item-active');
+    icon.classList.toggle('rotate-icon');
+
+    const panel = element.nextElementSibling;
+
+    if (panel.style.maxHeight === '1000px') {
+      panel.style.maxHeight = '0px';
+    } else {
+      panel.style.maxHeight = '1000px';
+    }
+  }
+
+  openAccordionItem(el) {
+    const element = document.getElementById(el);
+    const icon = document.getElementById(el + '_icon');
+
+    element.classList.add('accordion-item-active');
+    icon.classList.add('rotate-icon');
+
+    const panel = element.nextElementSibling;
+    panel.style.maxHeight = '1000px';
+
+    this.closeAllExcept(el);
+  }
+
+  closeAccordionItem(el) {
+    const element = document.getElementById(el);
+    const icon = document.getElementById(el + '_icon');
+
+    element.classList.remove('accordion-item-active');
+    icon.classList.remove('rotate-icon');
+
+    const panel = element.nextElementSibling;
+    panel.style.maxHeight = '0px';
+  }
+
   closeAllExcept(el) {
 
     if (el === 'order_details_accordion') {
@@ -110,13 +152,22 @@ class SingleOrderControllerImpl extends AccordionController {
     }
   }
 
-  onShowHistoryClick() {
+  async onShowHistoryClick() {
     let { order, shipment } = this.model.toObject();
     const historyModel = {
       order: order,
       shipment: shipment,
       currentPage: Topics.Order
     };
+
+    if (this.role === Roles.Sponsor) {
+      try{
+        historyModel.kits = await this.kitsService.getOrderKits(order.studyId, order.orderId);
+      }
+      catch (e){
+        historyModel.kits = []
+      }
+    }
 
     this.createWebcModal({
       template: 'historyModal',
