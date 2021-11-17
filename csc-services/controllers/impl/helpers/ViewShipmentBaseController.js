@@ -1,4 +1,4 @@
-const AccordionController  = require("./AccordionController");
+const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService
 const FileDownloaderService = cscServices.FileDownloaderService;
@@ -9,7 +9,7 @@ const { Commons, FoldersEnum, Topics, Roles } = cscServices.constants;
 const statusesService = cscServices.StatusesService;
 const KitsService = cscServices.KitsService;
 
-class ViewShipmentBaseControllerImpl extends AccordionController{
+class ViewShipmentBaseControllerImpl extends WebcController{
 
   constructor(role,...props) {
     super(...props);
@@ -70,6 +70,31 @@ class ViewShipmentBaseControllerImpl extends AccordionController{
     window.WebCardinal.loader.hidden = true;
   }
 
+  toggleAccordionItemHandler() {
+    this.onTagEvent('toggle-accordion', 'click', (model, target) => {
+      const targetIcon = target.querySelector('.accordion-icon');
+      target.classList.toggle('accordion-item-active');
+      targetIcon.classList.toggle('rotate-icon');
+
+      const panel = target.nextElementSibling;
+      if (panel.style.maxHeight === '1000px') {
+        panel.style.maxHeight = '0px';
+      } else {
+        panel.style.maxHeight = '1000px';
+      }
+    });
+  }
+
+  openFirstAccordion() {
+    const accordion = this.querySelector('.accordion-item');
+    const targetIcon = accordion.querySelector('.accordion-icon');
+    const panel = accordion.nextElementSibling;
+
+    accordion.classList.toggle('accordion-item-active');
+    targetIcon.classList.toggle('rotate-icon');
+    panel.style.maxHeight = '1000px';
+  }
+
   showHistoryHandler() {
     this.onTagEvent('history-button', 'click', () => {
       this.onShowHistoryClick();
@@ -87,9 +112,16 @@ class ViewShipmentBaseControllerImpl extends AccordionController{
       historyModel.order = orderModel.order
     }
 
-     if(kitsData){
-       historyModel.kits = await this.kitsService.getOrderKits(orderModel.order.studyId, orderModel.order.orderId);
-     }
+    //only sponsor and site have access to kits dashboard
+    if (kitsData && [Roles.Sponsor, Roles.Site].indexOf(this.role) !== -1) {
+      try{
+        historyModel.kits = await this.kitsService.getOrderKits(orderModel.order.studyId, orderModel.order.orderId);
+      }
+      catch (e){
+        historyModel.kits = []
+      }
+
+    }
 
 
     this.createWebcModal({
