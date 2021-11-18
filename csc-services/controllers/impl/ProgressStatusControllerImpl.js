@@ -8,14 +8,16 @@ class ProgressStatusControllerImpl extends WebcController {
 
   onReady(){
     let progressElement = this.querySelector(".progress-bar");
+    let progressWrapper= this.querySelector(".progress");
     progressElement.style.width = parseInt((this.model.progress / this.model.total)*100)+"%";
     progressElement.innerText = `${this.model.progress} / ${this.model.total}`;
 
     if(this.model.approved === true) {
-        let progress= this.querySelector(".progress");
-        progress.style.background = "green";
-//        progress.style.border-color = "green";
-        progressElement.style.background = "green";
+        progressElement.classList.add("green");
+        progressWrapper.classList.add("green");
+    }
+    else {
+        progressWrapper.classList.add("blue");
     }
   }
 }
