@@ -5,8 +5,9 @@ const ShipmentsService = cscServices.ShipmentService;
 const OrdersService = cscServices.OrderService;
 const CommunicationService = cscServices.CommunicationService;
 const momentService = cscServices.momentService;
-const { Roles } = cscServices.constants;
+const { Commons, Roles } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
+const statusesService = cscServices.StatusesService;
 
 class CourierSingleShipmentController extends ViewShipmentBaseController {
   constructor(...props) {
@@ -93,6 +94,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     let shipment = await this.shipmentsService.getShipment(model.keySSI);
     shipment = { ...this.transformShipmentData(shipment) };
     model.shipmentModel.shipment = shipment;
+    console.log('Model : ', JSON.stringify(model.shipmentModel));
 
     if (model.shipmentModel.shipment.shipmentComments) {
       model.shipmentModel.shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
