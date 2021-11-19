@@ -1,4 +1,4 @@
-const { WebcController } = WebCardinal.controllers;
+const AccordionController  = require("./helpers/AccordionController");
 const cscServices = require('csc-services');
 const KitsService = cscServices.KitsService;
 const viewModelResolver = cscServices.viewModelResolver;
@@ -8,7 +8,7 @@ const { Commons, Topics, Roles } = cscServices.constants;
 const {kitsStatusesEnum, kitsPendingActionEnum} = cscServices.constants.kit;
 const statusesService = cscServices.StatusesService;
 
-class SingleKitControllerImpl extends WebcController {
+class SingleKitControllerImpl extends AccordionController {
 
   constructor(actor, ...props) {
     super(...props);
@@ -183,31 +183,6 @@ class SingleKitControllerImpl extends WebcController {
     }
 
     return kitsPendingActionEnum.NoFurtherActionsRequired;
-  }
-
-  toggleAccordionItemHandler() {
-    this.onTagEvent('toggle-accordion', 'click', (model, target) => {
-      const targetIcon = target.querySelector('.accordion-icon');
-      target.classList.toggle('accordion-item-active');
-      targetIcon.classList.toggle('rotate-icon');
-
-      const panel = target.nextElementSibling;
-      if (panel.style.maxHeight === '1200px') {
-        panel.style.maxHeight = '0px';
-      } else {
-        panel.style.maxHeight = '1200px';
-      }
-    });
-  }
-
-  openFirstAccordion() {
-    const accordion = this.querySelector('.accordion-item');
-    const targetIcon = accordion.querySelector('.accordion-icon');
-    const panel = accordion.nextElementSibling;
-
-    accordion.classList.toggle('accordion-item-active');
-    targetIcon.classList.toggle('rotate-icon');
-    panel.style.maxHeight = '1200px';
   }
 
   onShowHistoryClick() {

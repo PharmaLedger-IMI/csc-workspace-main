@@ -1,4 +1,4 @@
-const { WebcController } = WebCardinal.controllers;
+const AccordionController  = require("./AccordionController");
 const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService
 const FileDownloaderService = cscServices.FileDownloaderService;
@@ -9,7 +9,7 @@ const { Commons, FoldersEnum, Topics, Roles } = cscServices.constants;
 const statusesService = cscServices.StatusesService;
 const KitsService = cscServices.KitsService;
 
-class ViewShipmentBaseControllerImpl extends WebcController{
+class ViewShipmentBaseControllerImpl extends AccordionController{
 
   constructor(role,...props) {
     super(...props);
@@ -68,31 +68,6 @@ class ViewShipmentBaseControllerImpl extends WebcController{
     await this.FileDownloaderService.prepareDownloadFromDsu(path, filename);
     this.FileDownloaderService.downloadFileToDevice(filename);
     window.WebCardinal.loader.hidden = true;
-  }
-
-  toggleAccordionItemHandler() {
-    this.onTagEvent('toggle-accordion', 'click', (model, target) => {
-      const targetIcon = target.querySelector('.accordion-icon');
-      target.classList.toggle('accordion-item-active');
-      targetIcon.classList.toggle('rotate-icon');
-
-      const panel = target.nextElementSibling;
-      if (panel.style.maxHeight === '1000px') {
-        panel.style.maxHeight = '0px';
-      } else {
-        panel.style.maxHeight = '1000px';
-      }
-    });
-  }
-
-  openFirstAccordion() {
-    const accordion = this.querySelector('.accordion-item');
-    const targetIcon = accordion.querySelector('.accordion-icon');
-    const panel = accordion.nextElementSibling;
-
-    accordion.classList.toggle('accordion-item-active');
-    targetIcon.classList.toggle('rotate-icon');
-    panel.style.maxHeight = '1000px';
   }
 
   showHistoryHandler() {
