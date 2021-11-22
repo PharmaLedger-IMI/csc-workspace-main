@@ -23,7 +23,6 @@ class StudiesKitsControllerImpl extends WebcController {
 
   async init() {
     await this.getKits();
-    this.searchFilterHandler();
     eventBusService.addEventListener(Topics.RefreshKits, async (data) => {
       await this.getKits();
     });
@@ -39,6 +38,9 @@ class StudiesKitsControllerImpl extends WebcController {
     } catch (error) {
       console.log(error);
     }
+  }
+  onReady(){
+    this.searchFilterHandler();
   }
 
   filterKitsByStatus(kits, status){
@@ -148,13 +150,13 @@ class StudiesKitsControllerImpl extends WebcController {
     }
   }
 
-
   searchFilterHandler() {
-    this.model.onChange('search.value', () => {
-      setTimeout(() => {
-        this.filterData();
-      }, 300);
-    });
+    //TODO: check why search.value is changed in the initialization phase
+    setTimeout(()=>{
+      this.model.onChange('search.value', () => {
+          this.filterData();
+      });
+    },300);
   }
 
   filterData() {
