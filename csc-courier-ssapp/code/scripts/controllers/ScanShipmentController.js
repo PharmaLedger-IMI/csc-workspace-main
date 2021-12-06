@@ -88,6 +88,10 @@ class ScanShipmentController extends WebcController {
       this.makeStepActive('step-3', 'step-3-wrapper', e);
     });
 
+    this.onTagEvent('from_step_1_to_1', 'click', (e) => {
+      this.makeStepActive('step-1', 'step-1-wrapper', e);
+    });
+
     this.onTagEvent('from_step_1_to_2', 'click', (e) => {
       this.makeStepActive('step-2', 'step-2-wrapper', e);
     });
