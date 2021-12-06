@@ -20,7 +20,7 @@
 
       <div class='body-main-section'>
           <p class='text-center'>Please proceed to scanning process to change the shipment status to
-            <b>"In Transit"</b>
+            <b>"Pick-up At Warehouse"</b>
           </p>
 
           <div class='stepper-container'>
@@ -58,10 +58,6 @@
   
             <div data-if="@enableStep1Navigation">
               <div class="row-wrapper button-wrapper">
-                <button class="btn-default" data-tag="back-to-shipment-scan" disabled="@showCorrectShipmentScanResult">
-                  <i class="fas fa-angle-left"></i>
-                  Previous
-                </button>
                 <button class="btn-default scan-again-button" data-tag="scan-again-shipment"  disabled="@showCorrectShipmentScanResult" >
                   Scan Again
                 </button>

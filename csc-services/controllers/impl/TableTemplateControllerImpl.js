@@ -7,8 +7,8 @@ class TableTemplateControllerImpl extends WebcController {
   constructor(role, ...props) {
     super(...props);
     this.role = role;
-    this.attachEvents();
     this.init();
+    this.attachEvents();
   }
 
   sortingFn(column, sorting, type){

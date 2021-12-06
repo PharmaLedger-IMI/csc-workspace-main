@@ -52,19 +52,15 @@
         <td><label>{{@orderId}}</label></td>
         <td><label>{{@kitsNumber}}</label></td>
 
-<!--        <td>-->
-<!--          <webc-template template='kits/progress-status' data-view-model='@kitsAvailable'></webc-template>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--          <webc-template template='kits/progress-status' data-view-model='@kitsAssigned'></webc-template>-->
-<!--        </td>-->
-<!--        <td>-->
-<!--          <webc-template template='kits/progress-status' data-view-model='@kitsDispensed'></webc-template>-->
-<!--        </td>-->
-
-        <td><label>{{@kitsAvailable.progress}}/{{@kitsNumber}}</label></td>
-        <td><label>{{@kitsAssigned.progress}}/{{@kitsNumber}}</label></td>
-        <td><label>{{@kitsDispensed.progress}}/{{@kitsNumber}}</label></td>
+        <td>
+          <webc-template template='kits/progress-status' data-view-model='@kitsAvailable'></webc-template>
+        </td>
+        <td>
+          <webc-template template='kits/progress-status' data-view-model='@kitsAssigned'></webc-template>
+        </td>
+        <td>
+          <webc-template template='kits/progress-status' data-view-model='@kitsDispensed'></webc-template>
+        </td>
 
         <td><label>{{@lastModified}}</label></td>
         <td>

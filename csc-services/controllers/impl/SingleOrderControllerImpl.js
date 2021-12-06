@@ -1,4 +1,4 @@
-const { WebcController } = WebCardinal.controllers;
+const AccordionController  = require("./helpers/AccordionController");
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
@@ -17,7 +17,7 @@ csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTI
 csIdentities[Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
 csIdentities[Roles.Site] = CommunicationService.identities.CSC.SITE_IDENTITY;
 
-class SingleOrderControllerImpl extends WebcController {
+class SingleOrderControllerImpl extends AccordionController {
   constructor(role, ...props) {
     super(...props);
     this.role = role;
@@ -99,46 +99,6 @@ class SingleOrderControllerImpl extends WebcController {
     this.onTagClick('dashboard', () => {
       this.navigateToPageTag('dashboard', { tab: Topics.Order });
     });
-  }
-
-  toggleAccordionItem(el) {
-    const element = document.getElementById(el);
-
-    const icon = document.getElementById(el + '_icon');
-    element.classList.toggle('accordion-item-active');
-    icon.classList.toggle('rotate-icon');
-
-    const panel = element.nextElementSibling;
-
-    if (panel.style.maxHeight === '1000px') {
-      panel.style.maxHeight = '0px';
-    } else {
-      panel.style.maxHeight = '1000px';
-    }
-  }
-
-  openAccordionItem(el) {
-    const element = document.getElementById(el);
-    const icon = document.getElementById(el + '_icon');
-
-    element.classList.add('accordion-item-active');
-    icon.classList.add('rotate-icon');
-
-    const panel = element.nextElementSibling;
-    panel.style.maxHeight = '1000px';
-
-    this.closeAllExcept(el);
-  }
-
-  closeAccordionItem(el) {
-    const element = document.getElementById(el);
-    const icon = document.getElementById(el + '_icon');
-
-    element.classList.remove('accordion-item-active');
-    icon.classList.remove('rotate-icon');
-
-    const panel = element.nextElementSibling;
-    panel.style.maxHeight = '0px';
   }
 
   closeAllExcept(el) {

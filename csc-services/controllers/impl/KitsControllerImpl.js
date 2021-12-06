@@ -15,7 +15,7 @@ class KitsControllerImpl extends WebcController {
 		super(...props);
 		this.role = role;
 		this.kitsService = new KitsService(this.DSUStorage);
-		this.searchService = new SearchService(kitsStatusesEnum, ['kitId','shipmentId','investigatorId']);
+		this.searchService = new SearchService(kitsStatusesEnum, kitsTableHeaders);
 		this.model = this.getKitsViewModel();
 		this.model.kitsListIsReady = false;
 		this.attachEvents();

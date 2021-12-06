@@ -23,6 +23,7 @@ export default class EditShipmentController extends WebcController {
 
 		this.attachEventHandlers();
 		this.initViewModel();
+		this.model.onChange('shipmentModel.form', this.checkFormValidity.bind(this));
 
 	}
 
@@ -189,6 +190,27 @@ export default class EditShipmentController extends WebcController {
 		];
 	}
 
+	checkFormValidity(){
+		//To be refactored according with current step
+		const requiredInputs = [
+		  this.model.shipmentModel.form.origin.value,
+		  this.model.shipmentModel.form.type.value,
+		  this.model.shipmentModel.form.pickupDate.value,
+		  this.model.shipmentModel.form.dimension.height.value,
+		  this.model.shipmentModel.form.dimension.length.value,
+		  this.model.shipmentModel.form.dimension.width.value
+		]
+	
+		let validationConstraints = [
+		  ...requiredInputs.map(input => this.isInputFilled(input))
+		];
+		this.model.formIsInvalid = typeof (validationConstraints.find(val => val !== true)) !== 'undefined';
+	  }
+
+	  isInputFilled(field){
+		return typeof field !== 'undefined' && field.trim()!==""
+	  }
+
 	async initViewModel() {
 		this.model = {
 			orderModel: viewModelResolver('order'),
@@ -205,6 +227,7 @@ export default class EditShipmentController extends WebcController {
 		this.model.orderModel.order = { ...this.transformOrderData(this.model.orderModel.order) };
 
 		this.model.wizard = this.getWizardForm();
+		this.model.formIsInvalid = true;
 	}
 
 	prepareShipmentData() {

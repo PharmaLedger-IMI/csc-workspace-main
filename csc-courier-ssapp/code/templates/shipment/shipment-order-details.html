@@ -79,14 +79,22 @@
   <input class="form-control form-control-sm" readonly="readonly" name="@orderModel.form.inputs.temperature_comments.name" type="text" value="@orderModel.order.temperature_comments" />
 </div>
 
-  <div data-if='@shipment.contextualContent.afterInTransit'>
+<div data-if='@shipmentModel.shipment.contextualContent.afterInTransit'>
     <div class='grid-column-wrapper'>
       <!-- Master-way bill number -->
-      <label>{{@form.billNumber.label}}</label>
-      <input class="form-control form-control-sm" readonly="readonly" name="@form.billNumber.name" placeholder="@form.billNumber.placeholder" type="text" value="@shipment.bill.billNumber" />
+      <label>{{@shipmentModel.form.billNumber.label}}</label>
+      <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.billNumber.name" placeholder="@shipmentModel.form.billNumber.placeholder" type="text" value="@shipmentModel.shipment.bill.billNumber" />
       <!-- HS Code -->
-      <label>{{@form.hsCode.label}}</label>
-      <input class="form-control form-control-sm" readonly="readonly" name="@form.hsCode.name" placeholder="@form.hsCode.placeholder" type="text" value="@shipment.bill.hsCode" />
+      <label>{{@shipmentModel.form.hsCode.label}}</label>
+      <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.hsCode.name" placeholder="@shipmentModel.form.hsCode.placeholder" type="text" value="@shipmentModel.shipment.bill.hsCode" />
     </div>
-  </div>
+</div>
+
+<div data-if='@shipmentModel.shipment.contextualContent.afterDelivered'>
+    <div class='grid-column-wrapper'>
+      <!-- Recipient Name -->
+      <label>{{@shipmentModel.form.recipientName.label}}</label>
+      <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.recipientName.name" placeholder="@shipmentModel.form.recipientName.placeholder" type="text" value="@shipmentModel.shipment.recipientName" />
+   </div>
+</div>
 

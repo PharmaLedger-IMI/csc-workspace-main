@@ -146,6 +146,7 @@ class ReviewOrderControllerImpl extends WebcController {
   }
 
   async onSubmitYesResponse() {
+    window.WebCardinal.loader.hidden = false;
     const orderStatus = orderStatusesEnum.ReviewedByCMO;
     const newFiles = this.files.filter((x) => x.fileContent instanceof File).map((x) => x.fileContent);
     const reviewComment = {
@@ -155,7 +156,7 @@ class ReviewOrderControllerImpl extends WebcController {
     };
     const result = await this.ordersService.updateOrderNew(this.model.order.keySSI, newFiles, reviewComment, this.role, orderStatus);
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-
+    window.WebCardinal.loader.hidden = true;
     this.createWebcModal({
       template: 'orderCreatedModal',
       controller: 'OrderCreatedModalController',
