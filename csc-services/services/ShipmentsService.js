@@ -329,6 +329,7 @@ class ShipmentsService extends DSUService {
 		}
 
 		const status = await this.updateStatusDsu(shipmentStatusesEnum.InTransit, shipmentDB.statusSSI);
+
 		shipmentDB.status = status.history;
 
 		shipmentDB.bill = billData;
@@ -428,8 +429,10 @@ class ShipmentsService extends DSUService {
 		await this.mountEntityAsync(shipmentTransitSSI, FoldersEnum.ShipmentTransitBilling);
 		shipmentDB.shipmentTransitBillingDSU = shipmentTransitSSI;
 		shipmentDB.bill = await this.getEntityAsync(shipmentTransitSSI, FoldersEnum.ShipmentTransitBilling);
-		const status = await this.updateStatusDsu(shipmentStatusesEnum.InTransit, shipmentDB.statusSSI);
+		const status = await this.getEntityAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
 		shipmentDB.status = status.history;
+		// const status = await this.updateStatusDsu(shipmentStatusesEnum.InTransit, shipmentDB.statusSSI);
+		// shipmentDB.status = status.history;
 		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
 	}
 
