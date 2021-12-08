@@ -184,9 +184,16 @@ export default class ScanShipmentController extends WebcController {
       this.makeStepActive('step-3', 'step-3-wrapper', e);
     });
 
+    this.onTagClick('from_step_1_to_1', (model, target, e) => {
+      this.makeStepActive('step-1', 'step-1-wrapper', e);
+    });
     this.onTagClick('from_step_1_to_2', (model, target, e) => {
       this.makeStepActive('step-2', 'step-2-wrapper', e);
     });
+    this.onTagClick('from_step_2_to_1', (model, target, e) => {
+      this.makeStepActive('step-1', 'step-1-wrapper', e);
+    });
+
 
     this.onTagClick('from_step_2_to_3', (model, target, e) => {
       this.makeStepActive('step-3', 'step-3-wrapper', e);
