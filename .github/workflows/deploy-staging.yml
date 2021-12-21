@@ -1,15 +1,22 @@
 name: deploy-staging
-on: [push]
+
+on:
+  push:
+    branches:
+      - staging
+
 jobs:
   deploy:
     runs-on: [self-hosted, linux]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          ref: 'staging'
 
-      - name: docker-compose down
+      - name: docker stop
         run: |
-          docker-compose down
+          docker stop csc || true
 
       - name: docker-compose build
         run: |
