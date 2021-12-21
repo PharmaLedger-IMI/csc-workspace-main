@@ -1,0 +1,8 @@
+services:
+  csc-prod:
+    build: .
+    image: csc-prod:latest
+    container_name: csc-prod
+    restart: always
+    ports: 
+      - "8094:8080"

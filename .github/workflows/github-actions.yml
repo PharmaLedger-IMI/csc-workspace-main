@@ -1,0 +1,27 @@
+name: deploy-production
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: 'production'
+
+      - name: docker stop
+        run: |
+          docker-compose -p csc_production down --remove-orphans || true
+
+      - name: docker-compose build
+        run: |
+          docker-compose build --no-cache
+
+      - name: docker-compose up
+        run: |
+          docker-compose -p csc_production up -d --remove-orphans
