@@ -24,4 +24,4 @@ jobs:
 
       - name: docker-compose up
         run: |
-          docker-compose up -d --remove-orphans
+          docker-compose -p csc_staging up -d --remove-orphans
