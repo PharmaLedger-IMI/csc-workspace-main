@@ -7,4 +7,4 @@ services:
     container_name: csc
     restart: always
     ports: 
-      - "8090:8081"
+      - "8090:8080"
