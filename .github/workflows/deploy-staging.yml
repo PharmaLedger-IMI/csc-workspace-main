@@ -16,7 +16,7 @@ jobs:
 
       - name: docker stop
         run: |
-          docker stop csc || true
+          docker-compose -p csc_staging down --remove-orphans || true
 
       - name: docker-compose build
         run: |
