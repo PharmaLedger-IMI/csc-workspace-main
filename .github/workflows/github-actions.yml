@@ -1,0 +1,20 @@
+name: deploy-staging
+on: [push]
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: docker-compose down
+        run: |
+          docker-compose down
+
+      - name: docker-compose build
+        run: |
+          docker-compose build --no-cache
+
+      - name: docker-compose up
+        run: |
+          docker-compose up -d --remove-orphans
