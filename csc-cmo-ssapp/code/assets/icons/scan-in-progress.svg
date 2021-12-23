@@ -1,0 +1,60 @@
+<svg width="62" height="62" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        #first{
+        animation: load 1s infinite;
+        }
+        #second{
+        animation: load 1s infinite;
+        animation-delay: 0.2s;
+        }
+        #third{
+        animation: load 1s infinite;
+        animation-delay: 0.4s;
+        }
+        @keyframes load{
+        0%{
+        opacity: 0;
+        }
+        50%{
+        opacity: 1;
+        }
+        100%{
+        opacity: 0;
+        }
+        }
+    </style>
+    <rect width="62" height="62" rx="31" fill="#5A59FD"/>
+    <circle id="first" cx="16" cy="31" r="3.5" fill="white"/>
+    <circle id="second" cx="31" cy="31" r="3.5" fill="white"/>
+    <circle id="third" cx="46" cy="31" r="3.5" fill="white"/>
+    <!--    <animate
+                xlink:href="#first"
+                attributeName="opacity"
+                from="1"
+                to="0"
+                dur="2s"
+                fill="freeze"
+                repeatCount="indefinite"
+                id="first-anim"/>
+        <animate
+                xlink:href="#second"
+                attributeName="opacity"
+                from="1"
+                to="0"
+                dur="2s"
+                begin="first-anim.begin + 2s"
+                repeatCount="indefinite"
+                fill="freeze"
+                id="second-anim"/>
+        <animate
+                xlink:href="#third"
+                attributeName="opacity"
+                from="1"
+                to="0"
+                dur="2s"
+                begin="first-anim.begin + 4s"
+                fill="freeze"
+                repeatCount="indefinite"
+                id="third-anim"/>-->
+
+</svg>
