@@ -61,14 +61,12 @@ const orderViewModel = {
                 value: '',
             },
             target_cmo_id: {
-                label: 'Target CMO ID',
-                name: 'target_cmo_id',
-                id: 'target_cmo_id',
-                placeholder: 'Select Target CMO ID...',
+                label: 'Target CMO DID',
+                name: 'target_cmo_did',
+                placeholder: 'Select Target CMO DID...',
                 required: true,
                 disabled: false,
-                options: cmos.map((x) => {return {label:x.name, value:x.name}}),
-                value: cmos[0].name,
+                value: "",
             },
             study_id: {
                 label: 'Study ID',

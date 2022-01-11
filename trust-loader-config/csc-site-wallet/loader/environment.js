@@ -1,5 +1,5 @@
 export default {
-  appName: 'SIte App',
+  appName: 'Site App',
   appVersion: '0.1.1',
   vault: 'server',
   agent: 'browser',
@@ -7,6 +7,8 @@ export default {
   browser: 'any',
   mode: 'dev-secure',
   domain: 'vault',
+  vaultDomain:"vault",
+  enclaveType:"WalletDBEnclave",
   sw: false,
   pwa: false,
   'legenda for properties':

@@ -4,8 +4,9 @@ const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService;
 const { Topics, Roles, DocumentTypes } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
+const ProfileService = cscServices.ProfileService;
 const momentService = cscServices.momentService;
-const CommunicationService = cscServices.CommunicationService;
+const {getCommunicationServiceInstance} = cscServices.CommunicationServiceNew;
 const viewModelResolver = cscServices.viewModelResolver;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const { uuidv4 } = cscServices.utils;
@@ -17,9 +18,9 @@ export default class NewOrderController extends WebcController {
 
   constructor(...props) {
     super(...props);
-    let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
-    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
-    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
+
+    this.initServices();
+
 
     this.model = {
       wizard_form: [
@@ -304,6 +305,24 @@ export default class NewOrderController extends WebcController {
     this.model.onChange('form.inputs', this.checkFormValidity.bind(this));
   }
 
+
+  async getDidData() {
+    this.model.did = await this.profileService.getDID();
+    const splitDid = this.model.did.split(":");
+    return {
+      didType: `${splitDid[0]}:${splitDid[1]}`,
+      publicName: splitDid[2]
+    };
+  }
+
+
+  async initServices(){
+    this.profileService = new ProfileService();
+    const didData = await this.getDidData();
+    let communicationService = getCommunicationServiceInstance(didData);
+    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
+    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
+  }
   checkFormValidity(){
     //To be refactored according with current step
     const requiredInputs = [

@@ -17,4 +17,17 @@ module.exports = class ProfileService {
 				callback(err);
 			});
 	}
+
+	async getDID(){
+		return new Promise((resolve, reject) => {
+			this.getUserDetails((err, userDetails)=>{
+				if(err){
+					return reject(err);
+				}
+				const did = `ssi:name:${userDetails.username}`
+				resolve(did);
+			})
+		});
+
+	}
 };

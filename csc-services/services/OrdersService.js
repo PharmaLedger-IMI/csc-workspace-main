@@ -81,11 +81,22 @@ class OrdersService extends DSUService {
   }
 
   sendMessageToEntity(entity, operation, data, shortDescription) {
-    this.communicationService.sendMessage(entity, {
+
+     let getDidData= (didAsString)=> {
+      const splitDid = didAsString.split(":");
+      return {
+        didType: `${splitDid[0]}:${splitDid[1]}`,
+        publicName: splitDid[2]
+      };
+    }
+
+    let receiver = getDidData(entity)
+
+    this.communicationService.sendMessage( {
       operation,
       data,
       shortDescription,
-    });
+    }, receiver);
   }
 
   // -> Functions for creation of order
@@ -137,7 +148,7 @@ class OrdersService extends DSUService {
 
     // TODO: send correct type of SSIs (sread, keySSI, etc)
     this.sendMessageToEntity(
-      CommunicationService.identities.CSC.CMO_IDENTITY,
+      order.targetCmoId,
       messagesEnum.StatusInitiated,
       {
         orderSSI: order.uid,

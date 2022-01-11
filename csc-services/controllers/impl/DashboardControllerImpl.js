@@ -1,9 +1,11 @@
-const { WebcController } = WebCardinal.controllers;
+ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
+const ProfileService = cscServices.ProfileService;
+const {getCommunicationServiceInstance} = cscServices.CommunicationServiceNew;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
 const { order, shipment, Roles, Topics, kit } = cscServices.constants;
@@ -26,7 +28,7 @@ class DashboardControllerImpl extends WebcController {
 		this.role = role;
 		this.ordersService = new OrdersService(this.DSUStorage);
 		this.shipmentService = new ShipmentsService(this.DSUStorage);
-		this.communicationService = CommunicationService.getInstance(csIdentities[role]);
+		//this.communicationService = CommunicationService.getInstance(csIdentities[role]);
 		this.notificationsService = new NotificationsService(this.DSUStorage, this.communicationService);
 		this.kitsService = new KitsService(this.DSUStorage);
 
@@ -45,11 +47,32 @@ class DashboardControllerImpl extends WebcController {
 		};
 
 		this.attachHandlers();
+		this.initServices();
+	}
+
+	async getDidData() {
+		this.model.did = await this.profileService.getDID();
+		const splitDid = this.model.did.split(":");
+		return {
+			didType: `${splitDid[0]}:${splitDid[1]}`,
+			publicName: splitDid[2]
+		};
+	}
+
+	async initServices() {
+		this.profileService = new ProfileService();
+		const didData = await this.getDidData();
+		this.communicationService = getCommunicationServiceInstance(didData);
+
+		this.ordersService.onReady(() => {
+			this.shipmentService.onReady(() => {
+				this.handleMessages();
+			});
+		});
 	}
 
 	attachHandlers() {
 		this.modelExpressionsHandler();
-		this.serviceReadyHandler();
 		this.changeTabHandler();
 	}
 
@@ -57,14 +80,6 @@ class DashboardControllerImpl extends WebcController {
 		this.model.addExpression('isOrdersSelected', () => this.model.tabNavigator.selected === Topics.Order, 'tabNavigator.selected');
 		this.model.addExpression('isShipmentsSelected', () => this.model.tabNavigator.selected === Topics.Shipment, 'tabNavigator.selected');
 		this.model.addExpression('isKitsSelected', () => this.model.tabNavigator.selected === Topics.Kits, 'tabNavigator.selected');
-	}
-
-	serviceReadyHandler() {
-		this.ordersService.onReady(() => {
-			this.shipmentService.onReady(() => {
-				this.handleMessages();
-			});
-		});
 	}
 
 	changeTabHandler() {
@@ -99,7 +114,7 @@ class DashboardControllerImpl extends WebcController {
 			orderId: orderData.orderId,
 			read: false,
 			status: orderStatus,
-			keySSI: data.message.data.orderSSI,
+			keySSI: data.data.orderSSI,
 			role: notificationRole,
 			did: orderData.sponsorId,
 			date: new Date().getTime()
@@ -126,7 +141,7 @@ class DashboardControllerImpl extends WebcController {
 			shipmentId: shipmentData.shipmentId,
 			read: false,
 			status: shipmentStatus,
-			keySSI: data.message.data.shipmentSSI,
+			keySSI: data.data.shipmentSSI,
 			role: notificationRole,
 			did: shipmentData.sponsorId,
 			date: new Date().getTime()
@@ -159,7 +174,7 @@ class DashboardControllerImpl extends WebcController {
 
 	async processOrderMessage(data) {
 		let orderData;
-		let orderStatus = data.message.operation;
+		let orderStatus = data.operation;
 		let notificationRole;
 
 		switch (orderStatus) {
@@ -173,7 +188,7 @@ class DashboardControllerImpl extends WebcController {
 					kitIdsKeySSI,
 					commentsKeySSI,
 					statusKeySSI
-				} = data.message.data;
+				} = data.data;
 				orderData = await this.ordersService.mountAndReceiveOrder(orderSSI, this.role,
 					{ sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsKeySSI, commentsKeySSI, statusKeySSI });
 
@@ -188,21 +203,21 @@ class DashboardControllerImpl extends WebcController {
 
 			case orderStatusesEnum.ReviewedByCMO: {
 				notificationRole = Roles.CMO;
-				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
+				orderData = await this.ordersService.updateLocalOrder(data.data.orderSSI);
 
 				break;
 			}
 
 			case orderStatusesEnum.Canceled: {
 				notificationRole = Roles.Sponsor;
-				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
+				orderData = await this.ordersService.updateLocalOrder(data.data.orderSSI);
 
 				break;
 			}
 
 			case orderStatusesEnum.Approved: {
 				notificationRole = Roles.Sponsor;
-				orderData = await this.ordersService.updateLocalOrder(data.message.data.orderSSI);
+				orderData = await this.ordersService.updateLocalOrder(data.data.orderSSI);
 
 				break;
 			}
@@ -213,14 +228,14 @@ class DashboardControllerImpl extends WebcController {
 
 	async processShipmentMessage(data) {
 		let shipmentData;
-		let shipmentStatus = data.message.operation;
+		let shipmentStatus = data.operation;
 		let notificationRole;
 
 		switch (shipmentStatus) {
 			case shipmentStatusesEnum.InPreparation: {
 				notificationRole = Roles.CMO;
 
-				const { shipmentSSI, statusSSI } = data.message.data;
+				const { shipmentSSI, statusSSI } = data.data;
 
 				shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusSSI);
 				await this.ordersService.updateLocalOrder(shipmentData.orderSSI, { shipmentSSI: shipmentSSI });
@@ -230,7 +245,7 @@ class DashboardControllerImpl extends WebcController {
 			case shipmentStatusesEnum.ReadyForDispatch: {
 				notificationRole = Roles.CMO;
 
-				const { shipmentSSI } = data.message.data;
+				const { shipmentSSI } = data.data;
 				shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
 				break;
 			}
@@ -238,7 +253,7 @@ class DashboardControllerImpl extends WebcController {
 			case shipmentStatusesEnum.ShipmentCancelled: {
 				notificationRole = Roles.Sponsor;
 
-				const { shipmentSSI } = data.message.data;
+				const { shipmentSSI } = data.data;
 				shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
 				break;
 			}
@@ -248,7 +263,7 @@ class DashboardControllerImpl extends WebcController {
 			case shipmentStatusesEnum.InTransit: {
 
 				notificationRole = Roles.Courier;
-				const messageData = data.message.data;
+				const messageData = data.data;
 				const { shipmentSSI } = messageData;
 				//SITE will receive on InTransit status all the details except shipmentBilling
 				if (messageData.transitShipmentSSI) {
@@ -267,21 +282,21 @@ class DashboardControllerImpl extends WebcController {
 			}
 			case shipmentStatusesEnum.Delivered: {
 				notificationRole = Roles.Courier;
-				const messageData = data.message.data;
+				const messageData = data.data;
 				const { shipmentSSI } = messageData;
 				shipmentData = await this.shipmentService.updateShipmentDB(shipmentSSI);
 				break;
 			}
 			case shipmentStatusesEnum.Received: {
 				notificationRole = Roles.Site;
-				const messageData = data.message.data;
+				const messageData = data.data;
 				const { receivedShipmentSSI, shipmentSSI } = messageData;
 				shipmentData = await this.shipmentService.mountShipmentReceivedDSU(shipmentSSI, receivedShipmentSSI);
 				break;
 			}
 			case shipmentsEventsEnum.InTransitNewComment: {
 				notificationRole = Roles.Courier;
-				const { shipmentSSI } = data.message.data;
+				const { shipmentSSI } = data.data;
 				shipmentData = await this.shipmentService.getShipment(shipmentSSI);
 				break;
 			}
@@ -292,12 +307,12 @@ class DashboardControllerImpl extends WebcController {
 
 	async processKitsMessage(data) {
 		let kitsData;
-		let kitsMessage = data.message.operation;
+		let kitsMessage = data.operation;
 		let notificationRole = Roles.Site;
 
 		switch (kitsMessage) {
 			case kitsMessagesEnum.ShipmentSigned: {
-				const { studyKeySSI } = data.message.data;
+				const { studyKeySSI } = data.data;
 				kitsData = await this.kitsService.getStudyKitsDSUAndUpdate(studyKeySSI);
 
 				//all kits will have the same orderId
@@ -308,7 +323,7 @@ class DashboardControllerImpl extends WebcController {
 					orderId: orderId,
 					read: false,
 					status: "Kits were received",
-					keySSI: data.message.data.studyKeySSI,
+					keySSI: data.data.studyKeySSI,
 					role: notificationRole,
 					did: "-",
 					date: new Date().getTime()
@@ -321,7 +336,7 @@ class DashboardControllerImpl extends WebcController {
 			case kitsStatusesEnum.AvailableForAssignment:
 			case kitsStatusesEnum.Assigned:
 			case kitsStatusesEnum.Dispensed: {
-				const { kitSSI } = data.message.data;
+				const { kitSSI } = data.data;
 				kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI, kitsMessage);
 				break;
 			}
