@@ -1,9 +1,9 @@
 const { fetch } = require('../utilities');
 
-module.exports = class ProfileService {
+class ProfileService {
 
-	constructor(DSUStorage) {
-		// this.storageService = getSharedStorage(DSUStorage);
+	constructor() {
+
 	}
 
 	getUserDetails(callback) {
@@ -28,6 +28,28 @@ module.exports = class ProfileService {
 				resolve(did);
 			})
 		});
-
 	}
+
+	static getDidData(didString){
+		const splitDid = didString.split(":");
+		return {
+			didType: `${splitDid[0]}:${splitDid[1]}`,
+			publicName: splitDid[2]
+		};
+	}
+
+}
+
+
+let instance = null;
+const getProfileServiceInstance = () => {
+	if (instance === null) {
+		instance = new ProfileService();
+	}
+	return instance;
+};
+
+module.exports = {
+	getProfileServiceInstance,
+	getDidData:ProfileService.getDidData
 };

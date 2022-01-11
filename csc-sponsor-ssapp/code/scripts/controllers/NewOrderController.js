@@ -306,19 +306,11 @@ export default class NewOrderController extends WebcController {
   }
 
 
-  async getDidData() {
-    this.model.did = await this.profileService.getDID();
-    const splitDid = this.model.did.split(":");
-    return {
-      didType: `${splitDid[0]}:${splitDid[1]}`,
-      publicName: splitDid[2]
-    };
-  }
-
-
   async initServices(){
-    this.profileService = new ProfileService();
-    const didData = await this.getDidData();
+    this.profileService = ProfileService.getProfileServiceInstance();
+    let did = await this.profileService.getDID();
+    this.model.form.inputs.sponsor_id.value = did;
+    const didData = await ProfileService.getDidData(did);
     let communicationService = getCommunicationServiceInstance(didData);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);

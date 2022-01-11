@@ -3,6 +3,7 @@ const DSUService = require('./lib/DSUService.js');
 const { Roles, messagesEnum, order, FoldersEnum } = require('./constants');
 const orderStatusesEnum = order.orderStatusesEnum;
 const CommunicationService = require('./lib/CommunicationService.js');
+const {getDidData} = require('./lib/ProfileService.js');
 const EncryptionService = require('./lib/EncryptionService.js');
 class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
@@ -16,7 +17,6 @@ class OrdersService extends DSUService {
     this.DSUStorage = DSUStorage;
   }
 
-  // -> DB functions
 
   async getOrders() {
     const result = await this.storageService.filter(this.ORDERS_TABLE);
@@ -43,13 +43,11 @@ class OrdersService extends DSUService {
   }
 
   async addOrderToDB(data, key) {
-    const newRecord = await this.storageService.insertRecord(this.ORDERS_TABLE, key ? key : data.orderId, data);
-    return newRecord;
+    return await this.storageService.insertRecord(this.ORDERS_TABLE, key ? key : data.orderId, data);
   }
 
   async updateOrderToDB(data, key) {
-    const updatedRecord = await this.storageService.updateRecord(this.ORDERS_TABLE, key ? key : data.orderId, data);
-    return updatedRecord;
+    return await this.storageService.updateRecord(this.ORDERS_TABLE, key ? key : data.orderId, data);
   }
 
   // -> Utils
@@ -81,17 +79,7 @@ class OrdersService extends DSUService {
   }
 
   sendMessageToEntity(entity, operation, data, shortDescription) {
-
-     let getDidData= (didAsString)=> {
-      const splitDid = didAsString.split(":");
-      return {
-        didType: `${splitDid[0]}:${splitDid[1]}`,
-        publicName: splitDid[2]
-      };
-    }
-
     let receiver = getDidData(entity)
-
     this.communicationService.sendMessage( {
       operation,
       data,
@@ -335,16 +323,10 @@ class OrdersService extends DSUService {
     }
 
     const result = await this.updateOrderToDB(orderDB, orderKeySSI);
-    let identity = role === Roles.CMO ? CommunicationService.identities.CSC.SPONSOR_IDENTITY : CommunicationService.identities.CSC.CMO_IDENTITY;
+    let identity = role === Roles.CMO ? orderDB.sponsorId : orderDB.targetCmoId;
 
     if (newStatus) {
-      this.communicationService.sendMessage(identity, {
-        operation: newStatus,
-        data: {
-          orderSSI: orderKeySSI,
-        },
-        shortDescription: 'Order Updated',
-      });
+      this.sendMessageToEntity(identity, newStatus, { orderSSI: orderKeySSI }, "Order Updated");
     }
 
     return result;

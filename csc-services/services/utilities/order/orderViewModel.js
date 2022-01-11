@@ -6,8 +6,7 @@ const MIN_TEMPERATURE = orderBusinessRequirements.MinTemperature;
 const MAX_TEMPERATURE = orderBusinessRequirements.MaxTemperature;
 const momentService = require("csc-services").momentService;
 const sites = orderBusinessRequirements.sites;
-const cmos = orderBusinessRequirements.cmos;
-const SPONSOR_DID = orderBusinessRequirements.sponsorId;
+
 const orderViewModel = {
     cancelOrderModal: {
         comment: {
@@ -44,7 +43,7 @@ const orderViewModel = {
                 name: 'sponsor_id',
                 required: true,
                 disabled: true,
-                value: SPONSOR_DID,
+                value: "",
             },
             delivery_date: {
                 label: 'Delivery Date/Time',
@@ -63,7 +62,7 @@ const orderViewModel = {
             target_cmo_id: {
                 label: 'Target CMO DID',
                 name: 'target_cmo_did',
-                placeholder: 'Select Target CMO DID...',
+                placeholder: 'Enter Target CMO DID...',
                 required: true,
                 disabled: false,
                 value: "",

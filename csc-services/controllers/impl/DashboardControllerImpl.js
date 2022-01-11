@@ -50,18 +50,10 @@ class DashboardControllerImpl extends WebcController {
 		this.initServices();
 	}
 
-	async getDidData() {
-		this.model.did = await this.profileService.getDID();
-		const splitDid = this.model.did.split(":");
-		return {
-			didType: `${splitDid[0]}:${splitDid[1]}`,
-			publicName: splitDid[2]
-		};
-	}
-
 	async initServices() {
-		this.profileService = new ProfileService();
-		const didData = await this.getDidData();
+		this.profileService = ProfileService.getProfileServiceInstance();
+		this.model.did = await this.profileService.getDID();
+		const didData = await ProfileService.getDidData(this.model.did);
 		this.communicationService = getCommunicationServiceInstance(didData);
 
 		this.ordersService.onReady(() => {

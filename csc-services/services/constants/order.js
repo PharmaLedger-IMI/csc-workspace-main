@@ -104,14 +104,6 @@ const orderBusinessRequirements = {
 		siteRegionID: "003",
 		siteCountry: "Germany"
 	}],
-	cmos : [{
-		name: "ID 1"
-	}, {
-		name: "ID 2"
-	}, {
-		name: "ID 3"
-	}],
-	sponsorId:"did:spo:123456789abcdefghi#Novartis"
 }
 
 module.exports = {
