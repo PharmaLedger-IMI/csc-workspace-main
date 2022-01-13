@@ -196,6 +196,7 @@ export default class EditShipmentController extends WebcController {
 		  this.model.shipmentModel.form.origin.value,
 		  this.model.shipmentModel.form.type.value,
 		  this.model.shipmentModel.form.pickupDate.value,
+		  this.model.shipmentModel.form.pickupTime.value,
 		  this.model.shipmentModel.form.dimension.height.value,
 		  this.model.shipmentModel.form.dimension.length.value,
 		  this.model.shipmentModel.form.dimension.width.value
