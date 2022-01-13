@@ -4,6 +4,7 @@ module.exports.FoldersEnum = {
     Comments: '/comments',
     Statuses: '/statuses',
     Kits: '/kits',
+    KitIds: '/kit-ids',
     StudyKits:"/study-kits",
     Shipments: '/shipments',
     ShipmentsStatuses: '/shipmentsstatuses',
