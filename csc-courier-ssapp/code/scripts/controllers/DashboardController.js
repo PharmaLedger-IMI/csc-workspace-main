@@ -3,7 +3,8 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
-const CommunicationService = cscServices.CommunicationService;
+const {getCommunicationServiceInstance} = cscServices.CommunicationService;
+const ProfileService = cscServices.ProfileService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
 const { shipment, notifications, Roles, Topics } = cscServices.constants;
@@ -16,18 +17,24 @@ class DashboardController extends WebcController {
 
     this.role = Roles.Courier;
 
-    this.ordersService = new OrdersService(this.DSUStorage);
-    this.shipmentService = new ShipmentsService(this.DSUStorage);
-    this.communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.COU_IDENTITY);
-    this.notificationsService = new NotificationsService(this.DSUStorage, this.communicationService);
-
     this.model = {
       tabNavigator: {
         selected: '0'
       }
     };
 
+    this.initServices()
     this.attachHandlers();
+  }
+
+  async initServices(){
+    this.ordersService = new OrdersService(this.DSUStorage);
+    this.shipmentService = new ShipmentsService(this.DSUStorage);
+    this.profileService = ProfileService.getProfileServiceInstance();
+    this.model.did = await this.profileService.getDID();
+    const didData = ProfileService.getDidData(this.model.did);
+    this.communicationService = getCommunicationServiceInstance(didData);
+    this.notificationsService = new NotificationsService(this.DSUStorage, this.communicationService);
   }
 
   attachHandlers() {
@@ -68,7 +75,7 @@ class DashboardController extends WebcController {
       shipmentId: shipmentData.shipmentId,
       read: false,
       status: shipmentStatus,
-      keySSI: data.message.data.shipmentSSI,
+      keySSI: data.data.shipmentSSI,
       role: notificationRole,
       did: shipmentData.sponsorId,
       date: new Date().getTime()
@@ -86,23 +93,23 @@ class DashboardController extends WebcController {
     let shipmentStatus;
     let notificationRole;
 
-    switch (data.message.operation) {
+    switch (data.operation) {
       case shipmentStatusesEnum.ReadyForDispatch: {
         notificationRole = Roles.CMO;
-        shipmentStatus = data.message.operation;
+        shipmentStatus = data.operation;
 
         const {
           shipmentSSI,
           statusSSI
-        } = data.message.data;
+        } = data.data;
 
         shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusSSI);
         break;
       }
       case shipmentStatusesEnum.ProofOfDelivery: {
       	notificationRole = Roles.Site;
-      	shipmentStatus = data.message.operation;
-      	const messageData = data.message.data;
+      	shipmentStatus = data.operation;
+      	const messageData = data.data;
       	const { shipmentSSI } = messageData;
         shipmentData = await this.shipmentService.updateShipmentStatus(shipmentSSI, this.role);
       	break;

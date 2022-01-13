@@ -1,6 +1,5 @@
 const constants = require("csc-services").constants
 const shipmentBusinessRequirements = constants.shipment.shipmentBusinessRequirements;
-const shippers = shipmentBusinessRequirements.shippers;
 const momentService = require("csc-services").momentService;
 const DAYS_AHEAD = 2;
 
@@ -21,10 +20,9 @@ const shipmentViewModel = {
 			name: 'shipper-id',
 			id: 'shipper-id',
 			required: true,
-			placeholder: 'Select Shipper ID',
+			placeholder: 'Enter Shipper ID',
 			disabled: false,
-			options: shippers.map(x => { return { label: x.name, value: x.name } }),
-			value: shippers[0].name
+			value: ""
 		},
 		origin: {
 			label: 'Origin',

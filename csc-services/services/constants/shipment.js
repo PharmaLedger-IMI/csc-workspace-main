@@ -318,13 +318,6 @@ const shipmentCourierTableHeaders = [
 ];
 
 const shipmentBusinessRequirements = {
-	shippers : [{
-		name: "Shipper ID 1"
-	}, {
-		name: "Shipper ID 2"
-	}, {
-		name: "Shipper ID 3"
-	}],
 	dimensionUnit: "M"
 }
 

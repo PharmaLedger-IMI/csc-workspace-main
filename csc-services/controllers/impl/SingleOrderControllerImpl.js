@@ -2,7 +2,7 @@ const AccordionController  = require("./helpers/AccordionController");
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
-const {getCommunicationServiceInstance} = cscServices.CommunicationServiceNew;
+const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const ProfileService = cscServices.ProfileService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
@@ -86,7 +86,7 @@ class SingleOrderControllerImpl extends AccordionController {
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     this.profileService = ProfileService.getProfileServiceInstance();
     let did = await this.profileService.getDID();
-    const didData = await ProfileService.getDidData(did);
+    const didData = ProfileService.getDidData(did);
     let communicationService = getCommunicationServiceInstance(didData);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);

@@ -3,9 +3,8 @@
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
-const CommunicationService = cscServices.CommunicationService;
 const ProfileService = cscServices.ProfileService;
-const {getCommunicationServiceInstance} = cscServices.CommunicationServiceNew;
+const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
 const { order, shipment, Roles, Topics, kit } = cscServices.constants;
@@ -15,12 +14,6 @@ const { shipmentStatusesEnum , shipmentsEventsEnum} = shipment;
 const { kitsMessagesEnum, kitsStatusesEnum } = kit;
 const KitsService = cscServices.KitsService;
 
-const csIdentities = {};
-csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
-csIdentities[Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
-csIdentities[Roles.Site] = CommunicationService.identities.CSC.SITE_IDENTITY;
-csIdentities[Roles.Courier] = CommunicationService.identities.CSC.COU_IDENTITY;
-
 class DashboardControllerImpl extends WebcController {
 	constructor(role, ...props) {
 		super(...props);
@@ -28,7 +21,6 @@ class DashboardControllerImpl extends WebcController {
 		this.role = role;
 		this.ordersService = new OrdersService(this.DSUStorage);
 		this.shipmentService = new ShipmentsService(this.DSUStorage);
-		//this.communicationService = CommunicationService.getInstance(csIdentities[role]);
 		this.notificationsService = new NotificationsService(this.DSUStorage, this.communicationService);
 		this.kitsService = new KitsService(this.DSUStorage);
 
@@ -53,7 +45,7 @@ class DashboardControllerImpl extends WebcController {
 	async initServices() {
 		this.profileService = ProfileService.getProfileServiceInstance();
 		this.model.did = await this.profileService.getDID();
-		const didData = await ProfileService.getDidData(this.model.did);
+		const didData =  ProfileService.getDidData(this.model.did);
 		this.communicationService = getCommunicationServiceInstance(didData);
 
 		this.ordersService.onReady(() => {
@@ -82,6 +74,9 @@ class DashboardControllerImpl extends WebcController {
 
 	handleMessages() {
 		this.communicationService.listenForMessages(async (err, data) => {
+
+			console.log("MESAJ PRIMIT", data);
+
 			if (err) {
 				return console.error(err);
 			}

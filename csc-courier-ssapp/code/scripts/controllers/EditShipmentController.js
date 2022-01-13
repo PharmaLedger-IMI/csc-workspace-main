@@ -5,23 +5,30 @@ const ShipmentService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
-const { Roles } = cscServices.constants;
 const { uuidv4 } = cscServices.utils;
+const ProfileService = cscServices.ProfileService;
 
 export default class EditShipmentController extends WebcController {
   files = [];
   constructor(...props) {
     super(...props);
 
-	  this.originalShipment = this.history.location.state.shipment;
-    let communicationService = CommunicationService.getInstance(Roles.Courier);
+    this.originalShipment = this.history.location.state.shipment;
+
+    this.initServices().then(()=>{
+      this.initViewModel();
+      this.initFormValidation();
+      this.attachEventHandlers();
+    })
+  }
+
+  async initServices(){
+    let profileService = ProfileService.getProfileServiceInstance();
+    let did = await profileService.getDID();
+    const didData = ProfileService.getDidData(did);
+    let communicationService = CommunicationService.getCommunicationServiceInstance(didData);
     this.shipmentsService = new ShipmentService(this.DSUStorage, communicationService);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
-
-    this.role = this.history.location.state.role;
-    this.initViewModel();
-    this.initFormValidation();
-    this.attachEventHandlers();
   }
 
   initFormValidation(){
