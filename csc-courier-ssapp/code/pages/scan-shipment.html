@@ -31,13 +31,16 @@
           </div>
 
 
-          <div class="step-holder-modal" id="step-1-wrapper">
+          <div class="step-holder-modal barcode-container" id="step-1-wrapper">
             <div class="d-flex flex-column align-items-center" data-if="@canScanShipment">
               <label class="scan-modal-label"> Please find the QR code on shipment container and scan it. </label>
             </div>
   
             <div class="d-flex justify-content-center" data-if="@isShipmentScannerActive">
-              <psk-barcode-scanner data="@scannedShipmentData" normal-size></psk-barcode-scanner>
+              <psk-barcode-scanner data="@scannedShipmentData">
+                <webc-spinner slot='init'></webc-spinner>
+                <webc-spinner slot='feedback'></webc-spinner>
+              </psk-barcode-scanner>
             </div>
   
             <div class="d-flex flex-column align-items-center" data-if="@showWrongShipmentScanResult">
@@ -58,6 +61,10 @@
   
             <div data-if="@enableStep1Navigation">
               <div class="row-wrapper button-wrapper">
+                <button class="btn-default" data-tag="from_step_1_to_1"  id="from_step_1_to_1" disabled>
+                  Previous
+                  <i class="fas fa-angle-left"></i>
+                </button>
                 <button class="btn-default scan-again-button" data-tag="scan-again-shipment"  disabled="@showCorrectShipmentScanResult" >
                   Scan Again
                 </button>
