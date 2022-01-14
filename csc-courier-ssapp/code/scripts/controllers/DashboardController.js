@@ -55,7 +55,7 @@ class DashboardController extends WebcController {
       if (err) {
         return console.error(err);
       }
-      this.handleShipmentMessages(data);
+      await this.handleShipmentMessages(data);
     });
   }
 
