@@ -95,9 +95,7 @@
                 <!--Label -->
                 <label>{{@form.inputs.site_id.label}} <span class='required'>*</span></label>
                 <!-- Select -->
-                <select class="form-control" data-for="@form.inputs.site_id.options" id="@form.inputs.site_id.name" name="@form.inputs.site_id.name" value="@form.inputs.site_id.value">
-                  <option value="@value">{{@label}}</option>
-                </select>
+                <input class="form-control" data-view-model="@form.inputs.site_id" type="text" />
               </div>
 
               <!-- Site Region ID -->

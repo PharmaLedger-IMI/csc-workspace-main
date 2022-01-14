@@ -5,7 +5,6 @@ const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
 const MIN_TEMPERATURE = orderBusinessRequirements.MinTemperature;
 const MAX_TEMPERATURE = orderBusinessRequirements.MaxTemperature;
 const momentService = require("csc-services").momentService;
-const sites = orderBusinessRequirements.sites;
 
 const orderViewModel = {
     cancelOrderModal: {
@@ -62,7 +61,7 @@ const orderViewModel = {
             target_cmo_id: {
                 label: 'Target CMO DID',
                 name: 'target_cmo_did',
-                placeholder: 'Enter Target CMO DID...',
+                placeholder: 'Enter Target CMO ID',
                 required: true,
                 disabled: false,
                 value: "",
@@ -104,26 +103,27 @@ const orderViewModel = {
                 label: 'Site ID',
                 name: 'site_id',
                 id: 'site_id',
-                placeholder: 'Select Site ID...',
+                placeholder: 'Enter Site ID...',
                 required: true,
                 disabled: false,
-                options: sites.map((x) => {return {label:x.name, value:x.name}}),
-                value: sites[0].name,
+                value: "",
             },
             site_region_id: {
-                label: 'Site Region ID (Autofilled)',
+                //label: 'Site Region ID (Autofilled)',
+                label: 'Site Region ID',
                 name: 'site_region_id',
                 required: true,
-                placeholder: '',
-                disabled: true,
+                placeholder: 'Enter Site Region ID',
+                disabled: false,
                 value: '',
             },
             site_country: {
-                label: 'Site Country (Autofilled)',
+                //label: 'Site Country (Autofilled)',
+                label: 'Site Country',
                 name: 'site_country',
                 required: true,
-                placeholder: '',
-                disabled: true,
+                placeholder: 'Enter Site Country',
+                disabled: false,
                 value: '',
             },
             temperature_comments: {

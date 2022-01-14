@@ -91,19 +91,6 @@ const orderBusinessRequirements = {
 	MinTemperature: "-100",
 	MaxTemperature: "100",
 	TemperatureUnits: "°C",
-	sites: [{
-		name: "Site ID 1",
-		siteRegionID: "001",
-		siteCountry: "Greece"
-	}, {
-		name: "Site ID 2",
-		siteRegionID: "002",
-		siteCountry: "Italy"
-	}, {
-		name: "Site ID 3",
-		siteRegionID: "003",
-		siteCountry: "Germany"
-	}],
 }
 
 module.exports = {

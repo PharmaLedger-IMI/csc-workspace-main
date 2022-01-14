@@ -13,7 +13,7 @@ class ScanKitController extends WebcController {
   constructor(...props) {
     super(...props);
     this.originalKit = this.history.location.state.kit;
-    let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SITE_IDENTITY);
+    let communicationService = CommunicationService.getCommunicationServiceInstance();
     this.kitsService = new KitsService(this.DSUStorage, communicationService);
     this.model = { kitModel: viewModelResolver('kit') };
     this.model.kit = this.originalKit;

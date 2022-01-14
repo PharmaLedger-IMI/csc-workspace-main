@@ -10,7 +10,6 @@ const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const { uuidv4 } = cscServices.utils;
-const sites = cscServices.constants.order.orderBusinessRequirements.sites;
 
 export default class NewOrderController extends WebcController {
   files = [];
@@ -69,16 +68,6 @@ export default class NewOrderController extends WebcController {
 
       if (event.data) this.docs = event.data;
     });
-
-    let siteChangeHandler = () => {
-      let siteObject = sites.find((site) => site.name === this.model.form.inputs.site_id.value);
-      this.model.form.inputs.site_region_id.value = siteObject.siteRegionID;
-      this.model.form.inputs.site_country.value = siteObject.siteCountry;
-    }
-
-    this.model.onChange('form.inputs.site_id', siteChangeHandler);
-    //trigger the first selection
-    siteChangeHandler();
 
     this.on('add-kit-ids-file', async (event) => {
       const files = event.data;
@@ -229,8 +218,6 @@ export default class NewOrderController extends WebcController {
 
         this.model.orderCreatedKeySSI = result.keySSI;
 
-        console.log(result);
-
         eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
 
         this.createWebcModal({
@@ -321,7 +308,9 @@ export default class NewOrderController extends WebcController {
     //To be refactored according with current step
     const requiredInputs = [
       this.model.form.inputs.order_id.value,
+      this.model.form.inputs.target_cmo_id.value,
       this.model.form.inputs.study_id.value,
+      this.model.form.inputs.site_id.value,
       this.model.form.inputs.delivery_date.value
     ]
 

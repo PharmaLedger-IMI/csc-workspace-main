@@ -30,10 +30,10 @@ class DashboardController extends WebcController {
   async initServices(){
     this.ordersService = new OrdersService(this.DSUStorage);
     this.shipmentService = new ShipmentsService(this.DSUStorage);
-    this.profileService = ProfileService.getProfileServiceInstance();
-    this.model.did = await this.profileService.getDID();
     this.communicationService = getCommunicationServiceInstance();
     this.notificationsService = new NotificationsService(this.DSUStorage, this.communicationService);
+    this.profileService = ProfileService.getProfileServiceInstance();
+    this.model.did = await this.profileService.getDID();
   }
 
   attachHandlers() {

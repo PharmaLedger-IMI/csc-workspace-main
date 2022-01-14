@@ -2,7 +2,6 @@ const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedSto
 const DSUService = require('./lib/DSUService.js');
 const { Roles, messagesEnum, order, FoldersEnum } = require('./constants');
 const orderStatusesEnum = order.orderStatusesEnum;
-const CommunicationService = require('./lib/CommunicationService.js');
 const {getDidData} = require('./lib/ProfileService.js');
 const EncryptionService = require('./lib/EncryptionService.js');
 class OrdersService extends DSUService {

@@ -54,6 +54,7 @@ class ShipmentsService extends DSUService {
 			orderId: data.orderId,
 			sponsorId: data.sponsorId,
 			cmoId:cmoId,
+			siteId:data.siteId,
 			shipmentId: data.orderId,
 			status: status.history,
 			encryptedMessages: {
@@ -92,17 +93,12 @@ class ShipmentsService extends DSUService {
 		let notifyIdentities = [];
 		switch (newStatus) {
 			case shipmentStatusesEnum.ReadyForDispatch: {
-				//notifyIdentities.push(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
-				//notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
 				notifyIdentities.push(shipmentDB.sponsorId);
 				notifyIdentities.push(shipmentDB.shipperId);
 				break;
 			}
 
 			case shipmentStatusesEnum.InTransit: {
-				//notifyIdentities.push(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
-				//notifyIdentities.push(CommunicationService.identities.CSC.SITE_IDENTITY);
-				//notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
 				notifyIdentities.push(shipmentDB.sponsorId);
 				notifyIdentities.push(shipmentDB.siteId);
 				notifyIdentities.push(shipmentDB.cmoId);
@@ -110,7 +106,6 @@ class ShipmentsService extends DSUService {
 			}
 
 			case shipmentStatusesEnum.ShipmentCancelled: {
-				//notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
 				notifyIdentities.push(shipmentDB.cmoId);
 				break;
 			}
@@ -237,7 +232,6 @@ class ShipmentsService extends DSUService {
 		}
 
 		this.sendMessageToEntity(
-			//CommunicationService.identities.CSC.SPONSOR_IDENTITY,
 			shipmentDB.sponsorId,
 			shipmentStatusesEnum.PickUpAtWarehouse,
 			inTransitDSUMessage,
@@ -246,7 +240,6 @@ class ShipmentsService extends DSUService {
 
 		//Send a message to cmo
 		this.sendMessageToEntity(
-			//CommunicationService.identities.CSC.CMO_IDENTITY,
 			shipmentDB.cmoId,
 			shipmentStatusesEnum.Dispatched,
 			inTransitDSUMessage,
@@ -278,15 +271,13 @@ class ShipmentsService extends DSUService {
 		}
 
 		this.sendMessageToEntity(
-			//CommunicationService.identities.CSC.SPONSOR_IDENTITY,
 			shipmentDB.sponsorId,
 			shipmentStatusesEnum.Received,
 			shipmentReceivedDSUMessage,
 			shipmentStatusesEnum.Received
 		);
-        const courierMessage = { shipmentSSI: shipmentKeySSI };
+    const courierMessage = { shipmentSSI: shipmentKeySSI };
 		this.sendMessageToEntity(
-        	//CommunicationService.identities.CSC.COU_IDENTITY,
 					shipmentDB.shipperId,
         	shipmentStatusesEnum.ProofOfDelivery,
         	courierMessage,
@@ -312,7 +303,6 @@ class ShipmentsService extends DSUService {
 			shipmentSSI: shipmentKeySSI
 		}
 
-		//const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY, CommunicationService.identities.CSC.SITE_IDENTITY];
 		const notifiableActors = [shipmentDB.sponsorId, shipmentDB.siteId];
 		notifiableActors.forEach(actor => {
 			this.sendMessageToEntity(
@@ -358,9 +348,8 @@ class ShipmentsService extends DSUService {
 			shipmentSSI: shipmentKeySSI,
 			shipmentComments: shipmentDB.shipmentComments
 		};
-
+		debugger;
 		this.sendMessageToEntity(
-			//CommunicationService.identities.CSC.SITE_IDENTITY,
 			shipmentDB.siteId,
 			shipmentStatusesEnum.InTransit,
 			siteMessage,
@@ -375,7 +364,6 @@ class ShipmentsService extends DSUService {
 		};
 
 		this.sendMessageToEntity(
-			//CommunicationService.identities.CSC.SPONSOR_IDENTITY,
 			shipmentDB.sponsorId,
 			shipmentStatusesEnum.InTransit,
 			sponsorMessage,
@@ -393,8 +381,7 @@ class ShipmentsService extends DSUService {
 		shipmentComments.comments.push(commentData);
 		shipmentComments = await this.updateEntityAsync(shipmentComments, FoldersEnum.ShipmentComments);
 
-		//const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY, CommunicationService.identities.CSC.SITE_IDENTITY];
-		const notifiableActors = [shipmentDB.sponsorId, shipmentDB.cmoId];
+		const notifiableActors = [shipmentDB.sponsorId, shipmentDB.siteId];
 		const inTransitComment = {
 			shipmentSSI: shipmentSSI
 		}
