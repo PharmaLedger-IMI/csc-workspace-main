@@ -3,7 +3,6 @@ const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
 const {getCommunicationServiceInstance} = cscServices.CommunicationService;
-const ProfileService = cscServices.ProfileService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
@@ -29,10 +28,9 @@ class SingleOrderControllerImpl extends AccordionController {
     this.model = model;
 
     let { keySSI } = this.history.location.state;
+    this.model.keySSI = keySSI;
 
     this.initServices();
-
-    this.model.keySSI = keySSI;
 
     //Init Check on Accordion Items
     if (this.model.accordion) {
@@ -84,10 +82,7 @@ class SingleOrderControllerImpl extends AccordionController {
 
   async initServices(){
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
-    this.profileService = ProfileService.getProfileServiceInstance();
-    let did = await this.profileService.getDID();
-    const didData = ProfileService.getDidData(did);
-    let communicationService = getCommunicationServiceInstance(didData);
+    let communicationService = getCommunicationServiceInstance();
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
     this.kitsService = new KitsService(this.DSUStorage);

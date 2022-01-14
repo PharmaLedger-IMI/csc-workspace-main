@@ -5,7 +5,6 @@ const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
-const ProfileService = cscServices.ProfileService;
 const {  Topics } = cscServices.constants;
 
 class ScanShipmentController extends WebcController {
@@ -25,10 +24,7 @@ class ScanShipmentController extends WebcController {
   }
 
   async initServices(){
-    this.profileService = ProfileService.getProfileServiceInstance();
-    let did = await this.profileService.getDID();
-    const didData = ProfileService.getDidData(did);
-    let communicationService = CommunicationService.getCommunicationServiceInstance(didData);
+    let communicationService = CommunicationService.getCommunicationServiceInstance();
     this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
     this.model = {	shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;

@@ -6,7 +6,6 @@ const CommunicationService = cscServices.CommunicationService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { uuidv4 } = cscServices.utils;
-const ProfileService = cscServices.ProfileService;
 
 export default class EditShipmentController extends WebcController {
   files = [];
@@ -23,10 +22,7 @@ export default class EditShipmentController extends WebcController {
   }
 
   async initServices(){
-    let profileService = ProfileService.getProfileServiceInstance();
-    let did = await profileService.getDID();
-    const didData = ProfileService.getDidData(did);
-    let communicationService = CommunicationService.getCommunicationServiceInstance(didData);
+    let communicationService = CommunicationService.getCommunicationServiceInstance();
     this.shipmentsService = new ShipmentService(this.DSUStorage, communicationService);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
   }

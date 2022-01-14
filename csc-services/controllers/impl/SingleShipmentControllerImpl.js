@@ -3,7 +3,6 @@ const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
 const KitsService = cscServices.KitsService;
 const {getCommunicationServiceInstance} = cscServices.CommunicationService;
-const ProfileService = cscServices.ProfileService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
@@ -22,10 +21,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   }
 
   async initServices(){
-    let profileService = ProfileService.getProfileServiceInstance();
-    let did = await profileService.getDID();
-    const didData = ProfileService.getDidData(did);
-    let communicationService = getCommunicationServiceInstance(didData);
+    let communicationService = getCommunicationServiceInstance();
     this.notificationsService = new NotificationsService(this.DSUStorage);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);

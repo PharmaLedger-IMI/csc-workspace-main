@@ -8,7 +8,6 @@ const viewModelResolver = cscServices.viewModelResolver;
 const { FoldersEnum, Topics, Commons } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const CommunicationService = cscServices.CommunicationService;
-const ProfileService = cscServices.ProfileService;
 const momentService = cscServices.momentService;
 
 export default class EditShipmentController extends WebcController {
@@ -22,10 +21,7 @@ export default class EditShipmentController extends WebcController {
 
 	async initServices(){
 		this.ordersService = new OrderService(this.DSUStorage);
-		this.profileService = ProfileService.getProfileServiceInstance();
-	  let did = await this.profileService.getDID();
-		const didData = ProfileService.getDidData(did);
-		let communicationService = CommunicationService.getCommunicationServiceInstance(didData);
+		let communicationService = CommunicationService.getCommunicationServiceInstance();
 		this.shipmentsService = new ShipmentService(this.DSUStorage, communicationService);
 		this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
 

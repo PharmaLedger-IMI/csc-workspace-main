@@ -1,7 +1,6 @@
 const { ViewShipmentBaseController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
-const ProfileService = cscServices.ProfileService;
 const ShipmentsService = cscServices.ShipmentService;
 const OrdersService = cscServices.OrderService;
 const CommunicationService = cscServices.CommunicationService;
@@ -19,10 +18,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
   }
 
   async initServices(){
-    this.profileService = ProfileService.getProfileServiceInstance();
-    let did = await this.profileService.getDID();
-    const didData = ProfileService.getDidData(did);
-    let communicationService = CommunicationService.getCommunicationServiceInstance(didData);
+    let communicationService = CommunicationService.getCommunicationServiceInstance();
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
   }

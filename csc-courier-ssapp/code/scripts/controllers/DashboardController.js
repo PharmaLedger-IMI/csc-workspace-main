@@ -32,8 +32,7 @@ class DashboardController extends WebcController {
     this.shipmentService = new ShipmentsService(this.DSUStorage);
     this.profileService = ProfileService.getProfileServiceInstance();
     this.model.did = await this.profileService.getDID();
-    const didData = ProfileService.getDidData(this.model.did);
-    this.communicationService = getCommunicationServiceInstance(didData);
+    this.communicationService = getCommunicationServiceInstance();
     this.notificationsService = new NotificationsService(this.DSUStorage, this.communicationService);
   }
 

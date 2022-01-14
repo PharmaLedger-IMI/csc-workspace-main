@@ -3,7 +3,6 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const {getCommunicationServiceInstance} = cscServices.CommunicationService;
-const ProfileService = cscServices.ProfileService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { Topics, Roles, order, FoldersEnum } = cscServices.constants;
@@ -26,10 +25,7 @@ class ReviewOrderControllerImpl extends WebcController {
   }
 
   async initServices(){
-    this.profileService = ProfileService.getProfileServiceInstance();
-    let did = await this.profileService.getDID();
-    const didData = await ProfileService.getDidData(did);
-    let communicationService = getCommunicationServiceInstance(didData)
+    let communicationService = getCommunicationServiceInstance()
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
   }

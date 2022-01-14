@@ -1,7 +1,7 @@
 const opendsu = require("opendsu");
 const w3cDID = opendsu.loadAPI('w3cdid');
 const scAPI = opendsu.loadAPI("sc");
-
+const ProfileService = require("./ProfileService");
 const messageQueueServiceInstance = require("./MessageQueueService");
 
 class CommunicationService {
@@ -10,32 +10,36 @@ class CommunicationService {
      * @param didType : String - the type of the did (did:name, did:group...)
      * @param publicName : String - the public name used by the sender to send a message
      */
-    constructor({didType, publicName}) {
-        this.didType = didType;
+    constructor() {
         this.domain = "default";
-        this.publicName = publicName;
-
         this.createOrLoadIdentity();
     }
 
     createOrLoadIdentity() {
-        try {
-            const sc = scAPI.getSecurityContext();
-            sc.on("initialised", async () => {
-                try {
-                    this.didDocument = await this.getDidDocumentInstance(this.didType, this.publicName);
-                    console.log(this.didDocument);
-                }
-                catch (e){
-                    debugger;
-                    console.log(e);
-                }
 
-            });
-        } catch (e) {
-            console.log("[ERROR]");
+        let profileService = ProfileService.getProfileServiceInstance();
+        profileService.getDID().then((did)=>{
+            const didData = ProfileService.getDidData(did);
+
+            try {
+                const sc = scAPI.getSecurityContext();
+                sc.on("initialised", async () => {
+                    try {
+                        this.didDocument = await this.getDidDocumentInstance(didData.didType, didData.publicName);
+                        console.log(this.didDocument);
+                    }
+                    catch (e){
+                        debugger;
+                        console.log(e);
+                    }
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }).catch ((e)=>{
             console.error(e);
-        }
+        });
+
     }
 
     async getDidDocumentInstance(didType, publicName) {
@@ -115,9 +119,9 @@ class CommunicationService {
 }
 
 let instance = null;
-const getCommunicationServiceInstance = (didData) => {
+const getCommunicationServiceInstance = () => {
     if (instance === null) {
-        instance = new CommunicationService(didData);
+        instance = new CommunicationService();
     }
 
     return instance;

@@ -41,6 +41,12 @@ export default class NewOrderController extends WebcController {
       temperatureError:false,
       formIsInvalid:true,
     };
+
+    this.profileService = ProfileService.getProfileServiceInstance();
+    this.profileService.getDID().then((did)=>{
+      this.model.form.inputs.sponsor_id.value = did;
+    });
+
     this.model.form.isSubmitting = false;
 
     this.on('add-file', (event) => {
@@ -307,11 +313,7 @@ export default class NewOrderController extends WebcController {
 
 
   async initServices(){
-    this.profileService = ProfileService.getProfileServiceInstance();
-    let did = await this.profileService.getDID();
-    this.model.form.inputs.sponsor_id.value = did;
-    const didData = await ProfileService.getDidData(did);
-    let communicationService = getCommunicationServiceInstance(didData);
+    let communicationService = getCommunicationServiceInstance();
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
   }

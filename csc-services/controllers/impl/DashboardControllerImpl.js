@@ -3,7 +3,6 @@
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
-const ProfileService = cscServices.ProfileService;
 const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
@@ -43,10 +42,7 @@ class DashboardControllerImpl extends WebcController {
 	}
 
 	async initServices() {
-		this.profileService = ProfileService.getProfileServiceInstance();
-		this.model.did = await this.profileService.getDID();
-		const didData =  ProfileService.getDidData(this.model.did);
-		this.communicationService = getCommunicationServiceInstance(didData);
+		this.communicationService = getCommunicationServiceInstance();
 
 		this.ordersService.onReady(() => {
 			this.shipmentService.onReady(() => {
