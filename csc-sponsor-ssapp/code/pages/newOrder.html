@@ -56,10 +56,8 @@
               <div class="form-group">
                 <!--Label -->
                 <label>{{@form.inputs.target_cmo_id.label}} <span class='required'>*</span></label>
-                <!-- Select -->
-                <select class="form-control" data-for="@form.inputs.target_cmo_id.options" id="@form.inputs.target_cmo_id.name" name="@form.inputs.target_cmo_id.name" value="@form.inputs.target_cmo_id.value">
-                  <option value="@value">{{@label}}</option>
-                </select>
+                <!-- Input -->
+                <input class="form-control" data-view-model="@form.inputs.target_cmo_id" type="text" />
               </div>
 
               <!-- Study ID -->
@@ -97,9 +95,7 @@
                 <!--Label -->
                 <label>{{@form.inputs.site_id.label}} <span class='required'>*</span></label>
                 <!-- Select -->
-                <select class="form-control" data-for="@form.inputs.site_id.options" id="@form.inputs.site_id.name" name="@form.inputs.site_id.name" value="@form.inputs.site_id.value">
-                  <option value="@value">{{@label}}</option>
-                </select>
+                <input class="form-control" data-view-model="@form.inputs.site_id" type="text" />
               </div>
 
               <!-- Site Region ID -->

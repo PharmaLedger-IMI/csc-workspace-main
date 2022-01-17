@@ -5,7 +5,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
-const { Roles, Topics } = cscServices.constants;
+const {  Topics } = cscServices.constants;
 
 class ScanShipmentController extends WebcController {
 
@@ -13,17 +13,22 @@ class ScanShipmentController extends WebcController {
     super(...props);
 
     this.originalShipment = this.history.location.state.shipment;
-    let communicationService = CommunicationService.getInstance(Roles.Courier);
+
+    this.initServices().then(() => {
+      this.initScanViewModel();
+      this.initStepperNavigationHandlers();
+      this.addModelChangeHandlers();
+      this.navigationHandlers();
+      this.attachShipmentScannerHandlers();
+    });
+  }
+
+  async initServices(){
+    let communicationService = CommunicationService.getCommunicationServiceInstance();
     this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
     this.model = {	shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;
     this.model.disableSign = false;
-
-    this.initScanViewModel();
-    this.initStepperNavigationHandlers();
-    this.addModelChangeHandlers();
-    this.navigationHandlers();
-    this.attachShipmentScannerHandlers();
   }
 
     navigationHandlers() {

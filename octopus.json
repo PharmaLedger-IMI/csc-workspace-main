@@ -27,8 +27,7 @@
         {
           "type": "smartClone",
           "target": ".",
-          "collectLog": false,
-		  "commit":"02e789235dedd330a2bd36f5705729ed37b25fa5"
+          "collectLog": false
         },
         {
           "type": "execute",
@@ -48,21 +47,6 @@
         {
           "type": "execute",
           "cmd": "cd webcardinal && npm install && npm run bundle-all && npm run dev"
-        }
-      ]
-    },
-    {
-      "name": "menu-wallet-prototype",
-      "src": "http://github.com/privatesky/menu-wallet-prototype.git",
-      "actions": [
-        {
-          "type": "smartClone",
-          "target": ".",
-          "collectLog": false
-        },
-        {
-          "type": "execute",
-          "cmd": "cd menu-wallet-prototype && npm install"
         }
       ]
     },

@@ -1,155 +1,132 @@
-const opendsu = require('opendsu');
+const opendsu = require("opendsu");
 const w3cDID = opendsu.loadAPI('w3cdid');
-
-const DEMO_IDENTITIES = {
-  CSC: {
-    domain: 'csc',
-    apps: {
-      SPONSOR_IDENTITY: 'sponsorIdentity',
-      SITE_IDENTITY: 'siteIdentity',
-      CMO_IDENTITY: 'cmoIdentity',
-      COU_IDENTITY: 'couIdentity',
-    },
-  },
-};
+const scAPI = opendsu.loadAPI("sc");
+const ProfileService = require("./ProfileService");
+const messageQueueServiceInstance = require("./MessageQueueService");
 
 class CommunicationService {
-  DEFAULT_FORMAT_IDENTIFIER = 'did';
-  DEMO_METHOD_NAME = 'demo';
 
-  senderIdentity = null;
-  listenerIsActive = false;
+    /**
+     * @param didType : String - the type of the did (did:name, did:group...)
+     * @param publicName : String - the public name used by the sender to send a message
+     */
+    constructor() {
+        this.domain = "default";
+        this.createOrLoadIdentity();
+    }
 
-  constructor(identity) {
-    this._validateIdentity(identity);
-    this.senderIdentity = identity;
-    w3cDID.createIdentity(this.DEMO_METHOD_NAME, identity.did, (err, didDocument) => {
-      if (err) {
-        throw err;
-      }
-      this.didDocument = didDocument;
-      console.log(`Identity ${didDocument.getIdentifier()} created successfully.`);
-    });
-  }
+    createOrLoadIdentity() {
 
-  /**
-   * @param destinationIdentity => Object
-   * Object structure example: { did: 'sponsorIdentifier', domain: 'iot' }
-   * @param message => Object
-   * Represents the message that you want to send to @destinationIdentity
-   */
-  sendMessage(destinationIdentity, message) {
-    this._validateIdentity(destinationIdentity);
-    this.didDocument.setDomain(destinationIdentity.domain);
-    let toSentObject = {
-      ...this.senderIdentity,
-      message: message,
-    };
-    const recipientIdentity = this._getIdentityConsideringDemoMode(destinationIdentity.did);
-    this.didDocument.sendMessage(JSON.stringify(toSentObject), recipientIdentity, (err) => {
-      //TODO should we be aware that an actor is/is not online
-      if (err) {
-        if (
-          err.debug_message === 'Failed to send message' &&
-          destinationIdentity.domain !== this.senderIdentity.domain
-        ) {
-          return console.log(destinationIdentity, ' is not available at the moment.');
+        let profileService = ProfileService.getProfileServiceInstance();
+        profileService.getDID().then((did)=>{
+            const didData = ProfileService.getDidData(did);
+
+            try {
+                const sc = scAPI.getSecurityContext();
+                sc.on("initialised", async () => {
+                    try {
+                        this.didDocument = await this.getDidDocumentInstance(didData.didType, didData.publicName);
+                        console.log(this.didDocument);
+                    }
+                    catch (e){
+                        debugger;
+                        console.log(e);
+                    }
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }).catch ((e)=>{
+            console.error(e);
+        });
+
+    }
+
+    async getDidDocumentInstance(didType, publicName) {
+        try {
+            const didDocument = await this.resolveDidDocument(didType, publicName);
+            console.log(`Identity ${didDocument.getIdentifier()} loaded successfully.`);
+            return didDocument
+        } catch (e) {
+            console.log(e);
+            try {
+                const didDocument = await $$.promisify(w3cDID.createIdentity)(didType, this.domain, publicName);
+                console.log(`Identity ${didDocument.getIdentifier()} created successfully.`);
+                return didDocument;
+            } catch (e) {
+                throw e;
+            }
         }
-      }
-      console.log(this.senderIdentity, ' sent a message to ', destinationIdentity);
-    });
-  }
+    }
 
-  readMessage(callback) {
-    this.listenerIsActive = true;
-    this.didDocument.readMessage((err, msg) => {
-      this.listenerIsActive = false;
-      if (err) {
-        //network errors may occur
-        if (err.message !== 'Failed to fetch') {
-          return callback(err);
+    async resolveDidDocument(didType, publicName) {
+        try {
+            const identifier = `did:${didType}:${this.domain}:${publicName}`;
+            return await $$.promisify(w3cDID.resolveDID)(identifier);
+        } catch (e) {
+            throw e;
         }
-      } else {
-        console.log(this.senderIdentity, ` received message: ${msg}`);
-        callback(err, msg);
-      }
-    });
-  }
-
-  listenForMessages(domain, callback) {
-    if (this.listenerIsActive) {
-      return;
     }
-    if (typeof domain === 'function') {
-      callback = domain;
-      domain = this.senderIdentity.domain;
-    }
-    this._listenMessagesFromDomain(domain, callback);
-  }
 
-  /**
-   * EXPERIMENTAL FUNCTION
-   * @param callback
-   */
-  listenForMessagesOnAllDomains(callback) {
-    let waitTime = 0;
-    for (let workspace in DEMO_IDENTITIES) {
-      let domain = DEMO_IDENTITIES[workspace].domain;
-      setTimeout(() => this._listenMessagesFromDomain(domain, callback), waitTime++ * 1000);
-    }
-  }
-
-  _listenMessagesFromDomain(domain, callback) {
-    this.didDocument.setDomain(domain);
-    this.readMessage((err, msg) => {
-      callback(err, msg);
-      this._listenMessagesFromDomain(domain, callback);
-    });
-  }
-
-  _validateIdentity(identity) {
-    if (typeof identity !== 'object' || identity.did === undefined || identity.domain === undefined) {
-      throw Error('Invalid identity details format.');
-    }
-  }
-
-  _getIdentityConsideringDemoMode = (identifier) => {
-    for (let workspace in DEMO_IDENTITIES) {
-      let apps = DEMO_IDENTITIES[workspace].apps;
-      for (let appName in apps) {
-        if (apps[appName] === identifier) {
-          return this.DEFAULT_FORMAT_IDENTIFIER + ':' + this.DEMO_METHOD_NAME + ':' + identifier;
+    async sendMessage(data, receiver) {
+        if (!this.didDocument) {
+            return this.sleep(async () => {
+                await this.sendMessage(data, receiver);
+            });
         }
-      }
+
+        const {didType, publicName} = receiver;
+        try {
+            const receiverDidDocument = await this.resolveDidDocument(didType, publicName);
+            this.didDocument.sendMessage(JSON.stringify(data), receiverDidDocument, (err) => {
+                if (err) {
+                    throw err;
+                }
+            });
+        } catch (e) {
+            console.log("[ERROR]");
+            console.error(e);
+        }
     }
-    return identifier;
-  };
+
+    listenForMessages(callback) {
+        if (!this.didDocument) {
+            return this.sleep(() => {
+                this.listenForMessages(callback);
+            });
+        }
+
+        this.didDocument.readMessage((err, decryptedMessage) => {
+            if (err) {
+                console.log("[ERROR]");
+                console.error(err)
+            }
+            console.log("[Received Message]", decryptedMessage);
+            messageQueueServiceInstance.addCallback(async () => {
+                await callback(err, decryptedMessage);
+            });
+
+            this.listenForMessages(callback);
+        });
+    }
+
+    sleep(callback) {
+        const time = 500;
+        setTimeout(() => {
+            callback();
+        }, time);
+    }
 }
 
 let instance = null;
-
-const getInstance = (identity) => {
-  if (instance === null) {
-    instance = new CommunicationService(identity);
-  }
-  return instance;
-};
-let toBeReturnedObject = {
-  getInstance,
-  identities: {},
-};
-
-Object.keys(DEMO_IDENTITIES).forEach((workspaceKey) => {
-  let workspace = DEMO_IDENTITIES[workspaceKey];
-  Object.keys(workspace.apps).forEach((app) => {
-    if (!toBeReturnedObject.identities[workspaceKey]) {
-      toBeReturnedObject.identities[workspaceKey] = {};
+const getCommunicationServiceInstance = () => {
+    if (instance === null) {
+        instance = new CommunicationService();
     }
-    toBeReturnedObject.identities[workspaceKey][app] = {
-      did: workspace.apps[app],
-      domain: workspace.domain,
-    };
-  });
-});
 
-module.exports = toBeReturnedObject;
+    return instance;
+};
+
+module.exports = {
+    getCommunicationServiceInstance
+};

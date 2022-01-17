@@ -2,7 +2,7 @@ const AccordionController  = require("./helpers/AccordionController");
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
-const CommunicationService = cscServices.CommunicationService;
+const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
@@ -11,11 +11,6 @@ const { Roles, Topics, ButtonsEnum, Commons, FoldersEnum } = cscServices.constan
 const { orderStatusesEnum, orderPendingActionEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const KitsService = cscServices.KitsService;
-
-const csIdentities = {};
-csIdentities[Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
-csIdentities[Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
-csIdentities[Roles.Site] = CommunicationService.identities.CSC.SITE_IDENTITY;
 
 class SingleOrderControllerImpl extends AccordionController {
   constructor(role, ...props) {
@@ -33,15 +28,9 @@ class SingleOrderControllerImpl extends AccordionController {
     this.model = model;
 
     let { keySSI } = this.history.location.state;
-    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
-    let communicationService = CommunicationService.getInstance(csIdentities[role]);
-    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
-    this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
-    this.kitsService = new KitsService(this.DSUStorage);
-
     this.model.keySSI = keySSI;
 
-    this.init();
+    this.initServices();
 
     //Init Check on Accordion Items
     if (this.model.accordion) {
@@ -89,6 +78,16 @@ class SingleOrderControllerImpl extends AccordionController {
 
     this.navigationHandlers();
    
+  }
+
+  async initServices(){
+    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
+    let communicationService = getCommunicationServiceInstance();
+    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
+    this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
+    this.kitsService = new KitsService(this.DSUStorage);
+    this.init();
+
   }
 
   navigationHandlers() {

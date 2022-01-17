@@ -16,13 +16,18 @@ export default class EditShipmentController extends WebcController {
 		super(...props);
 		this.model.submitDisabled = false;
 		this.model.keySSI = this.history.location.state.keySSI;
+		this.initServices()
+	}
+
+	async initServices(){
 		this.ordersService = new OrderService(this.DSUStorage);
-		let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
+		let communicationService = CommunicationService.getCommunicationServiceInstance();
 		this.shipmentsService = new ShipmentService(this.DSUStorage, communicationService);
 		this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
 
 		this.attachEventHandlers();
 		this.initViewModel();
+
 		this.model.onChange('shipmentModel.form', this.checkFormValidity.bind(this));
 
 	}
@@ -191,8 +196,9 @@ export default class EditShipmentController extends WebcController {
 	}
 
 	checkFormValidity(){
-		//To be refactored according with current step
+		//To be refactored according to current step
 		const requiredInputs = [
+			this.model.shipmentModel.form.shipperId.value,
 		  this.model.shipmentModel.form.origin.value,
 		  this.model.shipmentModel.form.type.value,
 		  this.model.shipmentModel.form.pickupDate.value,
@@ -212,10 +218,8 @@ export default class EditShipmentController extends WebcController {
 	  }
 
 	async initViewModel() {
-		this.model = {
-			orderModel: viewModelResolver('order'),
-			shipmentModel: viewModelResolver('shipment')
-		};
+			this.model.orderModel =  viewModelResolver('order');
+			this.model.shipmentModel = viewModelResolver('shipment')
 
 		//all order fields are disabled
 		for (let prop in this.model.orderModel.form.inputs) {
