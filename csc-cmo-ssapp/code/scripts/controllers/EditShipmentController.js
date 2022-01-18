@@ -36,7 +36,6 @@ export default class EditShipmentController extends WebcController {
 		if(this.model.shipmentModel.form){
 			// Validation For Dimension Values
 			let keys = Object.keys(this.model.shipmentModel.form.dimension);
-			if(keys){
 				keys.forEach( (key) => {
 					if(this.model.shipmentModel.form.dimension[key].value !== undefined){
 						if(this.model.shipmentModel.form.dimension[key].value.indexOf('-') !== -1){
@@ -44,7 +43,6 @@ export default class EditShipmentController extends WebcController {
 						}
 					}
 				});
-			}
 		}
 	}
 

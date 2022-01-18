@@ -54,6 +54,7 @@ class CommunicationService {
                 console.log(`Identity ${didDocument.getIdentifier()} created successfully.`);
                 return didDocument;
             } catch (e) {
+                console.log(`DID creation failed for didType:'${didType}' , publicName: '${publicName}'`)
                 throw e;
             }
         }
@@ -64,6 +65,7 @@ class CommunicationService {
             const identifier = `did:${didType}:${this.domain}:${publicName}`;
             return await $$.promisify(w3cDID.resolveDID)(identifier);
         } catch (e) {
+            console.log(`DID resolve failed for didType:'${didType}' , publicName: '${publicName}'`)
             throw e;
         }
     }
