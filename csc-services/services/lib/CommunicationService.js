@@ -54,6 +54,7 @@ class CommunicationService {
                 console.log(`Identity ${didDocument.getIdentifier()} created successfully.`);
                 return didDocument;
             } catch (e) {
+                console.error(`DID creation failed for didType:'${didType}' , publicName: '${publicName}'`)
                 throw e;
             }
         }

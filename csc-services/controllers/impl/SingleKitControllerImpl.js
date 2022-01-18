@@ -142,10 +142,6 @@ class SingleKitControllerImpl extends AccordionController {
         return new Date(b.date) - new Date(a.date);
       }))[0].status;
 
-      if (data.status_value === shipmentStatusesEnum.Received) {
-        data.status_value = shipmentStatusesEnum.Received;
-      }
-
       data.status_date = momentService(data.status.sort((function (a, b) {
         return new Date(b.date) - new Date(a.date);
       }))[0].date).format(Commons.DateTimeFormatPattern);
