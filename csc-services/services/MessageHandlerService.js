@@ -250,7 +250,6 @@ class MessageHandlerService {
       }
       case shipmentStatusesEnum.ProofOfDelivery: {
         notificationRole = Roles.Site;
-        shipmentStatus = data.operation;
         const messageData = data.data;
         const { shipmentSSI } = messageData;
         shipmentData = await this.shipmentService.updateShipmentStatus(shipmentSSI, this.role);
