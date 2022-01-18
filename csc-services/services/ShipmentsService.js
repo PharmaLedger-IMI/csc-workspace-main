@@ -348,7 +348,7 @@ class ShipmentsService extends DSUService {
 			shipmentSSI: shipmentKeySSI,
 			shipmentComments: shipmentDB.shipmentComments
 		};
-		debugger;
+
 		this.sendMessageToEntity(
 			shipmentDB.siteId,
 			shipmentStatusesEnum.InTransit,

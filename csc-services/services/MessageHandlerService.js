@@ -32,9 +32,16 @@ class MessageHandlerService {
 
 
           //TODO refactor handling messages
-          await this.handleOrderMessages(data);
-          await this.handleShipmentMessages(data);
-          await this.handleKitsMessages(data);
+
+          switch (this.role) {
+            case Roles.Courier:
+              await this.handleShipmentMessages(data);
+              break;
+            default:
+              await this.handleOrderMessages(data);
+              await this.handleShipmentMessages(data);
+              await this.handleKitsMessages(data);
+          }
 
         });
       });
@@ -76,7 +83,7 @@ class MessageHandlerService {
       return;
     }
 
-    console.log('shipment message received', shipmentData, shipmentStatus, notificationRole);
+
     const notification = {
       operation: NotificationTypes.UpdateShipmentStatus,
       shipmentId: shipmentData.shipmentId,
@@ -186,8 +193,14 @@ class MessageHandlerService {
       case shipmentStatusesEnum.ReadyForDispatch: {
         notificationRole = Roles.CMO;
 
-        const { shipmentSSI } = data.data;
-        shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
+        const { shipmentSSI, statusSSI } = data.data;
+        switch (this.role) {
+          case Roles.Courier:
+            shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusSSI);
+            break;
+          default:
+            shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
+        }
         break;
       }
 
@@ -233,6 +246,14 @@ class MessageHandlerService {
         const messageData = data.data;
         const { receivedShipmentSSI, shipmentSSI } = messageData;
         shipmentData = await this.shipmentService.mountShipmentReceivedDSU(shipmentSSI, receivedShipmentSSI);
+        break;
+      }
+      case shipmentStatusesEnum.ProofOfDelivery: {
+        notificationRole = Roles.Site;
+        shipmentStatus = data.operation;
+        const messageData = data.data;
+        const { shipmentSSI } = messageData;
+        shipmentData = await this.shipmentService.updateShipmentStatus(shipmentSSI, this.role);
         break;
       }
       case shipmentsEventsEnum.InTransitNewComment: {
