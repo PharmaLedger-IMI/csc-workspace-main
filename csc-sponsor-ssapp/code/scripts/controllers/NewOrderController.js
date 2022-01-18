@@ -184,20 +184,18 @@ export default class NewOrderController extends WebcController {
       this.model.form.isSubmitting  = true;
       const payload = {};
 
-        if (this.model.form.inputs) {
-          let keys = Object.keys(this.model.form.inputs);
-          if (keys.length > 0) {
-            keys.forEach((key) => {
-              if (key === 'delivery_date' || key === 'delivery_time') {
-                payload['delivery_date'] = this.getDateTime();
-              } else if (key.indexOf('keep_between_temperature') !== -1) {
-                payload['keep_between_temperature'] = this.getTemperature();
-              } else {
-                payload[key] = this.model.form.inputs[key].value;
-              }
-            });
+
+        let keys = Object.keys(this.model.form.inputs);
+        keys.forEach((key) => {
+          if (key === 'delivery_date' || key === 'delivery_time') {
+            payload['delivery_date'] = this.getDateTime();
+          } else if (key.indexOf('keep_between_temperature') !== -1) {
+            payload['keep_between_temperature'] = this.getTemperature();
+          } else {
+            payload[key] = this.model.form.inputs[key].value;
           }
-        }
+        });
+
 
         if (this.model.form.documents) {
           payload['files'] = [];

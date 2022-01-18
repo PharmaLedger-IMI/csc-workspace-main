@@ -64,12 +64,11 @@ class OrdersService extends DSUService {
     return new Promise((resolve, reject) => {
       getFileContentAsBuffer(file, (err, arrayBuffer) => {
         if (err) {
-          reject('Could not get file as a Buffer');
+          return reject('Could not get file as a Buffer');
         }
         this.DSUStorage.writeFile(path, $$.Buffer.from(arrayBuffer), undefined, (err, keySSI) => {
           if (err) {
-            reject(new Error(err));
-            return;
+            return reject(new Error(err));
           }
           resolve();
         });
