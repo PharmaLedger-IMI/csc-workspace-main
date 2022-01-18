@@ -184,7 +184,6 @@ export default class NewOrderController extends WebcController {
       this.model.form.isSubmitting  = true;
       const payload = {};
 
-      if (this.model.form) {
         if (this.model.form.inputs) {
           let keys = Object.keys(this.model.form.inputs);
           if (keys.length > 0) {
@@ -233,7 +232,6 @@ export default class NewOrderController extends WebcController {
           expanded: false,
           centered: true,
         });
-      }
       window.WebCardinal.loader.hidden=true;
     };
 

@@ -352,7 +352,7 @@ class SingleOrderControllerImpl extends AccordionController {
 
   async approveOrder() {
     const {keySSI} = this.model.order;
-    const result = await this.ordersService.updateOrderNew(keySSI, null, null, this.role, orderStatusesEnum.Approved);
+    await this.ordersService.updateOrderNew(keySSI, null, null, this.role, orderStatusesEnum.Approved);
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     this.showErrorModalAndRedirect('Order was approved, redirecting to dashboard...', 'Order Approved', '/', 2000);
   }

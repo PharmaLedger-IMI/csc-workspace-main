@@ -87,7 +87,7 @@ class HistoryModalControllerImpl extends WebcController {
 	transformShipmentData() {
 		const shipment = this.model.toObject('shipment') || {};
 
-		if (shipment && shipment.status) {
+		if (shipment.status) {
 			shipment.status = [...shipment.status.sort((function(a, b) {
 				return new Date(a.date) - new Date(b.date);
 			}))];

@@ -64,6 +64,7 @@ class CommunicationService {
             const identifier = `did:${didType}:${this.domain}:${publicName}`;
             return await $$.promisify(w3cDID.resolveDID)(identifier);
         } catch (e) {
+            console.error(`DID resolve failed for didType:'${didType}' , publicName: '${publicName}'`)
             throw e;
         }
     }

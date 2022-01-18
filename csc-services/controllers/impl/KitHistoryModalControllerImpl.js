@@ -32,7 +32,7 @@ class KitHistoryModalControllerImpl extends WebcController {
 	transformKitData() {
 		let { kit } = this.model.toObject() || {};
 
-		if (kit && kit.status) {
+		if (kit.status) {
 			kit.status = [...kit.status.sort((function(a, b) {
 				return new Date(a.date) - new Date(b.date);
 			}))];

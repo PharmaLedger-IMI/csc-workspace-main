@@ -309,10 +309,10 @@ class OrdersService extends DSUService {
     }
 
     if (files) {
-      documents = await this.addDocumentsToDsu(files, role === Roles.CMO ? orderDB.cmoDocumentsKeySSI : orderDB.sponsorDocumentsKeySSI, role);
+      await this.addDocumentsToDsu(files, role === Roles.CMO ? orderDB.cmoDocumentsKeySSI : orderDB.sponsorDocumentsKeySSI, role);
     }
     if (comment) {
-      comments = await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
+      await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
     }
 
     if (otherDetails) {
