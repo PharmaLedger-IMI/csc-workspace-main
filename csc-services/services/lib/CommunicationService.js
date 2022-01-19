@@ -29,7 +29,6 @@ class CommunicationService {
                         console.log(this.didDocument);
                     }
                     catch (e){
-                        debugger;
                         console.log(e);
                     }
                 });
