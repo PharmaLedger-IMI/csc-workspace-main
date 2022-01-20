@@ -1,10 +1,9 @@
 {
+  "translations":"false",
   "theme": "blue-csc-theme",
-  "enableTranslations": true,
   "pagesFallback": {
     "name": "Test"
   },
-  "translations": true,
   "pages": [
     {
       "name": "Dashboard",
@@ -83,6 +82,5 @@
       "indexed": false,
       "tag": "assign-kit"
     }
-  ],
-  "skin": "default"
+  ]
 }

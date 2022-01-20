@@ -13,7 +13,7 @@ class ScanShipmentController extends WebcController {
   constructor(...props) {
     super(...props);
     this.originalShipment = this.history.location.state.shipment;
-    this.communicationService = CommunicationService.getInstance(Roles.Site);
+    this.communicationService = CommunicationService.getCommunicationServiceInstance()
     this.shipmentService = new ShipmentService(this.DSUStorage, this.communicationService);
     this.orderService = new OrderService(this.DSUStorage, this.communicationService);
     this.kitsService = new KitsService(this.DSUStorage, this.communicationService);
@@ -142,17 +142,15 @@ class ScanShipmentController extends WebcController {
       let order = await this.orderService.getOrder(this.model.shipment.orderSSI);
       let {studyId, orderId}  = order;
       let shipmentId = this.model.shipment.shipmentId;
+      let sponsorId = this.model.shipment.sponsorId;
       let kits = await this.kitsService.getKitsDSU(this.model.shipment.kitIdSSI);
 
 
     let redirectToShipmentView = () => {
-      this.communicationService.sendMessage(CommunicationService.identities.CSC.SPONSOR_IDENTITY, {
-        operation: kitsMessagesEnum.ShipmentSigned,
-        data: {
-          studyKeySSI: studyKitData.keySSI
-        },
-        shortDescription: 'Shipment Signed'
-      });
+
+      this.shipmentService.sendMessageToEntity(sponsorId,kitsMessagesEnum.ShipmentSigned,{
+        studyKeySSI: studyKitData.keySSI
+      },'Shipment Signed')
 
       this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', {
         tag: 'shipment',

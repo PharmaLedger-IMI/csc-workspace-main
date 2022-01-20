@@ -35,15 +35,13 @@
 							<!-- Shipper ID -->
 							<div class='form-group'>
 								<label>{{@shipmentModel.form.shipperId.label}}</label>
-								<!-- Select -->
-								<select class="form-control" data-for="@shipmentModel.form.shipperId.options" id="@shipmentModel.form.shipperId.name" name="@shipmentModel.form.shipperId.name" value="@shipmentModel.form.shipperId.value">
-									<option value="@value">{{@label}}</option>
-									</select>
+								<!-- Input -->
+								<input class='form-control' data-view-model='@shipmentModel.form.shipperId' value='@shipmentModel.form.shipperId.value' />
 							</div>
 							<!-- Origin -->
 							<div class='form-group'>
 								<label>{{@shipmentModel.form.origin.label}} <span class='required'>*</span></label>
-								<input class='form-control' data-view-model='@shipmentModel.form.origin' />
+								<input class='form-control' data-view-model='@shipmentModel.form.origin' value='@shipmentModel.form.origin.value'  />
 							</div>
 							<!-- Type -->
 							<div class='form-group'>
@@ -59,10 +57,10 @@
 								<label>{{@shipmentModel.form.pickupDate.label}} <span class='required'>*</span></label>
 								<div class='row'>
 									<div class='col-8'>
-										<input class='form-control' data-view-model='@shipmentModel.form.pickupDate' />
+										<input class='form-control' data-view-model='@shipmentModel.form.pickupDate' value='@shipmentModel.form.pickupDate.value' />
 									</div>
 									<div class='col-4'>
-										<input class='form-control' data-view-model='@shipmentModel.form.pickupTime' />
+										<input class='form-control' data-view-model='@shipmentModel.form.pickupTime' value='@shipmentModel.form.pickupTime.value' />
 									</div>
 								</div>
 							</div>
@@ -74,21 +72,21 @@
 										<div class='form-inline'>
 											<label>{{@shipmentModel.form.dimension.height.label}}</label>
 											<input class='form-control'
-														 data-view-model='@shipmentModel.form.dimension.height' />
+														 data-view-model='@shipmentModel.form.dimension.height' value='@shipmentModel.form.dimension.height.value' />
 										</div>
 									</div>
 									<div class='col-4'>
 										<div class='form-inline'>
 											<label>{{@shipmentModel.form.dimension.length.label}}</label>
 											<input class='form-control'
-														 data-view-model='@shipmentModel.form.dimension.length' />
+														 data-view-model='@shipmentModel.form.dimension.length' value='@shipmentModel.form.dimension.length.value'/>
 										</div>
 									</div>
 									<div class='col-4'>
 										<div class='form-inline'>
 											<label>{{@shipmentModel.form.dimension.width.label}}</label>
 											<input class='form-control'
-														 data-view-model='@shipmentModel.form.dimension.width' />
+														 data-view-model='@shipmentModel.form.dimension.width' value='@shipmentModel.form.dimension.width.value' />
 										</div>
 									</div>
 								</div>
@@ -97,13 +95,13 @@
 							<div class='form-group'>
 								<label>{{@shipmentModel.form.specialInstructions.label}}</label>
 								<textarea class='form-control'
-													data-view-model='@shipmentModel.form.specialInstructions'></textarea>
+													data-view-model='@shipmentModel.form.specialInstructions' value='@shipmentModel.form.specialInstructions.value'></textarea>
 							</div>
 							<!-- Shipping/Handling Conditions -->
 							<div class='form-group'>
 								<label>{{@shipmentModel.form.shippingConditions.label}}</label>
 								<textarea class='form-control'
-													data-view-model='@shipmentModel.form.shippingConditions'></textarea>
+													data-view-model='@shipmentModel.form.shippingConditions' value='@shipmentModel.form.shippingConditions.value'></textarea>
 							</div>
 						</div>
 		

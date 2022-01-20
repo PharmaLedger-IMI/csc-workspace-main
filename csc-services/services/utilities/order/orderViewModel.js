@@ -5,9 +5,7 @@ const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
 const MIN_TEMPERATURE = orderBusinessRequirements.MinTemperature;
 const MAX_TEMPERATURE = orderBusinessRequirements.MaxTemperature;
 const momentService = require("csc-services").momentService;
-const sites = orderBusinessRequirements.sites;
-const cmos = orderBusinessRequirements.cmos;
-const SPONSOR_DID = orderBusinessRequirements.sponsorId;
+
 const orderViewModel = {
     cancelOrderModal: {
         comment: {
@@ -44,7 +42,7 @@ const orderViewModel = {
                 name: 'sponsor_id',
                 required: true,
                 disabled: true,
-                value: SPONSOR_DID,
+                value: "",
             },
             delivery_date: {
                 label: 'Delivery Date/Time',
@@ -61,14 +59,12 @@ const orderViewModel = {
                 value: '',
             },
             target_cmo_id: {
-                label: 'Target CMO ID',
-                name: 'target_cmo_id',
-                id: 'target_cmo_id',
-                placeholder: 'Select Target CMO ID...',
+                label: 'Target CMO DID',
+                name: 'target_cmo_did',
+                placeholder: 'Enter Target CMO ID',
                 required: true,
                 disabled: false,
-                options: cmos.map((x) => {return {label:x.name, value:x.name}}),
-                value: cmos[0].name,
+                value: "",
             },
             study_id: {
                 label: 'Study ID',
@@ -107,26 +103,27 @@ const orderViewModel = {
                 label: 'Site ID',
                 name: 'site_id',
                 id: 'site_id',
-                placeholder: 'Select Site ID...',
+                placeholder: 'Enter Site ID...',
                 required: true,
                 disabled: false,
-                options: sites.map((x) => {return {label:x.name, value:x.name}}),
-                value: sites[0].name,
+                value: "",
             },
             site_region_id: {
-                label: 'Site Region ID (Autofilled)',
+                //label: 'Site Region ID (Autofilled)',
+                label: 'Site Region ID',
                 name: 'site_region_id',
                 required: true,
-                placeholder: '',
-                disabled: true,
+                placeholder: 'Enter Site Region ID',
+                disabled: false,
                 value: '',
             },
             site_country: {
-                label: 'Site Country (Autofilled)',
+                //label: 'Site Country (Autofilled)',
+                label: 'Site Country',
                 name: 'site_country',
                 required: true,
-                placeholder: '',
-                disabled: true,
+                placeholder: 'Enter Site Country',
+                disabled: false,
                 value: '',
             },
             temperature_comments: {
