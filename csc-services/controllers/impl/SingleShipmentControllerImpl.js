@@ -2,7 +2,7 @@ const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
 const KitsService = cscServices.KitsService;
-const CommunicationService = cscServices.CommunicationService;
+const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
@@ -11,18 +11,17 @@ const { Roles, Commons, Topics } = cscServices.constants;
 const { orderStatusesEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const ViewShipmentBaseController  = require("./helpers/ViewShipmentBaseController");
-const csIdentities = {};
-csIdentities [Roles.Sponsor] = CommunicationService.identities.CSC.SPONSOR_IDENTITY;
-csIdentities [Roles.CMO] = CommunicationService.identities.CSC.CMO_IDENTITY;
-csIdentities [Roles.Site] = CommunicationService.identities.CSC.SITE_IDENTITY;
-csIdentities [Roles.Courier] = CommunicationService.identities.CSC.COU_IDENTITY;
+
 
 class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   constructor(role, ...props) {
     super(role,...props);
     this.role = role;
+    this.initServices();
+  }
 
-    let communicationService = CommunicationService.getInstance(csIdentities[role]);
+  async initServices(){
+    let communicationService = getCommunicationServiceInstance();
     this.notificationsService = new NotificationsService(this.DSUStorage);
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);

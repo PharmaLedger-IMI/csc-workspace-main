@@ -22,7 +22,7 @@ class AddShipmentCommentModalController extends WebcController {
        }
     }
 
-    let communicationService = CommunicationService.getInstance(Roles.Courier);
+    let communicationService = CommunicationService.getCommunicationServiceInstance();
     this.shipmentService = new ShipmentService (this.DSUStorage, communicationService);
 
     this.initHandlers();

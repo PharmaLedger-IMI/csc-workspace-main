@@ -12,7 +12,7 @@ class DispenseKitController extends WebcController {
 
   constructor(...props) {
     super(...props);
-    let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SITE_IDENTITY);
+    let communicationService = CommunicationService.getCommunicationServiceInstance();
     this.kitsService = new KitsService(this.DSUStorage,communicationService);
     this.initViewModel();
     this.initHandlers();
@@ -54,8 +54,8 @@ class DispenseKitController extends WebcController {
     };
 
 
-    this.profileService = new ProfileService(this.DSUStorage);
-    this.profileService.getUserDetails((err, userDetails) => {
+    let profileService = ProfileService.getProfileServiceInstance();
+    profileService.getUserDetails((err, userDetails) => {
       if (err) {
         return console.log('[UserDetails] [ERROR]', err);
       }

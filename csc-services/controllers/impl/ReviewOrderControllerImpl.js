@@ -2,7 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
-const CommunicationService = cscServices.CommunicationService;
+const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { Topics, Roles, order, FoldersEnum } = cscServices.constants;
@@ -16,15 +16,18 @@ class ReviewOrderControllerImpl extends WebcController {
 
   constructor(role, ...props) {
     super(...props);
+    this.initServices();
 
     this.role = role;
     this.originalOrder = this.history.location.state.order;
-    let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
-    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
-    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
-
     this.model = this.getReviewOrderViewModel(order);
     this.attachEventHandlers();
+  }
+
+  async initServices(){
+    let communicationService = getCommunicationServiceInstance()
+    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
+    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
   }
 
   attachEventHandlers() {

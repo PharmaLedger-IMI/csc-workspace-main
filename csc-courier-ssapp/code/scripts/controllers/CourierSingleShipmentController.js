@@ -4,20 +4,23 @@ const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentsService = cscServices.ShipmentService;
 const OrdersService = cscServices.OrderService;
 const CommunicationService = cscServices.CommunicationService;
-const momentService = cscServices.momentService;
-const { Commons, Roles } = cscServices.constants;
+const {  Roles } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
-const statusesService = cscServices.StatusesService;
 
 class CourierSingleShipmentController extends ViewShipmentBaseController {
   constructor(...props) {
     super(Roles.Courier,...props);
-    let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.COU_IDENTITY);
+    this.initServices().then(() => {
+      this.initViewModel();
+      this.openFirstAccordion();
+      this.attachEventListeners();
+    });
+  }
+
+  async initServices(){
+    let communicationService = CommunicationService.getCommunicationServiceInstance();
     this.ordersService = new OrdersService(this.DSUStorage, communicationService);
     this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
-    this.initViewModel();
-    this.openFirstAccordion();
-    this.attachEventListeners();
   }
 
   attachEventListeners() {

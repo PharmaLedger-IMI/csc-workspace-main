@@ -12,7 +12,7 @@ class SearchService {
         if (filter) {
             result = result.filter((x) => x.status_value === this.itemStatusesEnum[filter]);
           }
-          if (searchValue && searchValue !== '') {
+          if (searchValue) {
       
             result = result.filter((x) => {
               const matches = this.searchedProperties.filter((property) => {
