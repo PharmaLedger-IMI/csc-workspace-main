@@ -18,6 +18,10 @@ class KitsService extends DSUService {
     this.DSUStorage = DSUStorage;
   }
 
+  async getKitIdsDsu(kitIdsSSI){
+    return await this.getEntityAsync(kitIdsSSI, FoldersEnum.KitIds);
+  }
+
   async getKitsDSU(kitsKeySSI) {
     const kitsDataDsu = await this.getEntityAsync(kitsKeySSI, FoldersEnum.Kits);
     return kitsDataDsu;

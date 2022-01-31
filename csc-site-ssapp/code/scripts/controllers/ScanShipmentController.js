@@ -67,7 +67,7 @@ class ScanShipmentController extends WebcController {
   }
 
   async getKits(kitIdSSI) {
-    const kitDSU = await this.kitsService.getKitsDSU(kitIdSSI);
+    const kitDSU = await this.kitsService.getKitIdsDsu(kitIdSSI);
     return kitDSU;
   }
 
@@ -143,7 +143,7 @@ class ScanShipmentController extends WebcController {
       let {studyId, orderId}  = order;
       let shipmentId = this.model.shipment.shipmentId;
       let sponsorId = this.model.shipment.sponsorId;
-      let kits = await this.kitsService.getKitsDSU(this.model.shipment.kitIdSSI);
+      let kits = await this.kitsService.getKitIdsDsu(this.model.shipment.kitIdSSI);
 
 
     let redirectToShipmentView = () => {

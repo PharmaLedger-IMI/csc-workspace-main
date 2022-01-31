@@ -265,7 +265,7 @@ export default class ScanShipmentController extends WebcController {
   }
 
   async getKits() {
-    const kitDSU = await this.kitsService.getKitsDSU(this.model.kitsSSI);
+    const kitDSU = await this.kitsService.getKitIdsDsu(this.model.kitsSSI);
     this.model.kits = kitDSU.kitIds;
   }
 }

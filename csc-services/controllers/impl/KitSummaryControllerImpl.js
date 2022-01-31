@@ -32,7 +32,7 @@ class KitSummaryControllerImpl extends WebcController {
 
   async getKits() {
     const keySSI = this.model.kitsSSI;
-    const kits = await this.kitsService.getKitsDSU(keySSI);
+    const kits = await this.kitsService.getKitIdsDsu(keySSI);
     this.model = { ...JSON.parse(JSON.stringify(this.model)), ...kits };
     this.model.kitsLoaded = true;
     this.model = JSON.parse(JSON.stringify(this.model));
