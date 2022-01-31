@@ -8,7 +8,7 @@ class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
 
   constructor(DSUStorage, communicationService) {
-    super(DSUStorage, '/orders');
+    super(DSUStorage, FoldersEnum.Orders);
     if (communicationService) {
       this.communicationService = communicationService;
     }

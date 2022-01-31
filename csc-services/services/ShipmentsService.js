@@ -9,7 +9,7 @@ class ShipmentsService extends DSUService {
 	SHIPMENTS_TABLE = 'shipments';
 
 	constructor(DSUStorage, communicationService) {
-		super(DSUStorage, '/shipments');
+		super(DSUStorage, FoldersEnum.Shipments);
 		if (communicationService) {
 			this.communicationService = communicationService;
 		}
