@@ -1,7 +1,5 @@
-SharedStorage.js
 CommunicationService.js
 DateTimeService.js
 DSUService.js
 Constants.js
 FileDownloader.js
-api.js
