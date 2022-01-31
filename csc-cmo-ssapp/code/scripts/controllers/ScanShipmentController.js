@@ -230,7 +230,7 @@ export default class ScanShipmentController extends WebcController {
     this.onTagClick('download-kits-file', async (model) => {
       window.WebCardinal.loader.hidden = false;
       const fileName = model.kitsFilename;
-      const path = FoldersEnum.Kits + '/' + model.kitsSSI + '/' + 'files';
+      const path = FoldersEnum.KitIds + '/' + model.kitsSSI + '/' + 'files';
       await this.FileDownloaderService.prepareDownloadFromDsu(path, fileName);
       this.FileDownloaderService.downloadFileToDevice(fileName);
       window.WebCardinal.loader.hidden = true;

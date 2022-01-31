@@ -76,7 +76,7 @@ export default class EditShipmentController extends WebcController {
 		this.onTagClick('download-kits-file', async (model) => {
 			window.WebCardinal.loader.hidden = false;
 			const fileName = model.order.kitsFilename;
-			const path = FoldersEnum.Kits + '/' + model.order.kitsSSI + '/' + 'files';
+			const path = FoldersEnum.KitIds + '/' + model.order.kitsSSI + '/' + 'files';
 			await this.FileDownloaderService.prepareDownloadFromDsu(path, fileName);
 			this.FileDownloaderService.downloadFileToDevice(fileName);
 			window.WebCardinal.loader.hidden = true;

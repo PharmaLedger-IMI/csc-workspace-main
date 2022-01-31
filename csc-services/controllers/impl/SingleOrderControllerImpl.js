@@ -71,7 +71,7 @@ class SingleOrderControllerImpl extends AccordionController {
           const keySSI = document.attached_by === Roles.Sponsor ? this.model.order.sponsorDocumentsKeySSI : this.model.order.cmoDocumentsKeySSI;
           await this.downloadFile(filename, FoldersEnum.Documents, keySSI);
         } else {
-          await this.downloadFile(filename, FoldersEnum.Kits, model.order.kitsSSI);
+          await this.downloadFile(filename, FoldersEnum.KitIds, model.order.kitsSSI);
         }
       }
     });

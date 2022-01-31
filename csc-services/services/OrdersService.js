@@ -230,7 +230,7 @@ class OrdersService extends DSUService {
   }
 
   async addKitsToDsu(file, kitIds, keySSI) {
-    const kitsDataDsu = await this.getEntityAsync(keySSI, FoldersEnum.Kits);
+    const kitsDataDsu = await this.getEntityAsync(keySSI, FoldersEnum.KitIds);
     const updatedDSU = await this.updateEntityAsync(
       {
         ...kitsDataDsu,
@@ -241,12 +241,12 @@ class OrdersService extends DSUService {
           date: new Date().getTime(),
         },
       },
-      FoldersEnum.Kits
+      FoldersEnum.KitIds
     );
 
-    const attachmentKeySSI = await this.uploadFile(FoldersEnum.Kits + '/' + updatedDSU.uid + '/' + 'files' + '/' + file.name, file);
+    const attachmentKeySSI = await this.uploadFile(FoldersEnum.KitIds + '/' + updatedDSU.uid + '/' + 'files' + '/' + file.name, file);
     updatedDSU.file.attachmentKeySSI = attachmentKeySSI;
-    const result = await this.updateEntityAsync(updatedDSU, FoldersEnum.Kits);
+    const result = await this.updateEntityAsync(updatedDSU, FoldersEnum.KitIds);
     return result;
   }
 
@@ -272,7 +272,7 @@ class OrdersService extends DSUService {
         status = await this.mountEntityAsync(attachedDSUKeySSIs.statusKeySSI, FoldersEnum.Statuses);
         sponsorDocuments = await this.mountEntityAsync(attachedDSUKeySSIs.sponsorDocumentsKeySSI, FoldersEnum.Documents);
         cmoDocuments = await this.mountEntityAsync(attachedDSUKeySSIs.cmoDocumentsKeySSI, FoldersEnum.Documents);
-        kits = await this.mountEntityAsync(attachedDSUKeySSIs.kitIdsKeySSI, FoldersEnum.Kits);
+        kits = await this.mountEntityAsync(attachedDSUKeySSIs.kitIdsKeySSI, FoldersEnum.KitIds);
         comments = await this.mountEntityAsync(attachedDSUKeySSIs.commentsKeySSI, FoldersEnum.Comments);
 
         orderDb = await this.addOrderToDB(
