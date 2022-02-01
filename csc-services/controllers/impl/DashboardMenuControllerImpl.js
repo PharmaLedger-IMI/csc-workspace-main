@@ -19,11 +19,11 @@ class DashboardMenuControllerImpl extends WebcController {
 	}
 
 	updateActiveMenu() {
-		if (this.history.location.pathname === '/new-order') {
+		if (this.history.location.pathname.endsWith('/new-order')) {
 			return this.makeMenuActive('menu-new-order');
 		}
 
-		if (this.history.location.pathname === '/notifications') {
+		if (this.history.location.pathname.endsWith('/notifications')) {
 			return this.makeMenuActive('menu-notifications');
 		}
 
