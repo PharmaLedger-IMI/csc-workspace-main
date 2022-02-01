@@ -1,0 +1,12 @@
+{
+  "anchoring": {
+    "type": "FS",
+    "option": {
+      "enableBricksLedger": false
+    },
+    "commands": {
+      "addAnchor": "anchor"
+    }
+  },
+  "enable": ["mq"]
+}
