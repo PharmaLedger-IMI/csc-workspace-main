@@ -7,7 +7,7 @@ module.exports = {
     NotificationsService: require('./services/lib/NotificationService'),
     StatusesService: require('./services/lib/StatusesService'),
     CommunicationService: require('./services/lib/CommunicationService'),
-    ProfileService: require('./services/lib/ProfileService'),
+    DidService: require('./services/lib/DidService'),
     constants: require('./services/constants'),
     momentService: require('./services/lib/moment.min'),
     FileDownloaderService: require('./services/lib/FileDownloaderService'),

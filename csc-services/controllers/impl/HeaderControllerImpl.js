@@ -1,7 +1,7 @@
 const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
-const { getProfileServiceInstance } = cscServices.ProfileService;
+const { getDidServiceInstance } = cscServices.DidService;
 
 class HeaderControllerImpl extends WebcController {
 	constructor(role, ...props) {
@@ -13,15 +13,15 @@ class HeaderControllerImpl extends WebcController {
 			userName: ''
 		};
 
-		this.profileService = getProfileServiceInstance();
-		this.profileService.getUserDetails((err, userDetails) => {
+		let didService = getDidServiceInstance();
+		didService.getUserDetails((err, userDetails) => {
 			if (err) {
 				return console.log('[UserDetails] [ERROR]', err);
 			}
 
 			this.model.userName = userDetails.username;
 
-			this.profileService.getDID().then((did)=>{
+			didService.getDID().then((did)=>{
 				this.model.did = did;
 			})
 

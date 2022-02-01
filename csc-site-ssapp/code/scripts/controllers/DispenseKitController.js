@@ -1,6 +1,6 @@
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
-const ProfileService = cscServices.ProfileService;
+const DidService = cscServices.DidService;
 const KitsService = cscServices.KitsService;
 const CommunicationService = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
@@ -54,8 +54,8 @@ class DispenseKitController extends WebcController {
     };
 
 
-    let profileService = ProfileService.getProfileServiceInstance();
-    profileService.getUserDetails((err, userDetails) => {
+    let didService = DidService.getDidServiceInstance();
+    didService.getUserDetails((err, userDetails) => {
       if (err) {
         return console.log('[UserDetails] [ERROR]', err);
       }

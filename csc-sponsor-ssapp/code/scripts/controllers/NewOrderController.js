@@ -4,7 +4,7 @@ const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService;
 const { Topics, Roles, DocumentTypes } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
-const ProfileService = cscServices.ProfileService;
+const DidService = cscServices.DidService;
 const momentService = cscServices.momentService;
 const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
@@ -41,8 +41,8 @@ export default class NewOrderController extends WebcController {
       formIsInvalid:true,
     };
 
-    this.profileService = ProfileService.getProfileServiceInstance();
-    this.profileService.getDID().then((did)=>{
+    let didService = DidService.getDidServiceInstance();
+    didService.getDID().then((did)=>{
       this.model.form.inputs.sponsor_id.value = did;
     });
 

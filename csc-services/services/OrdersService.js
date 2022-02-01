@@ -2,7 +2,7 @@ const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedSto
 const DSUService = require('./lib/DSUService.js');
 const { Roles, messagesEnum, order, FoldersEnum } = require('./constants');
 const orderStatusesEnum = order.orderStatusesEnum;
-const {getDidData} = require('./lib/ProfileService.js');
+const {getDidData} = require('./lib/DidService.js');
 const EncryptionService = require('./lib/EncryptionService.js');
 class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
@@ -77,12 +77,11 @@ class OrdersService extends DSUService {
   }
 
   sendMessageToEntity(entity, operation, data, shortDescription) {
-    let receiver = getDidData(entity)
-    this.communicationService.sendMessage( {
+    this.communicationService.sendMessage(entity, {
       operation,
       data,
       shortDescription,
-    }, receiver);
+    });
   }
 
   // -> Functions for creation of order

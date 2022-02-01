@@ -2,7 +2,6 @@ const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedSto
 const DSUService = require('./lib/DSUService.js');
 const ShipmentsService = require('./ShipmentsService.js');
 const { FoldersEnum, kit } = require('./constants');
-const { getDidData } = require('./lib/ProfileService');
 const { kitsStatusesEnum } = kit;
 
 class KitsService extends DSUService {
@@ -151,13 +150,11 @@ class KitsService extends DSUService {
       return shipment.shipmentId === kitDSU.shipmentId;
     });
 
-    let receiver = getDidData(shipment.sponsorId);
-    await this.communicationService.sendMessage({
+    await this.communicationService.sendMessage(shipment.sponsorId,{
         operation: status,
         data: { kitSSI: kitSSI },
         shortDescription: status
-      }, receiver
-    );
+      });
 
     return kitRecord;
   }
