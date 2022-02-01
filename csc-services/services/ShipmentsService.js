@@ -9,7 +9,7 @@ class ShipmentsService extends DSUService {
 	SHIPMENTS_TABLE = 'shipments';
 
 	constructor(DSUStorage, communicationService) {
-		super(DSUStorage, '/shipments');
+		super(DSUStorage, FoldersEnum.Shipments);
 		if (communicationService) {
 			this.communicationService = communicationService;
 		}
@@ -154,7 +154,7 @@ class ShipmentsService extends DSUService {
 			let kitIdKeySSIEncrypted = shipmentDB.encryptedMessages.kitIdKeySSIEncrypted;
 			const kitIdSSI = await EncryptionService.decryptData(kitIdKeySSIEncrypted);
 			shipmentDB.kitIdSSI = kitIdSSI;
-			await this.mountEntityAsync(kitIdSSI, FoldersEnum.Kits);
+			await this.mountEntityAsync(kitIdSSI, FoldersEnum.KitIds);
 		}
 		else {
 			shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);

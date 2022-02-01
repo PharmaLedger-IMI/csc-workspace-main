@@ -216,7 +216,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
       model.shipmentModel.receivedTime = momentService(model.shipmentModel.receivedDateTime).format(Commons.HourFormatPattern);
       //TODO check this again if is needed after implementation of #378
       if (this.role === Roles.Site) {
-        model.shipmentModel.kits = await this.kitsService.getKitsDSU(model.shipmentModel.shipment.kitIdSSI);
+        model.shipmentModel.kits = await this.kitsService.getKitIdsDsu(model.shipmentModel.shipment.kitIdSSI);
         model.shipmentModel.isShipmentReceived = true;
       }
     }
