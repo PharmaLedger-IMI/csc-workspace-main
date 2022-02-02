@@ -301,14 +301,9 @@ export default class NewOrderController extends WebcController {
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
   }
   checkFormValidity(){
-    //To be refactored according with current step
-    const requiredInputs = [
-      this.model.form.inputs.order_id.value,
-      this.model.form.inputs.target_cmo_id.value,
-      this.model.form.inputs.study_id.value,
-      this.model.form.inputs.site_id.value,
-      this.model.form.inputs.delivery_date.value
-    ]
+
+    const inputs = this.model.form.inputs
+    const requiredInputs = Object.keys(inputs).filter((key)=>inputs[key].required).map(key=>inputs[key].value)
 
     let validationConstraints = [
       typeof this.model.form.inputs.kit_ids_attachment.ids !== 'undefined' && this.model.form.inputs.kit_ids_attachment.ids.length > 0,
@@ -319,7 +314,7 @@ export default class NewOrderController extends WebcController {
   }
 
   isInputFilled(field){
-    return typeof field !== 'undefined' && field.trim()!==""
+    return typeof field !== 'undefined' && field.trim() !== ""
   }
 
   getDateTime() {
@@ -336,7 +331,7 @@ export default class NewOrderController extends WebcController {
   // TODO: Copy below functions to utils
   readFile(file) {
     return new Promise((resolve, reject) => {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.onload = () => {
         resolve(this.extractIdsFromCsv(reader.result));
       };

@@ -55,7 +55,7 @@ const orderViewModel = {
             },
             delivery_time: {
                 name: 'delivery_time',
-                required: true,
+                required: false,
                 disabled: false,
                 value: '',
             },
@@ -86,10 +86,7 @@ const orderViewModel = {
             kit_id_list: {
                 label: 'Kit ID List (.csv)',
                 name: 'kit_id_list',
-                required: true,
                 placeholder: 'No File',
-                disabled: false,
-                value: '',
             },
             kit_ids_attachment: {
                 label: 'Upload File',
