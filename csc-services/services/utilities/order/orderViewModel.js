@@ -107,7 +107,6 @@ const orderViewModel = {
                 value: "",
             },
             site_region_id: {
-                //label: 'Site Region ID (Autofilled)',
                 label: 'Site Region ID',
                 name: 'site_region_id',
                 required: false,
@@ -116,7 +115,6 @@ const orderViewModel = {
                 value: '',
             },
             site_country: {
-                //label: 'Site Country (Autofilled)',
                 label: 'Site Country',
                 name: 'site_country',
                 required: true,
