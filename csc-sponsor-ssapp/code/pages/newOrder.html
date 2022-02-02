@@ -111,7 +111,12 @@
                 <!--Label -->
                 <label>{{@form.inputs.site_country.label}}</label>
                 <!-- Input -->
-                <input class="form-control" data-view-model="@form.inputs.site_country" type="text" />
+
+                <select class='form-control' data-for='@form.inputs.site_country.options'
+                         value='@form.inputs.site_country.value'>
+                  <option value='@name'>{{@name}}</option>
+                </select>
+
               </div>
 
               <!-- Temperature -->

@@ -5,6 +5,7 @@ const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
 const MIN_TEMPERATURE = orderBusinessRequirements.MinTemperature;
 const MAX_TEMPERATURE = orderBusinessRequirements.MaxTemperature;
 const momentService = require("csc-services").momentService;
+const countries = constants.countries;
 
 const orderViewModel = {
     cancelOrderModal: {
@@ -112,7 +113,7 @@ const orderViewModel = {
                 //label: 'Site Region ID (Autofilled)',
                 label: 'Site Region ID',
                 name: 'site_region_id',
-                required: true,
+                required: false,
                 placeholder: 'Enter Site Region ID',
                 disabled: false,
                 value: '',
@@ -124,12 +125,13 @@ const orderViewModel = {
                 required: true,
                 placeholder: 'Enter Site Country',
                 disabled: false,
-                value: '',
+                options: countries,
+                value: countries[0].name,
             },
             temperature_comments: {
                 label: 'Temperature Comments',
                 name: 'temperature_comments',
-                required: true,
+                required: false,
                 placeholder: 'e.g Do not freeze',
                 disabled: false,
                 value: '',
@@ -138,7 +140,7 @@ const orderViewModel = {
                 andLabel: "and",
                 label: 'Keep between (' + TEMPERATURE_UNITS + ')',
                 name: 'keep_between_temperature',
-                required: true,
+                required: false,
                 placeholder: '',
                 disabled: false,
                 value: '',
@@ -146,7 +148,7 @@ const orderViewModel = {
             keep_between_temperature_min: {
                 label: 'Min Temperature (' + TEMPERATURE_UNITS + ')',
                 name: 'keep_between_temperature_min',
-                required: true,
+                required: false,
                 placeholder: '',
                 disabled: false,
                 value: '',
@@ -156,7 +158,7 @@ const orderViewModel = {
             keep_between_temperature_max: {
                 label: 'Max Temperature (°C)',
                 name: 'keep_between_temperature_max',
-                required: true,
+                required: false,
                 placeholder: '',
                 disabled: false,
                 value: '',
@@ -166,7 +168,7 @@ const orderViewModel = {
             add_comment: {
                 label: 'Add a Comment',
                 name: 'add_comment',
-                required: true,
+                required: false,
                 placeholder: 'Add a comment....',
                 disabled: false,
                 value: '',
