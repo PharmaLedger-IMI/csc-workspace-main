@@ -33,6 +33,8 @@ class MessageHandlerService {
 
           //TODO refactor handling messages
 
+          console.log('message received', data);
+
           switch (this.role) {
             case Roles.Courier:
               await this.handleShipmentMessages(data);
@@ -51,13 +53,11 @@ class MessageHandlerService {
 
   async handleOrderMessages(data) {
     data = JSON.parse(data);
-    console.log('message received', data);
     const [orderData, orderStatus, notificationRole] = await this.processOrderMessage(data);
     if (!orderData || !orderStatus || !notificationRole) {
       return;
     }
 
-    console.log('order message received', orderData, orderStatus, notificationRole);
     const notification = {
       operation: NotificationTypes.UpdateOrderStatus,
       orderId: orderData.orderId,
@@ -65,7 +65,7 @@ class MessageHandlerService {
       status: orderStatus,
       keySSI: data.data.orderSSI,
       role: notificationRole,
-      did: orderData.sponsorId,
+      did: data.senderIdentity,
       date: new Date().getTime()
     };
 
@@ -77,7 +77,7 @@ class MessageHandlerService {
 
   async handleShipmentMessages(data) {
     data = JSON.parse(data);
-    console.log('message received', data);
+
     const [shipmentData, shipmentStatus, notificationRole] = await this.processShipmentMessage(data);
     if (!shipmentData || !shipmentStatus || !notificationRole) {
       return;
@@ -91,7 +91,7 @@ class MessageHandlerService {
       status: shipmentStatus,
       keySSI: data.data.shipmentSSI,
       role: notificationRole,
-      did: shipmentData.sponsorId,
+      did: data.senderIdentity,
       date: new Date().getTime()
     };
 
@@ -106,12 +106,10 @@ class MessageHandlerService {
       eventBusService.emitEventListeners(Topics.RefreshShipments + shipmentData.orderId, null);
     }
 
-    console.log('notification added', notification, notificationResult);
   }
 
   async handleKitsMessages(data) {
     data = JSON.parse(data);
-    console.log('message received', data);
     const [kitsData, notificationRole] = await this.processKitsMessage(data);
     if (!kitsData || !notificationRole) {
       return;
@@ -286,7 +284,7 @@ class MessageHandlerService {
           status: "Kits were received",
           keySSI: data.data.studyKeySSI,
           role: notificationRole,
-          did: "-",
+          did: data.senderIdentity,
           date: new Date().getTime()
         };
 
