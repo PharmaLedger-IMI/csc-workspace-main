@@ -11,6 +11,7 @@ const DashboardMenuController = cscServices.getController('DashboardMenuControll
 const ShipmentsController = cscServices.getController('ShipmentsController', ACTOR);
 const ViewShipmentBaseController = cscServices.getController('ViewShipmentBaseController');
 const DashboardController = cscServices.getController("DashboardController", ACTOR);
+const StatusFilterController = cscServices.getController('StatusFilterController', ACTOR);
 
 addControllers({
 	TableTemplateController,
@@ -20,5 +21,6 @@ addControllers({
 	DashboardMenuController,
 	ShipmentsController,
 	ViewShipmentBaseController,
-	DashboardController
+	DashboardController,
+	StatusFilterController
 });

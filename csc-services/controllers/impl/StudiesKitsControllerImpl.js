@@ -14,7 +14,7 @@ class StudiesKitsControllerImpl extends WebcController {
     super(...props);
     this.role = role;
     this.kitsService = new KitsService(this.DSUStorage);
-    this.searchService = new SearchService(kitsStatusesEnum, studiesKitsTableHeaders);
+    this.searchService = new SearchService(studiesKitsTableHeaders);
     this.model = this.getKitsViewModel();
     this.model.kitsListIsReady = false;
     this.attachEvents();
@@ -152,12 +152,11 @@ class StudiesKitsControllerImpl extends WebcController {
 
   searchFilterHandler() {
     //TODO: check why search.value is changed in the initialization phase
-    setTimeout(()=>{
+      const filterData = this.filterData.bind(this);
       this.model.onChange('search.value', () => {
-          this.filterData();
+        setTimeout(filterData, 300);
       });
-    },300);
-  }
+    }
 
   filterData() {
     let result = this.kitsStudies;
@@ -173,7 +172,6 @@ class StudiesKitsControllerImpl extends WebcController {
 
   getKitsViewModel() {
     return {
-      filter: '',
       search: this.getSearchViewModel(),
       kits: [],
       kitsListNotEmpty: true,

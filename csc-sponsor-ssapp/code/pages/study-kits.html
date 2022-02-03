@@ -24,31 +24,7 @@
 
     <div class='row-wrapper'>
       <!-- Filters area -->
-      <div class='filters-wrapper'>
-        <div class='filter-status'>
-          <span class='fas fa-filter'></span>
-          <label>Status: </label>
-        </div>
-        <button class='btn-filter selected' data-custom='AllKits' data-tag='filters-cleared' id='filter-'>
-          All Kits
-        </button>
-        <button class='btn-filter' data-custom='Received' data-tag='filters-changed'
-                id='filter-Received'>
-          Received
-        </button>
-        <button class='btn-filter' data-custom='AvailableForAssignment' data-tag='filters-changed'
-                id='filter-AvailableForAssignment'>
-          Available for Assignment
-        </button>
-        <button class='btn-filter' data-custom='Assigned' data-tag='filters-changed'
-                id='filter-Assigned'>
-          Assigned
-        </button>
-        <button class='btn-filter' data-custom='Dispensed' data-tag='filters-changed'
-                id='filter-Dispensed'>
-          Dispensed
-        </button>
-      </div>
+      <webc-template template='status-filter' data-view-model='@'></webc-template>
     </div>
 
     <div class="row-wrapper full-flex-column">

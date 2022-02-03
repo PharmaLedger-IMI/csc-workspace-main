@@ -1,31 +1,7 @@
 <webc-container class="full-flex-column" controller="ShipmentsController">
 	<div class="row-wrapper">
 		<!-- Filters area -->
-		<div class="filters-wrapper">
-			<div class="filter-status">
-				<span class="fas fa-filter"></span>
-				<label>Status: </label>
-			</div>
-			<button class='btn-filter selected' data-custom='AllShipments' data-tag='filters-cleared' id='filter-'>
-				All Shipments
-			</button>
-			<button class='btn-filter' data-custom='ReadyForDispatch' data-tag='filters-changed'
-			        id='filter-ReadyForDispatch'>
-				Ready for Dispatch
-			</button>
-			<button class='btn-filter' data-custom='InTransit' data-tag='filters-changed'
-			        id='filter-InTransit'>
-				In Transit
-			</button>
-			<button class='btn-filter' data-custom='Delivered' data-tag='filters-changed'
-			        id='filter-Delivered'>
-				Delivered
-			</button>
-			<button class='btn-filter' data-custom='ProofOfDelivery' data-tag='filters-changed'
-							id='filter-ProofOfDelivery'>
-				Proof Of Delivery
-			</button>
-		</div>
+		<webc-template template='status-filter' data-view-model='@'></webc-template>
 	</div>
 	<!--Test Scan Shipment -->
 	<div class='row-wrapper full-flex-column'>
