@@ -5,22 +5,6 @@ class AccordionControllerImpl extends WebcController {
         super(...props);
     }
 
-    toggleAccordionItem(el) {
-        const element = document.getElementById(el);
-
-        const icon = document.getElementById(el + '_icon');
-        element.classList.toggle('accordion-item-active');
-        icon.classList.toggle('rotate-icon');
-
-        const panel = element.nextElementSibling;
-
-        if (panel.style.maxHeight === '1000px') {
-            panel.style.maxHeight = '0px';
-        } else {
-            panel.style.maxHeight = '1000px';
-        }
-    }
-
     toggleAccordionItemHandler() {
         this.onTagEvent('toggle-accordion', 'click', (model, target) => {
             const targetIcon = target.querySelector('.accordion-icon');
@@ -28,10 +12,10 @@ class AccordionControllerImpl extends WebcController {
             targetIcon.classList.toggle('rotate-icon');
 
             const panel = target.nextElementSibling;
-            if (panel.style.maxHeight === '1000px') {
-                panel.style.maxHeight = '0px';
+            if (panel.classList.contains("expanded")) {
+                panel.classList.remove("expanded");
             } else {
-                panel.style.maxHeight = '1000px';
+                panel.classList.add("expanded");
             }
         });
     }
@@ -43,7 +27,7 @@ class AccordionControllerImpl extends WebcController {
 
         accordion.classList.toggle('accordion-item-active');
         targetIcon.classList.toggle('rotate-icon');
-        panel.style.maxHeight = '1000px';
+        panel.classList.add("expanded");
     }
 
 }
