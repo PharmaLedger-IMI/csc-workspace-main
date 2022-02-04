@@ -32,32 +32,8 @@ class SingleOrderControllerImpl extends AccordionController {
 
     this.initServices();
 
-    //Init Check on Accordion Items
-    if (this.model.accordion) {
-      let keys = Object.keys(this.model.accordion);
-      if (keys.length > 0) {
-        keys.forEach((key) => {
-          if (this.model.accordion[key].isOpened) {
-            this.openAccordionItem(this.model.accordion[key].id);
-          }
-        });
-      }
-    }
-
-    this.onTagEvent('order_details_accordion', 'click', (e) => {
-      this.toggleAccordionItem('order_details_accordion');
-      this.model.accordion.order_details.isOpened = !this.model.accordion.order_details.isOpened;
-    });
-
-    this.onTagEvent('attached_documents_accordion', 'click', (e) => {
-      this.toggleAccordionItem('attached_documents_accordion');
-      this.model.accordion.attached_documents.isOpened = !this.model.accordion.attached_documents.isOpened;
-    });
-
-    this.onTagEvent('order_comments_accordion', 'click', (e) => {
-      this.toggleAccordionItem('order_comments_accordion');
-      this.model.accordion.order_comments.isOpened = !this.model.accordion.order_comments.isOpened;
-    });
+    this.openFirstAccordion();
+    this.toggleAccordionItemHandler();
 
     this.onTagEvent('history-button', 'click', (e) => {
       this.onShowHistoryClick();
@@ -98,17 +74,6 @@ class SingleOrderControllerImpl extends AccordionController {
     this.onTagClick('dashboard', () => {
       this.navigateToPageTag('dashboard', { tab: Topics.Order });
     });
-  }
-
-  closeAllExcept(el) {
-
-    if (el === 'order_details_accordion') {
-      this.closeAccordionItem('order_comments_accordion');
-    }
-
-    if (el === 'order_comments_accordion') {
-      this.closeAccordionItem('order_details_accordion');
-    }
   }
 
   async onShowHistoryClick() {

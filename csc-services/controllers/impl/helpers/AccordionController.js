@@ -21,30 +21,6 @@ class AccordionControllerImpl extends WebcController {
         }
     }
 
-    openAccordionItem(el) {
-        const element = document.getElementById(el);
-        const icon = document.getElementById(el + '_icon');
-
-        element.classList.add('accordion-item-active');
-        icon.classList.add('rotate-icon');
-
-        const panel = element.nextElementSibling;
-        panel.style.maxHeight = '1000px';
-
-        this.closeAllExcept(el);
-    }
-
-    closeAccordionItem(el) {
-        const element = document.getElementById(el);
-        const icon = document.getElementById(el + '_icon');
-
-        element.classList.remove('accordion-item-active');
-        icon.classList.remove('rotate-icon');
-
-        const panel = element.nextElementSibling;
-        panel.style.maxHeight = '0px';
-    }
-
     toggleAccordionItemHandler() {
         this.onTagEvent('toggle-accordion', 'click', (model, target) => {
             const targetIcon = target.querySelector('.accordion-icon');
