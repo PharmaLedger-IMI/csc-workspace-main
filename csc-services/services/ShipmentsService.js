@@ -2,14 +2,14 @@ const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedSto
 const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum } = require('./constants');
 const { shipmentStatusesEnum, shipmentsEventsEnum} = require('./constants/shipment');
-const CommunicationService = require('./lib/CommunicationService.js');
 const EncryptionService = require('./lib/EncryptionService.js');
+const DidService  = require('./lib/DidService');
 
 class ShipmentsService extends DSUService {
 	SHIPMENTS_TABLE = 'shipments';
 
 	constructor(DSUStorage, communicationService) {
-		super(DSUStorage, '/shipments');
+		super(DSUStorage, FoldersEnum.Shipments);
 		if (communicationService) {
 			this.communicationService = communicationService;
 		}
@@ -44,12 +44,16 @@ class ShipmentsService extends DSUService {
 		const statusDSU = await this.saveEntityAsync(statusModel, FoldersEnum.ShipmentsStatuses);
 		const status = await this.updateStatusDsu(shipmentStatusesEnum.InPreparation, statusDSU.keySSI);
 		const order = await this.getEntityAsync(data.orderSSI, FoldersEnum.Orders);
+		const cmoId = await DidService.getDidServiceInstance().getDID();
 		const shipmentModel = {
+
 			orderSSI: data.orderSSI,
 			requestDate: data.requestDate,
 			deliveryDate: data.deliveryDate,
 			orderId: data.orderId,
 			sponsorId: data.sponsorId,
+			cmoId:cmoId,
+			siteId:data.siteId,
 			shipmentId: data.orderId,
 			status: status.history,
 			encryptedMessages: {
@@ -61,7 +65,7 @@ class ShipmentsService extends DSUService {
 		const shipmentDb = await this.addShipmentToDB(shipmentDBData, shipmentDSU.keySSI);
 
 		this.sendMessageToEntity(
-			CommunicationService.identities.CSC.SPONSOR_IDENTITY,
+			shipmentDb.sponsorId,
 			shipmentStatusesEnum.InPreparation,
 			{
 				shipmentSSI: shipmentDSU.keySSI,
@@ -82,26 +86,26 @@ class ShipmentsService extends DSUService {
 			status: status.history
 		};
 
-		const shipmentPreparationDSU = await this.updateEntityAsync(shipmentDB);
+		await this.updateEntityAsync(shipmentDB);
 		const result = await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentKeySSI, shipmentDB);
 
 		let notifyIdentities = [];
 		switch (newStatus) {
 			case shipmentStatusesEnum.ReadyForDispatch: {
-				notifyIdentities.push(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
-				notifyIdentities.push(CommunicationService.identities.CSC.COU_IDENTITY);
+				notifyIdentities.push(shipmentDB.sponsorId);
+				notifyIdentities.push(shipmentDB.shipperId);
 				break;
 			}
 
 			case shipmentStatusesEnum.InTransit: {
-				notifyIdentities.push(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
-				notifyIdentities.push(CommunicationService.identities.CSC.SITE_IDENTITY);
-				notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
+				notifyIdentities.push(shipmentDB.sponsorId);
+				notifyIdentities.push(shipmentDB.siteId);
+				notifyIdentities.push(shipmentDB.cmoId);
 				break;
 			}
 
 			case shipmentStatusesEnum.ShipmentCancelled: {
-				notifyIdentities.push(CommunicationService.identities.CSC.CMO_IDENTITY);
+				notifyIdentities.push(shipmentDB.cmoId);
 				break;
 			}
 
@@ -149,7 +153,7 @@ class ShipmentsService extends DSUService {
 			let kitIdKeySSIEncrypted = shipmentDB.encryptedMessages.kitIdKeySSIEncrypted;
 			const kitIdSSI = await EncryptionService.decryptData(kitIdKeySSIEncrypted);
 			shipmentDB.kitIdSSI = kitIdSSI;
-			await this.mountEntityAsync(kitIdSSI, FoldersEnum.Kits);
+			await this.mountEntityAsync(kitIdSSI, FoldersEnum.KitIds);
 		}
 		else {
 			shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
@@ -227,7 +231,7 @@ class ShipmentsService extends DSUService {
 		}
 
 		this.sendMessageToEntity(
-			CommunicationService.identities.CSC.SPONSOR_IDENTITY,
+			shipmentDB.sponsorId,
 			shipmentStatusesEnum.PickUpAtWarehouse,
 			inTransitDSUMessage,
 			shipmentStatusesEnum.PickUpAtWarehouse
@@ -235,7 +239,7 @@ class ShipmentsService extends DSUService {
 
 		//Send a message to cmo
 		this.sendMessageToEntity(
-			CommunicationService.identities.CSC.CMO_IDENTITY,
+			shipmentDB.cmoId,
 			shipmentStatusesEnum.Dispatched,
 			inTransitDSUMessage,
 			shipmentStatusesEnum.Dispatched
@@ -257,7 +261,7 @@ class ShipmentsService extends DSUService {
 		await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentKeySSI, shipmentDB);
 
 		if (shipmentComments) {
-			const shipmentCommentDSU = await this.addCommentToDsu(shipmentComments, shipmentDB.shipmentComments);
+			await this.addCommentToDsu(shipmentComments, shipmentDB.shipmentComments);
 		}
 
 		const shipmentReceivedDSUMessage = {
@@ -266,14 +270,14 @@ class ShipmentsService extends DSUService {
 		}
 
 		this.sendMessageToEntity(
-			CommunicationService.identities.CSC.SPONSOR_IDENTITY,
+			shipmentDB.sponsorId,
 			shipmentStatusesEnum.Received,
 			shipmentReceivedDSUMessage,
 			shipmentStatusesEnum.Received
 		);
-        const courierMessage = { shipmentSSI: shipmentKeySSI };
+    const courierMessage = { shipmentSSI: shipmentKeySSI };
 		this.sendMessageToEntity(
-        	CommunicationService.identities.CSC.COU_IDENTITY,
+					shipmentDB.shipperId,
         	shipmentStatusesEnum.ProofOfDelivery,
         	courierMessage,
         	shipmentStatusesEnum.ProofOfDelivery
@@ -298,7 +302,7 @@ class ShipmentsService extends DSUService {
 			shipmentSSI: shipmentKeySSI
 		}
 
-		const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY, CommunicationService.identities.CSC.SITE_IDENTITY];
+		const notifiableActors = [shipmentDB.sponsorId, shipmentDB.siteId];
 		notifiableActors.forEach(actor => {
 			this.sendMessageToEntity(
 				actor,
@@ -345,7 +349,7 @@ class ShipmentsService extends DSUService {
 		};
 
 		this.sendMessageToEntity(
-			CommunicationService.identities.CSC.SITE_IDENTITY,
+			shipmentDB.siteId,
 			shipmentStatusesEnum.InTransit,
 			siteMessage,
 			shipmentStatusesEnum.InTransit
@@ -359,7 +363,7 @@ class ShipmentsService extends DSUService {
 		};
 
 		this.sendMessageToEntity(
-			CommunicationService.identities.CSC.SPONSOR_IDENTITY,
+			shipmentDB.sponsorId,
 			shipmentStatusesEnum.InTransit,
 			sponsorMessage,
 			shipmentStatusesEnum.InTransit
@@ -376,8 +380,7 @@ class ShipmentsService extends DSUService {
 		shipmentComments.comments.push(commentData);
 		shipmentComments = await this.updateEntityAsync(shipmentComments, FoldersEnum.ShipmentComments);
 
-		const notifiableActors = [CommunicationService.identities.CSC.SPONSOR_IDENTITY, CommunicationService.identities.CSC.SITE_IDENTITY];
-
+		const notifiableActors = [shipmentDB.sponsorId, shipmentDB.siteId];
 		const inTransitComment = {
 			shipmentSSI: shipmentSSI
 		}

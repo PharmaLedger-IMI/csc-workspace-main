@@ -19,4 +19,5 @@ require('./KitHistoryModalControllerImpl');
 require('./ProgressStatusControllerImpl');
 require('./SingleKitControllerImpl');
 require('./KitMountingProgressControllerImpl');
+require('./StatusFilterControllerImpl');
 require('./helpers/AccordionController');

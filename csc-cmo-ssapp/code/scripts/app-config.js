@@ -1,4 +1,4 @@
-const { addControllers } = WebCardinal.preload;
+const { addControllers, addHook } = WebCardinal.preload;
 
 const cscServices = require('csc-services');
 const ACTOR = cscServices.constants.Roles.CMO;
@@ -17,20 +17,28 @@ const ShipmentsController = cscServices.getController('ShipmentsController', ACT
 const ScanShipmentModalController = cscServices.getController('ScanShipmentModalController', ACTOR);
 const TabNavigatorController = cscServices.getController('TabNavigatorController', ACTOR);
 const KitSummaryController = cscServices.getController('KitSummaryController', ACTOR);
+const StatusFilterController = cscServices.getController('StatusFilterController', ACTOR);
 
-addControllers({
-  TableTemplateController,
-  SingleOrderController,
-  HistoryModalController,
-  HeaderController,
-  NotificationsController,
-  DashboardMenuController,
-  DashboardController,
-  OrdersController,
-  ReviewOrderController,
-  SingleShipmentController,
-  ShipmentsController,
-  ScanShipmentModalController,
-  TabNavigatorController,
-  KitSummaryController,
+
+addHook('beforeAppLoads', async () => {
+  const { DidInputController } = await import('../components/did-input/DidInputController.js');
+  await import('../components/did-input/did-input.js');
+  addControllers({
+    TableTemplateController,
+    SingleOrderController,
+    HistoryModalController,
+    HeaderController,
+    NotificationsController,
+    DashboardMenuController,
+    DashboardController,
+    OrdersController,
+    ReviewOrderController,
+    SingleShipmentController,
+    ShipmentsController,
+    ScanShipmentModalController,
+    TabNavigatorController,
+    KitSummaryController,
+    StatusFilterController,
+    DidInputController
+  });
 });

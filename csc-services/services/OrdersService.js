@@ -2,13 +2,13 @@ const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedSto
 const DSUService = require('./lib/DSUService.js');
 const { Roles, messagesEnum, order, FoldersEnum } = require('./constants');
 const orderStatusesEnum = order.orderStatusesEnum;
-const CommunicationService = require('./lib/CommunicationService.js');
+const {getDidData} = require('./lib/DidService.js');
 const EncryptionService = require('./lib/EncryptionService.js');
 class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
 
   constructor(DSUStorage, communicationService) {
-    super(DSUStorage, '/orders');
+    super(DSUStorage, FoldersEnum.Orders);
     if (communicationService) {
       this.communicationService = communicationService;
     }
@@ -16,7 +16,6 @@ class OrdersService extends DSUService {
     this.DSUStorage = DSUStorage;
   }
 
-  // -> DB functions
 
   async getOrders() {
     const result = await this.storageService.filter(this.ORDERS_TABLE);
@@ -43,13 +42,11 @@ class OrdersService extends DSUService {
   }
 
   async addOrderToDB(data, key) {
-    const newRecord = await this.storageService.insertRecord(this.ORDERS_TABLE, key ? key : data.orderId, data);
-    return newRecord;
+    return await this.storageService.insertRecord(this.ORDERS_TABLE, key ? key : data.orderId, data);
   }
 
   async updateOrderToDB(data, key) {
-    const updatedRecord = await this.storageService.updateRecord(this.ORDERS_TABLE, key ? key : data.orderId, data);
-    return updatedRecord;
+    return await this.storageService.updateRecord(this.ORDERS_TABLE, key ? key : data.orderId, data);
   }
 
   // -> Utils
@@ -67,12 +64,11 @@ class OrdersService extends DSUService {
     return new Promise((resolve, reject) => {
       getFileContentAsBuffer(file, (err, arrayBuffer) => {
         if (err) {
-          reject('Could not get file as a Buffer');
+          return reject('Could not get file as a Buffer');
         }
         this.DSUStorage.writeFile(path, $$.Buffer.from(arrayBuffer), undefined, (err, keySSI) => {
           if (err) {
-            reject(new Error(err));
-            return;
+            return reject(new Error(err));
           }
           resolve();
         });
@@ -137,7 +133,7 @@ class OrdersService extends DSUService {
 
     // TODO: send correct type of SSIs (sread, keySSI, etc)
     this.sendMessageToEntity(
-      CommunicationService.identities.CSC.CMO_IDENTITY,
+      order.targetCmoId,
       messagesEnum.StatusInitiated,
       {
         orderSSI: order.uid,
@@ -180,7 +176,7 @@ class OrdersService extends DSUService {
         kitIds: [],
         file: null,
       },
-      FoldersEnum.Kits
+      FoldersEnum.KitIds
     );
 
     const commentsDsu = await this.saveEntityAsync(
@@ -233,7 +229,7 @@ class OrdersService extends DSUService {
   }
 
   async addKitsToDsu(file, kitIds, keySSI) {
-    const kitsDataDsu = await this.getEntityAsync(keySSI, FoldersEnum.Kits);
+    const kitsDataDsu = await this.getEntityAsync(keySSI, FoldersEnum.KitIds);
     const updatedDSU = await this.updateEntityAsync(
       {
         ...kitsDataDsu,
@@ -244,12 +240,12 @@ class OrdersService extends DSUService {
           date: new Date().getTime(),
         },
       },
-      FoldersEnum.Kits
+      FoldersEnum.KitIds
     );
 
-    const attachmentKeySSI = await this.uploadFile(FoldersEnum.Kits + '/' + updatedDSU.uid + '/' + 'files' + '/' + file.name, file);
+    const attachmentKeySSI = await this.uploadFile(FoldersEnum.KitIds + '/' + updatedDSU.uid + '/' + 'files' + '/' + file.name, file);
     updatedDSU.file.attachmentKeySSI = attachmentKeySSI;
-    const result = await this.updateEntityAsync(updatedDSU, FoldersEnum.Kits);
+    const result = await this.updateEntityAsync(updatedDSU, FoldersEnum.KitIds);
     return result;
   }
 
@@ -275,7 +271,7 @@ class OrdersService extends DSUService {
         status = await this.mountEntityAsync(attachedDSUKeySSIs.statusKeySSI, FoldersEnum.Statuses);
         sponsorDocuments = await this.mountEntityAsync(attachedDSUKeySSIs.sponsorDocumentsKeySSI, FoldersEnum.Documents);
         cmoDocuments = await this.mountEntityAsync(attachedDSUKeySSIs.cmoDocumentsKeySSI, FoldersEnum.Documents);
-        kits = await this.mountEntityAsync(attachedDSUKeySSIs.kitIdsKeySSI, FoldersEnum.Kits);
+        kits = await this.mountEntityAsync(attachedDSUKeySSIs.kitIdsKeySSI, FoldersEnum.KitIds);
         comments = await this.mountEntityAsync(attachedDSUKeySSIs.commentsKeySSI, FoldersEnum.Comments);
 
         orderDb = await this.addOrderToDB(
@@ -311,10 +307,10 @@ class OrdersService extends DSUService {
     }
 
     if (files) {
-      documents = await this.addDocumentsToDsu(files, role === Roles.CMO ? orderDB.cmoDocumentsKeySSI : orderDB.sponsorDocumentsKeySSI, role);
+      await this.addDocumentsToDsu(files, role === Roles.CMO ? orderDB.cmoDocumentsKeySSI : orderDB.sponsorDocumentsKeySSI, role);
     }
     if (comment) {
-      comments = await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
+      await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
     }
 
     if (otherDetails) {
@@ -324,16 +320,10 @@ class OrdersService extends DSUService {
     }
 
     const result = await this.updateOrderToDB(orderDB, orderKeySSI);
-    let identity = role === Roles.CMO ? CommunicationService.identities.CSC.SPONSOR_IDENTITY : CommunicationService.identities.CSC.CMO_IDENTITY;
+    let identity = role === Roles.CMO ? orderDB.sponsorId : orderDB.targetCmoId;
 
     if (newStatus) {
-      this.communicationService.sendMessage(identity, {
-        operation: newStatus,
-        data: {
-          orderSSI: orderKeySSI,
-        },
-        shortDescription: 'Order Updated',
-      });
+      this.sendMessageToEntity(identity, newStatus, { orderSSI: orderKeySSI }, "Order Updated");
     }
 
     return result;

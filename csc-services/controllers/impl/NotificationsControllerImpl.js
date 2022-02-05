@@ -28,7 +28,6 @@ class NotificationsControllerImpl extends WebcController {
 		let notifications = await this.notificationsService.getNotifications();
 		notifications = this.transformData(notifications);
 		this.model.setChainValue('notifications', notifications);
-		console.log("notifications " + JSON.stringify(notifications));
 	}
 
 	transformData(notifications) {

@@ -1,12 +1,14 @@
 export default {
-  appName: 'SIte App',
+  appName: 'Site App',
   appVersion: '0.1.1',
   vault: 'server',
   agent: 'browser',
   system: 'any',
   browser: 'any',
   mode: 'dev-secure',
-  domain: 'vault',
+  domain: 'csc',
+  vaultDomain:"csc",
+  enclaveType:"WalletDBEnclave",
   sw: false,
   pwa: false,
   'legenda for properties':

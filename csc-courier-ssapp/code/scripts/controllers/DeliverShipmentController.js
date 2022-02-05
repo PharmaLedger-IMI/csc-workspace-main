@@ -4,7 +4,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentService = cscServices.ShipmentService;
 const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
-const { shipment, Roles, Topics } = cscServices.constants;
+const { shipment,  Topics } = cscServices.constants;
 const shipmentStatusesEnum = shipment.shipmentStatusesEnum;
 
 class DeliverShipmentController extends WebcController {
@@ -13,7 +13,7 @@ class DeliverShipmentController extends WebcController {
     super(...props);
     this.originalShipment = this.history.location.state.shipment;
 
-    let communicationService = CommunicationService.getInstance(Roles.Courier);
+    let communicationService = CommunicationService.getCommunicationServiceInstance();
     this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
     this.model = this.getDeliverShipmentViewModel(shipment);
 

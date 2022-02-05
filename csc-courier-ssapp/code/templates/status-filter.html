@@ -1,0 +1,16 @@
+<webc-container controller='StatusFilterController' data-view-model='@'>
+<div class="filters-wrapper">
+  <div class="filter-status">
+    <span class="fas fa-filter"></span>
+    <label>Status: </label>
+  </div>
+  <button class="btn-filter selected" data-custom="" data-tag="filters-cleared" id="filter-">
+    {{@statuses.allItems}}
+  </button>
+  <div data-for='@statuses.allStatuses'>
+    <button class="btn-filter" data-custom="@status" data-tag="filters-changed" id="@statusId">
+      {{@status}}
+    </button>
+  </div>
+</div>
+</webc-container>

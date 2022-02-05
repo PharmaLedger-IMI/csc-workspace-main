@@ -1,7 +1,6 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
 const ShipmentsService = require('./ShipmentsService.js');
-const CommunicationService = require('./lib/CommunicationService.js');
 const { FoldersEnum, kit } = require('./constants');
 const { kitsStatusesEnum } = kit;
 
@@ -16,6 +15,10 @@ class KitsService extends DSUService {
     this.storageService = getSharedStorage(DSUStorage);
     this.shipmentsService = new ShipmentsService(DSUStorage);
     this.DSUStorage = DSUStorage;
+  }
+
+  async getKitIdsDsu(kitIdsSSI){
+    return await this.getEntityAsync(kitIdsSSI, FoldersEnum.KitIds);
   }
 
   async getKitsDSU(kitsKeySSI) {
@@ -142,12 +145,16 @@ class KitsService extends DSUService {
     //update kits database
     const kitRecord =  await this.addStudyKitDataToDb(kitDSU.studyId, studyKitsDSU);
 
-    this.communicationService.sendMessage(CommunicationService.identities.CSC.SPONSOR_IDENTITY, {
+    const shipments = await this.shipmentsService.getShipments();
+    const shipment = shipments.find((shipment) => {
+      return shipment.shipmentId === kitDSU.shipmentId;
+    });
+
+    await this.communicationService.sendMessage(shipment.sponsorId,{
         operation: status,
         data: { kitSSI: kitSSI },
         shortDescription: status
-      }
-    );
+      });
 
     return kitRecord;
   }

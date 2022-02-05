@@ -1,4 +1,4 @@
-const { addControllers } = WebCardinal.preload;
+const { addControllers, addHook } = WebCardinal.preload;
 
 const cscServices = require('csc-services');
 const ACTOR = cscServices.constants.Roles.Sponsor;
@@ -21,24 +21,32 @@ const SingleKitController = cscServices.getController('SingleKitController', ACT
 const KitHistoryModalController = cscServices.getController('KitHistoryModalController', ACTOR);
 const KitMountingProgressController = cscServices.getController('KitMountingProgressController', ACTOR);
 const ProgressStatusController = cscServices.getController('ProgressStatusController', ACTOR);
+const StatusFilterController = cscServices.getController('StatusFilterController', ACTOR);
 
-addControllers({
-  TableTemplateController,
-  SingleOrderController,
-  HistoryModalController,
-  HeaderController,
-  NotificationsController,
-  DashboardMenuController,
-  DashboardController,
-  OrdersController,
-  ShipmentsController,
-  SingleShipmentController,
-  TabNavigatorController,
-  KitsController,
-  KitSummaryController,
-  StudiesKitsController,
-  SingleKitController,
-  KitHistoryModalController,
-  KitMountingProgressController,
-  ProgressStatusController
-});
+
+addHook("beforeAppLoads", async () => {
+  const {DidInputController} = await import("../components/did-input/DidInputController.js");
+  await import("../components/did-input/did-input.js");
+  addControllers({
+    TableTemplateController,
+    SingleOrderController,
+    HistoryModalController,
+    HeaderController,
+    NotificationsController,
+    DashboardMenuController,
+    DashboardController,
+    OrdersController,
+    ShipmentsController,
+    SingleShipmentController,
+    TabNavigatorController,
+    KitsController,
+    KitSummaryController,
+    StudiesKitsController,
+    SingleKitController,
+    KitHistoryModalController,
+    KitMountingProgressController,
+    ProgressStatusController,
+    StatusFilterController,
+    DidInputController
+  });
+})

@@ -16,13 +16,18 @@ export default class EditShipmentController extends WebcController {
 		super(...props);
 		this.model.submitDisabled = false;
 		this.model.keySSI = this.history.location.state.keySSI;
+		this.initServices()
+	}
+
+	async initServices(){
 		this.ordersService = new OrderService(this.DSUStorage);
-		let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
+		let communicationService = CommunicationService.getCommunicationServiceInstance();
 		this.shipmentsService = new ShipmentService(this.DSUStorage, communicationService);
 		this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
 
 		this.attachEventHandlers();
 		this.initViewModel();
+
 		this.model.onChange('shipmentModel.form', this.checkFormValidity.bind(this));
 
 	}
@@ -31,7 +36,6 @@ export default class EditShipmentController extends WebcController {
 		if(this.model.shipmentModel.form){
 			// Validation For Dimension Values
 			let keys = Object.keys(this.model.shipmentModel.form.dimension);
-			if(keys){
 				keys.forEach( (key) => {
 					if(this.model.shipmentModel.form.dimension[key].value !== undefined){
 						if(this.model.shipmentModel.form.dimension[key].value.indexOf('-') !== -1){
@@ -39,7 +43,6 @@ export default class EditShipmentController extends WebcController {
 						}
 					}
 				});
-			}
 		}
 	}
 
@@ -73,7 +76,7 @@ export default class EditShipmentController extends WebcController {
 		this.onTagClick('download-kits-file', async (model) => {
 			window.WebCardinal.loader.hidden = false;
 			const fileName = model.order.kitsFilename;
-			const path = FoldersEnum.Kits + '/' + model.order.kitsSSI + '/' + 'files';
+			const path = FoldersEnum.KitIds + '/' + model.order.kitsSSI + '/' + 'files';
 			await this.FileDownloaderService.prepareDownloadFromDsu(path, fileName);
 			this.FileDownloaderService.downloadFileToDevice(fileName);
 			window.WebCardinal.loader.hidden = true;
@@ -191,11 +194,13 @@ export default class EditShipmentController extends WebcController {
 	}
 
 	checkFormValidity(){
-		//To be refactored according with current step
+		//To be refactored according to current step
 		const requiredInputs = [
+			this.model.shipmentModel.form.shipperId.value,
 		  this.model.shipmentModel.form.origin.value,
 		  this.model.shipmentModel.form.type.value,
 		  this.model.shipmentModel.form.pickupDate.value,
+		  this.model.shipmentModel.form.pickupTime.value,
 		  this.model.shipmentModel.form.dimension.height.value,
 		  this.model.shipmentModel.form.dimension.length.value,
 		  this.model.shipmentModel.form.dimension.width.value
@@ -212,10 +217,8 @@ export default class EditShipmentController extends WebcController {
 	  }
 
 	async initViewModel() {
-		this.model = {
-			orderModel: viewModelResolver('order'),
-			shipmentModel: viewModelResolver('shipment')
-		};
+			this.model.orderModel =  viewModelResolver('order');
+			this.model.shipmentModel = viewModelResolver('shipment')
 
 		//all order fields are disabled
 		for (let prop in this.model.orderModel.form.inputs) {

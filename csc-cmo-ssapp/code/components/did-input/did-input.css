@@ -1,0 +1,26 @@
+.scan-did-btn{
+    background: #008898 ;
+    color: #FFF;
+    border-color: #008898 ;
+}
+.scan-did-btn:focus,
+.scan-did-btn:active,
+.scan-did-btn:not(:disabled):not(.disabled):active,
+.scan-did-btn:hover{
+    background: #177f8b;
+    border-color: #177f8b;
+    box-shadow: none;
+}
+
+input.highlight{
+    animation: highlight 1000ms ease-out;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: #008898;
+    }
+    100% {
+        background-color: white;
+    }
+}

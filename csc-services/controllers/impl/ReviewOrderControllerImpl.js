@@ -2,7 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
-const CommunicationService = cscServices.CommunicationService;
+const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { Topics, Roles, order, FoldersEnum } = cscServices.constants;
@@ -16,15 +16,18 @@ class ReviewOrderControllerImpl extends WebcController {
 
   constructor(role, ...props) {
     super(...props);
+    this.initServices();
 
     this.role = role;
     this.originalOrder = this.history.location.state.order;
-    let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.CMO_IDENTITY);
-    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
-    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
-
     this.model = this.getReviewOrderViewModel(order);
     this.attachEventHandlers();
+  }
+
+  async initServices(){
+    let communicationService = getCommunicationServiceInstance()
+    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
+    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
   }
 
   attachEventHandlers() {
@@ -125,7 +128,7 @@ class ReviewOrderControllerImpl extends WebcController {
     this.onTagClick('download-kits-file', async (model, target, event) => {
       const filename = target.getAttribute('data-custom') || null;
       if (filename) {
-        await this.downloadFile(filename, FoldersEnum.Kits, model.order.kitsSSI);
+        await this.downloadFile(filename, FoldersEnum.KitIds, model.order.kitsSSI);
       }
     });
   }
@@ -272,13 +275,7 @@ class ReviewOrderControllerImpl extends WebcController {
     let model = {
       wizard_form: [
         { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Order Details', visible: true, validated: false },
-        {
-          id: 'step-2',
-          holder_id: 'step-2-wrapper',
-          name: 'Attach Documents',
-          visible: false,
-          validated: false,
-        },
+        { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Documents', visible: false, validated: false },
         { id: 'step-3', holder_id: 'step-3-wrapper', name: 'Comments', visible: false, validated: false },
         { id: 'step-4', holder_id: 'step-4-wrapper', name: 'Summary', visible: false, validated: false },
       ],

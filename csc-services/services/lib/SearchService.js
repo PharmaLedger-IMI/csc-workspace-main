@@ -2,17 +2,16 @@
 
 class SearchService {
 
-    constructor(itemStatusesEnum, tableHeaders) { 
-        this.itemStatusesEnum = itemStatusesEnum;
-        this.searchedProperties = tableHeaders.filter(header=>header.notSortable===false).map( header => header.column);
+    constructor(tableHeaders) {
+      this.searchedProperties = tableHeaders.filter(header => header.notSortable === false).map(header => header.column);
     }
 
     filterData(result, filter, searchValue) {
 
         if (filter) {
-            result = result.filter((x) => x.status_value === this.itemStatusesEnum[filter]);
+            result = result.filter((x) => x.status_value === filter);
           }
-          if (searchValue && searchValue !== '') {
+          if (searchValue) {
       
             result = result.filter((x) => {
               const matches = this.searchedProperties.filter((property) => {

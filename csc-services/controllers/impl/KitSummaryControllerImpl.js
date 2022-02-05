@@ -23,7 +23,7 @@ class KitSummaryControllerImpl extends WebcController {
       window.WebCardinal.loader.hidden = false;
       const fileName = model.file.name;
       const keySSI  = this.model.kitsSSI;
-      const path = FoldersEnum.Kits + '/' + keySSI + '/' + 'files';
+      const path = FoldersEnum.KitIds + '/' + keySSI + '/' + 'files';
       await this.fileDownloaderService.prepareDownloadFromDsu(path, fileName);
       this.fileDownloaderService.downloadFileToDevice(fileName);
       window.WebCardinal.loader.hidden = true;
@@ -32,7 +32,7 @@ class KitSummaryControllerImpl extends WebcController {
 
   async getKits() {
     const keySSI = this.model.kitsSSI;
-    const kits = await this.kitsService.getKitsDSU(keySSI);
+    const kits = await this.kitsService.getKitIdsDsu(keySSI);
     this.model = { ...JSON.parse(JSON.stringify(this.model)), ...kits };
     this.model.kitsLoaded = true;
     this.model = JSON.parse(JSON.stringify(this.model));

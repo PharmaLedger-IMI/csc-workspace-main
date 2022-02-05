@@ -58,7 +58,7 @@ class ViewShipmentBaseControllerImpl extends AccordionController{
   downloadKitListHandler() {
     this.onTagClick('download-kits-file', async (order) => {
       const { kitsFilename, kitsSSI } = order;
-      await this.downloadFile(kitsFilename, FoldersEnum.Kits, kitsSSI);
+      await this.downloadFile(kitsFilename, FoldersEnum.KitIds, kitsSSI);
     });
   }
 

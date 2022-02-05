@@ -4,12 +4,12 @@ const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService;
 const { Topics, Roles, DocumentTypes } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
+const DidService = cscServices.DidService;
 const momentService = cscServices.momentService;
-const CommunicationService = cscServices.CommunicationService;
+const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const { uuidv4 } = cscServices.utils;
-const sites = cscServices.constants.order.orderBusinessRequirements.sites;
 
 export default class NewOrderController extends WebcController {
   files = [];
@@ -17,14 +17,14 @@ export default class NewOrderController extends WebcController {
 
   constructor(...props) {
     super(...props);
-    let communicationService = CommunicationService.getInstance(CommunicationService.identities.CSC.SPONSOR_IDENTITY);
-    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
-    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
+
+    this.initServices();
+
 
     this.model = {
       wizard_form: [
         { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Order Details', visible: true, validated: false },
-        { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Attach Documents', visible: false, validated: false },
+        { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Documents', visible: false, validated: false },
         { id: 'step-3', holder_id: 'step-3-wrapper', name: 'Comments', visible: false, validated: false },
         { id: 'step-4', holder_id: 'step-4-wrapper', name: 'Summary', visible: false, validated: false },
       ],
@@ -40,6 +40,12 @@ export default class NewOrderController extends WebcController {
       temperatureError:false,
       formIsInvalid:true,
     };
+
+    let didService = DidService.getDidServiceInstance();
+    didService.getDID().then((did)=>{
+      this.model.form.inputs.sponsor_id.value = did;
+    });
+
     this.model.form.isSubmitting = false;
 
     this.on('add-file', (event) => {
@@ -62,16 +68,6 @@ export default class NewOrderController extends WebcController {
 
       if (event.data) this.docs = event.data;
     });
-
-    let siteChangeHandler = () => {
-      let siteObject = sites.find((site) => site.name === this.model.form.inputs.site_id.value);
-      this.model.form.inputs.site_region_id.value = siteObject.siteRegionID;
-      this.model.form.inputs.site_country.value = siteObject.siteCountry;
-    }
-
-    this.model.onChange('form.inputs.site_id', siteChangeHandler);
-    //trigger the first selection
-    siteChangeHandler();
 
     this.on('add-kit-ids-file', async (event) => {
       const files = event.data;
@@ -188,21 +184,18 @@ export default class NewOrderController extends WebcController {
       this.model.form.isSubmitting  = true;
       const payload = {};
 
-      if (this.model.form) {
-        if (this.model.form.inputs) {
-          let keys = Object.keys(this.model.form.inputs);
-          if (keys.length > 0) {
-            keys.forEach((key) => {
-              if (key === 'delivery_date' || key === 'delivery_time') {
-                payload['delivery_date'] = this.getDateTime();
-              } else if (key.indexOf('keep_between_temperature') !== -1) {
-                payload['keep_between_temperature'] = this.getTemperature();
-              } else {
-                payload[key] = this.model.form.inputs[key].value;
-              }
-            });
+
+        let keys = Object.keys(this.model.form.inputs);
+        keys.forEach((key) => {
+          if (key === 'delivery_date' || key === 'delivery_time') {
+            payload['delivery_date'] = this.getDateTime();
+          } else if (key.indexOf('keep_between_temperature') !== -1) {
+            payload['keep_between_temperature'] = this.getTemperature();
+          } else {
+            payload[key] = this.model.form.inputs[key].value;
           }
-        }
+        });
+
 
         if (this.model.form.documents) {
           payload['files'] = [];
@@ -222,8 +215,6 @@ export default class NewOrderController extends WebcController {
 
         this.model.orderCreatedKeySSI = result.keySSI;
 
-        console.log(result);
-
         eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
 
         this.createWebcModal({
@@ -239,7 +230,6 @@ export default class NewOrderController extends WebcController {
           expanded: false,
           centered: true,
         });
-      }
       window.WebCardinal.loader.hidden=true;
     };
 
@@ -304,13 +294,16 @@ export default class NewOrderController extends WebcController {
     this.model.onChange('form.inputs', this.checkFormValidity.bind(this));
   }
 
+
+  async initServices(){
+    let communicationService = getCommunicationServiceInstance();
+    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
+    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
+  }
   checkFormValidity(){
-    //To be refactored according with current step
-    const requiredInputs = [
-      this.model.form.inputs.order_id.value,
-      this.model.form.inputs.study_id.value,
-      this.model.form.inputs.delivery_date.value
-    ]
+
+    const inputs = this.model.form.inputs
+    const requiredInputs = Object.keys(inputs).filter((key)=>inputs[key].required).map(key=>inputs[key].value)
 
     let validationConstraints = [
       typeof this.model.form.inputs.kit_ids_attachment.ids !== 'undefined' && this.model.form.inputs.kit_ids_attachment.ids.length > 0,
@@ -321,7 +314,7 @@ export default class NewOrderController extends WebcController {
   }
 
   isInputFilled(field){
-    return typeof field !== 'undefined' && field.trim()!==""
+    return typeof field !== 'undefined' && field.trim() !== ""
   }
 
   getDateTime() {
@@ -338,7 +331,7 @@ export default class NewOrderController extends WebcController {
   // TODO: Copy below functions to utils
   readFile(file) {
     return new Promise((resolve, reject) => {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.onload = () => {
         resolve(this.extractIdsFromCsv(reader.result));
       };
