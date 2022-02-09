@@ -6,8 +6,6 @@ const orderStatusesEnum = {
 };
 
 const orderPendingActionEnum = {
-	PendingReviewByCMO: 'Pending Review by CMO',
-	SponsorReviewOrApprove: 'Sponsor Approve',
 	NoPendingActions: 'There are no any further pending actions',
 	PendingShipmentPreparation: 'Pending Shipment Preparation',
 	NoFurtherActionsRequired: 'No further actions required'

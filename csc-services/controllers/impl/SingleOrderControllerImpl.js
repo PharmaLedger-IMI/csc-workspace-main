@@ -235,7 +235,6 @@ class SingleOrderControllerImpl extends AccordionController {
     const order = this.model.order;
     const shipment = this.model.shipment;
     const isShipmentCreated = typeof shipment !== 'undefined';
-    const canCMOReviewStatuses = [orderStatusesEnum.Initiated];
     const cancellableOrderStatus = [orderStatusesEnum.Initiated, shipmentStatusesEnum.InPreparation];
     const actions = {};
 
@@ -300,12 +299,6 @@ class SingleOrderControllerImpl extends AccordionController {
     if(this.attachedCMOEventsHandlers){
       return;
     }
-
-    this.onTagEvent('review-order', 'click', () => {
-      this.navigateToPageTag('review-order', {
-        order: this.model.toObject('order')
-      });
-    });
 
     this.onTagEvent('prepare-shipment', 'click', async () => {
       window.WebCardinal.loader.hidden = false;
