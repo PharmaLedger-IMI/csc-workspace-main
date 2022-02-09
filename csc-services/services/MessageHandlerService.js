@@ -141,32 +141,12 @@ class MessageHandlerService {
         break;
       }
 
-      //TODO are you sure that the order was mounted previously?
-      // if user is offline and an order will pass through many states: Initiated, Reviewed by CMO, Accepted,
-      // the communication system will raise 3 different events and
-      //   1. the order of the events may not be the same
-      //   2. the communicationService is not waiting, it will provide the next message ASAP
-
-      case orderStatusesEnum.ReviewedByCMO: {
-        notificationRole = Roles.CMO;
-        orderData = await this.ordersService.updateLocalOrder(data.data.orderSSI);
-
-        break;
-      }
-
       case orderStatusesEnum.Canceled: {
         notificationRole = Roles.Sponsor;
         orderData = await this.ordersService.updateLocalOrder(data.data.orderSSI);
-
         break;
       }
 
-      case orderStatusesEnum.Approved: {
-        notificationRole = Roles.Sponsor;
-        orderData = await this.ordersService.updateLocalOrder(data.data.orderSSI);
-
-        break;
-      }
     }
 
     return [orderData, orderStatus, notificationRole];

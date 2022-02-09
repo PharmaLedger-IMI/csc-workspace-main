@@ -9,8 +9,8 @@ class StatusesService {
 
   getOrderStatuses() {
 
-    let normalStatuses = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO];
-    let approvedStatuses = [orderStatusesEnum.Approved];
+    let normalStatuses = [orderStatusesEnum.Initiated, orderStatusesEnum.InProgress];
+    let approvedStatuses = [orderStatusesEnum.Completed];
     let canceledStatuses = [orderStatusesEnum.Canceled];
     return { normalStatuses, approvedStatuses, canceledStatuses };
 

@@ -52,7 +52,7 @@ class OrdersControllerImpl extends WebcController {
 					return new Date(b.date) - new Date(a.date);
 				})[0];
 				item.status_value = latestStatus.status;
-				item.status_approved = item.status_value === orderStatusesEnum.Approved;
+				item.status_approved = item.status_value === orderStatusesEnum.Completed;
 				item.status_cancelled = item.status_value === orderStatusesEnum.Canceled;
 				item.status_normal = !item.status_approved && !item.status_cancelled;
 				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';

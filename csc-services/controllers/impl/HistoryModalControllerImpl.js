@@ -70,10 +70,9 @@ class HistoryModalControllerImpl extends WebcController {
 
 			const lastIndex = order.status.length - 1;
 			order.status.forEach((item, index) => {
-				item.approved = item.status === orderStatusesEnum.Approved && index === lastIndex;
-				item.cancelledAfterApproval = item.status === orderStatusesEnum.Approved && (index === lastIndex - 1);
+				item.approved = item.status === orderStatusesEnum.Completed && index === lastIndex;
 				item.cancelled = item.status === orderStatusesEnum.Canceled;
-				item.normal = item.status !== orderStatusesEnum.Canceled && item.status !== orderStatusesEnum.Approved;
+				item.normal = item.status !== orderStatusesEnum.Canceled && item.status !== orderStatusesEnum.Completed;
 				item.date = momentService(item.date).format(Commons.DateTimeFormatPattern);
 			});
 		} else {

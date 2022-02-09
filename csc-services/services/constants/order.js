@@ -1,7 +1,7 @@
 const orderStatusesEnum = {
 	Initiated: 'Initiated',
-	ReviewedByCMO: 'Reviewed by CMO',
-	Approved: 'Approved',
+	InProgress: 'In Progress',
+	Completed: 'Completed',
 	Canceled: 'Canceled'
 };
 
