@@ -2,7 +2,6 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const KitsService = cscServices.KitsService;
-const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
 const {  Topics } = cscServices.constants;
 const { kitsStatusesEnum } = cscServices.constants.kit;
@@ -14,8 +13,7 @@ class AssignKitController extends WebcController {
     super(...props);
     this.originalKit = this.history.location.state.kit;
     let { studyId, orderId, keySSI, kitId } = this.history.location.state.kit;
-    let communicationService = CommunicationService.getCommunicationServiceInstance();
-    this.kitsService = new KitsService(this.DSUStorage, communicationService);
+    this.kitsService = new KitsService(this.DSUStorage);
     this.model = { kitModel: viewModelResolver('kit') };
     this.model.kit = this.originalKit;
     this.model.studyId = studyId;

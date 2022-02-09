@@ -2,7 +2,6 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const ShipmentService = cscServices.ShipmentService;
-const CommunicationService = cscServices.CommunicationService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { uuidv4 } = cscServices.utils;
@@ -22,8 +21,7 @@ export default class EditShipmentController extends WebcController {
   }
 
   async initServices(){
-    let communicationService = CommunicationService.getCommunicationServiceInstance();
-    this.shipmentsService = new ShipmentService(this.DSUStorage, communicationService);
+    this.shipmentsService = new ShipmentService(this.DSUStorage);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
   }
 

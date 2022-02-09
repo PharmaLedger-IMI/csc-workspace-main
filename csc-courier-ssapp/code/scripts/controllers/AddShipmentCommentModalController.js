@@ -2,7 +2,6 @@
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const ShipmentService = cscServices.ShipmentService;
-const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
 const { Roles, Topics } = cscServices.constants;
 
@@ -22,8 +21,7 @@ class AddShipmentCommentModalController extends WebcController {
        }
     }
 
-    let communicationService = CommunicationService.getCommunicationServiceInstance();
-    this.shipmentService = new ShipmentService (this.DSUStorage, communicationService);
+    this.shipmentService = new ShipmentService (this.DSUStorage);
 
     this.initHandlers();
   }

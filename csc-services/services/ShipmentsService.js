@@ -2,17 +2,16 @@ const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedSto
 const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum } = require('./constants');
 const { shipmentStatusesEnum, shipmentsEventsEnum} = require('./constants/shipment');
+const {getCommunicationServiceInstance} = require("./lib/CommunicationService");
 const EncryptionService = require('./lib/EncryptionService.js');
 const DidService  = require('./lib/DidService');
 
 class ShipmentsService extends DSUService {
 	SHIPMENTS_TABLE = 'shipments';
 
-	constructor(DSUStorage, communicationService) {
+	constructor(DSUStorage) {
 		super(DSUStorage, FoldersEnum.Shipments);
-		if (communicationService) {
-			this.communicationService = communicationService;
-		}
+		this.communicationService = getCommunicationServiceInstance();
 		this.storageService = getSharedStorage(DSUStorage);
 		this.DSUStorage = DSUStorage;
 	}

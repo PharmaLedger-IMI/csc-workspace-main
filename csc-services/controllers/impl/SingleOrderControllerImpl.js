@@ -2,7 +2,6 @@ const AccordionController  = require("./helpers/AccordionController");
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
-const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
@@ -58,9 +57,8 @@ class SingleOrderControllerImpl extends AccordionController {
 
   async initServices(){
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
-    let communicationService = getCommunicationServiceInstance();
-    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
-    this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
+    this.ordersService = new OrdersService(this.DSUStorage);
+    this.shipmentsService = new ShipmentsService(this.DSUStorage);
     this.kitsService = new KitsService(this.DSUStorage);
     this.init();
 
@@ -235,7 +233,7 @@ class SingleOrderControllerImpl extends AccordionController {
     const order = this.model.order;
     const shipment = this.model.shipment;
     const isShipmentCreated = typeof shipment !== 'undefined';
-    const cancellableOrderStatus = [orderStatusesEnum.Initiated, shipmentStatusesEnum.InPreparation];
+    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.InProgress, shipmentStatusesEnum.InPreparation];
     const actions = {};
 
     switch (this.role) {
@@ -281,7 +279,7 @@ class SingleOrderControllerImpl extends AccordionController {
       date: new Date().getTime()
     }
       : null;
-    await this.ordersService.updateOrderNew(keySSI, null, comment, this.role, orderStatusesEnum.Canceled);
+    await this.ordersService.updateOrder(keySSI, comment, this.role, orderStatusesEnum.Canceled);
     const shipment = this.model.shipment;
     let orderLabel = 'Order';
     if (shipment) {
@@ -308,7 +306,7 @@ class SingleOrderControllerImpl extends AccordionController {
       const otherOrderDetails = {
         shipmentSSI: shipmentResult.keySSI
       };
-      await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
+      await this.ordersService.updateOrder(order.keySSI, null, Roles.CMO, orderStatusesEnum.InProgress, otherOrderDetails);
       eventBusService.emitEventListeners(Topics.RefreshOrders, null);
       eventBusService.emitEventListeners(Topics.RefreshShipments, null);
       window.WebCardinal.loader.hidden = true;

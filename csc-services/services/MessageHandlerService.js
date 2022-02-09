@@ -95,10 +95,15 @@ class MessageHandlerService {
       date: new Date().getTime()
     };
 
-    const notificationResult = await this.notificationsService.insertNotification(notification);
+    await this.notificationsService.insertNotification(notification);
     eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     eventBusService.emitEventListeners(Topics.RefreshShipments + shipmentData.shipmentId, null);
+
+    //shipment statuses InPreparation and Received will trigger an order status change (In Progress and Completed)
+    if ([shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.Received].indexOf(shipmentStatus)!==-1) {
+      eventBusService.emitEventListeners(Topics.RefreshOrders + shipmentData.orderId, null);
+    }
 
     //TODO: refactor this logic
     //added for the case when shipment is receiving a new shipmentId but the listeners are already using the initial shipmentId (which is orderId by convention)
@@ -140,8 +145,8 @@ class MessageHandlerService {
 
         break;
       }
-
-      case orderStatusesEnum.Canceled: {
+      case orderStatusesEnum.Canceled:
+      case orderStatusesEnum.Completed:{
         notificationRole = Roles.Sponsor;
         orderData = await this.ordersService.updateLocalOrder(data.data.orderSSI);
         break;
@@ -224,6 +229,7 @@ class MessageHandlerService {
         const messageData = data.data;
         const { receivedShipmentSSI, shipmentSSI } = messageData;
         shipmentData = await this.shipmentService.mountShipmentReceivedDSU(shipmentSSI, receivedShipmentSSI);
+        await this.ordersService.updateOrder(shipmentData.orderSSI,null, Roles.Sponsor, orderStatusesEnum.Completed, null);
         break;
       }
       case shipmentStatusesEnum.ProofOfDelivery: {

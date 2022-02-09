@@ -21,11 +21,10 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   }
 
   async initServices(){
-    let communicationService = getCommunicationServiceInstance();
     this.notificationsService = new NotificationsService(this.DSUStorage);
-    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
-    this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
-    this.kitsService = new KitsService(this.DSUStorage, communicationService);
+    this.ordersService = new OrdersService(this.DSUStorage);
+    this.shipmentsService = new ShipmentsService(this.DSUStorage);
+    this.kitsService = new KitsService(this.DSUStorage);
 
     this.initViewModel();
     this.attachEventListeners();
@@ -130,7 +129,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
           date: new Date().getTime()
         }
         : null;
-    await this.ordersService.updateOrderNew(keySSI, null, comment, this.role, orderStatusesEnum.Canceled);
+    await this.ordersService.updateOrder(keySSI, comment, this.role, orderStatusesEnum.Canceled);
     await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ShipmentCancelled);
 
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
