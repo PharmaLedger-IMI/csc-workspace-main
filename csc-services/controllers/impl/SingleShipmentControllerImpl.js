@@ -80,6 +80,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     switch(this.role) {
       case Roles.Sponsor: {
         actions.canCancelOrderAndShipment = shipment.status_value === shipmentStatusesEnum.InPreparation;
+        actions.canCheckKits = !actions.canCancelOrderAndShipment;
         this.attachSponsorEventHandlers();
 
         break;

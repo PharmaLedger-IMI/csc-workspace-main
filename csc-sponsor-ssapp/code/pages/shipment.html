@@ -178,8 +178,8 @@
 						</svg>
 						<span>Kits</span>
 					</div>
-					<div class='accordion-item-holder' data-if='@shipmentModel.shipment.isShipmentScanSuccessful'>
-						<span class='py-3 text-muted' slot='false'>No kit scanned yet</span>
+					<div class='accordion-item-holder' data-if='@actions.canCheckKits'>
+						<span class='py-3 text-muted' slot='false'>No kits are available yet</span>
 						<webc-template slot='true' template='kit-summary'></webc-template>
 					</div>
 
