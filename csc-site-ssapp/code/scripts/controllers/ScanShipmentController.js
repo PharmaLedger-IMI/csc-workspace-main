@@ -4,7 +4,6 @@ const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentService = cscServices.ShipmentService;
 const OrderService = cscServices.OrderService;
 const KitsService = cscServices.KitsService;
-const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
 const { Roles, Topics, kit } = cscServices.constants;
 const { kitsMessagesEnum } = kit;
@@ -13,10 +12,9 @@ class ScanShipmentController extends WebcController {
   constructor(...props) {
     super(...props);
     this.originalShipment = this.history.location.state.shipment;
-    this.communicationService = CommunicationService.getCommunicationServiceInstance()
-    this.shipmentService = new ShipmentService(this.DSUStorage, this.communicationService);
-    this.orderService = new OrderService(this.DSUStorage, this.communicationService);
-    this.kitsService = new KitsService(this.DSUStorage, this.communicationService);
+    this.shipmentService = new ShipmentService(this.DSUStorage);
+    this.orderService = new OrderService(this.DSUStorage);
+    this.kitsService = new KitsService(this.DSUStorage);
     this.model = { shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;
     this.retrieveKitIds(this.originalShipment.kitIdSSI);

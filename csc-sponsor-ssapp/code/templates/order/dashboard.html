@@ -1,28 +1,7 @@
 <webc-container class="full-flex-column" controller="OrdersController">
     <div class="row-wrapper">
         <!-- Filters area -->
-        <div class="filters-wrapper">
-            <div class="filter-status">
-                <span class="fas fa-filter"></span>
-                <label>Status: </label>
-            </div>
-            <button class="btn-filter selected" data-custom="" data-tag="filters-cleared" id="filter-">
-                All Orders
-            </button>
-            <button class="btn-filter" data-custom="Initiated" data-tag="filters-changed" id="filter-Initiated">
-                Initiated
-            </button>
-            <button class="btn-filter" data-custom="ReviewedByCMO" data-tag="filters-changed"
-                    id="filter-ReviewedByCMO">
-                Reviewed by CMO
-            </button>
-            <button class="btn-filter" data-custom="Approved" data-tag="filters-changed" id="filter-Approved">
-                Approved
-            </button>
-            <button class="btn-filter" data-custom="Canceled" data-tag="filters-changed" id="filter-Canceled">
-                Canceled
-            </button>
-        </div>
+        <webc-template template='status-filter' data-view-model='@'></webc-template>
     </div>
 
     <div class="row-wrapper full-flex-column">

@@ -27,7 +27,7 @@ class ShipmentsControllerImpl extends WebcController {
     this.shipmentService = new ShipmentService(this.DSUStorage);
     
     const tableHeaders = this.getTableHeaders();
-    this.searchService = new SearchService(shipmentStatusesEnum, tableHeaders);
+    this.searchService = new SearchService(tableHeaders);
 
     this.init();
     this.attachEvents();
@@ -36,8 +36,6 @@ class ShipmentsControllerImpl extends WebcController {
   async init() {
     await this.getShipments();
     this.searchFilterHandler();
-    this.filterChangedHandler();
-    this.filterClearedHandler();
     eventBusService.addEventListener(Topics.RefreshShipments, async (data) => {
       await this.getShipments();
     });
@@ -106,32 +104,10 @@ class ShipmentsControllerImpl extends WebcController {
   }
 
   searchFilterHandler() {
+    const filterData = this.filterData.bind(this);
+    this.model.onChange('filter', filterData);
     this.model.onChange('search.value', () => {
-      setTimeout(() => {
-        this.filterData();
-      }, 300);
-    });
-  }
-
-  filterChangedHandler() {
-    this.onTagClick('filters-changed', async (model, target) => {
-      const selectedFilter = target.getAttribute('data-custom') || null;
-      if (selectedFilter) {
-        this.querySelector(`#filter-${this.model.filter}`).classList.remove('selected');
-        this.model.filter = selectedFilter;
-        this.querySelector(`#filter-${this.model.filter}`).classList.add('selected');
-        this.filterData();
-      }
-    });
-  }
-
-  filterClearedHandler() {
-    this.onTagClick('filters-cleared', async () => {
-      this.querySelector(`#filter-${this.model.filter}`).classList.remove('selected');
-      this.model.filter = '';
-      this.querySelector(`#filter-${this.model.filter}`).classList.add('selected');
-      this.model.search.value = null;
-      this.filterData();
+      setTimeout(filterData, 300);
     });
   }
 

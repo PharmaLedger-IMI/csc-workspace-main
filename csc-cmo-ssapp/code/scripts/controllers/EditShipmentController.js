@@ -7,7 +7,6 @@ const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { FoldersEnum, Topics, Commons } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
-const CommunicationService = cscServices.CommunicationService;
 const momentService = cscServices.momentService;
 
 export default class EditShipmentController extends WebcController {
@@ -21,8 +20,7 @@ export default class EditShipmentController extends WebcController {
 
 	async initServices(){
 		this.ordersService = new OrderService(this.DSUStorage);
-		let communicationService = CommunicationService.getCommunicationServiceInstance();
-		this.shipmentsService = new ShipmentService(this.DSUStorage, communicationService);
+		this.shipmentsService = new ShipmentService(this.DSUStorage);
 		this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
 
 		this.attachEventHandlers();

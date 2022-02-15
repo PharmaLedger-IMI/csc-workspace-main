@@ -77,8 +77,8 @@
 
         <div class="row-wrapper entity-data-section">
           <!-- Order Details -->
-          <div class="accordion-item" data-tag="order_details_accordion" id="order_details_accordion">
-            <svg enable-background="new 0 0 200 200" id="order_details_accordion_icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
+          <div class="accordion-item" data-tag="toggle-accordion">
+            <svg enable-background="new 0 0 200 200" class='accordion-icon' version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
               <path
                 d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
 									l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
@@ -93,8 +93,8 @@
           </div>
 
           <!-- Attached Documents -->
-          <div class="accordion-item" data-tag="attached_documents_accordion" id="attached_documents_accordion">
-            <svg enable-background="new 0 0 200 200" id="attached_documents_accordion_icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
+          <div class="accordion-item" data-tag="toggle-accordion">
+            <svg enable-background="new 0 0 200 200" class='accordion-icon' version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
               <path
                 d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
                             l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
@@ -136,8 +136,8 @@
           </div>
 
           <!-- Order Comments -->
-          <div class="accordion-item" data-tag="order_comments_accordion" id="order_comments_accordion">
-            <svg enable-background="new 0 0 200 200" id="order_comments_accordion_icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+          <div class="accordion-item" data-tag="toggle-accordion">
+            <svg enable-background="new 0 0 200 200" class='accordion-icon' version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
                  y="0px">
               <path
                 d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
@@ -177,28 +177,6 @@
 			      </button>
 		      </div>
 
-		      <div data-if='@order.actions.canBeApproved'>
-			      <button class='btn-approve' data-tag='approve-order'>
-				      <svg id='Layer_1' style='enable-background: new 0 0 463 463' version='1.1' viewBox='0 0 463 463'
-				           x='0px' xml:space='preserve' xmlns='http://www.w3.org/2000/svg'
-				           y='0px'>
-			              <path
-				              d='M415.5,336H263v-17h0.5c8.547,0,15.5-6.953,15.5-15.5v-80.997c9.151-1.88,16.541-9.103,18.361-18.565v-0.001
-											l19.378-100.77c4.905-25.509-1.769-51.626-18.312-71.653C281.884,11.486,257.498,0,231.479,0
-											c-25.977,0-50.363,11.486-66.907,31.515c-16.543,20.027-23.217,46.145-18.312,71.653l19.379,100.771
-											c1.82,9.462,9.21,16.684,18.361,18.565V303.5c0,8.547,6.953,15.5,15.5,15.5h0.5v17H47.5C34.542,336,24,346.542,24,359.5v48
-											c0,12.958,10.542,23.5,23.5,23.5H48v16.5c0,8.547,6.953,15.5,15.5,15.5h336c8.547,0,15.5-6.953,15.5-15.5V431h0.5
-											c12.958,0,23.5-10.542,23.5-23.5v-48C439,346.542,428.458,336,415.5,336z M264,240h-65v-17h65V240z M180.369,201.105
-											l-19.378-100.77c-4.058-21.101,1.463-42.703,15.146-59.269C189.821,24.501,209.992,15,231.521,15
-											c21.487,0,41.658,9.501,55.342,26.067c13.684,16.565,19.205,38.168,15.146,59.269l-19.378,100.769
-											c-0.769,3.995-4.279,6.896-8.348,6.896h-85.567C184.648,208,181.138,205.1,180.369,201.105z M199.5,304
-											c-0.276,0-0.5-0.225-0.5-0.5V255h65v48.5c0,0.275-0.224,0.5-0.5,0.5H199.5z M248,319v17h-33v-17H248z M400,447.5
-											c0,0.275-0.224,0.5-0.5,0.5h-336c-0.276,0-0.5-0.225-0.5-0.5V431h337V447.5z M424,407.5c0,4.687-3.813,8.5-8.5,8.5h-8h-352h-8
-											c-4.687,0-8.5-3.813-8.5-8.5v-48c0-4.687,3.813-8.5,8.5-8.5h368c4.687,0,8.5,3.813,8.5,8.5V407.5z'></path>
-			            </svg>
-				      Approve
-			      </button>
-		      </div>
 	      </div>
       </div>
     </section>

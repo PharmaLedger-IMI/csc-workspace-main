@@ -17,33 +17,6 @@
         "$ORIGIN"
       ]
     },
-  "epi": {
-    "replicas": [],
-    "brickStorages": [
-      "$ORIGIN"
-    ],
-    "anchoringServices": [
-      "$ORIGIN"
-    ]
-  },
-    "epidev": {
-      "replicas": [],
-      "brickStorages": [
-        "$ORIGIN"
-      ],
-      "anchoringServices": [
-        "$ORIGIN"
-      ]
-    },
-    "epiqa": {
-      "replicas": [],
-      "brickStorages": [
-        "$ORIGIN"
-      ],
-      "anchoringServices": [
-        "$ORIGIN"
-      ]
-    },
   "vault": {
     "replicas": [],
     "brickStorages": [
@@ -54,9 +27,7 @@
     ]
   },
   "csc":{
-      "replicas":[
-
-      ],
+      "replicas":[],
       "brickStorages":[
          "$ORIGIN"
       ],

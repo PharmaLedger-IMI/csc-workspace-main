@@ -1,39 +1,47 @@
 const { Roles } = require('../constants');
 const { shipmentStatusesEnum } = require('../constants/shipment');
+const {orderStatusesEnum} = require('../constants/order');
 const { kitsStatusesEnum } = require('../constants/kit');
 
 class StatusesService {
 
   constructor() {}
 
+  getOrderStatuses() {
+
+    let normalStatuses = [orderStatusesEnum.Initiated, orderStatusesEnum.InProgress];
+    let approvedStatuses = [orderStatusesEnum.Completed];
+    let canceledStatuses = [orderStatusesEnum.Canceled];
+    return { normalStatuses, approvedStatuses, canceledStatuses };
+
+  }
+
+
   getShipmentStatusesByRole( role ) {
 
     let normalStatuses = [];
     let approvedStatuses = [];
+    let canceledStatuses = [];
 
     if(role){
       // Set Normal Statuses by Roles
       switch (role) {
         // For Sponsor
         case Roles.Sponsor:
-          // Set the normal statuses
           normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch, shipmentStatusesEnum.PickUpAtWarehouse, shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered];
-          // Set the Approved statuses
           approvedStatuses = [shipmentStatusesEnum.Received];
+          canceledStatuses = [shipmentStatusesEnum.Cancelled];
           break;
         // For CMO
         case Roles.CMO:
-          // Set the normal statuses
           normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch];
-          // Set the Approved statuses
           approvedStatuses = [shipmentStatusesEnum.Dispatched];
+          canceledStatuses = [shipmentStatusesEnum.Cancelled];
           break;
 
         // For Courier
         case Roles.Courier:
-          // Set the normal statuses
           normalStatuses = [shipmentStatusesEnum.ReadyForDispatch, shipmentStatusesEnum.PickUpAtWarehouse, shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered];
-          // Set the Approved statuses
           approvedStatuses = [shipmentStatusesEnum.ProofOfDelivery];
           break;
 
@@ -49,7 +57,8 @@ class StatusesService {
 
     return {
       normalStatuses : normalStatuses,
-      approvedStatuses: approvedStatuses
+      approvedStatuses : approvedStatuses,
+      canceledStatuses : canceledStatuses
     }
   }
 

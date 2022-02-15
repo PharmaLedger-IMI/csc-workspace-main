@@ -2,16 +2,14 @@ const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedSto
 const DSUService = require('./lib/DSUService.js');
 const { Roles, messagesEnum, order, FoldersEnum } = require('./constants');
 const orderStatusesEnum = order.orderStatusesEnum;
-const {getDidData} = require('./lib/ProfileService.js');
+const {getCommunicationServiceInstance} = require("./lib/CommunicationService");
 const EncryptionService = require('./lib/EncryptionService.js');
 class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
 
-  constructor(DSUStorage, communicationService) {
+  constructor(DSUStorage) {
     super(DSUStorage, FoldersEnum.Orders);
-    if (communicationService) {
-      this.communicationService = communicationService;
-    }
+    this.communicationService = getCommunicationServiceInstance();
     this.storageService = getSharedStorage(DSUStorage);
     this.DSUStorage = DSUStorage;
   }
@@ -77,12 +75,11 @@ class OrdersService extends DSUService {
   }
 
   sendMessageToEntity(entity, operation, data, shortDescription) {
-    let receiver = getDidData(entity)
-    this.communicationService.sendMessage( {
+    this.communicationService.sendMessage(entity, {
       operation,
       data,
       shortDescription,
-    }, receiver);
+    });
   }
 
   // -> Functions for creation of order
@@ -296,9 +293,7 @@ class OrdersService extends DSUService {
 
   // -> Function for reviewing, canceling, approving orders.
 
-  async updateOrderNew(orderKeySSI, files, comment, role, newStatus, otherDetails) {
-    let documents = null;
-    let comments = null;
+  async updateOrder(orderKeySSI, comment, role, newStatus, otherDetails) {
 
     const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderKeySSI);
 
@@ -307,9 +302,6 @@ class OrdersService extends DSUService {
       orderDB.status = status.history;
     }
 
-    if (files) {
-      await this.addDocumentsToDsu(files, role === Roles.CMO ? orderDB.cmoDocumentsKeySSI : orderDB.sponsorDocumentsKeySSI, role);
-    }
     if (comment) {
       await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
     }
@@ -343,8 +335,7 @@ class OrdersService extends DSUService {
       });
     }
 
-    const result = await this.updateOrderToDB(orderDB, orderKeySSI);
-    return result;
+    return await this.updateOrderToDB(orderDB, orderKeySSI);
   }
 
   async getDocumentsAndComments(order) {

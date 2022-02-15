@@ -1,18 +1,16 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
 const ShipmentsService = require('./ShipmentsService.js');
+const {getCommunicationServiceInstance} = require("./lib/CommunicationService");
 const { FoldersEnum, kit } = require('./constants');
-const { getDidData } = require('./lib/ProfileService');
 const { kitsStatusesEnum } = kit;
 
 class KitsService extends DSUService {
   KITS_TABLE = 'kits';
 
-  constructor(DSUStorage, communicationService) {
+  constructor(DSUStorage) {
     super(DSUStorage, FoldersEnum.Kits);
-    if (communicationService) {
-      this.communicationService = communicationService;
-    }
+    this.communicationService = getCommunicationServiceInstance();
     this.storageService = getSharedStorage(DSUStorage);
     this.shipmentsService = new ShipmentsService(DSUStorage);
     this.DSUStorage = DSUStorage;
@@ -151,13 +149,11 @@ class KitsService extends DSUService {
       return shipment.shipmentId === kitDSU.shipmentId;
     });
 
-    let receiver = getDidData(shipment.sponsorId);
-    await this.communicationService.sendMessage({
+    await this.communicationService.sendMessage(shipment.sponsorId,{
         operation: status,
         data: { kitSSI: kitSSI },
         shortDescription: status
-      }, receiver
-    );
+      });
 
     return kitRecord;
   }

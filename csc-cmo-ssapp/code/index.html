@@ -15,25 +15,7 @@
     <script src="scripts/bundles/pskruntime.js"></script>
     <script src="scripts/bundles/cscServices.js"></script>
     <script src="resources/css/fonts/fontawesome5/js/all.min.js"></script>
-
-    <script>
-      if (window.frameElement) {
-        const iframeIdentity = window.frameElement.getAttribute('identity');
-
-        if (iframeIdentity) {
-          window.parent.document.dispatchEvent(
-            new CustomEvent(iframeIdentity, {
-              detail: {
-                status: 'completed',
-              },
-            })
-          );
-          console.log('Index page Event Dispatched...');
-        }
-      }
-    </script>
   </head>
-
   <body>
     <webc-app-root preload='scripts/app-config.js'>
       <webc-app-container>

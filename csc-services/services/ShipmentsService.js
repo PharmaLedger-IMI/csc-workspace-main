@@ -2,17 +2,16 @@ const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedSto
 const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum } = require('./constants');
 const { shipmentStatusesEnum, shipmentsEventsEnum} = require('./constants/shipment');
+const {getCommunicationServiceInstance} = require("./lib/CommunicationService");
 const EncryptionService = require('./lib/EncryptionService.js');
-const ProfileService  = require('./lib/ProfileService');
+const DidService  = require('./lib/DidService');
 
 class ShipmentsService extends DSUService {
 	SHIPMENTS_TABLE = 'shipments';
 
-	constructor(DSUStorage, communicationService) {
+	constructor(DSUStorage) {
 		super(DSUStorage, FoldersEnum.Shipments);
-		if (communicationService) {
-			this.communicationService = communicationService;
-		}
+		this.communicationService = getCommunicationServiceInstance();
 		this.storageService = getSharedStorage(DSUStorage);
 		this.DSUStorage = DSUStorage;
 	}
@@ -31,12 +30,11 @@ class ShipmentsService extends DSUService {
 	}
 
 	sendMessageToEntity(entity, operation, data, shortDescription) {
-		let receiver = ProfileService.getDidData(entity)
-		this.communicationService.sendMessage( {
+		this.communicationService.sendMessage(entity, {
 			operation,
 			data,
 			shortDescription
-		},receiver);
+		});
 	}
 
 	// -> Functions for creation of shipment
@@ -45,7 +43,7 @@ class ShipmentsService extends DSUService {
 		const statusDSU = await this.saveEntityAsync(statusModel, FoldersEnum.ShipmentsStatuses);
 		const status = await this.updateStatusDsu(shipmentStatusesEnum.InPreparation, statusDSU.keySSI);
 		const order = await this.getEntityAsync(data.orderSSI, FoldersEnum.Orders);
-		const cmoId = await ProfileService.getProfileServiceInstance().getDID()
+		const cmoId = await DidService.getDidServiceInstance().getDID();
 		const shipmentModel = {
 
 			orderSSI: data.orderSSI,

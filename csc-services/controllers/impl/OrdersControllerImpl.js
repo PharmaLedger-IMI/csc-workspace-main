@@ -14,7 +14,7 @@ class OrdersControllerImpl extends WebcController {
 		super(...props);
 
 		this.ordersService = new OrdersService(this.DSUStorage);
-		this.searchService = new SearchService(orderStatusesEnum, orderTableHeaders);
+		this.searchService = new SearchService(orderTableHeaders);
 		this.model = this.getOrdersViewModel();
 		this.model.ordersListIsReady = false;
 		this.attachEvents();
@@ -24,8 +24,7 @@ class OrdersControllerImpl extends WebcController {
 	async init() {
 		await this.getOrders();
 		this.searchFilterHandler();
-		this.filterChangedHandler();
-		this.filterClearedHandler();
+
 		eventBusService.addEventListener(Topics.RefreshOrders, async (data) => {
 			await this.getOrders();
 		});
@@ -53,7 +52,7 @@ class OrdersControllerImpl extends WebcController {
 					return new Date(b.date) - new Date(a.date);
 				})[0];
 				item.status_value = latestStatus.status;
-				item.status_approved = item.status_value === orderStatusesEnum.Approved;
+				item.status_approved = item.status_value === orderStatusesEnum.Completed;
 				item.status_cancelled = item.status_value === orderStatusesEnum.Canceled;
 				item.status_normal = !item.status_approved && !item.status_cancelled;
 				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
@@ -93,32 +92,10 @@ class OrdersControllerImpl extends WebcController {
 	}
 
 	searchFilterHandler() {
+		const filterData = this.filterData.bind(this);
+		this.model.onChange('filter', filterData);
 		this.model.onChange('search.value', () => {
-			setTimeout(() => {
-				this.filterData();
-			}, 300);
-		});
-	}
-
-	filterChangedHandler() {
-		this.onTagClick('filters-changed', async (model, target) => {
-			const selectedFilter = target.getAttribute('data-custom') || null;
-			if (selectedFilter) {
-				document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
-				this.model.filter = selectedFilter;
-				document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
-				this.filterData();
-			}
-		});
-	}
-
-	filterClearedHandler() {
-		this.onTagClick('filters-cleared', async () => {
-			document.getElementById(`filter-${this.model.filter}`).classList.remove('selected');
-			this.model.filter = '';
-			document.getElementById(`filter-${this.model.filter}`).classList.add('selected');
-			this.model.search.value = null;
-			this.filterData();
+			setTimeout(filterData, 300);
 		});
 	}
 

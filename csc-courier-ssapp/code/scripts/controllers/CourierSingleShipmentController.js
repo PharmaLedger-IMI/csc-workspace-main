@@ -3,7 +3,6 @@ const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentsService = cscServices.ShipmentService;
 const OrdersService = cscServices.OrderService;
-const CommunicationService = cscServices.CommunicationService;
 const {  Roles } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
@@ -18,9 +17,8 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
   }
 
   async initServices(){
-    let communicationService = CommunicationService.getCommunicationServiceInstance();
-    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
-    this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
+    this.ordersService = new OrdersService(this.DSUStorage);
+    this.shipmentsService = new ShipmentsService(this.DSUStorage);
   }
 
   attachEventListeners() {

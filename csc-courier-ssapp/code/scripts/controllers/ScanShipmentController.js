@@ -3,7 +3,6 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentService = cscServices.ShipmentService;
-const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
 const {  Topics } = cscServices.constants;
 
@@ -24,8 +23,7 @@ class ScanShipmentController extends WebcController {
   }
 
   async initServices(){
-    let communicationService = CommunicationService.getCommunicationServiceInstance();
-    this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
+    this.shipmentService = new ShipmentService(this.DSUStorage);
     this.model = {	shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;
     this.model.disableSign = false;

@@ -2,7 +2,6 @@ const AccordionController  = require("./helpers/AccordionController");
 const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
-const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
@@ -32,32 +31,8 @@ class SingleOrderControllerImpl extends AccordionController {
 
     this.initServices();
 
-    //Init Check on Accordion Items
-    if (this.model.accordion) {
-      let keys = Object.keys(this.model.accordion);
-      if (keys.length > 0) {
-        keys.forEach((key) => {
-          if (this.model.accordion[key].isOpened) {
-            this.openAccordionItem(this.model.accordion[key].id);
-          }
-        });
-      }
-    }
-
-    this.onTagEvent('order_details_accordion', 'click', (e) => {
-      this.toggleAccordionItem('order_details_accordion');
-      this.model.accordion.order_details.isOpened = !this.model.accordion.order_details.isOpened;
-    });
-
-    this.onTagEvent('attached_documents_accordion', 'click', (e) => {
-      this.toggleAccordionItem('attached_documents_accordion');
-      this.model.accordion.attached_documents.isOpened = !this.model.accordion.attached_documents.isOpened;
-    });
-
-    this.onTagEvent('order_comments_accordion', 'click', (e) => {
-      this.toggleAccordionItem('order_comments_accordion');
-      this.model.accordion.order_comments.isOpened = !this.model.accordion.order_comments.isOpened;
-    });
+    this.openFirstAccordion();
+    this.toggleAccordionItemHandler();
 
     this.onTagEvent('history-button', 'click', (e) => {
       this.onShowHistoryClick();
@@ -82,9 +57,8 @@ class SingleOrderControllerImpl extends AccordionController {
 
   async initServices(){
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
-    let communicationService = getCommunicationServiceInstance();
-    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
-    this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
+    this.ordersService = new OrdersService(this.DSUStorage);
+    this.shipmentsService = new ShipmentsService(this.DSUStorage);
     this.kitsService = new KitsService(this.DSUStorage);
     this.init();
 
@@ -98,17 +72,6 @@ class SingleOrderControllerImpl extends AccordionController {
     this.onTagClick('dashboard', () => {
       this.navigateToPageTag('dashboard', { tab: Topics.Order });
     });
-  }
-
-  closeAllExcept(el) {
-
-    if (el === 'order_details_accordion') {
-      this.closeAccordionItem('order_comments_accordion');
-    }
-
-    if (el === 'order_comments_accordion') {
-      this.closeAccordionItem('order_details_accordion');
-    }
   }
 
   async onShowHistoryClick() {
@@ -143,8 +106,7 @@ class SingleOrderControllerImpl extends AccordionController {
   }
 
   async init() {
-    const order = await this.ordersService.getOrder(this.model.keySSI);
-    this.model.order = order;
+    this.model.order = await this.ordersService.getOrder(this.model.keySSI);
     this.model.order = { ...this.transformOrderData(this.model.order) };
     this.model.order.delivery_date = {
       date: this.getDate(this.model.order.deliveryDate),
@@ -210,9 +172,9 @@ class SingleOrderControllerImpl extends AccordionController {
         })[0].date
       ).format(Commons.DateTimeFormatPattern);
 
-      data.status_approved = data.status_value === orderStatusesEnum.Approved;
+      data.status_approved = data.status_value === orderStatusesEnum.Completed;
       data.status_cancelled = data.status_value === orderStatusesEnum.Canceled;
-      data.status_normal = data.status_value !== orderStatusesEnum.Canceled && data.status_value !== orderStatusesEnum.Approved;
+      data.status_normal = data.status_value !== orderStatusesEnum.Canceled && data.status_value !== orderStatusesEnum.Completed;
       data.pending_action = this.getPendingAction(data.status_value);
 
       if (data.comments) {
@@ -256,16 +218,12 @@ class SingleOrderControllerImpl extends AccordionController {
   getPendingAction(status_value) {
     switch (status_value) {
       case orderStatusesEnum.Initiated:
-        return orderPendingActionEnum.PendingReviewByCMO;
-
-      case orderStatusesEnum.ReviewedByCMO:
-        return orderPendingActionEnum.SponsorReviewOrApprove;
+      case orderStatusesEnum.InProgress:
+        return orderPendingActionEnum.PendingShipmentPreparation;
 
       case orderStatusesEnum.Canceled:
         return orderPendingActionEnum.NoPendingActions;
 
-      case orderStatusesEnum.Approved:
-        return orderPendingActionEnum.PendingShipmentPreparation;
     }
 
     return '';
@@ -275,22 +233,18 @@ class SingleOrderControllerImpl extends AccordionController {
     const order = this.model.order;
     const shipment = this.model.shipment;
     const isShipmentCreated = typeof shipment !== 'undefined';
-    const canCMOReviewStatuses = [orderStatusesEnum.Initiated];
-    const canSponsorReviewStatuses = [orderStatusesEnum.ReviewedByCMO];
-    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO, orderStatusesEnum.Approved, shipmentStatusesEnum.InPreparation];
+    const cancellableOrderStatus = [orderStatusesEnum.Initiated, orderStatusesEnum.InProgress, shipmentStatusesEnum.InPreparation];
     const actions = {};
 
     switch (this.role) {
       case Roles.Sponsor:
         actions.canBeCancelled = cancellableOrderStatus.indexOf(order.status_value) !== -1 && (!shipment || cancellableOrderStatus.indexOf(shipment.status_value) !== -1);
-        actions.canBeApproved = canSponsorReviewStatuses.indexOf(order.status_value) !== -1;
         actions.orderCancelButtonText = isShipmentCreated ? ButtonsEnum.CancelOrderAndShipment : ButtonsEnum.CancelOrder;
         this.attachSponsorEventHandlers();
         break;
 
       case Roles.CMO:
-        actions.canPrepareShipment = !isShipmentCreated && orderStatusesEnum.Approved === order.status_value;
-        actions.canBeReviewed = canCMOReviewStatuses.indexOf(order.status_value) !== -1;
+        actions.canPrepareShipment = !isShipmentCreated && orderStatusesEnum.Initiated === order.status_value;
         this.attachCmoEventHandlers();
         break;
     }
@@ -314,18 +268,6 @@ class SingleOrderControllerImpl extends AccordionController {
         });
     });
 
-    this.onTagEvent('approve-order', 'click', () => {
-      let title = 'Approve Order';
-      let content = 'Are you sure you want to approve the order?';
-      let modalOptions = {
-        disableExpanding: true,
-        cancelButtonText: 'No',
-        confirmButtonText: 'Yes',
-        id: 'confirm-modal'
-      };
-
-      this.showModal(content, title, this.approveOrder.bind(this), () => {}, modalOptions);
-    });
     this.attachedSponsorEventsHandlers = true;
   }
 
@@ -337,7 +279,7 @@ class SingleOrderControllerImpl extends AccordionController {
       date: new Date().getTime()
     }
       : null;
-    await this.ordersService.updateOrderNew(keySSI, null, comment, this.role, orderStatusesEnum.Canceled);
+    await this.ordersService.updateOrder(keySSI, comment, this.role, orderStatusesEnum.Canceled);
     const shipment = this.model.shipment;
     let orderLabel = 'Order';
     if (shipment) {
@@ -350,24 +292,11 @@ class SingleOrderControllerImpl extends AccordionController {
     this.showErrorModalAndRedirect(orderLabel + ' was canceled, redirecting to dashboard...', orderLabel + ' Cancelled', '/', 2000);
   }
 
-  async approveOrder() {
-    const {keySSI} = this.model.order;
-    await this.ordersService.updateOrderNew(keySSI, null, null, this.role, orderStatusesEnum.Approved);
-    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-    this.showErrorModalAndRedirect('Order was approved, redirecting to dashboard...', 'Order Approved', '/', 2000);
-  }
-
   attachCmoEventHandlers() {
 
     if(this.attachedCMOEventsHandlers){
       return;
     }
-
-    this.onTagEvent('review-order', 'click', () => {
-      this.navigateToPageTag('review-order', {
-        order: this.model.toObject('order')
-      });
-    });
 
     this.onTagEvent('prepare-shipment', 'click', async () => {
       window.WebCardinal.loader.hidden = false;
@@ -377,7 +306,7 @@ class SingleOrderControllerImpl extends AccordionController {
       const otherOrderDetails = {
         shipmentSSI: shipmentResult.keySSI
       };
-      await this.ordersService.updateOrderNew(order.keySSI, null, null, Roles.CMO, null, otherOrderDetails);
+      await this.ordersService.updateOrder(order.keySSI, null, Roles.CMO, orderStatusesEnum.InProgress, otherOrderDetails);
       eventBusService.emitEventListeners(Topics.RefreshOrders, null);
       eventBusService.emitEventListeners(Topics.RefreshShipments, null);
       window.WebCardinal.loader.hidden = true;

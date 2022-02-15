@@ -77,8 +77,8 @@
 
         <div class="row-wrapper entity-data-section">
           <!-- Order Details -->
-          <div class="accordion-item" data-tag="order_details_accordion" id="order_details_accordion">
-            <svg enable-background="new 0 0 200 200" id="order_details_accordion_icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
+          <div class="accordion-item" data-tag="toggle-accordion">
+            <svg enable-background="new 0 0 200 200" class="accordion-icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
               <path
                 d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
                     l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
@@ -93,8 +93,8 @@
           </div>
 
           <!-- Attached Documents -->
-          <div class="accordion-item" data-tag="attached_documents_accordion" id="attached_documents_accordion">
-            <svg enable-background="new 0 0 200 200" id="attached_documents_accordion_icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
+          <div class="accordion-item" data-tag="toggle-accordion">
+            <svg enable-background="new 0 0 200 200" class="accordion-icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" y="0px">
               <path
                 d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
                     l-27.592,27.595c-2.354,2.345-6.139,2.345-8.482,0c-2.35-2.35-2.35-6.139,0-8.484l23.33-23.321l-23.33-23.325
@@ -136,8 +136,8 @@
           </div>
 
           <!-- Order Comments -->
-          <div class="accordion-item" data-tag="order_comments_accordion" id="order_comments_accordion">
-            <svg enable-background="new 0 0 200 200" id="order_comments_accordion_icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+          <div class="accordion-item" data-tag="toggle-accordion">
+            <svg enable-background="new 0 0 200 200" class="accordion-icon" version="1.1" viewBox="0 0 200 200" x="0px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
                  y="0px">
               <path
                 d="M81.969,68.167c2.344-2.346,6.129-2.346,8.482,0l27.592,27.591c2.334,2.345,2.334,6.136,0,8.48
@@ -162,19 +162,6 @@
         </div>
 
 	      <div class='row-wrapper button-wrapper'>
-		      <div data-if='@order.actions.canBeReviewed'>
-			      <button class='btn-default' data-tag='review-order'>
-				      <svg version='1.1' viewBox='0 0 528.899 528.899' x='0px' xml:space='preserve'
-				           xmlns='http://www.w3.org/2000/svg'
-				           y='0px'>
-			            <path d='M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981
-			                            c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611
-			                            C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069
-			                            L27.473,390.597L0.3,512.69z' fill='#000000' ></path>
-			          </svg>
-				      Review
-			      </button>
-		      </div>
 		      <div data-if='@order.actions.canPrepareShipment'>
 			      <button class='btn-default' data-tag='prepare-shipment'>
 				      <svg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='200px'

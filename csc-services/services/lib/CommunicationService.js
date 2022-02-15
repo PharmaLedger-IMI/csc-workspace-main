@@ -1,7 +1,7 @@
 const opendsu = require("opendsu");
 const w3cDID = opendsu.loadAPI('w3cdid');
 const scAPI = opendsu.loadAPI("sc");
-const ProfileService = require("./ProfileService");
+const DidService = require("./DidService");
 const messageQueueServiceInstance = require("./MessageQueueService");
 
 class CommunicationService {
@@ -11,21 +11,20 @@ class CommunicationService {
      * @param publicName : String - the public name used by the sender to send a message
      */
     constructor() {
-        this.domain = "default";
         this.createOrLoadIdentity();
     }
 
     createOrLoadIdentity() {
 
-        let profileService = ProfileService.getProfileServiceInstance();
-        profileService.getDID().then((did)=>{
-            const didData = ProfileService.getDidData(did);
+        let didService = DidService.getDidServiceInstance();
+        didService.getDID().then((did)=>{
+            const didData = DidService.getDidData(did);
 
             try {
                 const sc = scAPI.getSecurityContext();
                 sc.on("initialised", async () => {
                     try {
-                        this.didDocument = await this.getDidDocumentInstance(didData.didType, didData.publicName);
+                        this.didDocument = await this.getDidDocumentInstance(didData);
                         console.log(this.didDocument);
                     }
                     catch (e){
@@ -41,27 +40,27 @@ class CommunicationService {
 
     }
 
-    async getDidDocumentInstance(didType, publicName) {
+    async getDidDocumentInstance(didData) {
         try {
-            const didDocument = await this.resolveDidDocument(didType, publicName);
+            const didDocument = await this.resolveDidDocument(didData);
             console.log(`Identity ${didDocument.getIdentifier()} loaded successfully.`);
             return didDocument
         } catch (e) {
-            console.log(e);
             try {
-                const didDocument = await $$.promisify(w3cDID.createIdentity)(didType, this.domain, publicName);
+                const didDocument = await $$.promisify(w3cDID.createIdentity)(didData.didType, didData.domain, didData.publicName);
                 console.log(`Identity ${didDocument.getIdentifier()} created successfully.`);
                 return didDocument;
             } catch (e) {
-                console.log(`DID creation failed for didType:'${didType}' , publicName: '${publicName}'`)
+                console.log(`DID creation failed for didType:'${didData.didType}' , publicName: '${didData.publicName}' , domain: '${didData.domain}'`)
                 throw e;
             }
         }
     }
 
-    async resolveDidDocument(didType, publicName) {
+    async resolveDidDocument(didData) {
+        const {didType, domain, publicName} = didData;
         try {
-            const identifier = `did:${didType}:${this.domain}:${publicName}`;
+            const identifier = `did:${didType}:${domain}:${publicName}`;
             return await $$.promisify(w3cDID.resolveDID)(identifier);
         } catch (e) {
             console.log(`DID resolve failed for didType:'${didType}' , publicName: '${publicName}'`)
@@ -69,16 +68,22 @@ class CommunicationService {
         }
     }
 
-    async sendMessage(data, receiver) {
+    async sendMessage(receiverDid, data) {
         if (!this.didDocument) {
             return this.sleep(async () => {
-                await this.sendMessage(data, receiver);
+                await this.sendMessage(receiverDid, data);
             });
         }
 
-        const {didType, publicName} = receiver;
+        let receiverDidData = DidService.getDidData(receiverDid);
+
         try {
-            const receiverDidDocument = await this.resolveDidDocument(didType, publicName);
+            const receiverDidDocument = await this.resolveDidDocument(receiverDidData);
+            //temporary: trust the sender that he is who pretends to be: @senderIdentity
+            data = {
+                ...data,
+                senderIdentity: await DidService.getDidServiceInstance().getDID()
+            }
             this.didDocument.sendMessage(JSON.stringify(data), receiverDidDocument, (err) => {
                 if (err) {
                     throw err;
@@ -99,8 +104,7 @@ class CommunicationService {
 
         this.didDocument.readMessage((err, decryptedMessage) => {
             if (err) {
-                console.log("[ERROR]");
-                console.error(err)
+                return console.error(err)
             }
             console.log("[Received Message]", decryptedMessage);
             messageQueueServiceInstance.addCallback(async () => {

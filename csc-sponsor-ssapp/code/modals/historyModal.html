@@ -38,12 +38,6 @@
 					</div>
 				</div>
 
-				<div data-if='@cancelledAfterApproval'>
-					<div slot='true' class='history-status background-cancelled-after-approval'>
-						<div class='history-date'>{{@date}}</div>
-						<div><b>{{@status}}</b></div>
-					</div>
-				</div>
 
 				<div data-if='@cancelled'>
 					<div slot='true' class='history-status background-cancelled'>
@@ -62,7 +56,7 @@
 
 		</div>
 		<div class='col-4 text-center'>
-			<div class='history-orders'>
+			<div class='history-shipments'>
 				<svg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='200px'
 				     height='200px' viewBox='0 0 200 200' enable-background='new 0 0 200 200'
 				     xml:space='preserve'>
@@ -79,8 +73,8 @@
 				<strong>Shipment: {{@shipment.shipmentId}}</strong>
 			</div>
 
-			<div data-if='@shipment'>
-				<div data-for='@shipment.status'>
+			<div data-if='@shipment.shipmentExists'>
+				<div slot="true" data-for='@shipment.status'>
 					<div class='history-connector'></div>
 
 					<div data-if='@approved'>
@@ -104,11 +98,12 @@
 						</div>
 					</div>
 				</div>
+				<div slot='false' class='m-3'><i>No shipment is available yet</i></div>
 			</div>
 
 		</div>
 		<div class='col-4 text-center'>
-			<div class='history-orders'>
+			<div class='history-kits'>
 				<svg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' x='0px' y='0px'
 				     width='200px' height='200px' viewBox='0 0 200 200' enable-background='new 0 0 200 200'
 				     xml:space='preserve'>

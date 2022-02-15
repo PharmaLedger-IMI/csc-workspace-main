@@ -3,7 +3,7 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const momentService = cscServices.momentService;
 const statusesService = cscServices.StatusesService;
-const { Commons, Topics, Roles } = cscServices.constants;
+const { Commons, Topics  } = cscServices.constants;
 const { orderStatusesEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum  } = cscServices.constants.shipment;
 
@@ -70,10 +70,9 @@ class HistoryModalControllerImpl extends WebcController {
 
 			const lastIndex = order.status.length - 1;
 			order.status.forEach((item, index) => {
-				item.approved = item.status === orderStatusesEnum.Approved && index === lastIndex;
-				item.cancelledAfterApproval = item.status === orderStatusesEnum.Approved && (index === lastIndex - 1);
+				item.approved = item.status === orderStatusesEnum.Completed && index === lastIndex;
 				item.cancelled = item.status === orderStatusesEnum.Canceled;
-				item.normal = item.status !== orderStatusesEnum.Canceled && item.status !== orderStatusesEnum.Approved;
+				item.normal = item.status !== orderStatusesEnum.Canceled && item.status !== orderStatusesEnum.Completed;
 				item.date = momentService(item.date).format(Commons.DateTimeFormatPattern);
 			});
 		} else {
@@ -88,6 +87,7 @@ class HistoryModalControllerImpl extends WebcController {
 		const shipment = this.model.toObject('shipment') || {};
 
 		if (shipment.status) {
+			shipment.shipmentExists = true;
 			shipment.status = [...shipment.status.sort((function(a, b) {
 				return new Date(a.date) - new Date(b.date);
 			}))];
@@ -104,7 +104,8 @@ class HistoryModalControllerImpl extends WebcController {
 				}
 			});
 		} else {
-			shipment.shipmentId = '-';
+			shipment.shipmentExists = false;
+			shipment.shipmentId = 'Not assigned';
 			shipment.status = [];
 		}
 

@@ -6,7 +6,7 @@ const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const SearchService = cscServices.SearchService;
 const { Topics, Commons, Roles } = cscServices.constants;
-const { kitsTableHeaders, kitsStatusesEnum } = cscServices.constants.kit;
+const { kitsTableHeaders } = cscServices.constants.kit;
 const statusesService = cscServices.StatusesService;
 
 class KitsControllerImpl extends WebcController {
@@ -15,7 +15,7 @@ class KitsControllerImpl extends WebcController {
 		super(...props);
 		this.role = role;
 		this.kitsService = new KitsService(this.DSUStorage);
-		this.searchService = new SearchService(kitsStatusesEnum, kitsTableHeaders);
+		this.searchService = new SearchService(kitsTableHeaders);
 		this.model = this.getKitsViewModel();
 		this.model.kitsListIsReady = false;
 		this.attachEvents();
@@ -35,8 +35,6 @@ class KitsControllerImpl extends WebcController {
 
 		await this.getKits();
 		this.searchFilterHandler();
-		this.filterChangedHandler();
-		this.filterClearedHandler();
 		eventBusService.addEventListener(Topics.RefreshKits, async (data) => {
 			await this.getKits();
 		});
@@ -148,34 +146,12 @@ class KitsControllerImpl extends WebcController {
 	}
 
 	searchFilterHandler() {
+		const filterData = this.filterData.bind(this);
+		this.model.onChange('filter', filterData);
 		this.model.onChange('search.value', () => {
-			setTimeout(() => {
-				this.filterData();
-			}, 300);
+			setTimeout(filterData, 300);
 		});
 	}
-
-	filterChangedHandler() {
-		this.onTagClick('filters-changed', async (model, target) => {
-		  const selectedFilter = target.getAttribute('data-custom') || null;
-		  if (selectedFilter) {
-			this.querySelector(`#filter-${this.model.filter}`).classList.remove('selected');
-			this.model.filter = selectedFilter;
-			this.querySelector(`#filter-${this.model.filter}`).classList.add('selected');
-			this.filterData();
-		  }
-		});
-	  }
-	
-	  filterClearedHandler() {
-		this.onTagClick('filters-cleared', async () => {
-		  this.querySelector(`#filter-${this.model.filter}`).classList.remove('selected');
-		  this.model.filter = '';
-		  this.querySelector(`#filter-${this.model.filter}`).classList.add('selected');
-		  this.model.search.value = null;
-		  this.filterData();
-		});
-	  }
 
 	filterData() {
 		let result = this.kits;

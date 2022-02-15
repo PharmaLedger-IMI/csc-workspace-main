@@ -4,9 +4,8 @@ const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService;
 const { Topics, Roles, DocumentTypes } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
-const ProfileService = cscServices.ProfileService;
+const DidService = cscServices.DidService;
 const momentService = cscServices.momentService;
-const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const { uuidv4 } = cscServices.utils;
@@ -24,7 +23,7 @@ export default class NewOrderController extends WebcController {
     this.model = {
       wizard_form: [
         { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Order Details', visible: true, validated: false },
-        { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Attach Documents', visible: false, validated: false },
+        { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Documents', visible: false, validated: false },
         { id: 'step-3', holder_id: 'step-3-wrapper', name: 'Comments', visible: false, validated: false },
         { id: 'step-4', holder_id: 'step-4-wrapper', name: 'Summary', visible: false, validated: false },
       ],
@@ -41,8 +40,8 @@ export default class NewOrderController extends WebcController {
       formIsInvalid:true,
     };
 
-    this.profileService = ProfileService.getProfileServiceInstance();
-    this.profileService.getDID().then((did)=>{
+    let didService = DidService.getDidServiceInstance();
+    didService.getDID().then((did)=>{
       this.model.form.inputs.sponsor_id.value = did;
     });
 
@@ -296,19 +295,13 @@ export default class NewOrderController extends WebcController {
 
 
   async initServices(){
-    let communicationService = getCommunicationServiceInstance();
-    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
+    this.ordersService = new OrdersService(this.DSUStorage);
     this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
   }
   checkFormValidity(){
-    //To be refactored according with current step
-    const requiredInputs = [
-      this.model.form.inputs.order_id.value,
-      this.model.form.inputs.target_cmo_id.value,
-      this.model.form.inputs.study_id.value,
-      this.model.form.inputs.site_id.value,
-      this.model.form.inputs.delivery_date.value
-    ]
+
+    const inputs = this.model.form.inputs
+    const requiredInputs = Object.keys(inputs).filter((key)=>inputs[key].required).map(key=>inputs[key].value)
 
     let validationConstraints = [
       typeof this.model.form.inputs.kit_ids_attachment.ids !== 'undefined' && this.model.form.inputs.kit_ids_attachment.ids.length > 0,
@@ -319,7 +312,7 @@ export default class NewOrderController extends WebcController {
   }
 
   isInputFilled(field){
-    return typeof field !== 'undefined' && field.trim()!==""
+    return typeof field !== 'undefined' && field.trim() !== ""
   }
 
   getDateTime() {
@@ -336,7 +329,7 @@ export default class NewOrderController extends WebcController {
   // TODO: Copy below functions to utils
   readFile(file) {
     return new Promise((resolve, reject) => {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.onload = () => {
         resolve(this.extractIdsFromCsv(reader.result));
       };
