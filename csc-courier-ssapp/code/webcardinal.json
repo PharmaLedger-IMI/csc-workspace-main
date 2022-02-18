@@ -1,5 +1,6 @@
 {
-  "translations":"false",
+  "translations":false,
+  "logLevel": "none",
   "theme": "blue-csc-theme",
   "pagesFallback": {
     "name": "Test"
