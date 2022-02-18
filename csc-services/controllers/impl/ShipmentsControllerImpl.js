@@ -99,7 +99,7 @@ class ShipmentsControllerImpl extends WebcController {
 
   viewShipmentHandler() {
     this.onTagClick('view-shipment', (model) => {
-      this.navigateToPageTag('shipment', { keySSI: model.keySSI });
+      this.navigateToPageTag('shipment', { uid: model.uid });
     });
   }
 

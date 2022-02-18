@@ -61,7 +61,7 @@ class DeliverShipmentController extends WebcController {
     });
 
     this.onTagClick('view-shipment', () => {
-      this.navigateToPageTag('shipment', { keySSI: this.model.shipment.shipmentSSI });
+      this.navigateToPageTag('shipment', { uid: this.model.shipment.uid });
     });
   }
 
@@ -120,7 +120,7 @@ class DeliverShipmentController extends WebcController {
     this.model.disableSign = true;
     window.WebCardinal.loader.hidden = false;
 
-    await this.shipmentService.updateTransitShipmentDSU(this.model.shipment.shipmentSSI, payload, shipmentStatusesEnum.Delivered);
+    await this.shipmentService.updateTransitShipmentDSU(this.model.shipment.uid, payload, shipmentStatusesEnum.Delivered);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     this.showErrorModalAndRedirect(`Shipment ${this.model.shipment.shipmentId}  was delivered`, "Shipment Delivered", '/', 2000);
     window.WebCardinal.loader.hidden = true;

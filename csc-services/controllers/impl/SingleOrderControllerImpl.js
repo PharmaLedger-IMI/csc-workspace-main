@@ -26,8 +26,8 @@ class SingleOrderControllerImpl extends AccordionController {
     }
     this.model = model;
 
-    let { keySSI } = this.history.location.state;
-    this.model.keySSI = keySSI;
+    let { uid } = this.history.location.state;
+    this.model.uid = uid;
 
     this.initServices();
 
@@ -106,7 +106,7 @@ class SingleOrderControllerImpl extends AccordionController {
   }
 
   async init() {
-    this.model.order = await this.ordersService.getOrder(this.model.keySSI);
+    this.model.order = await this.ordersService.getOrder(this.model.uid);
     this.model.order = { ...this.transformOrderData(this.model.order) };
     this.model.order.delivery_date = {
       date: this.getDate(this.model.order.deliveryDate),
@@ -272,19 +272,19 @@ class SingleOrderControllerImpl extends AccordionController {
   }
 
   async cancelOrder() {
-    const { keySSI } = this.model.order;
+    const { uid } = this.model.order;
     let comment = this.model.cancelOrderModal.comment.value ? {
       entity: this.role,
       comment: this.model.cancelOrderModal.comment.value,
       date: new Date().getTime()
     }
       : null;
-    await this.ordersService.updateOrder(keySSI, comment, this.role, orderStatusesEnum.Canceled);
+    await this.ordersService.updateOrder(uid, comment, this.role, orderStatusesEnum.Canceled);
     const shipment = this.model.shipment;
     let orderLabel = 'Order';
     if (shipment) {
       orderLabel = 'Order and Shipment';
-      await this.shipmentsService.updateShipment(shipment.keySSI, shipmentStatusesEnum.ShipmentCancelled);
+      await this.shipmentsService.updateShipment(shipment.uid, shipmentStatusesEnum.ShipmentCancelled);
       eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     }
 
@@ -306,7 +306,7 @@ class SingleOrderControllerImpl extends AccordionController {
       const otherOrderDetails = {
         shipmentSSI: shipmentResult.keySSI
       };
-      await this.ordersService.updateOrder(order.keySSI, null, Roles.CMO, orderStatusesEnum.InProgress, otherOrderDetails);
+      await this.ordersService.updateOrder(order.uid, null, Roles.CMO, orderStatusesEnum.InProgress, otherOrderDetails);
       eventBusService.emitEventListeners(Topics.RefreshOrders, null);
       eventBusService.emitEventListeners(Topics.RefreshShipments, null);
       window.WebCardinal.loader.hidden = true;

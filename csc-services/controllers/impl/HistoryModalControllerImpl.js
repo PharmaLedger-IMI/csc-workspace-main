@@ -26,7 +26,7 @@ class HistoryModalControllerImpl extends WebcController {
 	attachViewOrderHandler() {
 		this.onTagClick('view-order', () => {
 			this.navigateToPageTag('order', {
-				keySSI: this.model.order.keySSI
+				uid: this.model.order.uid
 			});
 		});
 	}
@@ -34,7 +34,7 @@ class HistoryModalControllerImpl extends WebcController {
 	attachViewShipmentHandler() {
 		this.onTagClick('view-shipment', () => {
 			this.navigateToPageTag('shipment', {
-				keySSI: this.model.shipment.keySSI
+				uid: this.model.shipment.uid
 			});
 		});
 	}

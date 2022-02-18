@@ -90,9 +90,9 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     for (let prop in model.form) {
       model.form[prop].disabled = true;
     }
-    let { keySSI } = this.history.location.state;
-    model.keySSI = keySSI;
-    let shipment = await this.shipmentsService.getShipment(model.keySSI);
+    let { uid } = this.history.location.state;
+    model.uid = uid;
+    let shipment = await this.shipmentsService.getShipment(model.uid);
     shipment = { ...this.transformShipmentData(shipment) };
     model.shipmentModel.shipment = shipment;
     console.log('Model : ', JSON.stringify(model.shipmentModel));
@@ -107,9 +107,9 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
 
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
 
-    let order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
-    order = { ...this.transformOrderData(order) };
-    model.orderModel.order = order
+    /*let order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);*/
+    let order = { ...this.transformOrderData(shipment) };
+    model.orderModel.order = order;
     //console.log("MODEL " + JSON.stringify(model));
     this.model = model;
     this.attachRefreshListeners();

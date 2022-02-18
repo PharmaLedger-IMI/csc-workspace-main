@@ -169,7 +169,7 @@ class MessageHandlerService {
         const { shipmentSSI, statusSSI } = data.data;
 
         shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusSSI);
-        await this.ordersService.updateLocalOrder(shipmentData.orderSSI, { shipmentSSI: shipmentSSI });
+        await this.ordersService.updateLocalOrder(shipmentData.orderSSI, { shipmentSSI: shipmentData.uid });
         break;
       }
 
@@ -228,6 +228,7 @@ class MessageHandlerService {
         notificationRole = Roles.Site;
         const messageData = data.data;
         const { receivedShipmentSSI, shipmentSSI } = messageData;
+        debugger;
         shipmentData = await this.shipmentService.mountShipmentReceivedDSU(shipmentSSI, receivedShipmentSSI);
         await this.ordersService.updateOrder(shipmentData.orderSSI,null, Roles.Sponsor, orderStatusesEnum.Completed, null);
         break;

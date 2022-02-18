@@ -2,7 +2,6 @@ const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
 const KitsService = cscServices.KitsService;
-const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
@@ -45,7 +44,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   editShipmentHandler() {
     this.onTagClick('edit-shipment', () => {
       this.navigateToPageTag('edit-shipment', {
-        keySSI: this.model.keySSI
+        uid: this.model.uid
       });
     });
   }
@@ -131,7 +130,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
         }
         : null;
     await this.ordersService.updateOrder(keySSI, comment, this.role, orderStatusesEnum.Canceled);
-    await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ShipmentCancelled);
+    await this.shipmentsService.updateShipment(this.model.uid, shipmentStatusesEnum.ShipmentCancelled);
 
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
@@ -162,8 +161,10 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
   scanShipmentHandler() {
     this.onTagClick('scan-shipment', () => {
+      console.log(this.model.shipmentModel.shipment.uid);
       this.navigateToPageTag('scan-shipment', {
         shipment: {
+          shipmentUID:this.model.shipmentModel.shipment.uid,
           shipmentId: this.model.orderModel.order.orderId,
           ...this.model.toObject('orderModel.order')
         }
@@ -177,10 +178,10 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
       orderModel: viewModelResolver('order'),
       shipmentModel: viewModelResolver('shipment')
     };
-    let { keySSI } = this.history.location.state;
-    model.keySSI = keySSI;
+    let { uid } = this.history.location.state;
+    model.uid = uid;
 
-    model.shipmentModel.shipment = await this.shipmentsService.getShipment(model.keySSI);
+    model.shipmentModel.shipment = await this.shipmentsService.getShipment(model.uid);
     model.shipmentModel.shipment = { ...this.transformShipmentData(model.shipmentModel.shipment) };
     if (model.shipmentModel.shipment.shipmentComments) {
       model.shipmentModel.shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
@@ -188,8 +189,14 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
 
-    model.orderModel.order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
-    model.orderModel.order = { ...this.transformOrderData(model.orderModel.order) };
+    if([ Roles.CMO,Roles.Sponsor].indexOf(this.role)!==-1){
+      model.orderModel.order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
+      model.orderModel.order = { ...this.transformOrderData(model.orderModel.order) };
+    }
+    else{
+      model.orderModel.order = { ...this.transformOrderData(model.orderModel.order) };
+    }
+
 
     //SPONSOR, CMO, has kitsIDSSI in the order, SITE has it in shipment
     let kitsSSI;
