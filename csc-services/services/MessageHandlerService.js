@@ -63,7 +63,7 @@ class MessageHandlerService {
       orderId: orderData.orderId,
       read: false,
       status: orderStatus,
-      keySSI: data.data.orderSSI,
+      uid: orderData.uid,
       role: notificationRole,
       did: data.senderIdentity,
       date: new Date().getTime()
@@ -89,7 +89,7 @@ class MessageHandlerService {
       shipmentId: shipmentData.shipmentId,
       read: false,
       status: shipmentStatus,
-      keySSI: data.data.shipmentSSI,
+      uid: shipmentData.uid,
       role: notificationRole,
       did: data.senderIdentity,
       date: new Date().getTime()
@@ -269,7 +269,7 @@ class MessageHandlerService {
           orderId: orderId,
           read: false,
           status: "Kits were received",
-          keySSI: data.data.studyKeySSI,
+          uid: kitsData.uid,
           role: notificationRole,
           did: data.senderIdentity,
           date: new Date().getTime()
