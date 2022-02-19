@@ -228,7 +228,6 @@ class MessageHandlerService {
         notificationRole = Roles.Site;
         const messageData = data.data;
         const { receivedShipmentSSI, shipmentSSI } = messageData;
-        debugger;
         shipmentData = await this.shipmentService.mountShipmentReceivedDSU(shipmentSSI, receivedShipmentSSI);
         await this.ordersService.updateOrder(shipmentData.orderSSI,null, Roles.Sponsor, orderStatusesEnum.Completed, null);
         break;
@@ -259,6 +258,7 @@ class MessageHandlerService {
     switch (kitsMessage) {
       case kitsMessagesEnum.ShipmentSigned: {
         const { studyKeySSI } = data.data;
+        debugger;
         kitsData = await this.kitsService.getStudyKitsDSUAndUpdate(studyKeySSI);
 
         //all kits will have the same orderId

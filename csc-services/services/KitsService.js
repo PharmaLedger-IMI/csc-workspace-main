@@ -164,18 +164,18 @@ class KitsService extends DSUService {
   async getStudyKitsDSUAndUpdate(studyKeySSI) {
     let studyKitsDSU;
     try {
-      studyKitsDSU = await this.getEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
+      const studyKitIdentifier = await this.getEntityPathAsync(studyKeySSI,FoldersEnum.StudyKits);
+      studyKitsDSU = await this.getEntityAsync(studyKitIdentifier, FoldersEnum.StudyKits);
     } catch (e) {
-      await this.mountEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
-      studyKitsDSU = await this.getEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
+      studyKitsDSU = await this.mountEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
     }
     //synchronization will be performed later on user demand
     studyKitsDSU.synchronized = false;
     return await this.addStudyKitDataToDb(studyKitsDSU.studyId, studyKitsDSU);
   }
 
-  async mountStudyKits(studyKeySSI, progressCallback){
-    const studyKitsDSU = await this.getEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
+  async mountStudyKits(studyKitsIdentifier, progressCallback){
+    const studyKitsDSU = await this.getEntityAsync(studyKitsIdentifier, FoldersEnum.StudyKits);
     //use batch-mode?
     for (let i = 0; i < studyKitsDSU.kits.length; i++) {
         let kit = studyKitsDSU.kits[i];
@@ -184,18 +184,18 @@ class KitsService extends DSUService {
     }
   }
 
-  async updateStudyKitRecordKitSSI(kitSSI, status) {
+  async updateStudyKitRecordKitSSI(kitIdentifier, status) {
     let kitDetails;
      // kits were not synchronized yet so mount this kit it anyway
      try{
-       kitDetails = await this.getKitsDSU(kitSSI);
+       kitDetails = await this.getKitsDSU(kitIdentifier);
      }
      catch (e){
-       kitDetails = await this.mountEntityAsync(kitSSI, FoldersEnum.Kits);
+       kitDetails = await this.mountEntityAsync(kitIdentifier, FoldersEnum.Kits);
      }
     let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, kitDetails.studyId);
     let modifiedKit = studyKitDb.kits.find((kit) => {
-      return kit.kitKeySSI === kitSSI;
+      return kit.uid === kitIdentifier;
     });
     modifiedKit.status = kitDetails.status;
     if (status === kitsStatusesEnum.Assigned) {

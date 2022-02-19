@@ -153,8 +153,8 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     this.onTagClick('manage-kits', async(model) => {
           this.navigateToPageTag('study-kits', {
-                studyId: model.orderModel.order.studyId,
-                orderId: model.orderModel.order.orderId
+                studyId: model.shipmentModel.shipment.studyId,
+                orderId: model.shipmentModel.shipment.orderId
           });
     });
   }
