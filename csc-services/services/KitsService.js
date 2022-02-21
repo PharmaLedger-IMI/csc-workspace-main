@@ -78,7 +78,7 @@ class KitsService extends DSUService {
       const kitDSU = await this.saveEntityAsync(data, FoldersEnum.Kits);
       studyKitsDSU.kits.push({
         ...data,
-        kitKeySSI: kitDSU.keySSI,
+        kitKeySSI: kitDSU.sReadSSI,
         orderId: kitsDSUData.orderId,
         shipmentId: kitsDSUData.shipmentId,
       });

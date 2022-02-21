@@ -304,7 +304,8 @@ class SingleOrderControllerImpl extends AccordionController {
       const shipmentResult = await this.shipmentsService.createShipment(order);
 
       const otherOrderDetails = {
-        shipmentSSI: shipmentResult.keySSI
+        //store only the anchor id
+        shipmentSSI: shipmentResult.uid
       };
       await this.ordersService.updateOrder(order.uid, null, Roles.CMO, orderStatusesEnum.InProgress, otherOrderDetails);
       eventBusService.emitEventListeners(Topics.RefreshOrders, null);
