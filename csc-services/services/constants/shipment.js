@@ -3,6 +3,7 @@ const shipmentStatusesEnum = {
 	ReadyForDispatch: 'Ready For Dispatch',
 	PickUpAtWarehouse: 'Pick-up At Warehouse',
 	InTransit: 'In Transit',
+	WrongDeliveryAddress:"Wrong Delivery Address",
 	Delivered: 'Delivered',
 	Received: 'Received',
 	ProofOfDelivery: 'Proof Of Delivery',

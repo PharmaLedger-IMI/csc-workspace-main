@@ -97,11 +97,8 @@ class HistoryModalControllerImpl extends WebcController {
 			shipment.status.forEach(item => {
 				item.approved = statuses.approvedStatuses.indexOf(item.status) !== -1;
 				item.normal = statuses.normalStatuses.indexOf(item.status) !== -1;
+				item.cancelled = statuses.canceledStatuses.indexOf(item.status) !== -1
 				item.date = momentService(item.date).format(Commons.DateTimeFormatPattern);
-				if (item.status === shipmentStatusesEnum.ShipmentCancelled) {
-					item.status = shipmentStatusesEnum.Cancelled;
-					item.cancelled = true;
-				}
 			});
 		} else {
 			shipment.shipmentExists = false;

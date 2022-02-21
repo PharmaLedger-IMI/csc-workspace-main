@@ -239,6 +239,12 @@ class MessageHandlerService {
         shipmentData = await this.shipmentService.updateShipmentStatus(shipmentSSI, this.role);
         break;
       }
+      case shipmentStatusesEnum.WrongDeliveryAddress: {
+        notificationRole = Roles.Courier;
+        const { shipmentSSI } = data.data;
+        shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
+        break;
+      }
     }
 
     return [shipmentData, shipmentStatus, notificationRole];
@@ -252,7 +258,6 @@ class MessageHandlerService {
     switch (kitsMessage) {
       case kitsMessagesEnum.ShipmentSigned: {
         const { studyKeySSI } = data.data;
-        debugger;
         kitsData = await this.kitsService.getStudyKitsDSUAndUpdate(studyKeySSI);
 
         //all kits will have the same orderId

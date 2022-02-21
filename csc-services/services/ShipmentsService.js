@@ -388,6 +388,36 @@ class ShipmentsService extends DSUService {
 		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentUid, shipmentDB);
 	}
 
+
+	async reportWrongDeliveryAddress(shipmentSSI, commentData) {
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
+		let shipmentComments = await this.getEntityAsync(shipmentDB.shipmentComments, FoldersEnum.ShipmentComments);
+		shipmentComments.comments.push(commentData);
+		shipmentComments = await this.updateEntityAsync(shipmentComments, FoldersEnum.ShipmentComments);
+
+		const status = await this.updateStatusDsu(shipmentStatusesEnum.WrongDeliveryAddress, shipmentDB.statusSSI);
+		shipmentDB.status = status.history;
+
+		await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
+
+		const notifiableActors = [shipmentDB.sponsorId, shipmentDB.siteId];
+		const wrongDeliveryAddressComment = {
+			shipmentSSI: shipmentSSI
+		}
+
+		notifiableActors.forEach(actor => {
+			this.sendMessageToEntity(
+				actor,
+				shipmentStatusesEnum.WrongDeliveryAddress,
+				wrongDeliveryAddressComment,
+				shipmentStatusesEnum.WrongDeliveryAddress
+			);
+		})
+
+		return shipmentComments;
+
+	}
+
 	async getShipmentComments(commentsKeySSI) {
 		return await this.getEntityAsync(commentsKeySSI, FoldersEnum.ShipmentComments);
 	}
@@ -427,9 +457,7 @@ class ShipmentsService extends DSUService {
 		const statusIdentifier = await this.getEntityPathAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
 		const status = await this.getEntityAsync(statusIdentifier, FoldersEnum.ShipmentsStatuses);
 		shipmentDB.status = status.history;
-		// const status = await this.updateStatusDsu(shipmentStatusesEnum.InTransit, shipmentDB.statusSSI);
-		// shipmentDB.status = status.history;
-		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentSSI, shipmentDB);
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
 	}
 
 	async mountShipmentCommentsDSU(shipmentSSI, shipmentCommentsSSI) {
@@ -475,9 +503,7 @@ class ShipmentsService extends DSUService {
     	}
 
 	async updateLocalShipment(shipmentIdentifier, newShipmentData = {}) {
-		console.log("sReadSSI", shipmentIdentifier);
 		shipmentIdentifier = DSUService.getUidFromSSI(shipmentIdentifier);
-		console.log("AnchorID", shipmentIdentifier);
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
 		const loadedShipmentDSU = await this.getEntityAsync(shipmentIdentifier, FoldersEnum.Shipments);
 
@@ -560,6 +586,7 @@ class ShipmentsService extends DSUService {
 			});
 		});
 	}
+
 
 }
 

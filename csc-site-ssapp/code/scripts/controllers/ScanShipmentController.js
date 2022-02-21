@@ -144,7 +144,6 @@ class ScanShipmentController extends WebcController {
 
 
     let redirectToShipmentView = () => {
-      debugger;
       this.shipmentService.sendMessageToEntity(sponsorId,kitsMessagesEnum.ShipmentSigned,{
         studyKeySSI: studyKitData.sReadSSI
       },'Shipment Signed')

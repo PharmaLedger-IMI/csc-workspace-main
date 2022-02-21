@@ -3,7 +3,7 @@ const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentsService = cscServices.ShipmentService;
 const OrdersService = cscServices.OrderService;
-const {  Roles } = cscServices.constants;
+const { Roles } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
 class CourierSingleShipmentController extends ViewShipmentBaseController {
@@ -43,6 +43,10 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
       });
     });
 
+    this.onTagEvent('add-wrong-delivery-address-comment', 'click', (e) => {
+      this.onWrongShipmentAddressCommentModalOpen();
+    });
+
     this.onTagClick('deliver-shipment', () => {
       this.navigateToPageTag('deliver-shipment', {
         shipment: {
@@ -57,7 +61,8 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     const actions = {
       canPickupShipment:false,
       canEditShipment:false,
-      canDeliverShipment:false
+      canDeliverShipment:false,
+      canAddWrongDeliveryAddressMessage:false
     };
 
     switch (shipment.status[0].status) {
@@ -69,6 +74,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
         break;
       case shipmentStatusesEnum.InTransit:
         actions.canDeliverShipment = true;
+        actions.canAddWrongDeliveryAddressMessage = true;
         break;
     }
     return actions;
@@ -114,6 +120,22 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
       return data;
     }
     return {};
+  }
+
+  onWrongShipmentAddressCommentModalOpen(){
+    this.createWebcModal({
+      template: 'wrongDeliveryAddress',
+      model:this.model,
+      controller: 'WrongDeliveryAddressModalController',
+      disableBackdropClosing: true,
+      disableFooter: true,
+      disableHeader: true,
+      disableExpanding: true,
+      disableClosing: false,
+      disableCancelButton: true,
+      expanded: false,
+      centered: true,
+    });
   }
 }
 
