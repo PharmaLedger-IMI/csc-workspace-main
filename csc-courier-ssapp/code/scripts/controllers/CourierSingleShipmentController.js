@@ -43,10 +43,6 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
       });
     });
 
-    this.onTagEvent('add-shipment-comment', 'click', (e) => {
-      this.onAddShipmentCommentModalOpen();
-    });
-
     this.onTagClick('deliver-shipment', () => {
       this.navigateToPageTag('deliver-shipment', {
         shipment: {
@@ -61,7 +57,6 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     const actions = {
       canPickupShipment:false,
       canEditShipment:false,
-      canAddMessage:false,
       canDeliverShipment:false
     };
 
@@ -73,7 +68,6 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
         actions.canEditShipment = true;
         break;
       case shipmentStatusesEnum.InTransit:
-        actions.canAddMessage = true;
         actions.canDeliverShipment = true;
         break;
     }
@@ -95,7 +89,6 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     let shipment = await this.shipmentsService.getShipment(model.uid);
     shipment = { ...this.transformShipmentData(shipment) };
     model.shipmentModel.shipment = shipment;
-    console.log('Model : ', JSON.stringify(model.shipmentModel));
 
     if (model.shipmentModel.shipment.shipmentComments) {
       model.shipmentModel.shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
@@ -121,22 +114,6 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
       return data;
     }
     return {};
-  }
-
-  onAddShipmentCommentModalOpen(){
-    this.createWebcModal({
-      template: 'addShipmentCommentModal',
-      model:this.model,
-      controller: 'AddShipmentCommentModalController',
-      disableBackdropClosing: true,
-      disableFooter: true,
-      disableHeader: true,
-      disableExpanding: true,
-      disableClosing: false,
-      disableCancelButton: true,
-      expanded: false,
-      centered: true,
-    });
   }
 }
 

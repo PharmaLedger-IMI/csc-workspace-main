@@ -1,7 +1,7 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum } = require('./constants');
-const { shipmentStatusesEnum, shipmentsEventsEnum} = require('./constants/shipment');
+const { shipmentStatusesEnum} = require('./constants/shipment');
 const {getCommunicationServiceInstance} = require("./lib/CommunicationService");
 const EncryptionService = require('./lib/EncryptionService.js');
 const DidService  = require('./lib/DidService');
@@ -388,32 +388,6 @@ class ShipmentsService extends DSUService {
 		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentUid, shipmentDB);
 	}
 
-
-	async addShipmentComment(shipmentSSI, commentData) {
-
-		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentSSI);
-		let shipmentComments = await this.getEntityAsync(shipmentDB.shipmentComments, FoldersEnum.ShipmentComments);
-		shipmentComments.comments.push(commentData);
-		shipmentComments = await this.updateEntityAsync(shipmentComments, FoldersEnum.ShipmentComments);
-
-		const notifiableActors = [shipmentDB.sponsorId, shipmentDB.siteId];
-		const inTransitComment = {
-			shipmentSSI: shipmentSSI
-		}
-
-		notifiableActors.forEach(actor => {
-			this.sendMessageToEntity(
-				actor,
-				shipmentsEventsEnum.InTransitNewComment,
-				inTransitComment,
-				shipmentsEventsEnum.InTransitNewComment
-			);
-		})
-
-		return shipmentComments;
-
-	}
-
 	async getShipmentComments(commentsKeySSI) {
 		return await this.getEntityAsync(commentsKeySSI, FoldersEnum.ShipmentComments);
 	}
@@ -586,7 +560,6 @@ class ShipmentsService extends DSUService {
 			});
 		});
 	}
-
 
 }
 

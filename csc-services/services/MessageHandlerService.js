@@ -7,7 +7,7 @@ const eventBusService = require("./lib/EventBusService");
 const { order, shipment, Roles, Topics, kit, notifications } = require("./constants");
 const { NotificationTypes } = notifications;
 const { orderStatusesEnum } = order;
-const { shipmentStatusesEnum , shipmentsEventsEnum} = shipment;
+const { shipmentStatusesEnum} = shipment;
 const { kitsMessagesEnum, kitsStatusesEnum } = kit;
 
 class MessageHandlerService {
@@ -237,12 +237,6 @@ class MessageHandlerService {
         const messageData = data.data;
         const { shipmentSSI } = messageData;
         shipmentData = await this.shipmentService.updateShipmentStatus(shipmentSSI, this.role);
-        break;
-      }
-      case shipmentsEventsEnum.InTransitNewComment: {
-        notificationRole = Roles.Courier;
-        const { shipmentSSI } = data.data;
-        shipmentData = await this.shipmentService.getShipment(shipmentSSI);
         break;
       }
     }
