@@ -43,8 +43,8 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
       });
     });
 
-    this.onTagEvent('add-wrong-delivery-address-comment', 'click', (e) => {
-      this.onWrongShipmentAddressCommentModalOpen();
+    this.onTagEvent('report-wrong-delivery-address', 'click', (e) => {
+      this.reportWrongDeliveryAddress();
     });
 
     this.onTagClick('deliver-shipment', () => {
@@ -62,7 +62,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
       canPickupShipment:false,
       canEditShipment:false,
       canDeliverShipment:false,
-      canAddWrongDeliveryAddressMessage:false
+      canReportWrongDeliveryAddress:false
     };
 
     switch (shipment.status[0].status) {
@@ -74,7 +74,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
         break;
       case shipmentStatusesEnum.InTransit:
         actions.canDeliverShipment = true;
-        actions.canAddWrongDeliveryAddressMessage = true;
+        actions.canReportWrongDeliveryAddress = true;
         break;
     }
     return actions;
@@ -122,7 +122,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     return {};
   }
 
-  onWrongShipmentAddressCommentModalOpen(){
+  reportWrongDeliveryAddress(){
     this.createWebcModal({
       template: 'wrongDeliveryAddress',
       model:this.model,
