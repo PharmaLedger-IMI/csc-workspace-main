@@ -28,6 +28,15 @@
 								<div>{{@shipmentModel.shipment.status_date}}</div>
 							</div>
 						</div>
+
+						<div data-if="@shipmentModel.shipment.status_cancelled">
+							<div class="entity-status-box background-cancelled">
+								<div>Shipment Status:</div>
+								<div><b>{{@shipmentModel.shipment.status_value}}</b></div>
+								<div>{{@shipmentModel.shipment.status_date}}</div>
+							</div>
+						</div>
+
 						<div data-if='@shipmentModel.shipment.status_normal'>
 							<div class='entity-status-box background-primary'>
 								<div>Shipment Status:</div>
@@ -121,12 +130,12 @@
 					</div>
 
 					<div class='row-wrapper button-wrapper'>
-						<div data-if='@actions.canReceiveShipment'>
+<!--						<div data-if='@actions.canReceiveShipment'>-->
 							<button class='btn-default' data-tag='scan-shipment-received'>
 								<span class='fas fa-icon fa-qrcode'></span>
 								Scan Shipment
 							</button>
-						</div>
+<!--						</div>-->
 					</div>
 
 					<div class='row-wrapper button-wrapper'>

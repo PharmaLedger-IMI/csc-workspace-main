@@ -62,15 +62,15 @@ class NotificationsControllerImpl extends WebcController {
 
 	viewNotificationHandler() {
 		this.onTagClick('view-notification', (model) => {
-			const { keySSI, operation } = model;
-			if (keySSI && operation) {
+			const { uid, operation } = model;
+			if (uid && operation) {
 				let pageTag;
 				let state;
 				switch (operation) {
 					case NotificationTypes.UpdateOrderStatus: {
 						pageTag = 'order';
 						state = {
-							keySSI: keySSI
+							uid: uid
 						}
 							break;
 					}
@@ -78,7 +78,7 @@ class NotificationsControllerImpl extends WebcController {
 					case NotificationTypes.UpdateShipmentStatus: {
 						pageTag = 'shipment';
 						state = {
-							keySSI: keySSI
+							uid: uid
 						}
 						break;
 					}

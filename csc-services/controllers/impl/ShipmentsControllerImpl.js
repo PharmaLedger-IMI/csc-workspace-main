@@ -69,6 +69,7 @@ class ShipmentsControllerImpl extends WebcController {
       const statuses = statusesService.getShipmentStatusesByRole(this.role);
       const normalStatuses = statuses.normalStatuses;
       const approvedStatuses = statuses.approvedStatuses;
+      const cancelledStatuses = statuses.canceledStatuses;
 
       data.forEach((item) => {
         item.orderId = item.orderId || '-';
@@ -84,7 +85,7 @@ class ShipmentsControllerImpl extends WebcController {
 
         item.status_value = latestStatus.status === shipmentStatusesEnum.ShipmentCancelled ? shipmentStatusesEnum.Cancelled : latestStatus.status;
         item.status_approved = approvedStatuses.indexOf(item.status_value) !== -1;
-        item.status_cancelled = item.status_value === shipmentStatusesEnum.Cancelled;
+        item.status_cancelled = cancelledStatuses.indexOf(item.status_value) !== -1;
         item.status_normal = normalStatuses.indexOf(item.status_value) !== -1;
 
         item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
@@ -99,7 +100,7 @@ class ShipmentsControllerImpl extends WebcController {
 
   viewShipmentHandler() {
     this.onTagClick('view-shipment', (model) => {
-      this.navigateToPageTag('shipment', { keySSI: model.keySSI });
+      this.navigateToPageTag('shipment', { uid: model.uid });
     });
   }
 

@@ -35,7 +35,6 @@ export default class NewOrderController extends WebcController {
         { id: 'from_step_3_to_4', name: 'Next', visible: true, validated: false },
       ],
       form: viewModelResolver('order').form,
-      orderCreatedKeySSI: '',
       temperatureError:false,
       formIsInvalid:true,
     };
@@ -210,9 +209,13 @@ export default class NewOrderController extends WebcController {
 
         console.log('SUBMIT : Payload: ', payload);
 
-        const result = await this.ordersService.createOrder(payload);
-
-        this.model.orderCreatedKeySSI = result.keySSI;
+        let result;
+        try{
+           result = await this.ordersService.createOrder(payload);
+        }
+        catch (e) {
+          console.log(e);
+        }
 
         eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
 

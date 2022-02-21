@@ -141,8 +141,9 @@ class ViewShipmentBaseControllerImpl extends AccordionController{
       const statuses = statusesService.getShipmentStatusesByRole(this.role);
       const normalStatuses = statuses.normalStatuses;
       const approvedStatuses = statuses.approvedStatuses;
+      const canceledStatuses = statuses.canceledStatuses;
       data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
-      data.status_cancelled = data.status_value === shipmentStatusesEnum.Cancelled;
+      data.status_cancelled = canceledStatuses.indexOf(data.status_value) !== -1;
       data.status_normal = normalStatuses.indexOf(data.status_value) !== -1;
       data.pending_action = this.getPendingAction(data.status_value);
       data.contextualContent = {

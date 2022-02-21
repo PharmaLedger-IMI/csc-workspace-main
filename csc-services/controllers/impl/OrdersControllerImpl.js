@@ -85,7 +85,7 @@ class OrdersControllerImpl extends WebcController {
 			);
 			this.navigateToPageTag('order', {
 				id: orderId,
-				keySSI: this.orders.find((x) => x.orderId === orderId).orderSSI,
+				uid: this.orders.find((x) => x.orderId === orderId).uid,
 				documentsKeySSI: this.orders.find((x) => x.orderId === orderId).documentsKeySSI
 			});
 		});

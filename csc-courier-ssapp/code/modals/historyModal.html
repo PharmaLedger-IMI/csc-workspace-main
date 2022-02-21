@@ -43,6 +43,13 @@
                         </div>
                     </div>
 
+                    <div data-if='@cancelled'>
+                        <div slot='true' class='history-status background-cancelled'>
+                            <div class='history-date'>{{@date}}</div>
+                            <div><b>{{@status}}</b></div>
+                        </div>
+                    </div>
+
                     <div data-if='@normal'>
                         <div slot='true' class='history-status background-primary'>
                             <div class='history-date'>{{@date}}</div>

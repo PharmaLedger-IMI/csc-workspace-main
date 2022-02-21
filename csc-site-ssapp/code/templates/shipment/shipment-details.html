@@ -3,7 +3,7 @@
 	<div class='grid-column-wrapper'>
 		 <!-- Sponsor ID -->
 		 <label>{{@orderModel.form.inputs.sponsor_id.label}}</label>
-		 <input class="form-control form-control-sm" readonly="readonly" name="@orderModel.form.inputs.sponsor_id.name" placeholder="@orderModel.form.inputs.sponsor_id.placeholder" type="text" value="@orderModel.order.sponsorId" />   
+		 <input class="form-control form-control-sm" readonly="readonly" name="@orderModel.form.inputs.sponsor_id.name" placeholder="@orderModel.form.inputs.sponsor_id.placeholder" type="text" value="@shipmentModel.shipment.sponsorId" />
 		<!-- Shipment ID -->
 		<label>{{@shipmentModel.form.shipmentId.label}}</label>
 		<input class='form-control' value='@shipmentModel.shipment.shipmentId' readonly='readonly' />
@@ -16,8 +16,8 @@
 		<!-- Request Delivery Date/Time -->
 		<label>Requested Delivery Date/Time</label>
 		<div>
-		  <input class="form-control form-control-sm" readonly="readonly" name="@orderModel.form.inputs.delivery_date.name" type="text" value="@orderModel.order.delivery_date.date" />
-		  <input class="form-control form-control-sm" readonly="readonly" name="@orderModel.form.inputs.delivery_time.name" type="text" value="@orderModel.order.delivery_date.time" />
+		  <input class="form-control form-control-sm" readonly="readonly" name="@orderModel.form.inputs.delivery_date.name" type="text" value="@shipmentModel.shipment.delivery_date.date" />
+		  <input class="form-control form-control-sm" readonly="readonly" name="@orderModel.form.inputs.delivery_time.name" type="text" value="@shipmentModel.shipment.delivery_date.time" />
 		</div>
 		<!-- Type -->
 		<label>{{@shipmentModel.form.type.label}}</label>
@@ -44,14 +44,14 @@
 		<!-- Keep Between -->
 		<label>{{@orderModel.form.inputs.keep_between_temperature.label}}</label>
 		<div>
-		  <input class="form-control form-control-sm" readonly="readonly" name="@orderModel.form.inputs.keep_between_temperature_min.name" type="text" value="@orderModel.order.temperatures.min" />
+		  <input class="form-control form-control-sm" readonly="readonly" name="@orderModel.form.inputs.keep_between_temperature_min.name" type="text" value="@shipmentModel.shipment.temperatures.min" />
 		  <label>{{@orderModel.form.inputs.keep_between_temperature.andLabel}}</label>
-		  <input class="form-control form-control-sm" readonly="readonly" name="@orderModel.form.inputs.keep_between_temperature_max.name" type="text" value="@orderModel.order.temperatures.max" />
+		  <input class="form-control form-control-sm" readonly="readonly" name="@orderModel.form.inputs.keep_between_temperature_max.name" type="text" value="@shipmentModel.shipment.temperatures.max" />
 		</div>
 	  
 		<!-- Temperature Comments -->
 		<label>{{@orderModel.form.inputs.temperature_comments.label}}</label>
-		<input class="form-control form-control-sm" readonly="readonly" name="@orderModel.form.inputs.temperature_comments.name" type="text" value="@orderModel.order.temperature_comments" />
+		<input class="form-control form-control-sm" readonly="readonly" name="@orderModel.form.inputs.temperature_comments.name" type="text" value="@shipmentModel.shipment.temperature_comments" />
 	</div>
 </div>
 
