@@ -106,7 +106,6 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
 
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
 
-    /*let order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);*/
     let order = { ...this.transformOrderData(shipment) };
     model.orderModel.order = order;
     //console.log("MODEL " + JSON.stringify(model));

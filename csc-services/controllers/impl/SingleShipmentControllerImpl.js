@@ -194,7 +194,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
       model.orderModel.order = { ...this.transformOrderData(model.orderModel.order) };
     }
     else{
-      model.orderModel.order = { ...this.transformOrderData(model.orderModel.order) };
+      model.orderModel.order = { ...this.transformOrderData(model.shipmentModel.shipment) };
     }
 
 

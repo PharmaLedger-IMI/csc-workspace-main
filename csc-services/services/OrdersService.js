@@ -87,9 +87,6 @@ class OrdersService extends DSUService {
   async createOrder(data) {
     const { statusDsu, sponsorDocumentsDsu, cmoDocumentsDsu, kitIdsDsu, commentsDsu } = await this.createOrderOtherDSUs();
     const statusDsuKeySSI = statusDsu.keySSI;
-    const sponsorDocumentsKeySSI = sponsorDocumentsDsu.keySSI;
-    const commentsDsuKeySSI = commentsDsu.keySSI;
-
     const status = await this.updateStatusDsu(orderStatusesEnum.Initiated, statusDsuKeySSI);
 
     const sponsorDocuments = await this.addDocumentsToDsu(data.files, sponsorDocumentsDsu.uid, Roles.Sponsor);
