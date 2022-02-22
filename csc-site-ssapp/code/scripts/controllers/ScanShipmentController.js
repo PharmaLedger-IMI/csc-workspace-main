@@ -2,7 +2,6 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentService = cscServices.ShipmentService;
-const OrderService = cscServices.OrderService;
 const KitsService = cscServices.KitsService;
 const eventBusService = cscServices.EventBusService;
 const { Roles, Topics, kit } = cscServices.constants;
