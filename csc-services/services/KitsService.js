@@ -154,7 +154,8 @@ class KitsService extends DSUService {
 
     await this.communicationService.sendMessage(shipment.sponsorId,{
         operation: status,
-        data: { kitSSI: kitSSI },
+        //sending always the sReadSSI in order to let sponsor to mount a kit even if the studyKits DSU was not mounted yet
+        data: { kitSSI: modifiedKit.kitKeySSI },
         shortDescription: status
       });
 
@@ -195,7 +196,7 @@ class KitsService extends DSUService {
      }
     let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, kitDetails.studyId);
     let modifiedKit = studyKitDb.kits.find((kit) => {
-      return kit.uid === kitIdentifier;
+      return kit.uid === kitDetails.uid;
     });
     modifiedKit.status = kitDetails.status;
     if (status === kitsStatusesEnum.Assigned) {
