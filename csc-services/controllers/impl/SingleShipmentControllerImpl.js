@@ -2,7 +2,6 @@ const cscServices = require('csc-services');
 const OrdersService = cscServices.OrderService;
 const ShipmentsService = cscServices.ShipmentService;
 const KitsService = cscServices.KitsService;
-const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 const NotificationsService = cscServices.NotificationsService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
@@ -21,11 +20,10 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   }
 
   async initServices(){
-    let communicationService = getCommunicationServiceInstance();
     this.notificationsService = new NotificationsService(this.DSUStorage);
-    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
-    this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
-    this.kitsService = new KitsService(this.DSUStorage, communicationService);
+    this.ordersService = new OrdersService(this.DSUStorage);
+    this.shipmentsService = new ShipmentsService(this.DSUStorage);
+    this.kitsService = new KitsService(this.DSUStorage);
 
     this.initViewModel();
     this.attachEventListeners();
@@ -46,7 +44,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   editShipmentHandler() {
     this.onTagClick('edit-shipment', () => {
       this.navigateToPageTag('edit-shipment', {
-        keySSI: this.model.keySSI
+        uid: this.model.uid
       });
     });
   }
@@ -81,6 +79,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     switch(this.role) {
       case Roles.Sponsor: {
         actions.canCancelOrderAndShipment = shipment.status_value === shipmentStatusesEnum.InPreparation;
+        actions.canCheckKits = !actions.canCancelOrderAndShipment;
         this.attachSponsorEventHandlers();
 
         break;
@@ -130,8 +129,8 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
           date: new Date().getTime()
         }
         : null;
-    await this.ordersService.updateOrderNew(keySSI, null, comment, this.role, orderStatusesEnum.Canceled);
-    await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ShipmentCancelled);
+    await this.ordersService.updateOrder(keySSI, comment, this.role, orderStatusesEnum.Canceled);
+    await this.shipmentsService.updateShipment(this.model.uid, shipmentStatusesEnum.ShipmentCancelled);
 
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
@@ -154,16 +153,18 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     this.onTagClick('manage-kits', async(model) => {
           this.navigateToPageTag('study-kits', {
-                studyId: model.orderModel.order.studyId,
-                orderId: model.orderModel.order.orderId
+                studyId: model.shipmentModel.shipment.studyId,
+                orderId: model.shipmentModel.shipment.orderId
           });
     });
   }
 
   scanShipmentHandler() {
     this.onTagClick('scan-shipment', () => {
+      console.log(this.model.shipmentModel.shipment.uid);
       this.navigateToPageTag('scan-shipment', {
         shipment: {
+          shipmentUID:this.model.shipmentModel.shipment.uid,
           shipmentId: this.model.orderModel.order.orderId,
           ...this.model.toObject('orderModel.order')
         }
@@ -177,10 +178,10 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
       orderModel: viewModelResolver('order'),
       shipmentModel: viewModelResolver('shipment')
     };
-    let { keySSI } = this.history.location.state;
-    model.keySSI = keySSI;
+    let { uid } = this.history.location.state;
+    model.uid = uid;
 
-    model.shipmentModel.shipment = await this.shipmentsService.getShipment(model.keySSI);
+    model.shipmentModel.shipment = await this.shipmentsService.getShipment(model.uid);
     model.shipmentModel.shipment = { ...this.transformShipmentData(model.shipmentModel.shipment) };
     if (model.shipmentModel.shipment.shipmentComments) {
       model.shipmentModel.shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
@@ -188,8 +189,14 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
 
-    model.orderModel.order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
-    model.orderModel.order = { ...this.transformOrderData(model.orderModel.order) };
+    if([ Roles.CMO,Roles.Sponsor].indexOf(this.role)!==-1){
+      model.orderModel.order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
+      model.orderModel.order = { ...this.transformOrderData(model.orderModel.order) };
+    }
+    else{
+      model.orderModel.order = { ...this.transformOrderData(model.shipmentModel.shipment) };
+    }
+
 
     //SPONSOR, CMO, has kitsIDSSI in the order, SITE has it in shipment
     let kitsSSI;

@@ -2,7 +2,6 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentService = cscServices.ShipmentService;
-const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
 const { shipment,  Topics } = cscServices.constants;
 const shipmentStatusesEnum = shipment.shipmentStatusesEnum;
@@ -13,8 +12,7 @@ class DeliverShipmentController extends WebcController {
     super(...props);
     this.originalShipment = this.history.location.state.shipment;
 
-    let communicationService = CommunicationService.getCommunicationServiceInstance();
-    this.shipmentService = new ShipmentService(this.DSUStorage, communicationService);
+    this.shipmentService = new ShipmentService(this.DSUStorage);
     this.model = this.getDeliverShipmentViewModel(shipment);
 
     this.model.shipment = this.originalShipment;
@@ -63,7 +61,7 @@ class DeliverShipmentController extends WebcController {
     });
 
     this.onTagClick('view-shipment', () => {
-      this.navigateToPageTag('shipment', { keySSI: this.model.shipment.shipmentSSI });
+      this.navigateToPageTag('shipment', { uid: this.model.shipment.uid });
     });
   }
 
@@ -122,9 +120,9 @@ class DeliverShipmentController extends WebcController {
     this.model.disableSign = true;
     window.WebCardinal.loader.hidden = false;
 
-    await this.shipmentService.updateTransitShipmentDSU(this.model.shipment.shipmentSSI, payload, shipmentStatusesEnum.Delivered);
+    await this.shipmentService.updateTransitShipmentDSU(this.model.shipment.uid, payload, shipmentStatusesEnum.Delivered);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-    this.showErrorModalAndRedirect("Shipment" + this.model.shipment.shipmentId + " was delivered", "Shipment Delivered", '/', 2000);
+    this.showErrorModalAndRedirect(`Shipment ${this.model.shipment.shipmentId}  was delivered`, "Shipment Delivered", '/', 2000);
     window.WebCardinal.loader.hidden = true;
   }
 

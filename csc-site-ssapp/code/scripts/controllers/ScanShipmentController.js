@@ -2,9 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentService = cscServices.ShipmentService;
-const OrderService = cscServices.OrderService;
 const KitsService = cscServices.KitsService;
-const CommunicationService = cscServices.CommunicationService;
 const eventBusService = cscServices.EventBusService;
 const { Roles, Topics, kit } = cscServices.constants;
 const { kitsMessagesEnum } = kit;
@@ -13,10 +11,8 @@ class ScanShipmentController extends WebcController {
   constructor(...props) {
     super(...props);
     this.originalShipment = this.history.location.state.shipment;
-    this.communicationService = CommunicationService.getCommunicationServiceInstance()
-    this.shipmentService = new ShipmentService(this.DSUStorage, this.communicationService);
-    this.orderService = new OrderService(this.DSUStorage, this.communicationService);
-    this.kitsService = new KitsService(this.DSUStorage, this.communicationService);
+    this.shipmentService = new ShipmentService(this.DSUStorage);
+    this.kitsService = new KitsService(this.DSUStorage);
     this.model = { shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;
     this.retrieveKitIds(this.originalShipment.kitIdSSI);
@@ -108,7 +104,7 @@ class ScanShipmentController extends WebcController {
     });
 
     this.onTagClick('view-shipment', () => {
-      this.navigateToPageTag('shipment', { keySSI: this.model.shipment.shipmentSSI });
+      this.navigateToPageTag('shipment', { uid: this.model.shipment.uid });
     });
 
     this.onTagClick('nav-back', () => {
@@ -135,26 +131,25 @@ class ScanShipmentController extends WebcController {
           comment: this.model.shipmentModel.form.add_comment.value
       }
 
-      await this.shipmentService.createAndMountReceivedDSU(this.model.shipment.shipmentSSI, payload, receivedComment);
+      await this.shipmentService.createAndMountReceivedDSU(this.model.shipment.uid, payload, receivedComment);
       eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
 
 
-      let order = await this.orderService.getOrder(this.model.shipment.orderSSI);
-      let {studyId, orderId}  = order;
+      //let order = await this.orderService.getOrder(this.model.shipment.orderSSI);
+      let {studyId, orderId}  = this.model.shipment;
       let shipmentId = this.model.shipment.shipmentId;
       let sponsorId = this.model.shipment.sponsorId;
       let kits = await this.kitsService.getKitIdsDsu(this.model.shipment.kitIdSSI);
 
 
     let redirectToShipmentView = () => {
-
       this.shipmentService.sendMessageToEntity(sponsorId,kitsMessagesEnum.ShipmentSigned,{
-        studyKeySSI: studyKitData.keySSI
+        studyKeySSI: studyKitData.sReadSSI
       },'Shipment Signed')
 
       this.showErrorModalAndRedirect('Shipment was received, Kits can be managed now.', 'Shipment Received', {
         tag: 'shipment',
-        state: { keySSI: this.model.shipment.shipmentSSI }
+        state: { uid: this.model.shipment.uid }
       }, 2000);
 
     };

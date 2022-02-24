@@ -3,8 +3,7 @@ const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentsService = cscServices.ShipmentService;
 const OrdersService = cscServices.OrderService;
-const CommunicationService = cscServices.CommunicationService;
-const {  Roles } = cscServices.constants;
+const { Roles } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
 class CourierSingleShipmentController extends ViewShipmentBaseController {
@@ -18,9 +17,8 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
   }
 
   async initServices(){
-    let communicationService = CommunicationService.getCommunicationServiceInstance();
-    this.ordersService = new OrdersService(this.DSUStorage, communicationService);
-    this.shipmentsService = new ShipmentsService(this.DSUStorage, communicationService);
+    this.ordersService = new OrdersService(this.DSUStorage);
+    this.shipmentsService = new ShipmentsService(this.DSUStorage);
   }
 
   attachEventListeners() {
@@ -45,8 +43,8 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
       });
     });
 
-    this.onTagEvent('add-shipment-comment', 'click', (e) => {
-      this.onAddShipmentCommentModalOpen();
+    this.onTagEvent('report-wrong-delivery-address', 'click', (e) => {
+      this.reportWrongDeliveryAddress();
     });
 
     this.onTagClick('deliver-shipment', () => {
@@ -63,8 +61,8 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     const actions = {
       canPickupShipment:false,
       canEditShipment:false,
-      canAddMessage:false,
-      canDeliverShipment:false
+      canDeliverShipment:false,
+      canReportWrongDeliveryAddress:false
     };
 
     switch (shipment.status[0].status) {
@@ -75,8 +73,8 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
         actions.canEditShipment = true;
         break;
       case shipmentStatusesEnum.InTransit:
-        actions.canAddMessage = true;
         actions.canDeliverShipment = true;
+        actions.canReportWrongDeliveryAddress = true;
         break;
     }
     return actions;
@@ -92,12 +90,11 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     for (let prop in model.form) {
       model.form[prop].disabled = true;
     }
-    let { keySSI } = this.history.location.state;
-    model.keySSI = keySSI;
-    let shipment = await this.shipmentsService.getShipment(model.keySSI);
+    let { uid } = this.history.location.state;
+    model.uid = uid;
+    let shipment = await this.shipmentsService.getShipment(model.uid);
     shipment = { ...this.transformShipmentData(shipment) };
     model.shipmentModel.shipment = shipment;
-    console.log('Model : ', JSON.stringify(model.shipmentModel));
 
     if (model.shipmentModel.shipment.shipmentComments) {
       model.shipmentModel.shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
@@ -109,9 +106,8 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
 
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
 
-    let order = await this.ordersService.getOrder(model.shipmentModel.shipment.orderSSI);
-    order = { ...this.transformOrderData(order) };
-    model.orderModel.order = order
+    let order = { ...this.transformOrderData(shipment) };
+    model.orderModel.order = order;
     //console.log("MODEL " + JSON.stringify(model));
     this.model = model;
     this.attachRefreshListeners();
@@ -125,11 +121,11 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     return {};
   }
 
-  onAddShipmentCommentModalOpen(){
+  reportWrongDeliveryAddress(){
     this.createWebcModal({
-      template: 'addShipmentCommentModal',
+      template: 'wrongDeliveryAddress',
       model:this.model,
-      controller: 'AddShipmentCommentModalController',
+      controller: 'WrongDeliveryAddressModalController',
       disableBackdropClosing: true,
       disableFooter: true,
       disableHeader: true,

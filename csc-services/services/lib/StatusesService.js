@@ -9,8 +9,8 @@ class StatusesService {
 
   getOrderStatuses() {
 
-    let normalStatuses = [orderStatusesEnum.Initiated, orderStatusesEnum.ReviewedByCMO];
-    let approvedStatuses = [orderStatusesEnum.Approved];
+    let normalStatuses = [orderStatusesEnum.Initiated, orderStatusesEnum.InProgress];
+    let approvedStatuses = [orderStatusesEnum.Completed];
     let canceledStatuses = [orderStatusesEnum.Canceled];
     return { normalStatuses, approvedStatuses, canceledStatuses };
 
@@ -30,7 +30,7 @@ class StatusesService {
         case Roles.Sponsor:
           normalStatuses = [shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.ReadyForDispatch, shipmentStatusesEnum.PickUpAtWarehouse, shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered];
           approvedStatuses = [shipmentStatusesEnum.Received];
-          canceledStatuses = [shipmentStatusesEnum.Cancelled];
+          canceledStatuses = [shipmentStatusesEnum.Cancelled, shipmentStatusesEnum.WrongDeliveryAddress];
           break;
         // For CMO
         case Roles.CMO:
@@ -43,14 +43,14 @@ class StatusesService {
         case Roles.Courier:
           normalStatuses = [shipmentStatusesEnum.ReadyForDispatch, shipmentStatusesEnum.PickUpAtWarehouse, shipmentStatusesEnum.InTransit, shipmentStatusesEnum.Delivered];
           approvedStatuses = [shipmentStatusesEnum.ProofOfDelivery];
+          canceledStatuses = [shipmentStatusesEnum.WrongDeliveryAddress];
           break;
 
         // For Site
         case Roles.Site:
-          // Set the normal statuses
           normalStatuses = [shipmentStatusesEnum.InTransit,shipmentStatusesEnum.Delivered];
-          // Set the Approved statuses
           approvedStatuses = [shipmentStatusesEnum.Received];
+          canceledStatuses = [shipmentStatusesEnum.WrongDeliveryAddress];
           break;
       }
     }

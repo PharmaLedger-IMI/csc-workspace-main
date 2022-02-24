@@ -83,9 +83,9 @@ class SingleKitControllerImpl extends AccordionController {
       kitModel: viewModelResolver('kit')
     };
 
-    let { keySSI } = this.history.location.state;
-    model.keySSI = keySSI;
-    model.kitModel.kit = await this.kitsService.getKitDetails(model.keySSI);
+    let { uid } = this.history.location.state;
+    model.uid = uid;
+    model.kitModel.kit = await this.kitsService.getKitDetails(model.uid);
     model.kitModel.kit = { ...this.transformKitData(model.kitModel.kit) };
 
     if (model.kitModel.kit.shipmentComments) {

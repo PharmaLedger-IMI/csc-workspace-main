@@ -1,5 +1,6 @@
 {
-  "translations":"false",
+  "translations":false,
+  "logLevel": "none",
   "theme": "blue-csc-theme",
   "pagesFallback": {
     "name": "Test"
@@ -24,13 +25,6 @@
       "path": "/order",
       "src": "order.html",
       "tag": "order",
-      "indexed": false
-    },
-    {
-      "name": "revieworder",
-      "path": "/review-order",
-      "src": "review-order.html",
-      "tag": "review-order",
       "indexed": false
     },
     {

@@ -7,7 +7,7 @@ const eventBusService = require("./lib/EventBusService");
 const { order, shipment, Roles, Topics, kit, notifications } = require("./constants");
 const { NotificationTypes } = notifications;
 const { orderStatusesEnum } = order;
-const { shipmentStatusesEnum , shipmentsEventsEnum} = shipment;
+const { shipmentStatusesEnum} = shipment;
 const { kitsMessagesEnum, kitsStatusesEnum } = kit;
 
 class MessageHandlerService {
@@ -63,7 +63,7 @@ class MessageHandlerService {
       orderId: orderData.orderId,
       read: false,
       status: orderStatus,
-      keySSI: data.data.orderSSI,
+      uid: orderData.uid,
       role: notificationRole,
       did: data.senderIdentity,
       date: new Date().getTime()
@@ -89,16 +89,21 @@ class MessageHandlerService {
       shipmentId: shipmentData.shipmentId,
       read: false,
       status: shipmentStatus,
-      keySSI: data.data.shipmentSSI,
+      uid: shipmentData.uid,
       role: notificationRole,
       did: data.senderIdentity,
       date: new Date().getTime()
     };
 
-    const notificationResult = await this.notificationsService.insertNotification(notification);
+    await this.notificationsService.insertNotification(notification);
     eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     eventBusService.emitEventListeners(Topics.RefreshShipments + shipmentData.shipmentId, null);
+
+    //shipment statuses InPreparation and Received will trigger an order status change (In Progress and Completed)
+    if ([shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.Received].indexOf(shipmentStatus)!==-1) {
+      eventBusService.emitEventListeners(Topics.RefreshOrders + shipmentData.orderId, null);
+    }
 
     //TODO: refactor this logic
     //added for the case when shipment is receiving a new shipmentId but the listeners are already using the initial shipmentId (which is orderId by convention)
@@ -140,33 +145,13 @@ class MessageHandlerService {
 
         break;
       }
-
-      //TODO are you sure that the order was mounted previously?
-      // if user is offline and an order will pass through many states: Initiated, Reviewed by CMO, Accepted,
-      // the communication system will raise 3 different events and
-      //   1. the order of the events may not be the same
-      //   2. the communicationService is not waiting, it will provide the next message ASAP
-
-      case orderStatusesEnum.ReviewedByCMO: {
-        notificationRole = Roles.CMO;
-        orderData = await this.ordersService.updateLocalOrder(data.data.orderSSI);
-
-        break;
-      }
-
-      case orderStatusesEnum.Canceled: {
+      case orderStatusesEnum.Canceled:
+      case orderStatusesEnum.Completed:{
         notificationRole = Roles.Sponsor;
         orderData = await this.ordersService.updateLocalOrder(data.data.orderSSI);
-
         break;
       }
 
-      case orderStatusesEnum.Approved: {
-        notificationRole = Roles.Sponsor;
-        orderData = await this.ordersService.updateLocalOrder(data.data.orderSSI);
-
-        break;
-      }
     }
 
     return [orderData, orderStatus, notificationRole];
@@ -184,7 +169,7 @@ class MessageHandlerService {
         const { shipmentSSI, statusSSI } = data.data;
 
         shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusSSI);
-        await this.ordersService.updateLocalOrder(shipmentData.orderSSI, { shipmentSSI: shipmentSSI });
+        await this.ordersService.updateLocalOrder(shipmentData.orderSSI, { shipmentSSI: shipmentData.uid });
         break;
       }
 
@@ -244,6 +229,7 @@ class MessageHandlerService {
         const messageData = data.data;
         const { receivedShipmentSSI, shipmentSSI } = messageData;
         shipmentData = await this.shipmentService.mountShipmentReceivedDSU(shipmentSSI, receivedShipmentSSI);
+        await this.ordersService.updateOrder(shipmentData.orderSSI,null, Roles.Sponsor, orderStatusesEnum.Completed, null);
         break;
       }
       case shipmentStatusesEnum.ProofOfDelivery: {
@@ -253,10 +239,10 @@ class MessageHandlerService {
         shipmentData = await this.shipmentService.updateShipmentStatus(shipmentSSI, this.role);
         break;
       }
-      case shipmentsEventsEnum.InTransitNewComment: {
+      case shipmentStatusesEnum.WrongDeliveryAddress: {
         notificationRole = Roles.Courier;
         const { shipmentSSI } = data.data;
-        shipmentData = await this.shipmentService.getShipment(shipmentSSI);
+        shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
         break;
       }
     }
@@ -282,7 +268,7 @@ class MessageHandlerService {
           orderId: orderId,
           read: false,
           status: "Kits were received",
-          keySSI: data.data.studyKeySSI,
+          uid: kitsData.uid,
           role: notificationRole,
           did: data.senderIdentity,
           date: new Date().getTime()

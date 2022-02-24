@@ -8,7 +8,7 @@ class OrderCreatedModalController extends WebcController {
 
         this.onTagEvent('navigate-to-order', 'click', (e) => {
             this.navigateToPageTag('order', {
-                keySSI:this.model.keySSI
+                uid:this.model.uid
             });
         });
 

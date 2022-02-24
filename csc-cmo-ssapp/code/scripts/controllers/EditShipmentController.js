@@ -7,7 +7,6 @@ const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { FoldersEnum, Topics, Commons } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
-const CommunicationService = cscServices.CommunicationService;
 const momentService = cscServices.momentService;
 
 export default class EditShipmentController extends WebcController {
@@ -15,14 +14,13 @@ export default class EditShipmentController extends WebcController {
 	constructor(...props) {
 		super(...props);
 		this.model.submitDisabled = false;
-		this.model.keySSI = this.history.location.state.keySSI;
+		this.model.uid = this.history.location.state.uid;
 		this.initServices()
 	}
 
 	async initServices(){
 		this.ordersService = new OrderService(this.DSUStorage);
-		let communicationService = CommunicationService.getCommunicationServiceInstance();
-		this.shipmentsService = new ShipmentService(this.DSUStorage, communicationService);
+		this.shipmentsService = new ShipmentService(this.DSUStorage);
 		this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
 
 		this.attachEventHandlers();
@@ -68,7 +66,7 @@ export default class EditShipmentController extends WebcController {
     });
 
     this.onTagClick('view-shipment', () => {
-      this.navigateToPageTag('shipment', { keySSI: this.model.keySSI });
+      this.navigateToPageTag('shipment', { uid: this.model.uid });
     });
   }
 
@@ -110,7 +108,7 @@ export default class EditShipmentController extends WebcController {
 			window.WebCardinal.loader.hidden = false;
 			this.model.submitDisabled = true;
 			const shipmentData = this.prepareShipmentData();
-			await this.shipmentsService.updateShipment(this.model.keySSI, shipmentStatusesEnum.ReadyForDispatch, shipmentData);
+			await this.shipmentsService.updateShipment(this.model.uid, shipmentStatusesEnum.ReadyForDispatch, shipmentData);
 			this.showErrorModalAndRedirect('Shipment was edited, redirecting to dashboard...', 'Shipment Edited', { tag: 'dashboard', state: { tab: Topics.Shipment }}, 2000);
 			let modalOptions = {
 				disableExpanding: true,
@@ -123,7 +121,7 @@ export default class EditShipmentController extends WebcController {
 				'Shipment edited successfully!',
 				'Edit Shipment',
 				() => {
-					this.navigateToPageTag('shipment', { keySSI: this.model.keySSI });
+					this.navigateToPageTag('shipment', { uid: this.model.uid });
 				},
 				() => {},
 				modalOptions
@@ -225,7 +223,7 @@ export default class EditShipmentController extends WebcController {
 			this.model.orderModel.form.inputs[prop].disabled = true;
 		}
 
-		this.model.shipmentModel.shipment = await this.shipmentsService.getShipment(this.model.keySSI);
+		this.model.shipmentModel.shipment = await this.shipmentsService.getShipment(this.model.uid);
 		this.model.orderModel.order = await this.ordersService.getOrder(this.model.shipmentModel.shipment.orderSSI);
 		this.model.orderModel.order = { ...this.transformOrderData(this.model.orderModel.order) };
 

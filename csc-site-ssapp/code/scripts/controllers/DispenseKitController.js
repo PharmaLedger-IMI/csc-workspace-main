@@ -2,7 +2,6 @@ const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const DidService = cscServices.DidService;
 const KitsService = cscServices.KitsService;
-const CommunicationService = cscServices.CommunicationService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { kitsStatusesEnum } = cscServices.constants.kit;
 const eventBusService = cscServices.EventBusService;
@@ -12,8 +11,7 @@ class DispenseKitController extends WebcController {
 
   constructor(...props) {
     super(...props);
-    let communicationService = CommunicationService.getCommunicationServiceInstance();
-    this.kitsService = new KitsService(this.DSUStorage,communicationService);
+    this.kitsService = new KitsService(this.DSUStorage);
     this.initViewModel();
     this.initHandlers();
     this.navigationHandlers();
@@ -36,20 +34,20 @@ class DispenseKitController extends WebcController {
     });
 
     this.onTagClick('view-kit', () => {
-      this.navigateToPageTag('kit', { keySSI: this.model.kitSSI });
+      this.navigateToPageTag('kit', { uid: this.model.uid });
     });
 
   }
 
   async initViewModel() {
-    let { studyId, orderId, keySSI, kitId } = this.history.location.state.kit;
+    let { studyId, orderId, uid, kitId } = this.history.location.state.kit;
 
     const model = {
       kitModel: viewModelResolver('kit'),
       userName: '',
       studyId: studyId,
       orderId: orderId,
-      kitSSI: keySSI,
+      uid: uid,
       kitId: kitId
     };
 
@@ -75,12 +73,12 @@ class DispenseKitController extends WebcController {
     window.WebCardinal.loader.hidden = false;
 
     const dispensedData = this.getDispensedData();
-    await this.kitsService.updateKit(this.model.kitSSI, kitsStatusesEnum.Dispensed, dispensedData);
+    await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Dispensed, dispensedData);
 
     eventBusService.emitEventListeners(Topics.RefreshKits, null);
     this.showErrorModalAndRedirect('Kit is marked as dispensed', 'Kit Dispensed', {
       tag: 'kit',
-      state: { keySSI: this.model.kitSSI }
+      state: { uid: this.model.uid }
     }, 2000);
     window.WebCardinal.loader.hidden = true;
   }

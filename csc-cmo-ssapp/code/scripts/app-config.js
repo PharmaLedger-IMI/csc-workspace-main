@@ -11,7 +11,6 @@ const NotificationsController = cscServices.getController('NotificationsControll
 const DashboardMenuController = cscServices.getController('DashboardMenuController', ACTOR);
 const DashboardController = cscServices.getController('DashboardController', ACTOR);
 const OrdersController = cscServices.getController('OrdersController', ACTOR);
-const ReviewOrderController = cscServices.getController('ReviewOrderController', ACTOR);
 const SingleShipmentController = cscServices.getController('SingleShipmentController', ACTOR);
 const ShipmentsController = cscServices.getController('ShipmentsController', ACTOR);
 const ScanShipmentModalController = cscServices.getController('ScanShipmentModalController', ACTOR);
@@ -32,7 +31,6 @@ addHook('beforeAppLoads', async () => {
     DashboardMenuController,
     DashboardController,
     OrdersController,
-    ReviewOrderController,
     SingleShipmentController,
     ShipmentsController,
     ScanShipmentModalController,
