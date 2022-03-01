@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-undef
 const cscServices = require('csc-services');
-const { Commons } = require('../../../csc-cmo-ssapp/code/scripts/bundles/cscServices');
+const { Commons } = cscServices.constants;
 const { WebcController } = WebCardinal.controllers;
 const momentService = cscServices.momentService;
 
