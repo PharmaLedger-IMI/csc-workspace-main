@@ -26,7 +26,7 @@ class HistoryModalControllerImpl extends WebcController {
 	attachViewOrderHandler() {
 		this.onTagClick('view-order', () => {
 			this.navigateToPageTag('order', {
-				keySSI: this.model.order.keySSI
+				uid: this.model.order.uid
 			});
 		});
 	}
@@ -34,7 +34,7 @@ class HistoryModalControllerImpl extends WebcController {
 	attachViewShipmentHandler() {
 		this.onTagClick('view-shipment', () => {
 			this.navigateToPageTag('shipment', {
-				keySSI: this.model.shipment.keySSI
+				uid: this.model.shipment.uid
 			});
 		});
 	}
@@ -97,11 +97,8 @@ class HistoryModalControllerImpl extends WebcController {
 			shipment.status.forEach(item => {
 				item.approved = statuses.approvedStatuses.indexOf(item.status) !== -1;
 				item.normal = statuses.normalStatuses.indexOf(item.status) !== -1;
+				item.cancelled = statuses.canceledStatuses.indexOf(item.status) !== -1
 				item.date = momentService(item.date).format(Commons.DateTimeFormatPattern);
-				if (item.status === shipmentStatusesEnum.ShipmentCancelled) {
-					item.status = shipmentStatusesEnum.Cancelled;
-					item.cancelled = true;
-				}
 			});
 		} else {
 			shipment.shipmentExists = false;

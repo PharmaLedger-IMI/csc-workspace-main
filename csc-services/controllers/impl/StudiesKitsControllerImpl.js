@@ -128,7 +128,7 @@ class StudiesKitsControllerImpl extends WebcController {
             model: this.model
           });
 
-          await this.kitsService.mountStudyKits(model.keySSI, (err, progress) => {
+          await this.kitsService.mountStudyKits(model.uid, (err, progress) => {
             this.model.kitsMounting.progress = parseInt(progress * 100);
           });
         };

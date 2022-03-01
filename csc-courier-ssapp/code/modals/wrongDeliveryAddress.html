@@ -6,14 +6,15 @@
 </style>
 
 <div slot="header">
-  <div class="modal-main-title">Add Shipment Comment</div>
+  <div class="modal-main-title">Wrong Delivery Address</div>
 </div>
 
 
 <div class='row'>
   <div class='col-12'>
+    <p>Please elaborate on the situation</p>
     <div class='form-group'>
-      <label>Comment</label>
+      <label>Elaboration</label>
       <textarea id='commentValue' class='form-control' value="@form.inputs.comment.value"></textarea>
     </div>
   </div>
@@ -26,9 +27,9 @@
       Cancel
     </button>
 
-    <button class="btn-default" data-tag="submit-shipment-comment" id="submitButton">
+    <button class="btn-default" data-tag="submit-wrong-delivery-comment" id="submitButton">
       <i class="fas fa-check"></i>
-      Submit
+      Confirm
     </button>
   </div>
 </div>

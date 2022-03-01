@@ -17,7 +17,7 @@ class KitHistoryModalControllerImpl extends WebcController {
 	attachViewKitsHandler() {
 		this.onTagClick('view-kits', () => {
 			this.navigateToPageTag('kits', {
-				keySSI: this.model.keySSI
+				uid: this.model.uid
 			});
 		});
 	}

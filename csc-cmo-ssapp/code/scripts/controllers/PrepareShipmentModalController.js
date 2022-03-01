@@ -8,7 +8,7 @@ class PrepareShipmentModalController extends WebcController {
 
     this.onTagEvent('navigate-to-shipment', 'click', (e) => {
       this.navigateToPageTag('shipment', {
-        keySSI:this.model.keySSI
+        uid:this.model.uid
       });
     });
 

@@ -7,7 +7,7 @@ const eventBusService = require("./lib/EventBusService");
 const { order, shipment, Roles, Topics, kit, notifications } = require("./constants");
 const { NotificationTypes } = notifications;
 const { orderStatusesEnum } = order;
-const { shipmentStatusesEnum , shipmentsEventsEnum} = shipment;
+const { shipmentStatusesEnum} = shipment;
 const { kitsMessagesEnum, kitsStatusesEnum } = kit;
 
 class MessageHandlerService {
@@ -63,7 +63,7 @@ class MessageHandlerService {
       orderId: orderData.orderId,
       read: false,
       status: orderStatus,
-      keySSI: data.data.orderSSI,
+      uid: orderData.uid,
       role: notificationRole,
       did: data.senderIdentity,
       date: new Date().getTime()
@@ -89,7 +89,7 @@ class MessageHandlerService {
       shipmentId: shipmentData.shipmentId,
       read: false,
       status: shipmentStatus,
-      keySSI: data.data.shipmentSSI,
+      uid: shipmentData.uid,
       role: notificationRole,
       did: data.senderIdentity,
       date: new Date().getTime()
@@ -169,7 +169,7 @@ class MessageHandlerService {
         const { shipmentSSI, statusSSI } = data.data;
 
         shipmentData = await this.shipmentService.mountAndReceiveShipment(shipmentSSI, this.role, statusSSI);
-        await this.ordersService.updateLocalOrder(shipmentData.orderSSI, { shipmentSSI: shipmentSSI });
+        await this.ordersService.updateLocalOrder(shipmentData.orderSSI, { shipmentSSI: shipmentData.uid });
         break;
       }
 
@@ -239,10 +239,10 @@ class MessageHandlerService {
         shipmentData = await this.shipmentService.updateShipmentStatus(shipmentSSI, this.role);
         break;
       }
-      case shipmentsEventsEnum.InTransitNewComment: {
+      case shipmentStatusesEnum.WrongDeliveryAddress: {
         notificationRole = Roles.Courier;
         const { shipmentSSI } = data.data;
-        shipmentData = await this.shipmentService.getShipment(shipmentSSI);
+        shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
         break;
       }
     }
@@ -268,7 +268,7 @@ class MessageHandlerService {
           orderId: orderId,
           read: false,
           status: "Kits were received",
-          keySSI: data.data.studyKeySSI,
+          uid: kitsData.uid,
           role: notificationRole,
           did: data.senderIdentity,
           date: new Date().getTime()

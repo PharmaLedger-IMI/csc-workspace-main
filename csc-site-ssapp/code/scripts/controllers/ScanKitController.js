@@ -93,7 +93,7 @@ class ScanKitController extends WebcController {
     });
 
     this.onTagClick('view-kit', () => {
-      this.navigateToPageTag('kit', { keySSI: this.model.kit.keySSI });
+      this.navigateToPageTag('kit', { uid: this.model.kit.uid });
     });
 
     this.onTagClick('view-study-kits', () => {
@@ -124,13 +124,13 @@ class ScanKitController extends WebcController {
       comment: this.model.kitModel.form.add_comment.value
     }
 
-    await this.kitsService.updateKit(this.model.kit.keySSI, kitsStatusesEnum.AvailableForAssignment, {
+    await this.kitsService.updateKit(this.model.kit.uid, kitsStatusesEnum.AvailableForAssignment, {
       kitActualTemperatureObserved: this.model.kitModel.form.temperature.value,
       kitComment: receivedComment
     });
 
     eventBusService.emitEventListeners(Topics.RefreshKits, null);
-    this.showErrorModalAndRedirect('Kit is marked as available for assignment', 'Kit Available', { tag: 'kit', state: { keySSI: this.model.kit.keySSI } }, 2000);
+    this.showErrorModalAndRedirect('Kit is marked as available for assignment', 'Kit Available', { tag: 'kit', state: { uid: this.model.kit.uid } }, 2000);
 
     window.WebCardinal.loader.hidden = true;
   }

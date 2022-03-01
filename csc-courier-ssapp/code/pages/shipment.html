@@ -28,6 +28,13 @@
                 <div>{{@shipmentModel.shipment.status_date}}</div>
               </div>
             </div>
+            <div data-if="@shipmentModel.shipment.status_cancelled">
+              <div class="entity-status-box background-cancelled">
+                <div>Shipment Status:</div>
+                <div><b>{{@shipmentModel.shipment.status_value}}</b></div>
+                <div>{{@shipmentModel.shipment.status_date}}</div>
+              </div>
+            </div>
             <div data-if='@shipmentModel.shipment.status_normal'>
               <div class='entity-status-box background-primary'>
                 <div>Shipment Status:</div>
@@ -165,13 +172,13 @@
 						</button>
           </div>
 
-          <div data-if='@actions.canAddMessage'>
-            <button class='btn-default' data-tag='add-shipment-comment'>
+          <div data-if='@actions.canReportWrongDeliveryAddress'>
+            <button class='btn-cancel' data-tag='report-wrong-delivery-address'>
               <span class='fas fa-icon fa-comment'></span>
-              Add Shipment Comment
+              Wrong Delivery Address
             </button>
           </div>
-            
+
           <div data-if='@actions.canDeliverShipment'>
             <button class='btn-default' data-tag='deliver-shipment'>
 							<span class='fas fa-qrcode'></span>

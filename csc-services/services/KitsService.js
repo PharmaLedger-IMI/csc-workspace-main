@@ -17,11 +17,13 @@ class KitsService extends DSUService {
   }
 
   async getKitIdsDsu(kitIdsSSI){
-    return await this.getEntityAsync(kitIdsSSI, FoldersEnum.KitIds);
+    const kitsIdsDsuIdentifier = await this.getEntityPathAsync(kitIdsSSI,FoldersEnum.KitIds);
+    return await this.getEntityAsync(kitsIdsDsuIdentifier, FoldersEnum.KitIds);
   }
 
   async getKitsDSU(kitsKeySSI) {
-    const kitsDataDsu = await this.getEntityAsync(kitsKeySSI, FoldersEnum.Kits);
+    const kitsDsuIdentifier = await this.getEntityPathAsync(kitsKeySSI,FoldersEnum.Kits);
+    const kitsDataDsu = await this.getEntityAsync(kitsDsuIdentifier, FoldersEnum.Kits);
     return kitsDataDsu;
   }
 
@@ -76,7 +78,7 @@ class KitsService extends DSUService {
       const kitDSU = await this.saveEntityAsync(data, FoldersEnum.Kits);
       studyKitsDSU.kits.push({
         ...data,
-        kitKeySSI: kitDSU.keySSI,
+        kitKeySSI: kitDSU.sReadSSI,
         orderId: kitsDSUData.orderId,
         shipmentId: kitsDSUData.shipmentId,
       });
@@ -102,14 +104,14 @@ class KitsService extends DSUService {
       return shipment.shipmentId === kitDetails.shipmentId;
     });
 
-    const orderDsu = await this.getEntityAsync(shipment.orderSSI, FoldersEnum.Orders);
     const shipmentComments = await this.getEntityAsync(shipment.shipmentComments, FoldersEnum.ShipmentComments);
-    const shipmentReceivedDsu = await this.getEntityAsync(shipment.receivedDSUKeySSI, FoldersEnum.ShipmentReceived);
+    const receivedDsuIdentifier = await this.getEntityPathAsync(shipment.receivedDSUKeySSI,FoldersEnum.ShipmentReceived);
+    const shipmentReceivedDsu = await this.getEntityAsync(receivedDsuIdentifier, FoldersEnum.ShipmentReceived);
 
-    kitDetails.studyId = orderDsu.studyId;
+    kitDetails.studyId = shipment.studyId;
     kitDetails.recipientName = shipment.recipientName;
-    kitDetails.temperatures = orderDsu.temperatures;
-    kitDetails.temperatureComments = orderDsu.temperature_comments;
+    kitDetails.temperatures = shipment.temperatures;
+    kitDetails.temperatureComments = shipment.temperature_comments;
     kitDetails.shipmentComments = shipmentComments.comments;
     kitDetails.shipmentActualTemperature = shipmentReceivedDsu.shipmentActualTemperature;
     kitDetails.receivedDateTime = shipmentReceivedDsu.receivedDateTime;
@@ -130,10 +132,11 @@ class KitsService extends DSUService {
 
     //update StudyKit DSU
     let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, kitDSU.studyId);
-    let studyKitsDSU = await this.getEntityAsync(studyKitDb.keySSI, FoldersEnum.StudyKits);
+    const studyKitIdentifier = await this.getEntityPathAsync(studyKitDb.keySSI, FoldersEnum.StudyKits);
+    let studyKitsDSU = await this.getEntityAsync(studyKitIdentifier, FoldersEnum.StudyKits);
 
     studyKitsDSU.lastModified = Date.now();
-    let modifiedKit = studyKitsDSU.kits.find((kit)=>{return kit.kitKeySSI === kitSSI});
+    let modifiedKit = studyKitsDSU.kits.find((kit)=>{return kit.uid === kitSSI});
     modifiedKit.status.push(newStatus);
 
     if(status === kitsStatusesEnum.Assigned) {
@@ -151,7 +154,8 @@ class KitsService extends DSUService {
 
     await this.communicationService.sendMessage(shipment.sponsorId,{
         operation: status,
-        data: { kitSSI: kitSSI },
+        //sending always the sReadSSI in order to let sponsor to mount a kit even if the studyKits DSU was not mounted yet
+        data: { kitSSI: modifiedKit.kitKeySSI },
         shortDescription: status
       });
 
@@ -161,18 +165,18 @@ class KitsService extends DSUService {
   async getStudyKitsDSUAndUpdate(studyKeySSI) {
     let studyKitsDSU;
     try {
-      studyKitsDSU = await this.getEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
+      const studyKitIdentifier = await this.getEntityPathAsync(studyKeySSI,FoldersEnum.StudyKits);
+      studyKitsDSU = await this.getEntityAsync(studyKitIdentifier, FoldersEnum.StudyKits);
     } catch (e) {
-      await this.mountEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
-      studyKitsDSU = await this.getEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
+      studyKitsDSU = await this.mountEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
     }
     //synchronization will be performed later on user demand
     studyKitsDSU.synchronized = false;
     return await this.addStudyKitDataToDb(studyKitsDSU.studyId, studyKitsDSU);
   }
 
-  async mountStudyKits(studyKeySSI, progressCallback){
-    const studyKitsDSU = await this.getEntityAsync(studyKeySSI, FoldersEnum.StudyKits);
+  async mountStudyKits(studyKitsIdentifier, progressCallback){
+    const studyKitsDSU = await this.getEntityAsync(studyKitsIdentifier, FoldersEnum.StudyKits);
     //use batch-mode?
     for (let i = 0; i < studyKitsDSU.kits.length; i++) {
         let kit = studyKitsDSU.kits[i];
@@ -181,18 +185,18 @@ class KitsService extends DSUService {
     }
   }
 
-  async updateStudyKitRecordKitSSI(kitSSI, status) {
+  async updateStudyKitRecordKitSSI(kitIdentifier, status) {
     let kitDetails;
      // kits were not synchronized yet so mount this kit it anyway
      try{
-       kitDetails = await this.getKitsDSU(kitSSI);
+       kitDetails = await this.getKitsDSU(kitIdentifier);
      }
      catch (e){
-       kitDetails = await this.mountEntityAsync(kitSSI, FoldersEnum.Kits);
+       kitDetails = await this.mountEntityAsync(kitIdentifier, FoldersEnum.Kits);
      }
     let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, kitDetails.studyId);
     let modifiedKit = studyKitDb.kits.find((kit) => {
-      return kit.kitKeySSI === kitSSI;
+      return kit.uid === kitDetails.uid;
     });
     modifiedKit.status = kitDetails.status;
     if (status === kitsStatusesEnum.Assigned) {

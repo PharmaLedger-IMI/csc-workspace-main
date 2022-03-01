@@ -35,7 +35,7 @@ class ScanShipmentController extends WebcController {
       });
 
       this.onTagClick('view-shipment', () => {
-        this.navigateToPageTag('shipment', { keySSI: this.model.shipment.shipmentSSI });
+        this.navigateToPageTag('shipment', { uid: this.model.shipment.uid });
       });
     }
 
@@ -125,7 +125,7 @@ class ScanShipmentController extends WebcController {
 
   async sign() {
     let payload = {};
-    let {keySSI}  = this.model.shipment;
+    let {uid}  = this.model.shipment;
     let shipmentDataProps = ["shipperId", "scheduledPickupDateTime", "dimension", "origin", "specialInstructions", "shippingConditions"];
     this.model.disableSign = true;
     window.WebCardinal.loader.hidden = false;
@@ -135,12 +135,12 @@ class ScanShipmentController extends WebcController {
     payload.shipmentId = this.model.shipmentModel.form.shipmentId.value;
     payload.signature = true;
 
-    await this.shipmentService.createAndMountTransitDSU(this.model.shipment.shipmentSSI, payload);
+    await this.shipmentService.createAndMountTransitDSU(this.model.shipment.uid, payload);
     eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
 
     this.showErrorModalAndRedirect('Shipment Pickedup, redirecting to dashboard...', 'Shipment Pickup', {
         tag: 'shipment',
-         state: { keySSI: keySSI }
+         state: { uid: uid }
         }, 2000);
     window.WebCardinal.loader.hidden = true;
   }

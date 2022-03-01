@@ -47,7 +47,7 @@ export default class ScanShipmentController extends WebcController {
     });
 
     this.onTagClick('view-shipment', () => {
-      this.navigateToPageTag('shipment', { keySSI: this.model.shipmentSSI });
+      this.navigateToPageTag('shipment', { uid: this.model.shipmentUID });
     });
   }
 
@@ -142,7 +142,7 @@ export default class ScanShipmentController extends WebcController {
         this.model.submitDisabled = true;
         window.WebCardinal.loader.hidden = false;
         const newShipmentData = { isShipmentScanSuccessful: true };
-        await this.shipmentsService.updateLocalShipment(this.model.shipmentSSI, newShipmentData);
+        await this.shipmentsService.updateLocalShipment(this.model.shipmentUID, newShipmentData);
         let modalOptions = {
           disableExpanding: true,
           disableCancelButton: true,
@@ -154,7 +154,7 @@ export default class ScanShipmentController extends WebcController {
           'Shipment scanned successfully!',
           'Scan Shipment',
           () => {
-            this.navigateToPageTag('shipment', { keySSI: this.model.shipmentSSI });
+            this.navigateToPageTag('shipment', { uid: this.model.shipmentUID });
           },
           () => {},
           modalOptions

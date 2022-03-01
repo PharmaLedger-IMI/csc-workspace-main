@@ -3,6 +3,7 @@ const shipmentStatusesEnum = {
 	ReadyForDispatch: 'Ready For Dispatch',
 	PickUpAtWarehouse: 'Pick-up At Warehouse',
 	InTransit: 'In Transit',
+	WrongDeliveryAddress:"Wrong Delivery Address",
 	Delivered: 'Delivered',
 	Received: 'Received',
 	ProofOfDelivery: 'Proof Of Delivery',
@@ -10,11 +11,6 @@ const shipmentStatusesEnum = {
 	Cancelled: 'Cancelled',
 	Dispatched: 'Dispatched'
 };
-
-const shipmentsEventsEnum = {
-	InTransitNewComment:"In Transit New Comment"
-}
-
 const shipmentPendingActionEnum = {
 	PendingReadyForDispatch: 'Pending Ready for Dispatch',
 	PendingPickUp: 'Pending Pick-Up',
@@ -323,7 +319,6 @@ const shipmentBusinessRequirements = {
 
 module.exports = {
 	shipmentStatusesEnum,
-	shipmentsEventsEnum,
 	shipmentCMOTableHeaders,
 	shipmentSiteTableHeaders,
 	shipmentSponsorTableHeaders,
