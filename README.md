@@ -15,8 +15,6 @@
 
 *csc-workspace-main*  bundles all the necessary dependencies for building and running Clinical Supply Chain SSApps in a single package.
 
-( This workspace was originally forked from the https://github.com/PharmaLedger-IMI/epi-workspace )
-
 [Documentation Page](https://pharmaledger-imi.github.io/csc-workspace-main/)
 
 ### Licence
@@ -230,9 +228,7 @@ Currently not supported
     * csc-sponsor-ssapp: The application for the sponsor;
     * csc-cmo-ssapp: The application for the contract manufacturing organization;
     * csc-courier-ssapp: The application for the courier;
-    * csc-site-ssapp: The application for the clinical site;
-    * gtin-dsu-wizard: the ssapp the creates GTIN based DSUs. *Cloned from epi*;
-    * gtin-resolver: the 'library' to resolve gtin+batchs to dsus. *Cloned from epi*;
+    * csc-site-ssapp: The application for the clinical site;    
 
 
 
