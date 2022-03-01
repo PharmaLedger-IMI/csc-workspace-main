@@ -194,7 +194,6 @@ Currently not supported
         * csc-cmo-wallet/wallet-patch;
         * csc-courier-wallet/wallet-patch;
         * csc-site-wallet/wallet-patch;
-* csc-dsu-wizard: based on gtin-dsu-wizard
 * csc-sponsor-wallet
 * csc-cmo-wallet
 * csc-courier-wallet
