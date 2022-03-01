@@ -123,7 +123,8 @@ class OrdersControllerImpl extends WebcController {
 			defaultSortingRule: {
 				sorting: 'desc',
 				column: "lastModified",
-				type : 'date'
+				type : 'date',
+				dateFormat: Commons.DateTimeFormatPattern
 			}
 		};
 	}

@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-undef
 const cscServices = require('csc-services');
+const { Commons } = require('../../../csc-cmo-ssapp/code/scripts/bundles/cscServices');
 const { WebcController } = WebCardinal.controllers;
 const momentService = cscServices.momentService;
 
@@ -11,7 +12,7 @@ class TableTemplateControllerImpl extends WebcController {
     this.attachEvents();
   }
 
-  sortingFn(column, sorting, type){
+  sortingFn(column, sorting, type, dateFormat){
     return ( a, b ) => {
 
       let compA = "";
@@ -21,8 +22,8 @@ class TableTemplateControllerImpl extends WebcController {
 
         switch(type){
           case('date'):
-             compA = momentService(a[column]).valueOf();
-             compB = momentService(b[column]).valueOf();
+             compA = momentService(a[column], dateFormat).valueOf();
+             compB = momentService(b[column], dateFormat).valueOf();
              break;
           case('string'):
           case('number'):
@@ -97,7 +98,7 @@ class TableTemplateControllerImpl extends WebcController {
     data = JSON.parse(JSON.stringify(data));
 
     if (this.model.defaultSortingRule) {
-      data = data.sort(this.sortingFn(this.model.defaultSortingRule.column, this.model.defaultSortingRule.sorting, this.model.defaultSortingRule.type));
+      data = data.sort(this.sortingFn(this.model.defaultSortingRule.column, this.model.defaultSortingRule.sorting, this.model.defaultSortingRule.type,this.model.defaultSortingRule.dateFormat));
     }
 
     if (data && data.length > 0) {
@@ -162,7 +163,7 @@ class TableTemplateControllerImpl extends WebcController {
         const data = JSON.parse(JSON.stringify(this.model.data));
 
         if(sorting && type){
-          this.model.data = data.sort(this.sortingFn(column, sorting, type));
+          this.model.data = data.sort(this.sortingFn(column, sorting, type, Commons.DateTimeFormatPattern));
         }else{
           this.model.data = data.sort((a, b) => (a[column] >= b[column] ? 1 : -1));
         }
