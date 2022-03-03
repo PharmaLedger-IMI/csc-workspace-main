@@ -134,7 +134,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-    this.showErrorModalAndRedirect('Order and Shipment were canceled, redirecting to dashboard...', 'Order and Shipment Cancelled', '/', 2000);
+    this.showErrorModalAndRedirect('Order and Shipment were canceled, redirecting to dashboard...', 'Order and Shipment Cancelled', {tag:'dashboard'}, 2000);
   }
 
   attachCmoEventHandlers(){
