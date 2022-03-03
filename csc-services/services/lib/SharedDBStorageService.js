@@ -6,19 +6,30 @@ const keySSISpace = require('opendsu').loadApi('keyssi');
 class SharedStorage {
 
   constructor(dsuStorage) {
-    this.DSUStorage = dsuStorage;
-    this.DSUStorage.enableDirectAccess(() => {
-      this.mydb = 'initialising';
-      this.getSharedSSI((err,sharedSSI) => {
-        if (!err && sharedSSI) {
-          let opendsu = require('opendsu');
-          let db = opendsu.loadAPI('db');
-          this.mydb = db.getWalletDB(sharedSSI, SHARED_DB);
-        } else {
-          alert('Wrong configuration as user:' + err);
-        }
-      });
+
+    const scApi = require("opendsu").loadApi("sc");
+    scApi.getMainEnclave((err, enclaveDB) => {
+      if (err) {
+        return console.log(err);
+      }
+      this.mydb = enclaveDB;
+      this.DSUStorage = dsuStorage;
     });
+
+    //this.DSUStorage = dsuStorage;
+    // this.DSUStorage.enableDirectAccess(() => {
+    //   this.mydb = 'initialising';
+    //   this.getSharedSSI((err,sharedSSI) => {
+    //     debugger;
+    //     if (!err && sharedSSI) {
+    //       let opendsu = require('opendsu');
+    //       let db = opendsu.loadAPI('db');
+    //       this.mydb = db.getWalletDB(sharedSSI, SHARED_DB);
+    //     } else {
+    //       alert('Wrong configuration as user:' + err);
+    //     }
+    //   });
+    // });
   }
 
   waitForDb(func, args) {
@@ -116,14 +127,16 @@ class SharedStorage {
   }
 
   createSharedSSI(callback) {
-    const ssi = keySSISpace.createSeedSSI('default');
-    this.DSUStorage.setObject(KEYSSI_FILE_PATH, { sharedSSI: ssi.derive().getIdentifier() },(err)=>{
-      if(err){
-        return callback(err);
-      }
-      callback(undefined, ssi);
-    });
 
+    keySSISpace.createSeedSSI('csc', (err, ssi) => {
+      debugger;
+      this.DSUStorage.setObject(KEYSSI_FILE_PATH, { sharedSSI: ssi.derive().getIdentifier() }, (err) => {
+        if (err) {
+          return callback(err);
+        }
+        callback(undefined, ssi);
+      });
+    });
   }
 }
 
