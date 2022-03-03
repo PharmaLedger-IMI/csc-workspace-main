@@ -82,6 +82,12 @@
 
           <div class='step-holder step-hidden' id='step-2-wrapper'>
             <div class='grid-column-wrapper'>
+
+              <label>{{@form.deliveredObservedTemperature.label}}</label>
+              <select class="form-control" data-for="@form.deliveredObservedTemperature.options" id="@form.deliveredObservedTemperature.id" name="@form.deliveredObservedTemperature.name" value="@form.deliveredObservedTemperature.value">
+                <option value="@value">{{ @label }}</option>
+              </select>
+
               <!-- Recipient Name -->
               <label>{{@form.recipientName.label}}</label>
               <input class='form-control form-control-sm' name='@form.recipientName.name'

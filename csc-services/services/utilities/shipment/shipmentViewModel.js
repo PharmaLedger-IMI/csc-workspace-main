@@ -171,6 +171,18 @@ const shipmentViewModel = {
 			disabled: false,
 			value: '',
 		},
+		deliveredObservedTemperature: {
+			label: 'Delivered Temperature Observed',
+			name: 'deliveredObservedTemperature',
+			id: 'deliveredObservedTemperature',
+			required: true,
+			disabled: false,
+			options: [
+				{ label: 'Within Range', value: 'Within Range' },
+				{ label: 'Out of Range', value: 'Out of Range' },
+			],
+			value: 'Within Range'
+		},
 		documents: [],
 		temperature: [
 			{ value: "Within Range", text: "Within Range" },

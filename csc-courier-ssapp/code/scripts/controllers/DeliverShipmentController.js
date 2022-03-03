@@ -120,6 +120,8 @@ class DeliverShipmentController extends WebcController {
     this.model.disableSign = true;
     window.WebCardinal.loader.hidden = false;
 
+    payload.deliveredObservedTemperature = this.model.form.deliveredObservedTemperature.value;
+
     await this.shipmentService.updateTransitShipmentDSU(this.model.shipment.uid, payload, shipmentStatusesEnum.Delivered);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
     this.showErrorModalAndRedirect(`Shipment ${this.model.shipment.shipmentId}  was delivered`, "Shipment Delivered", '/', 2000);
