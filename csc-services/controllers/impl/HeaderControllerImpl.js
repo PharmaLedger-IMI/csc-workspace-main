@@ -21,10 +21,6 @@ class HeaderControllerImpl extends WebcController {
 
 			this.model.userName = userDetails.username;
 
-			didService.getDID().then((did)=>{
-				this.model.did = did;
-			})
-
 		});
 	}
 }
