@@ -289,7 +289,7 @@ class SingleOrderControllerImpl extends AccordionController {
     }
 
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-    this.showErrorModalAndRedirect(orderLabel + ' was canceled, redirecting to dashboard...', orderLabel + ' Cancelled', '/', 2000);
+    this.showErrorModalAndRedirect(orderLabel + ' was canceled, redirecting to dashboard...', orderLabel + ' Cancelled', {tag:'dashboard'}, 2000);
   }
 
   attachCmoEventHandlers() {
