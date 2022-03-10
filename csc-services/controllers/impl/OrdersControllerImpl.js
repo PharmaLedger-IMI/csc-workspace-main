@@ -76,13 +76,6 @@ class OrdersControllerImpl extends WebcController {
 	viewOrderHandler() {
 		this.onTagClick('view-order', async (model) => {
 			const orderId = model.orderId;
-			console.log(
-				JSON.stringify(
-					this.orders.find((x) => x.orderId === orderId),
-					null,
-					2
-				)
-			);
 			this.navigateToPageTag('order', {
 				id: orderId,
 				uid: this.orders.find((x) => x.orderId === orderId).uid,
