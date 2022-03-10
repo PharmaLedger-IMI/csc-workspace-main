@@ -22,6 +22,7 @@ const StatusFilterController = cscServices.getController('StatusFilterController
 addHook('beforeAppLoads', async () => {
   const { DidInputController } = await import('../components/did-input/DidInputController.js');
   await import('../components/did-input/did-input.js');
+  await import("../components/share-did/share-did.js");
   addControllers({
     TableTemplateController,
     SingleOrderController,
