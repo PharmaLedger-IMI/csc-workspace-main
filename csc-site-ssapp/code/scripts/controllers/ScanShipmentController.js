@@ -123,7 +123,8 @@ class ScanShipmentController extends WebcController {
       this.model.disableSign = true;
       window.WebCardinal.loader.hidden = false;
       payload.shipmentId = this.model.shipment.shipmentId;
-      payload.shipmentActualTemperature = this.model.shipmentModel.form.temperature.value;
+      // To Be Deleted
+      // payload.shipmentActualTemperature = this.model.shipmentModel.form.temperature.value;
       payload.signature = true;
       let receivedComment = {
           date: new Date().getTime(),
