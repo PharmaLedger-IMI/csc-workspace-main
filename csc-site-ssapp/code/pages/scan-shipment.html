@@ -22,7 +22,9 @@
 
           <div class='stepper-container'>
             <button id='step-1' data-tag='step-1' class='step-element step-active'>1 - Scan Shipment</button>
+            <div class="step-break-line"></div>
             <button id='step-2' data-tag='step-2' disabled='@formIsInvalid' class='step-element'>2 - Add Details</button>
+            <div class="step-break-line"></div>
             <button id='step-3' data-tag='step-3' disabled='@formIsInvalid' class='step-element'>3 - Confirmation</button>
           </div>
 
@@ -186,9 +188,8 @@
                   Previous
               </button>
               <button class="btn-default" data-tag="sign_button" id="sign_button" disabled="@disableSign">
-                <!--<i class="fas fa-check"></i>-->
+                <i class="fas fa-check"></i>
                   Sign
-                  <i class="fas fa-angle-right"></i>
               </button>
             </div>
             </div>
