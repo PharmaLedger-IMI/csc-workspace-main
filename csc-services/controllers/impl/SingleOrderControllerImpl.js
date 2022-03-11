@@ -44,7 +44,7 @@ class SingleOrderControllerImpl extends AccordionController {
       if (filename) {
         if (model.name && model.name === filename) {
           const document = this.model.order.documents.find((x) => x.name === filename);
-          const keySSI = document.attached_by === Roles.Sponsor ? this.model.order.sponsorDocumentsKeySSI : this.model.order.cmoDocumentsKeySSI;
+          const keySSI = this.model.order.sponsorDocumentsKeySSI;
           await this.downloadFile(filename, FoldersEnum.Documents, keySSI);
         } else {
           await this.downloadFile(filename, FoldersEnum.KitIds, model.order.kitsSSI);
@@ -187,13 +187,6 @@ class SingleOrderControllerImpl extends AccordionController {
 
       if (data.sponsorDocuments) {
         data.sponsorDocuments.forEach((doc) => {
-          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
-          data.documents.push(doc);
-        });
-      }
-
-      if (data.cmoDocuments) {
-        data.cmoDocuments.forEach((doc) => {
           doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
           data.documents.push(doc);
         });

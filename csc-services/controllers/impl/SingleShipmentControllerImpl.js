@@ -61,13 +61,6 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
         });
       }
 
-      if (data.cmoDocuments) {
-        data.cmoDocuments.forEach((doc) => {
-          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
-          data.documents.push(doc);
-        });
-      }
-
       return data;
     }
 

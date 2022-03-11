@@ -40,10 +40,6 @@ class ViewShipmentBaseControllerImpl extends AccordionController{
           keySSI = this.model.orderModel.order.sponsorDocumentsKeySSI;
           break;
         }
-        case Roles.CMO: {
-          keySSI = this.model.orderModel.order.cmoDocumentsKeySSI;
-          break;
-        }
         case Roles.Courier: {
           keySSI = this.model.shipmentModel.shipment.shipmentDocuments;
           location = FoldersEnum.ShipmentDocuments

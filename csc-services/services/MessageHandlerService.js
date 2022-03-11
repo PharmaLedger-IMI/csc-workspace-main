@@ -135,13 +135,12 @@ class MessageHandlerService {
         const {
           orderSSI,
           sponsorDocumentsKeySSI,
-          cmoDocumentsKeySSI,
           kitIdsKeySSI,
           commentsKeySSI,
           statusKeySSI
         } = data.data;
         orderData = await this.ordersService.mountAndReceiveOrder(orderSSI, this.role,
-          { sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsKeySSI, commentsKeySSI, statusKeySSI });
+          { sponsorDocumentsKeySSI, kitIdsKeySSI, commentsKeySSI, statusKeySSI });
 
         break;
       }
