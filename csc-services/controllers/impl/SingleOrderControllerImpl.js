@@ -6,6 +6,7 @@ const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
 const momentService = cscServices.momentService;
+const statusesService = cscServices.StatusesService;
 const { Roles, Topics, ButtonsEnum, Commons, FoldersEnum } = cscServices.constants;
 const { orderStatusesEnum, orderPendingActionEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
@@ -172,9 +173,10 @@ class SingleOrderControllerImpl extends AccordionController {
         })[0].date
       ).format(Commons.DateTimeFormatPattern);
 
-      data.status_approved = data.status_value === orderStatusesEnum.Completed;
-      data.status_cancelled = data.status_value === orderStatusesEnum.Canceled;
-      data.status_normal = data.status_value !== orderStatusesEnum.Canceled && data.status_value !== orderStatusesEnum.Completed;
+      const statuses = statusesService.getOrderStatuses();
+      data.status_approved = statuses.approvedStatuses.includes(data.status_value);
+      data.status_cancelled = statuses.canceledStatuses.includes(data.status_value);
+      data.status_normal = statuses.normalStatuses.includes(data.status_value);
       data.pending_action = this.getPendingAction(data.status_value);
 
       if (data.comments) {

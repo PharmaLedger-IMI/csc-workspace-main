@@ -5,8 +5,9 @@ const OrdersService = cscServices.OrderService;
 const eventBusService = cscServices.EventBusService;
 const momentService = cscServices.momentService;
 const SearchService = cscServices.SearchService;
+const statusesService = cscServices.StatusesService;
 const { Topics, Commons } = cscServices.constants;
-const { orderTableHeaders, orderStatusesEnum } = cscServices.constants.order;
+const { orderTableHeaders } = cscServices.constants.order;
 
 class OrdersControllerImpl extends WebcController {
 
@@ -51,10 +52,11 @@ class OrdersControllerImpl extends WebcController {
 				const latestStatus = item.status.sort(function(a, b) {
 					return new Date(b.date) - new Date(a.date);
 				})[0];
+				const statuses = statusesService.getOrderStatuses();
 				item.status_value = latestStatus.status;
-				item.status_approved = item.status_value === orderStatusesEnum.Completed;
-				item.status_cancelled = item.status_value === orderStatusesEnum.Canceled;
-				item.status_normal = !item.status_approved && !item.status_cancelled;
+				item.status_approved = statuses.approvedStatuses.includes(item.status_value);
+				item.status_cancelled = statuses.canceledStatuses.includes(item.status_value);
+				item.status_normal = statuses.normalStatuses.includes(item.status_value);
 				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
 			});
 		}
