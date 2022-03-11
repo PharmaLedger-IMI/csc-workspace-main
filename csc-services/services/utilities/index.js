@@ -1,12 +1,15 @@
 module.exports = {
     fetch: require("./fetch"),
     getOrderViewModel: function () {
-        return JSON.parse(JSON.stringify(require("./order/orderViewModel")));
+        return require("./order/orderViewModel");
     },
     getShipmentViewModel: function () {
-        return JSON.parse(JSON.stringify(require("./shipment/shipmentViewModel")));
+        const shipmentViewModel = require("./shipment/shipmentViewModel")
+        const orderViewModel = require("./order/orderViewModel");
+        const form = {...orderViewModel.form, ...shipmentViewModel.form}
+        return {...shipmentViewModel, form};
     },
     getKitViewModel: function () {
-        return JSON.parse(JSON.stringify(require("./kit/kitViewModel")));
+        return require("./kit/kitViewModel");
     }
 }
