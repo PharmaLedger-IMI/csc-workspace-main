@@ -29,8 +29,11 @@
 
 			<!-- Number of results per page selector  -->
 			<div class='d-flex align-items-center justify-content-center' slot='true'>
-				<psk-select event-name='set-items-per-page' view-model='@pagination.itemsPerPageOptions'></psk-select>
-				<span>&nbsp;Items Per Page</span>
+				<select class='form-control' data-for='@pagination.itemsPerPage.options'
+								value='@pagination.itemsPerPage.value'>
+					<option value='@'>{{@}}</option>
+				</select>
+				<span class='text-nowrap'>Items Per Page</span>
 			</div>
 		</div>
 	</div>

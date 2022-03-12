@@ -136,11 +136,10 @@ class OrdersControllerImpl extends WebcController {
 			},
 			slicedPages: [],
 			currentPage: 0,
-			itemsPerPage: 10,
 			totalPages: null,
-			itemsPerPageOptions: {
-				selectOptions: itemsPerPageArray.join(' | '),
-				value: itemsPerPageArray[1].toString()
+			itemsPerPage: {
+				options: itemsPerPageArray,
+				value: itemsPerPageArray[1]
 			}
 		};
 	}
