@@ -130,6 +130,10 @@ class ViewShipmentBaseControllerImpl extends AccordionController{
         return new Date(b.date) - new Date(a.date);
       }))[0].date).format(Commons.DateTimeFormatPattern);
 
+      if(data.requestedDeliveryDateTime){
+        data.requestedDeliveryDateTime = this.getDateTime (data.requestedDeliveryDateTime)
+      }
+
       if(data.deliveryDateTime){
         data.deliveryDateTime = this.getDateTime (data.deliveryDateTime)
       }

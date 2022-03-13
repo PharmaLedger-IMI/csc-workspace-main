@@ -46,8 +46,8 @@
    <!-- Request Delivery Date/Time -->
    <label>Requested Delivery Date/Time</label>
    <div>
-     <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.delivery_date.name" type="text" value="@shipmentModel.shipment.deliveryDateTime.date" />
-     <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.delivery_time.name" type="text" value="@shipmentModel.shipment.deliveryDateTime.time" />
+     <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.delivery_date.name" type="text" value="@shipmentModel.shipment.requestedDeliveryDateTime.date" />
+     <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.delivery_time.name" type="text" value="@shipmentModel.shipment.requestedDeliveryDateTime.time" />
    </div>
 
   <label>{{@shipmentModel.form.dimension.label}}</label>
