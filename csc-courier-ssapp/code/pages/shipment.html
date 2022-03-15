@@ -53,6 +53,27 @@
           </div>
         </div>
 
+        <div data-if='@shipmentModel.shipment.hasPickupDateTimeChangeRequest'>
+          <div class='alert alert-info m-4' role='alert'>
+            <h5 class='alert-heading'>
+              Pickup Date/Time Change Request
+            </h5>
+            <hr>
+            <p>A pickup change date/time request was submitted on {{@shipmentModel.shipment.pickupDateTimeChangeRequest.date}}. Please wait for confirmation</p>
+            <div class='pickupRequest'>
+              <h6>Courier Proposed Date/Time</h6>
+              <p class='font-weight-bold'>
+                {{@shipmentModel.shipment.pickupDateTimeChangeRequest.requestPickupDateTime}},
+              </p>
+
+              <h6>Reason</h6>
+              <p class='font-italic'>
+                {{@shipmentModel.shipment.pickupDateTimeChangeRequest.reason}}
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div class='row-wrapper entity-data-section'>
           <!-- Shipment Details -->
           <div class='accordion-item' data-tag='toggle-accordion'>
@@ -110,17 +131,21 @@
             </div>
           </div>
 
-
-
         </div>
 
         <div class='row-wrapper button-wrapper'>
-          <div data-if='@actions.canPickupShipment'>
-                <button class='btn-default' data-tag='scan-shipment-pickup'>
-                  <span class='fas fa-icon fa-qrcode'></span>
+          <div data-if='@actions.canPickupShipment' class='d-flex justify-content-around w-100'>
+
+                <button class='btn-default' data-tag='request-update-pickup-details' disabled='@shipmentModel.shipment.hasPickupDateTimeChangeRequest'>
+                  <i class='fas fa-pen-to-square'></i>
+                  Update Pickup Details
+                </button>
+
+                <button class='btn-default' data-tag='scan-shipment-pickup' disabled='@shipmentModel.shipment.hasPickupDateTimeChangeRequest'>
+                  <i class='fas fa-qrcode'></i>
                   Scan & Pick-up Shipment
                 </button>
-              </div>
+          </div>
           <!-- TODO: fix condition -->
           <div data-if='@actions.canEditShipment'>
             <button class='btn-default' data-tag='edit-shipment'>

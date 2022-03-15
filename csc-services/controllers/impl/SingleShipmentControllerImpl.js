@@ -31,13 +31,32 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   }
 
   attachEventListeners() {
+
+
+    switch(this.role) {
+      case Roles.Sponsor: {
+        this.attachSponsorEventHandlers();
+        break;
+      }
+
+      case Roles.CMO: {
+        this.attachCmoEventHandlers();
+        this.editShipmentHandler();
+        break;
+      }
+
+      case Roles.Site: {
+        this.attachSiteEventHandlers();
+        break;
+      }
+    }
+
     this.showHistoryHandler();
     this.downloadKitListHandler();
     this.downloadAttachmentHandler();
     this.toggleAccordionItemHandler();
-
-    this.editShipmentHandler();
     this.navigationHandlers();
+
   }
 
 
@@ -73,23 +92,18 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
       case Roles.Sponsor: {
         actions.canCancelOrderAndShipment = shipment.status_value === shipmentStatusesEnum.InPreparation;
         actions.canCheckKits = !actions.canCancelOrderAndShipment;
-        this.attachSponsorEventHandlers();
-
         break;
       }
 
       case Roles.CMO: {
         actions.canScanShipment = shipment.status_value === shipmentStatusesEnum.InPreparation && !shipment.isShipmentScanSuccessful;
         actions.canEditShipment = shipment.status_value === shipmentStatusesEnum.InPreparation && shipment.isShipmentScanSuccessful === true;
-
-        this.attachCmoEventHandlers();
         break;
       }
 
       case Roles.Site: {
         actions.canReceiveShipment = shipment.status_value === shipmentStatusesEnum.Delivered;
         actions.canManageKits = shipment.status_value === shipmentStatusesEnum.Received;
-        this.attachSiteEventHandlers();
         break;
       }
     }
@@ -132,6 +146,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
   attachCmoEventHandlers(){
     this.scanShipmentHandler();
+    this.acceptPickupDateTimeHandler();
   }
 
   attachSiteEventHandlers(){
@@ -154,7 +169,6 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
   scanShipmentHandler() {
     this.onTagClick('scan-shipment', () => {
-      console.log(this.model.shipmentModel.shipment.uid);
       this.navigateToPageTag('scan-shipment', {
         shipment: {
           shipmentUID:this.model.shipmentModel.shipment.uid,
@@ -163,6 +177,30 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
         }
       });
     });
+  }
+
+  acceptPickupDateTimeHandler(){
+    this.onTagClick('accept-pickup-date-time-request',()=>{
+      this.showModal(
+        'Do you accept the proposed pickup date/time?',
+        'Pickup Date/Time Change Request',
+        async ()=>{
+          window.WebCardinal.loader.hidden = false;
+          await this.shipmentsService.acceptNewPickupDateTimeRequest(this.model.shipmentModel.shipment.uid);
+          eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, null);
+          window.WebCardinal.loader.hidden = true;
+        },
+        () => {
+
+        },
+        {
+          disableExpanding: true,
+          cancelButtonText: 'Close',
+          confirmButtonText: 'Yes',
+          id: 'confirm-modal'
+        }
+      );
+    })
   }
 
 

@@ -1,0 +1,47 @@
+<div class='custom-modal-header header-color' slot='header' xmlns='http://www.w3.org/1999/html'>
+  <h5>Change Pickup Date/Time Request</h5>
+</div>
+<main>
+  <div class='form-group'>
+    <label class='col-form-label'>Select desired Pickup Date/Time</label>
+    <div class="row">
+      <div class="col-8">
+        <!-- Input -->
+        <input class="form-control" value="@pickupDateTimeChangeRequest.pickupDateTime.date" type="date" />
+      </div>
+      <div class="col-4">
+        <!-- Input -->
+        <input class="form-control" value="@pickupDateTimeChangeRequest.pickupDateTime.time" type="time" />
+      </div>
+    </div>
+  </div>
+
+  <div class='form-group'>
+    <label class='col-form-label'>Request Reason</label>
+    <textarea class="form-control" value="@pickupDateTimeChangeRequest.reason" placeholder='Describe the reason'></textarea>
+  </div>
+</main>
+<footer class="modal-action-menu" slot="footer">
+  <button class='cancel' data-close >Cancel</button>
+  <button class='confirm' disabled='@pickupDateTimeChangeRequest.incompleteRequest' data-confirm>Send Change Request</button>
+</footer>
+<style>
+    button.cancel,button.confirm{
+        border-radius: 3px;
+        padding: 0.5rem 1.1rem;
+        margin:0 0.5rem;
+        border: none;
+        font-size: 1rem;
+    }
+    button.cancel {
+        color: #222;
+        background-color: #EFEFEF;
+    }
+    button.confirm[disabled]{
+        opacity: 0.5;
+    }
+    button.confirm {
+        color: #FAFAFA;
+        background-color: #008898
+    }
+</style>

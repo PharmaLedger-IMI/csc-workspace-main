@@ -11,6 +11,12 @@ const shipmentStatusesEnum = {
 	Cancelled: 'Cancelled',
 	Dispatched: 'Dispatched'
 };
+
+const shipmentsEventsEnum = {
+	PickupDateTimeChangeRequest:"Pickup Date/Time Change Request",
+	PickupDateTimeChanged:"Pickup Date/Time Changed"
+}
+
 const shipmentPendingActionEnum = {
 	PendingReadyForDispatch: 'Pending Ready for Dispatch',
 	PendingPickUp: 'Pending Pick-Up',
@@ -62,8 +68,8 @@ const shipmentCMOTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'schedulePickupDate',
-		label: 'Schedule Pickup Date/Time',
+		column: 'scheduledPickupDate',
+		label: 'Scheduled Pickup Date/Time',
 		notSortable: true,
 		type: 'date',
 		asc: null,
@@ -216,8 +222,8 @@ const shipmentSponsorTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'schedulePickupDate',
-		label: 'Schedule Pickup Date/Time',
+		column: 'scheduledPickupDate',
+		label: 'Scheduled Pickup Date/Time',
 		notSortable: true,
 		type: 'date',
 		asc: null,
@@ -282,7 +288,7 @@ const shipmentCourierTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'schedulePickupDate',
+		column: 'scheduledPickupDate',
 		label: 'Scheduled Pickup Date/Time',
 		notSortable: true,
 		type: 'date',
@@ -319,6 +325,7 @@ const shipmentBusinessRequirements = {
 
 module.exports = {
 	shipmentStatusesEnum,
+	shipmentsEventsEnum,
 	shipmentCMOTableHeaders,
 	shipmentSiteTableHeaders,
 	shipmentSponsorTableHeaders,

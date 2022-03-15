@@ -1,96 +1,120 @@
 <webc-container controller='SingleShipmentController'>
-	<main class='full-flex-column'>
-		<section>
-			<webc-template template='header-template'></webc-template>
-			<webc-template template='dashboard-menu'></webc-template>
-		</section>
+  <main class='full-flex-column'>
+    <section>
+      <webc-template template='header-template'></webc-template>
+      <webc-template template='dashboard-menu'></webc-template>
+    </section>
 
-		<section class='header-section'>
-			<div class='navigation-section'>
+    <section class='header-section'>
+      <div class='navigation-section'>
 				<span class='nav-back' data-tag='nav-back'>
-					<i class="fa-solid fa-arrow-left"></i>
+					<i class='fa-solid fa-arrow-left'></i>
 				</span>
-				<span data-tag='dashboard'>Dashboard</span> / <span data-tag='dashboard'>Shipments</span> / <strong>{{@shipmentModel.shipment.shipmentId}}</strong>
-			</div>
+        <span data-tag='dashboard'>Dashboard</span> / <span data-tag='dashboard'>Shipments</span> / <strong>{{@shipmentModel.shipment.shipmentId}}</strong>
+      </div>
 
-			<div class='body-main-section'>
-				<div class='row-wrapper'>
-					<div class='col-4 text-left'>
-						<div data-if='@shipmentModel.shipment.status_approved'>
-							<div class='entity-status-box background-approved'>
-								<div>Shipment Status:</div>
-								<div><b>{{@shipmentModel.shipment.status_value}}</b></div>
-								<div>{{@shipmentModel.shipment.status_date}}</div>
-							</div>
-						</div>
-						<div data-if="@shipmentModel.shipment.status_cancelled">
-							<div class="entity-status-box background-cancelled">
-								<div>Shipment Status:</div>
-								<div><b>{{@shipmentModel.shipment.status_value}}</b></div>
-								<div>{{@shipmentModel.shipment.status_date}}</div>
-							</div>
-						</div>
-						<div data-if='@shipmentModel.shipment.status_normal'>
-							<div class='entity-status-box background-primary'>
-								<div>Shipment Status:</div>
-								<div><b>{{@shipmentModel.shipment.status_value}}</b></div>
-								<div>{{@shipmentModel.shipment.status_date}}</div>
-							</div>
-						</div>
-					</div>
+      <div class='body-main-section'>
+        <div class='row-wrapper'>
+          <div class='col-4 text-left'>
+            <div data-if='@shipmentModel.shipment.status_approved'>
+              <div class='entity-status-box background-approved'>
+                <div>Shipment Status:</div>
+                <div><b>{{@shipmentModel.shipment.status_value}}</b></div>
+                <div>{{@shipmentModel.shipment.status_date}}</div>
+              </div>
+            </div>
+            <div data-if='@shipmentModel.shipment.status_cancelled'>
+              <div class='entity-status-box background-cancelled'>
+                <div>Shipment Status:</div>
+                <div><b>{{@shipmentModel.shipment.status_value}}</b></div>
+                <div>{{@shipmentModel.shipment.status_date}}</div>
+              </div>
+            </div>
+            <div data-if='@shipmentModel.shipment.status_normal'>
+              <div class='entity-status-box background-primary'>
+                <div>Shipment Status:</div>
+                <div><b>{{@shipmentModel.shipment.status_value}}</b></div>
+                <div>{{@shipmentModel.shipment.status_date}}</div>
+              </div>
+            </div>
+          </div>
 
-					<div class='col-4 text-center'>
-						<div class='entity-title'><b>Shipment</b></div>
-						<div class='entity-subtitle'><b>Pending Action:</b></div>
-						<div class='entity-disclaimer'>{{@shipmentModel.shipment.pending_action}}</div>
-					</div>
+          <div class='col-4 text-center'>
+            <div class='entity-title'><b>Shipment</b></div>
+            <div class='entity-subtitle'><b>Pending Action:</b></div>
+            <div class='entity-disclaimer'>{{@shipmentModel.shipment.pending_action}}</div>
+          </div>
 
-					<div class='col-4 text-right'>
-						<button class='btn-default' data-tag='history-button'>
-							<i class='fas fa-clock-rotate-left'></i>
-							View History
-						</button>
-					</div>
-				</div>
+          <div class='col-4 text-right'>
+            <button class='btn-default' data-tag='history-button'>
+              <i class='fas fa-clock-rotate-left'></i>
+              View History
+            </button>
+          </div>
+        </div>
 
-				<div class='row-wrapper entity-data-section'>
-					<!-- Shipment Details -->
-					<div class='accordion-item' data-tag='toggle-accordion'>
-						<i class='fas fa-angle-right accordion-icon'></i>
-						<span>Shipment Details</span>
-					</div>
-					<div class='accordion-item-holder'>
-						<webc-template data-view-model='@orderModel' template='order/order-details'></webc-template>
 
-						<webc-template data-view-model='@shipmentModel' template='shipment/shipment-details'></webc-template>
-					</div>
+        <div data-if='@shipmentModel.shipment.pickupDateTimeChangeRequest'>
+          <div class='alert alert-info m-4' role='alert'>
+            <h5 class='alert-heading'>
+              Pickup Date/Time Change Request
+            </h5>
+            <hr>
+            <div class='pickupRequest'>
+            <h6>Courier Proposed Date/Time</h6>
+            <p class='font-weight-bold'>
+              {{@shipmentModel.shipment.pickupDateTimeChangeRequest.proposedDateTime}}
+            </p>
 
-					<!-- Kits -->
-					<div class='accordion-item' data-tag='toggle-accordion'>
-						<i class='fas fa-angle-right accordion-icon'></i>
-						<span>Kits</span>
-					</div>
-					<div class='accordion-item-holder' data-if='@shipmentModel.shipment.isShipmentScanSuccessful'>
-						<span class='py-3 text-muted' slot='false'>No kit scanned yet</span>
-							<webc-template slot="true" template='kit-summary'></webc-template>
-					</div>
-				</div>
+            <h6>Reason</h6>
+            <p class='font-italic'>
+              {{@shipmentModel.shipment.pickupDateTimeChangeRequest.reason}}
+            </p>
+            </div>
+            <hr>
+            <button class="btn-default" data-tag='accept-pickup-date-time-request'>Accept</button>
+          </div>
+        </div>
 
-				<div class='row-wrapper button-wrapper'>
-					<div data-if='@actions.canScanShipment'>
-						<button class='btn-default' data-tag='scan-shipment'>
-							<i class='fas fa-qrcode'></i>
-							Scan Shipment
-						</button>
-					</div>
-					<div data-if='@actions.canEditShipment'>
-						<button class='btn-default' data-tag='edit-shipment'>
-							<span class='fas fa-pen'></span>
-							Update Shipment
-						</button>
-					</div>
-				</div>
-			</div>
-		</section>
-	</main>
+
+        <div class='row-wrapper entity-data-section'>
+          <!-- Shipment Details -->
+          <div class='accordion-item' data-tag='toggle-accordion'>
+            <i class='fas fa-angle-right accordion-icon'></i>
+            <span>Shipment Details</span>
+          </div>
+          <div class='accordion-item-holder'>
+            <webc-template data-view-model='@orderModel' template='order/order-details'></webc-template>
+
+            <webc-template data-view-model='@shipmentModel' template='shipment/shipment-details'></webc-template>
+          </div>
+
+          <!-- Kits -->
+          <div class='accordion-item' data-tag='toggle-accordion'>
+            <i class='fas fa-angle-right accordion-icon'></i>
+            <span>Kits</span>
+          </div>
+          <div class='accordion-item-holder' data-if='@shipmentModel.shipment.isShipmentScanSuccessful'>
+            <span class='py-3 text-muted' slot='false'>No kit scanned yet</span>
+            <webc-template slot='true' template='kit-summary'></webc-template>
+          </div>
+        </div>
+
+        <div class='row-wrapper button-wrapper'>
+          <div data-if='@actions.canScanShipment'>
+            <button class='btn-default' data-tag='scan-shipment'>
+              <i class='fas fa-qrcode'></i>
+              Scan Shipment
+            </button>
+          </div>
+          <div data-if='@actions.canEditShipment'>
+            <button class='btn-default' data-tag='edit-shipment'>
+              <span class='fas fa-pen'></span>
+              Update Shipment
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 </webc-container>

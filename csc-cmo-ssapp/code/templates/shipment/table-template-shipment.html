@@ -69,10 +69,16 @@
 					</div>
 				</td>
 				<td><label>{{@lastModified}}</label></td>
-				<td>
+				<td class='d-flex align-content-between'>
 					<button class='btn-bare table-cell' data-tag='view-shipment'>
 						<i class="fas fa-bars-staggered"></i>
 					</button>
+					<div data-if='@pickupDateTimeChangeRequest'>
+						<button class='warning btn-bare table-cell mr-2 ml-2' data-tag='view-shipment' title='Pickup Date/Time Request'>
+							<i class="fas fa-clock"></i>
+						</button>
+					</div>
+
 				</td>
 			</tr>
 			</tbody>
