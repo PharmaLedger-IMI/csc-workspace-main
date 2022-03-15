@@ -6,6 +6,7 @@ const MIN_TEMPERATURE = orderBusinessRequirements.MinTemperature;
 const MAX_TEMPERATURE = orderBusinessRequirements.MaxTemperature;
 const momentService = require("csc-services").momentService;
 const countries = constants.countries;
+const siteRegionIds = constants.orderBusinessRequirements.siteRegionIds;
 
 const orderViewModel = {
     cancelOrderModal: {
@@ -60,9 +61,9 @@ const orderViewModel = {
                 value: '',
             },
             target_cmo_id: {
-                label: 'Target CMO DID',
+                label: 'Target CMO Id',
                 name: 'target_cmo_did',
-                placeholder: 'Enter Target CMO ID',
+                placeholder: 'Enter Target CMO Id',
                 required: true,
                 disabled: false,
                 value: "",
@@ -112,7 +113,8 @@ const orderViewModel = {
                 required: false,
                 placeholder: 'Enter Site Region ID',
                 disabled: false,
-                value: '',
+                options: siteRegionIds,
+                value: siteRegionIds[0].label,
             },
             site_country: {
                 label: 'Site Country',
