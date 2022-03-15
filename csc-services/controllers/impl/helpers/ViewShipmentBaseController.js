@@ -40,10 +40,6 @@ class ViewShipmentBaseControllerImpl extends AccordionController{
           keySSI = this.model.orderModel.order.sponsorDocumentsKeySSI;
           break;
         }
-        case Roles.CMO: {
-          keySSI = this.model.orderModel.order.cmoDocumentsKeySSI;
-          break;
-        }
         case Roles.Courier: {
           keySSI = this.model.shipmentModel.shipment.shipmentDocuments;
           location = FoldersEnum.ShipmentDocuments
@@ -133,6 +129,10 @@ class ViewShipmentBaseControllerImpl extends AccordionController{
       data.status_date = momentService(data.status.sort((function(a, b) {
         return new Date(b.date) - new Date(a.date);
       }))[0].date).format(Commons.DateTimeFormatPattern);
+
+      if(data.requestedDeliveryDateTime){
+        data.requestedDeliveryDateTime = this.getDateTime (data.requestedDeliveryDateTime)
+      }
 
       if(data.deliveryDateTime){
         data.deliveryDateTime = this.getDateTime (data.deliveryDateTime)

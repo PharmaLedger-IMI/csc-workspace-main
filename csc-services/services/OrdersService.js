@@ -85,7 +85,7 @@ class OrdersService extends DSUService {
   // -> Functions for creation of order
 
   async createOrder(data) {
-    const { statusDsu, sponsorDocumentsDsu, cmoDocumentsDsu, kitIdsDsu, commentsDsu } = await this.createOrderOtherDSUs();
+    const { statusDsu, sponsorDocumentsDsu, kitIdsDsu, commentsDsu } = await this.createOrderOtherDSUs();
     const statusDsuKeySSI = statusDsu.keySSI;
     const status = await this.updateStatusDsu(orderStatusesEnum.Initiated, statusDsuKeySSI);
 
@@ -121,7 +121,6 @@ class OrdersService extends DSUService {
         status: status.history,
         statusSSI: statusDsuKeySSI,
         sponsorDocumentsKeySSI: sponsorDocuments.uid,
-        cmoDocumentsKeySSI: cmoDocumentsDsu.uid,
         kitsSSI: kits.uid,
         kitsFilename: kits.file.name,
         commentsKeySSI: comments.uid,
@@ -136,7 +135,6 @@ class OrdersService extends DSUService {
       {
         orderSSI: order.sReadSSI,
         sponsorDocumentsKeySSI: sponsorDocumentsDsu.sReadSSI,
-        cmoDocumentsKeySSI: cmoDocumentsDsu.keySSI,
         kitIdsKeySSI: kitIdsDsu.sReadSSI,
         commentsKeySSI: commentsDsu.keySSI,
         statusKeySSI: statusDsuKeySSI,
@@ -162,12 +160,6 @@ class OrdersService extends DSUService {
       FoldersEnum.Documents
     );
 
-    const cmoDocumentsDsu = await this.saveEntityAsync(
-      {
-        documents: [],
-      },
-      FoldersEnum.Documents
-    );
 
     const kitIdsDsu = await this.saveEntityAsync(
       {
@@ -184,7 +176,7 @@ class OrdersService extends DSUService {
       FoldersEnum.Comments
     );
 
-    return { statusDsu, sponsorDocumentsDsu, cmoDocumentsDsu, kitIdsDsu, commentsDsu };
+    return { statusDsu, sponsorDocumentsDsu, kitIdsDsu, commentsDsu };
   }
 
   async updateStatusDsu(newStatus, knownIdentifier) {
@@ -263,13 +255,12 @@ class OrdersService extends DSUService {
   // -> Functions for mounting newly created order in other actors except sponsor
 
   async mountAndReceiveOrder(orderSSI, role, attachedDSUKeySSIs) {
-    let order, sponsorDocuments, cmoDocuments, kits, comments, orderDb, status;
+    let order, sponsorDocuments, kits, comments, orderDb, status;
     switch (role) {
       case Roles.CMO:
         order = await this.mountEntityAsync(orderSSI, FoldersEnum.Orders);
         status = await this.mountEntityAsync(attachedDSUKeySSIs.statusKeySSI, FoldersEnum.Statuses);
         sponsorDocuments = await this.mountEntityAsync(attachedDSUKeySSIs.sponsorDocumentsKeySSI, FoldersEnum.Documents);
-        cmoDocuments = await this.mountEntityAsync(attachedDSUKeySSIs.cmoDocumentsKeySSI, FoldersEnum.Documents);
         kits = await this.mountEntityAsync(attachedDSUKeySSIs.kitIdsKeySSI, FoldersEnum.KitIds);
         comments = await this.mountEntityAsync(attachedDSUKeySSIs.commentsKeySSI, FoldersEnum.Comments);
 
@@ -280,7 +271,6 @@ class OrdersService extends DSUService {
             status: status.history,
             statusSSI: attachedDSUKeySSIs.statusKeySSI,
             sponsorDocumentsKeySSI: sponsorDocuments.uid,
-            cmoDocumentsKeySSI: cmoDocuments.uid,
             kitsSSI: kits.uid,
             kitsFilename: kits.file.name,
             commentsKeySSI: comments.uid,
@@ -345,10 +335,6 @@ class OrdersService extends DSUService {
     if (order.sponsorDocumentsKeySSI) {
       const sponsorDocuments = await this.getEntityAsync(order.sponsorDocumentsKeySSI, FoldersEnum.Documents);
       result.sponsorDocuments = sponsorDocuments.documents;
-    }
-    if (order.cmoDocumentsKeySSI) {
-      const cmoDocuments = await this.getEntityAsync(order.cmoDocumentsKeySSI, FoldersEnum.Documents);
-      result.cmoDocuments = cmoDocuments.documents;
     }
     if (order.commentsKeySSI) {
       const comments = await this.getEntityAsync(order.commentsKeySSI, FoldersEnum.Comments);

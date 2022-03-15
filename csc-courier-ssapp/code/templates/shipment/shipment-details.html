@@ -1,52 +1,100 @@
 <div class="grid-column-wrapper">
+   <!-- Sponsor ID -->
+   <label>{{@shipmentModel.form.inputs.sponsor_id.label}}</label>
+   <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.sponsor_id.name" placeholder="@shipmentModel.form.inputs.sponsor_id.placeholder" type="text" value="@shipmentModel.shipment.sponsorId" />
+ 
+  <!-- Target CMO ID -->
+  <label>{{@shipmentModel.form.inputs.target_cmo_id.label}}</label>
+  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.target_cmo_id.name" placeholder="@shipmentModel.form.inputs.target_cmo_id.placeholder" type="text" value="@shipmentModel.shipment.cmoId" />
+
   <!-- Shipment ID -->
-  <label>{{@form.shipmentId.label}}</label>
-  <input class="form-control form-control-sm" readonly="readonly" name="@form.shipmentId.name" placeholder="@form.shipmentId.placeholder" type="text" value="@shipment.shipmentId" />
+  <label>{{@shipmentModel.form.shipmentId.label}}</label>
+  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.shipmentId.name" placeholder="@shipmentModel.form.shipmentId.placeholder" type="text" value="@shipmentModel.shipment.shipmentId" />
 
   <!-- Shipper ID -->
-  <label>{{@form.shipperId.label}}</label>
-  <input class="form-control form-control-sm" readonly="readonly" name="@form.shipperId.name" placeholder="@form.shipperId.placeholder" type="text" value="@shipment.shipperId" />
+  <label>{{@shipmentModel.form.shipperId.label}}</label>
+  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.shipperId.name" placeholder="@shipmentModel.form.shipperId.placeholder" type="text" value="@shipmentModel.shipment.shipperId" />
 
   <!-- Origin -->
-  <label>{{@form.origin.label}}</label>
-  <input class="form-control form-control-sm" readonly="readonly" name="@form.origin.name" placeholder="@form.origin.placeholder" type="text" value="@shipment.origin" />
+  <label>{{@shipmentModel.form.origin.label}}</label>
+  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.origin.name" placeholder="@shipmentModel.form.origin.placeholder" type="text" value="@shipmentModel.shipment.origin" />
+
+   <!-- Site ID -->
+   <label>{{@shipmentModel.form.inputs.site_id.label}}</label>
+   <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.site_id.name" type="text" value="@shipmentModel.shipment.siteId" />
+
+   <!-- Site Region ID -->
+  <label>{{@shipmentModel.form.inputs.site_region_id.label}}</label>
+  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.site_region_id.name" type="text" value="@shipmentModel.shipment.siteRegionId" />
+
+  <!-- Site Country -->
+  <label>{{@shipmentModel.form.inputs.site_country.label}}</label>
+  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.site_country.name" type="text" value="@shipmentModel.shipment.siteCountry" />
+
 
   <!-- Type -->
-  <label>{{@form.type.label}}</label>
-  <input class="form-control form-control-sm" readonly="readonly" name="@form.shipmentType.name" placeholder="@form.shipmentType.placeholder" type="text" value="@shipment.shipmentType" />
+  <label>{{@shipmentModel.form.type.label}}</label>
+  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.shipmentType.name" placeholder="@shipmentModel.form.shipmentType.placeholder" type="text" value="@shipmentModel.shipment.shipmentType" />
 
   <!-- Scheduled Pickup Date/Time -->
   <label>Scheduled Pickup Date/Time</label>
   <div>
-    <input class="form-control form-control-sm" readonly="readonly" type="text" value="@shipment.scheduledPickupDateTime.date" />
-    <input class="form-control form-control-sm" readonly="readonly" type="text" value="@shipment.scheduledPickupDateTime.time" />
+    <input class="form-control form-control-sm" readonly="readonly" type="text" value="@shipmentModel.shipment.scheduledPickupDateTime.date" />
+    <input class="form-control form-control-sm" readonly="readonly" type="text" value="@shipmentModel.shipment.scheduledPickupDateTime.time" />
   </div>
 
-  <label>{{@form.dimension.label}}</label>
+   <!-- Request Delivery Date/Time -->
+   <label>Requested Delivery Date/Time</label>
+   <div>
+     <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.delivery_date.name" type="text" value="@shipmentModel.shipment.requestedDeliveryDateTime.date" />
+     <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.delivery_time.name" type="text" value="@shipmentModel.shipment.requestedDeliveryDateTime.time" />
+   </div>
+
+  <label>{{@shipmentModel.form.dimension.label}}</label>
   <div>
-    <label>{{@form.dimension.height.label}}</label>
-    <input class="form-control form-control-sm" readonly="readonly" value="@shipment.dimension.dimensionHeight" />
-    <label>{{@form.dimension.length.label}}</label>
-    <input class="form-control form-control-sm" readonly="readonly" value="@shipment.dimension.dimensionLength" />
-    <label>{{@form.dimension.width.label}}</label>
-    <input class="form-control form-control-sm" readonly="readonly" value="@shipment.dimension.dimensionWidth" />
+    <label>{{@shipmentModel.form.dimension.height.label}}</label>
+    <input class="form-control form-control-sm" readonly="readonly" value="@shipmentModel.shipment.dimension.dimensionHeight" />
+    <label>{{@shipmentModel.form.dimension.length.label}}</label>
+    <input class="form-control form-control-sm" readonly="readonly" value="@shipmentModel.shipment.dimension.dimensionLength" />
+    <label>{{@shipmentModel.form.dimension.width.label}}</label>
+    <input class="form-control form-control-sm" readonly="readonly" value="@shipmentModel.shipment.dimension.dimensionWidth" />
   </div>
 
-  <label>{{@form.specialInstructions.label}}</label>
-  <textarea class="form-control form-control-sm" readonly="readonly" value="@shipment.specialInstructions"></textarea>
+  <label>{{@shipmentModel.form.specialInstructions.label}}</label>
+  <textarea class="form-control form-control-sm" readonly="readonly" value="@shipmentModel.shipment.specialInstructions"></textarea>
   <!-- Shipping/Handling Conditions -->
-  <label>{{@form.shippingConditions.label}}</label>
-  <textarea class="form-control form-control-sm" readonly="readonly" value="@shipment.shippingConditions"></textarea>
+  <label>{{@shipmentModel.form.shippingConditions.label}}</label>
+  <textarea class="form-control form-control-sm" readonly="readonly" value="@shipmentModel.shipment.shippingConditions"></textarea>
+
+  <!-- Keep Between -->
+  <label>{{@shipmentModel.form.inputs.keep_between_temperature.label}}</label>
+  <div>
+    <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.keep_between_temperature_min.name" type="text" value="@shipmentModel.shipment.temperatures.min" />
+    <label>{{@shipmentModel.form.inputs.keep_between_temperature.andLabel}}</label>
+    <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.keep_between_temperature_max.name" type="text" value="@shipmentModel.shipment.temperatures.max" />
+  </div>
+
+  <!-- Temperature Comments -->
+  <label>{{@shipmentModel.form.inputs.temperature_comments.label}}</label>
+  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.temperature_comments.name" type="text" value="@shipmentModel.shipment.temperature_comments" />
 </div>
 
-  <div data-if='@shipment.contextualContent.afterInTransit'>
+<div data-if='@shipmentModel.shipment.contextualContent.afterInTransit'>
     <div class='grid-column-wrapper'>
       <!-- Master-way bill number -->
-      <label>{{@form.billNumber.label}}</label>
-      <input class="form-control form-control-sm" readonly="readonly" name="@form.billNumber.name" placeholder="@form.billNumber.placeholder" type="text" value="@shipment.bill.billNumber" />
+      <label>{{@shipmentModel.form.billNumber.label}}</label>
+      <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.billNumber.name" placeholder="@shipmentModel.form.billNumber.placeholder" type="text" value="@shipmentModel.shipment.bill.billNumber" />
       <!-- HS Code -->
-      <label>{{@form.hsCode.label}}</label>
-      <input class="form-control form-control-sm" readonly="readonly" name="@form.hsCode.name" placeholder="@form.hsCode.placeholder" type="text" value="@shipment.bill.hsCode" />
+      <label>{{@shipmentModel.form.hsCode.label}}</label>
+      <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.hsCode.name" placeholder="@shipmentModel.form.hsCode.placeholder" type="text" value="@shipmentModel.shipment.bill.hsCode" />
     </div>
-  </div>
+</div>
+
+<div data-if='@shipmentModel.shipment.contextualContent.afterDelivered'>
+    <div class='grid-column-wrapper'>
+      <!-- Recipient Name -->
+      <label>{{@shipmentModel.form.recipientName.label}}</label>
+      <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.recipientName.name" placeholder="@shipmentModel.form.recipientName.placeholder" type="text" value="@shipmentModel.shipment.recipientName" />
+   </div>
+</div>
 

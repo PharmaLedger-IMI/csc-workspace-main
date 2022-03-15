@@ -54,37 +54,27 @@ export default class EditShipmentController extends WebcController {
             attached_by: this.role,
             date: new Date().toLocaleString(),
             link: '',
-            canRemove: true,
             uuid,
           });
         });
       }
     });
     this.onTagClick('remove-file', (document) => {
-      if (document.canRemove === true) {
-        const fileIdx = this.files.findIndex((x) => x.uuid === document.uuid);
-        this.files.splice(fileIdx, 1);
-        let doc = this.model.form.documents.find((item) => item.uuid === document.uuid);
-        let idx = this.model.form.documents.indexOf(doc);
-        this.model.form.documents.splice(idx, 1);
-      }
+      const fileIdx = this.files.findIndex((x) => x.uuid === document.uuid);
+      this.files.splice(fileIdx, 1);
+      let doc = this.model.form.documents.find((item) => item.uuid === document.uuid);
+      let idx = this.model.form.documents.indexOf(doc);
+      this.model.form.documents.splice(idx, 1);
     });
     this.onTagClick('download-file', async (model, target, event) => {
       const uuid = target.getAttribute('data-custom') || null;
       if (uuid) {
-        if (model.canRemove) {
           window.WebCardinal.loader.hidden = false;
           const file = this.files.find((x) => x.uuid === uuid);
           await this.FileDownloaderService.prepareDownloadFromBrowser(file.fileContent);
           this.FileDownloaderService.downloadFileToDevice(file.fileContent.name);
           window.WebCardinal.loader.hidden = true;
-        } else {
-          // TODO: fix when actually save
-          // const file = this.files.find((x) => x.uuid === uuid);
-          // const keySSI = file.fileContent.attached_by === Roles.Sponsor ? this.model.order.sponsorDocumentsKeySSI : this.model.order.cmoDocumentsKeySSI;
-          // await this.downloadFile(file.fileContent.name, FoldersEnum.Documents, keySSI);
         }
-      }
     });
   }
 
@@ -141,13 +131,6 @@ export default class EditShipmentController extends WebcController {
       tag: 'shipment',
       state: { uid: uid }
     }, 2000);
-
-
-    // TODO: on submit (check if there comments)
-    // const result = await this.ShipmentService.editShipment(this.model.shipment.keySSI, ...);
-    // eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-
-
   }
 
   attachModelChangeHandlers() {

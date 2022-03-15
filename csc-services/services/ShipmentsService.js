@@ -48,7 +48,7 @@ class ShipmentsService extends DSUService {
 
 			orderSSI: data.orderSSI,
 			requestDate: data.requestDate,
-			deliveryDate: data.deliveryDate,
+			requestedDeliveryDateTime: data.deliveryDate,
 			orderId: data.orderId,
 			sponsorId: data.sponsorId,
 			cmoId:cmoId,

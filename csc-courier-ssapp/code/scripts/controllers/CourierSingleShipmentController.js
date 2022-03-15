@@ -2,7 +2,6 @@ const { ViewShipmentBaseController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentsService = cscServices.ShipmentService;
-const OrdersService = cscServices.OrderService;
 const { Roles } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
@@ -17,7 +16,6 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
   }
 
   async initServices(){
-    this.ordersService = new OrdersService(this.DSUStorage);
     this.shipmentsService = new ShipmentsService(this.DSUStorage);
   }
 
@@ -82,7 +80,6 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
 
   async initViewModel() {
     const model = {
-      orderModel: viewModelResolver('order'),
       shipmentModel: viewModelResolver('shipment'),
     };
 
@@ -105,20 +102,8 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     }
 
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
-
-    let order = { ...this.transformOrderData(shipment) };
-    model.orderModel.order = order;
-    //console.log("MODEL " + JSON.stringify(model));
     this.model = model;
     this.attachRefreshListeners();
-  }
-
-  transformOrderData(data) {
-    if (data) {
-      data.delivery_date = this.getDateTime(data.deliveryDate);
-      return data;
-    }
-    return {};
   }
 
   reportWrongDeliveryAddress(){

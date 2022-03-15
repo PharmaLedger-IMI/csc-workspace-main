@@ -70,7 +70,7 @@ class TableTemplateControllerImpl extends WebcController {
 
     this.onTagClick('go-to-last-page', async () => {
       const length = this.model.data.length;
-      const numberOfPages = Math.ceil(length / this.model.pagination.itemsPerPage);
+      const numberOfPages = Math.ceil(length / this.model.pagination.itemsPerPage.value);
       if (this.model.pagination.currentPage !== numberOfPages) {
         this.paginateData(this.model.data, numberOfPages);
       }
@@ -82,9 +82,10 @@ class TableTemplateControllerImpl extends WebcController {
       }
     });
 
-    this.on('set-items-per-page', async (event) => {
-      this.model.pagination.itemsPerPage = parseInt(event.data.value);
-      this.paginateData(this.model.data, 1);
+    this.model.onChange('pagination.itemsPerPage.value', (changeDetails) => {
+      if (changeDetails.targetChain === 'pagination.itemsPerPage.value') {
+        this.paginateData(this.model.data, 1);
+      }
     });
 
     this.onTagClick('sort-column', async (model) => {
@@ -102,7 +103,7 @@ class TableTemplateControllerImpl extends WebcController {
     }
 
     if (data && data.length > 0) {
-      const itemsPerPage = this.model.pagination.itemsPerPage;
+      const itemsPerPage = this.model.pagination.itemsPerPage.value;
       const length = data.length;
       const numberOfPages = Math.ceil(length / itemsPerPage);
       const pages = Array.from({ length: numberOfPages }, (_, i) => i + 1).map((x) => ({
@@ -114,14 +115,14 @@ class TableTemplateControllerImpl extends WebcController {
       this.model.pagination.previous = !(page > 1 && pages.length > 1);
       this.model.pagination.next = !(page < pages.length && pages.length > 1);
       this.model.pagination.items = data.slice(itemsPerPage * (page - 1), itemsPerPage * page);
-      this.model.pagination.pages = {
-        // options: pages.map((x) => ({
-        //   value: x.value,
-        //   label: x.value,
-        // })),
-        selectOptions: pages.map((x) => x.value).join(' | '),
-        value: page.toString(),
-      };
+      // this.model.pagination.pages = {
+      //   // options: pages.map((x) => ({
+      //   //   value: x.value,
+      //   //   label: x.value,
+      //   // })),
+      //   selectOptions: pages.map((x) => x.value).join(' | '),
+      //   value: page.toString(),
+      // };
       this.model.pagination.slicedPages = pages.length > 5 && page - 3 >= 0 && page + 3 <= pages.length ? pages.slice(page - 3, page + 2) : pages.length > 5 && page - 3 < 0 ? pages.slice(0, 5) : pages.length > 5 && page + 3 > pages.length ? pages.slice(pages.length - 5, pages.length) : pages;
       this.model.pagination.currentPage = page;
       this.model.pagination.totalPages = pages.length;

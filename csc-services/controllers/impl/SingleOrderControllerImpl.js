@@ -6,6 +6,7 @@ const FileDownloaderService = cscServices.FileDownloaderService;
 const eventBusService = cscServices.EventBusService;
 const viewModelResolver = cscServices.viewModelResolver;
 const momentService = cscServices.momentService;
+const statusesService = cscServices.StatusesService;
 const { Roles, Topics, ButtonsEnum, Commons, FoldersEnum } = cscServices.constants;
 const { orderStatusesEnum, orderPendingActionEnum } = cscServices.constants.order;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
@@ -43,7 +44,7 @@ class SingleOrderControllerImpl extends AccordionController {
       if (filename) {
         if (model.name && model.name === filename) {
           const document = this.model.order.documents.find((x) => x.name === filename);
-          const keySSI = document.attached_by === Roles.Sponsor ? this.model.order.sponsorDocumentsKeySSI : this.model.order.cmoDocumentsKeySSI;
+          const keySSI = this.model.order.sponsorDocumentsKeySSI;
           await this.downloadFile(filename, FoldersEnum.Documents, keySSI);
         } else {
           await this.downloadFile(filename, FoldersEnum.KitIds, model.order.kitsSSI);
@@ -172,9 +173,10 @@ class SingleOrderControllerImpl extends AccordionController {
         })[0].date
       ).format(Commons.DateTimeFormatPattern);
 
-      data.status_approved = data.status_value === orderStatusesEnum.Completed;
-      data.status_cancelled = data.status_value === orderStatusesEnum.Canceled;
-      data.status_normal = data.status_value !== orderStatusesEnum.Canceled && data.status_value !== orderStatusesEnum.Completed;
+      const statuses = statusesService.getOrderStatuses();
+      data.status_approved = statuses.approvedStatuses.includes(data.status_value);
+      data.status_cancelled = statuses.canceledStatuses.includes(data.status_value);
+      data.status_normal = statuses.normalStatuses.includes(data.status_value);
       data.pending_action = this.getPendingAction(data.status_value);
 
       if (data.comments) {
@@ -185,13 +187,6 @@ class SingleOrderControllerImpl extends AccordionController {
 
       if (data.sponsorDocuments) {
         data.sponsorDocuments.forEach((doc) => {
-          doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
-          data.documents.push(doc);
-        });
-      }
-
-      if (data.cmoDocuments) {
-        data.cmoDocuments.forEach((doc) => {
           doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
           data.documents.push(doc);
         });

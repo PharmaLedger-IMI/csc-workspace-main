@@ -1,0 +1,52 @@
+<div class="grid-column-wrapper">
+  <!-- Shipment ID -->
+  <label>{{@form.shipmentId.label}}</label>
+  <input class="form-control form-control-sm" readonly="readonly" name="@form.shipmentId.name" placeholder="@form.shipmentId.placeholder" type="text" value="@shipment.shipmentId" />
+
+  <!-- Shipper ID -->
+  <label>{{@form.shipperId.label}}</label>
+  <input class="form-control form-control-sm" readonly="readonly" name="@form.shipperId.name" placeholder="@form.shipperId.placeholder" type="text" value="@shipment.shipperId" />
+
+  <!-- Origin -->
+  <label>{{@form.origin.label}}</label>
+  <input class="form-control form-control-sm" readonly="readonly" name="@form.origin.name" placeholder="@form.origin.placeholder" type="text" value="@shipment.origin" />
+
+  <!-- Type -->
+  <label>{{@form.type.label}}</label>
+  <input class="form-control form-control-sm" readonly="readonly" name="@form.shipmentType.name" placeholder="@form.shipmentType.placeholder" type="text" value="@shipment.shipmentType" />
+
+  <!-- Scheduled Pickup Date/Time -->
+  <label>Scheduled Pickup Date/Time</label>
+  <div>
+    <input class="form-control form-control-sm" readonly="readonly" type="text" value="@shipment.scheduledPickupDateTime.date" />
+    <input class="form-control form-control-sm" readonly="readonly" type="text" value="@shipment.scheduledPickupDateTime.time" />
+  </div>
+
+  <label>{{@form.dimension.label}}</label>
+  <div>
+    <label>{{@form.dimension.height.label}}</label>
+    <input class="form-control form-control-sm" readonly="readonly" value="@shipment.dimension.dimensionHeight" />
+    <label>{{@form.dimension.length.label}}</label>
+    <input class="form-control form-control-sm" readonly="readonly" value="@shipment.dimension.dimensionLength" />
+    <label>{{@form.dimension.width.label}}</label>
+    <input class="form-control form-control-sm" readonly="readonly" value="@shipment.dimension.dimensionWidth" />
+  </div>
+
+  <label>{{@form.specialInstructions.label}}</label>
+  <textarea class="form-control form-control-sm" readonly="readonly" value="@shipment.specialInstructions"></textarea>
+  <!-- Shipping/Handling Conditions -->
+  <label>{{@form.shippingConditions.label}}</label>
+  <textarea class="form-control form-control-sm" readonly="readonly" value="@shipment.shippingConditions"></textarea>
+</div>
+
+  <div data-if='@shipment.contextualContent.afterInTransit'>
+    <div class='grid-column-wrapper'>
+      <!-- Master-way bill number -->
+      <label>{{@form.billNumber.label}}</label>
+      <input class="form-control form-control-sm" readonly="readonly" name="@form.billNumber.name" placeholder="@form.billNumber.placeholder" type="text" value="@shipment.bill.billNumber" />
+      <!-- HS Code -->
+      <label>{{@form.hsCode.label}}</label>
+      <input class="form-control form-control-sm" readonly="readonly" name="@form.hsCode.name" placeholder="@form.hsCode.placeholder" type="text" value="@shipment.bill.hsCode" />
+    </div>
+  </div>
+
