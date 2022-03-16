@@ -103,7 +103,10 @@
                 <!--Label -->
                 <label>{{@form.inputs.site_region_id.label}}</label>
                 <!-- Input -->
-                <input class="form-control" data-view-model="@form.inputs.site_region_id" type="text" />
+                <select class='form-control' data-for='@form.inputs.site_region_id.options'
+                        value='@form.inputs.site_region_id.value'>
+                  <option value='@'>{{@}}</option>
+                </select>
               </div>
 
               <!-- Site Country -->
