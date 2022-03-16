@@ -466,7 +466,7 @@ class ShipmentsService extends DSUService {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
 		const shipmentsCommentsDsu = await this.mountEntityAsync(shipmentCommentsSSI, FoldersEnum.ShipmentComments);
 		shipmentDB.shipmentComments = shipmentsCommentsDsu.uid;
-		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
 	}
 
 	async mountShipmentDocumentsDSU(shipmentSSI, shipmentDocumentsSSI) {
@@ -474,7 +474,7 @@ class ShipmentsService extends DSUService {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
 		const shipmentDocuments = await this.mountEntityAsync(shipmentDocumentsSSI, FoldersEnum.ShipmentDocuments);
 		shipmentDB.shipmentDocuments = shipmentDocuments.uid;
-		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
 	}
 
 	async mountShipmentReceivedDSU(shipmentSSI, receivedShipmentSSI) {
@@ -485,7 +485,7 @@ class ShipmentsService extends DSUService {
 		const statusIdentifier = await this.getEntityPathAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
 		const status = await this.getEntityAsync(statusIdentifier, FoldersEnum.ShipmentsStatuses);
 		shipmentDB.status = status.history;
-		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
 	}
 
 	async updateShipmentStatus(shipmentIdentifier, role) {
