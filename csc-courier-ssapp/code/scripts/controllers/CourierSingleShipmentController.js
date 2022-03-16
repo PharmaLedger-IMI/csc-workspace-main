@@ -97,11 +97,11 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     shipment = { ...this.transformShipmentData(shipment) };
 
     if (shipment.shipmentComments) {
-      shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
+      shipment.comments = await this.getShipmentComments(shipment);
     }
 
     if (shipment.shipmentDocuments) {
-      shipment.documents = await this.getShipmentDocuments(model.shipmentModel.shipment);
+      shipment.documents = await this.getShipmentDocuments(shipment);
     }
 
 
