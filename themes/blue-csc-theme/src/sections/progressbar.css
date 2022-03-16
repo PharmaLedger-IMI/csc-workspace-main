@@ -1,0 +1,14 @@
+.progress{
+    position: relative;
+}
+.progress.green{border:1px solid #34a86b}
+.progress.blue{border:1px solid #4171b1}
+.progress-bar.green{background-color:#34a86b}
+.progress-bar{
+    background-color:#4171b1;
+}
+.progress-number{
+    position: absolute;
+    width: 100%;
+    color:#000;
+}

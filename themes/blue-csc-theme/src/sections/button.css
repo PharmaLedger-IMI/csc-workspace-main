@@ -1,0 +1,191 @@
+button i{
+    color: #FFFFFF;
+}
+
+.btn-default,
+.btn-reset,
+.btn-cancel,
+.btn-approve {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #008898;
+    padding: 0.25rem 1.5rem;
+    border: 0;
+    color: white;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+.btn-default:focus,
+.btn-default:active,
+.btn-default:hover {
+    outline: 0;
+    background: #177f8b;
+}
+
+.btn-reset {
+    background: #ef6c00;
+}
+
+.btn-reset:focus,
+.btn-reset:active,
+.btn-reset:hover {
+    outline: 0;
+    background: #bf5600;
+}
+
+.btn-cancel {
+    background: red;
+}
+
+.btn-cancel:focus,
+.btn-cancel:active,
+.btn-cancel:hover {
+    outline: 0;
+    background: darkred;
+}
+
+.btn-approve {
+    background: #34a86b;
+}
+
+.btn-approve:focus,
+.btn-approve:active,
+.btn-approve:hover {
+    outline: 0;
+    background: #2b8d5a;
+}
+
+.btn-default[disabled],
+.btn-reset[disabled],
+.btn-cancel[disabled],
+.btn-approve[disabled] {
+    background: #888888;
+    opacity: 0.5;
+}
+
+.btn-filter {
+    border: none;
+    background-color: transparent;
+    color: black;
+    border-radius: 0;
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.875rem;
+    box-shadow: none;
+    padding: 0.5rem 1rem;
+}
+
+.btn-filter.active {
+    background-color: rgba(247, 247, 247, 0.8);
+    color: white;
+}
+
+.btn-filter:focus,
+.btn-filter:not(:disabled):not(.disabled):active {
+    border: none !important;
+    outline: none;
+    box-shadow: none;
+}
+
+.btn-filter label:hover {
+    cursor: pointer;
+}
+
+.btn-filter:disabled,
+.btn-filter:disabled label {
+    cursor: default;
+    font-weight: 600;
+    color: black;
+    text-shadow: 0 0 black;
+}
+
+.btn-filter:active,
+.btn-filter:hover,
+.btn-filter:focus,
+.btn-filter.selected {
+    color: rgba(0, 136, 152, 0.8);
+    cursor: pointer;
+}
+
+.btn-bare {
+    border: none;
+    background-color: white;
+    color: black;
+    border-radius: 0;
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: none;
+    text-align: left;
+    vertical-align: bottom;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.btn-bare.active {
+    background-color: rgba(247, 247, 247, 0.8);
+    color: white;
+}
+
+.btn-bare:focus,
+.btn-bare:not(:disabled):not(.disabled):active {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.btn-bare label:hover {
+    cursor: pointer;
+}
+
+.btn-bare:disabled,
+.btn-bare:disabled label {
+    cursor: default;
+    font-weight: 600;
+    color: black;
+    text-shadow: 0 0 black;
+}
+
+button.btn-bare i {
+    color: #008898;
+    padding: 5px;
+}
+
+button.warning.btn-bare i {
+    color: orange;
+}
+
+.file-name-downloader button{
+    background-color: #008898;
+    color: #FFF;
+    padding: 2px 8px;
+}
+
+.file-name-downloader button:hover,
+.file-name-downloader button:focus,
+.file-name-downloader button:not(.disabled):active:focus{
+    border-color: #177f8b;
+    background-color:#177f8b;
+    outline:0;
+    box-shadow:none;
+}
+
+button.scan-again-button[disabled]{
+    visibility: hidden;
+}
+
+button > i {
+    padding:0 5px;
+}
+
+.btn-default > span{
+    padding:0 5px;
+}
+
+
+.btn-cancel > span{
+    padding:0 5px;
+}

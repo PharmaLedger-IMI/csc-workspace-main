@@ -1,0 +1,50 @@
+.modal-main-title {
+    font-size: 16px;
+    text-align: center;
+    color: #04444c;
+    font-weight: 600;
+    width: 100%;
+}
+
+.history-orders,
+.history-shipments,
+.history-kits{
+    width: 100%;
+    font-size: 15px;
+    height: 40px;
+    background: #00345b;
+    padding: 0 1rem;
+    text-align: center;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.history-connector {
+    width: 3px;
+    height: 22px;
+    background: #00345b;
+    margin: 0 auto;
+}
+
+.history-status {
+    width: 100%;
+    font-size: 15px;
+    height: 64px;
+    padding: 13px 20px 0;
+    text-align: center;
+    color: white;
+    border-radius: 25px;
+}
+
+.history-orders i,
+.history-shipments i,
+.history-kits i{
+    margin-right: 5px;
+}
+
+
+#history-modal {
+    max-width: 100vh !important;
+}

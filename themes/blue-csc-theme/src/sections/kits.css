@@ -1,0 +1,19 @@
+.kits-table-wrapper {
+    padding: 0 5%;
+}
+
+.kits-table thead {
+    color: #00345b;
+}
+
+.table.kits-table th {
+    border-bottom: 1px solid #757575;
+}
+
+.table.kits-table td,
+.table.kits-table th {
+    padding: 0.5rem;
+    BACKGROUND: transparent;
+    text-align: center;
+    color: #757575;
+}

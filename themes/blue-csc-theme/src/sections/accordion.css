@@ -1,0 +1,40 @@
+.accordion-item {
+    border-radius: 5px 5px 0 0;
+    font-weight: 700;
+    color: #00345b;
+    transition: 0.4s;
+    cursor: pointer;
+}
+
+.accordion-item i{
+    cursor: pointer;
+    padding: 15px;
+}
+
+.accordion-item-active {
+    background: #ecf7f9;
+}
+
+.accordion-item-holder {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    background: #FFFFFF;
+    width: 100%;
+    border: 1px solid #f3f3f3;
+    border-top: 0;
+    padding: 0 2%;
+}
+.accordion-item-holder.expanded{
+    max-height: initial;
+}
+
+.rotate-icon {
+    transform: rotate(90deg);
+}
+
+@media (max-width: 767px) {
+    .accordion-item-holder {
+        padding: 0 2%;
+    }
+}

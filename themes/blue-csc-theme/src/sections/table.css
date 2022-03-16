@@ -1,0 +1,74 @@
+.filters-wrapper {
+    display: flex;
+    border-radius: 2rem;
+    background-color: #FFFFFF;
+    width: fit-content;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.75);
+    padding: 0.25rem 1rem;
+}
+
+.filter-status {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 2rem;
+    font-size: 0.875rem;
+}
+
+.filter-status label {
+    margin: 0;
+    padding-left: 0.5rem;
+}
+
+.table-container-wrapper {
+    border-radius: 2rem;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.75);
+    padding: 0.25rem 1rem;
+}
+
+.table-container-wrapper thead tr {
+    border-bottom: 1px solid #212529;
+}
+
+.table-container-wrapper tr label {
+    margin: 0;
+}
+
+.table-container-wrapper .no-data-info{
+    text-align: center;
+    justify-content: center;
+}
+
+.responsive-table {
+    overflow: auto;
+    max-height: calc(100vh - 420px);
+    max-width: calc(100vw - 60px);
+}
+
+.responsive-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #FFFFFF;
+}
+
+.responsive-table .table th,
+.responsive-table .table td {
+    min-width: 8rem;
+}
+
+.responsive-table::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 0.5rem;
+}
+
+.responsive-table::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.responsive-table::-webkit-scrollbar-thumb {
+    background-color: rgba(50, 50, 50, 0.25);
+    border-radius: 0.5rem;
+}

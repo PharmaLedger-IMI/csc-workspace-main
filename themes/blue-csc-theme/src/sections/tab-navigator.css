@@ -1,0 +1,22 @@
+.tab-navigator {
+    font-size: 18px;
+    display: flex;
+    margin: 0.75rem 0.5rem;
+}
+
+.tab-navigator .btn {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    padding: 0.25rem 4rem;
+    color: white;
+}
+
+.tab-navigator .btn {
+    background-color: #00345b;
+}
+
+.tab-navigator button.btn[is-active] {
+    background-color: #008898;
+    border-style: none;
+}

@@ -1,0 +1,27 @@
+.attach-documents-table thead {
+    color: #00345b;
+}
+
+.attach-documents-table-icon,
+.attach-documents-table-icon-remove {
+    cursor: pointer;
+    color:#008898;
+}
+
+.attach-documents-table tbody tr:nth-child(2n+1) {
+    background: #f2f2f2;
+}
+
+.table.attach-documents-table td,
+.table.attach-documents-table th {
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.upload-attachment {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+}

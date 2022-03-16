@@ -52,7 +52,7 @@ documentation/drawings/*.xml
 documentation/resources/drawings/
 node_modules
 package-lock.json
-themes
+themes/blue-fluorite-theme
 tests/*/testWorkspace
 
 testReport.html
