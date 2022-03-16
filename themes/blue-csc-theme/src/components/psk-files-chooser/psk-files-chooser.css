@@ -1,0 +1,49 @@
+input[type=file].form-control-sm {
+    padding-left: 0;
+    display: none;
+}
+
+label {
+    cursor: pointer;
+}
+
+button.btn.btn-secondary,
+button.btn.btn-secondary:hover,
+button.btn.btn-secondary:focus,
+button.btn.btn-secondary:active,
+button.btn.btn-secondary:active:focus,
+button.btn.btn-secondary:not(:disabled):not(.disabled):active,
+button.btn.btn-secondary:not(:disabled):not(.disabled):active:focus {
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+psk-files-chooser .btn {
+    text-align: left;
+    padding: 0 0 0 0.25rem;
+    flex-direction: column;
+}
+
+.add-menu psk-files-chooser {
+    border: none;
+}
+
+psk-files-chooser > button.btn {
+    background: #008898 !important;
+    min-width: 200px;
+    padding: 4px 10px;
+    border: 0;
+    color: white;
+    border-radius: 5px;
+    height: 38px;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+psk-files-chooser .fileDiv {
+    display: none;
+}

@@ -1,9 +1,10 @@
 const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService');
-const { Roles, FoldersEnum } = require('./constants');
-const { shipmentStatusesEnum} = require('./constants/shipment');
+const { Roles, FoldersEnum,Commons } = require('./constants');
+const { shipmentStatusesEnum,shipmentsEventsEnum} = require('./constants/shipment');
 const {getCommunicationServiceInstance} = require("./lib/CommunicationService");
 const EncryptionService = require('./lib/EncryptionService.js');
+const momentService  = require('./lib/moment.min');
 const DidService  = require('./lib/DidService');
 
 class ShipmentsService extends DSUService {
@@ -48,7 +49,7 @@ class ShipmentsService extends DSUService {
 
 			orderSSI: data.orderSSI,
 			requestDate: data.requestDate,
-			deliveryDate: data.deliveryDate,
+			requestedDeliveryDateTime: data.deliveryDate,
 			orderId: data.orderId,
 			sponsorId: data.sponsorId,
 			cmoId:cmoId,
@@ -465,7 +466,7 @@ class ShipmentsService extends DSUService {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
 		const shipmentsCommentsDsu = await this.mountEntityAsync(shipmentCommentsSSI, FoldersEnum.ShipmentComments);
 		shipmentDB.shipmentComments = shipmentsCommentsDsu.uid;
-		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
 	}
 
 	async mountShipmentDocumentsDSU(shipmentSSI, shipmentDocumentsSSI) {
@@ -473,7 +474,7 @@ class ShipmentsService extends DSUService {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
 		const shipmentDocuments = await this.mountEntityAsync(shipmentDocumentsSSI, FoldersEnum.ShipmentDocuments);
 		shipmentDB.shipmentDocuments = shipmentDocuments.uid;
-		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
 	}
 
 	async mountShipmentReceivedDSU(shipmentSSI, receivedShipmentSSI) {
@@ -484,7 +485,7 @@ class ShipmentsService extends DSUService {
 		const statusIdentifier = await this.getEntityPathAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
 		const status = await this.getEntityAsync(statusIdentifier, FoldersEnum.ShipmentsStatuses);
 		shipmentDB.status = status.history;
-		return this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentDB.uid, shipmentDB);
 	}
 
 	async updateShipmentStatus(shipmentIdentifier, role) {
@@ -559,6 +560,48 @@ class ShipmentsService extends DSUService {
 		);
 		return result;
 	}
+
+	async sendNewPickupDetailsRequest(cmoId, pickupDateTimeChangeRequest){
+		const shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, pickupDateTimeChangeRequest.shipmentSSI);
+		shipmentDB.pickupDateTimeChangeRequest = {
+			requestPickupDateTime: pickupDateTimeChangeRequest.requestPickupDateTime,
+			reason: pickupDateTimeChangeRequest.reason,
+			date: Date.now()
+		};
+		await this.storageService.updateRecord(this.SHIPMENTS_TABLE, pickupDateTimeChangeRequest.shipmentSSI, shipmentDB);
+		this.sendMessageToEntity(cmoId, shipmentsEventsEnum.PickupDateTimeChangeRequest, pickupDateTimeChangeRequest, shipmentsEventsEnum.PickupDateTimeChangeRequest);
+	}
+
+	async storePickupDateTimeRequest(shipmentIdentifier, pickupDateTimeChangeRequest){
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
+		shipmentDB.pickupDateTimeChangeRequest = pickupDateTimeChangeRequest;
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentIdentifier, shipmentDB);
+	}
+
+	async acceptNewPickupDateTimeRequest(shipmentIdentifier) {
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
+		let shipmentDSU = await this.getEntityAsync(shipmentIdentifier, FoldersEnum.Shipments);
+
+		const requestedPickupTimestamp = shipmentDB.pickupDateTimeChangeRequest.requestPickupDateTime;
+		const scheduledPickupDateTime = {
+			date: momentService(requestedPickupTimestamp).format(Commons.DateFormatPattern),
+			time: momentService(requestedPickupTimestamp).format(Commons.HourFormatPattern)
+		};
+
+		shipmentDSU.scheduledPickupDateTime = scheduledPickupDateTime;
+		shipmentDB.scheduledPickupDateTime = scheduledPickupDateTime;
+		shipmentDB.pickupDateTimeChangeRequest = undefined;
+
+		await this.updateEntityAsync(shipmentDSU, FoldersEnum.Shipments);
+		await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentIdentifier, shipmentDB);
+		const notifiedActors = [shipmentDB.sponsorId, shipmentDB.shipperId];
+		notifiedActors.forEach((actor) => {
+			this.sendMessageToEntity(actor, shipmentsEventsEnum.PickupDateTimeChanged, {
+				shipmentSSI: shipmentDB.uid
+			}, shipmentsEventsEnum.PickupDateTimeChanged);
+		});
+	}
+
 
 	uploadFile(path, file) {
 		function getFileContentAsBuffer(file, callback) {

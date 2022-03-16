@@ -7,7 +7,7 @@ const eventBusService = require("./lib/EventBusService");
 const { order, shipment, Roles, Topics, kit, notifications } = require("./constants");
 const { NotificationTypes } = notifications;
 const { orderStatusesEnum } = order;
-const { shipmentStatusesEnum} = shipment;
+const { shipmentStatusesEnum,shipmentsEventsEnum} = shipment;
 const { kitsMessagesEnum, kitsStatusesEnum } = kit;
 
 class MessageHandlerService {
@@ -135,13 +135,12 @@ class MessageHandlerService {
         const {
           orderSSI,
           sponsorDocumentsKeySSI,
-          cmoDocumentsKeySSI,
           kitIdsKeySSI,
           commentsKeySSI,
           statusKeySSI
         } = data.data;
         orderData = await this.ordersService.mountAndReceiveOrder(orderSSI, this.role,
-          { sponsorDocumentsKeySSI, cmoDocumentsKeySSI, kitIdsKeySSI, commentsKeySSI, statusKeySSI });
+          { sponsorDocumentsKeySSI, kitIdsKeySSI, commentsKeySSI, statusKeySSI });
 
         break;
       }
@@ -243,6 +242,18 @@ class MessageHandlerService {
         notificationRole = Roles.Courier;
         const { shipmentSSI } = data.data;
         shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI);
+        break;
+      }
+      case shipmentsEventsEnum.PickupDateTimeChangeRequest:{
+        notificationRole = Roles.Courier;
+        const { shipmentSSI, ...pickupDateTimeChangeRequest } = data.data;
+        shipmentData = await this.shipmentService.storePickupDateTimeRequest(shipmentSSI, pickupDateTimeChangeRequest);
+        break;
+      }
+      case shipmentsEventsEnum.PickupDateTimeChanged:{
+        notificationRole = Roles.CMO;
+        const { shipmentSSI } = data.data;
+        shipmentData = await this.shipmentService.updateLocalShipment(shipmentSSI, { pickupDateTimeChangeRequest: undefined });
         break;
       }
     }

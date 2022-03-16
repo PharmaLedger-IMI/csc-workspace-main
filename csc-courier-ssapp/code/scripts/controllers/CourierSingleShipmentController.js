@@ -2,8 +2,9 @@ const { ViewShipmentBaseController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const ShipmentsService = cscServices.ShipmentService;
-const OrdersService = cscServices.OrderService;
-const { Roles } = cscServices.constants;
+const momentService = cscServices.momentService;
+const eventBusService = cscServices.EventBusService;
+const { Roles, Topics,Commons } = cscServices.constants;
 const { shipmentStatusesEnum } = cscServices.constants.shipment;
 
 class CourierSingleShipmentController extends ViewShipmentBaseController {
@@ -17,7 +18,6 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
   }
 
   async initServices(){
-    this.ordersService = new OrdersService(this.DSUStorage);
     this.shipmentsService = new ShipmentsService(this.DSUStorage);
   }
 
@@ -26,6 +26,8 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     this.toggleAccordionItemHandler();
     this.downloadAttachmentHandler();
     this.navigationHandlers();
+
+    this.onTagClick('request-update-pickup-details',this.requestUpdatePickupDetails.bind(this));
 
     this.onTagClick('scan-shipment-pickup', () => {
         this.navigateToPageTag('scan-shipment-pickup', {
@@ -82,7 +84,6 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
 
   async initViewModel() {
     const model = {
-      orderModel: viewModelResolver('order'),
       shipmentModel: viewModelResolver('shipment'),
     };
 
@@ -94,31 +95,27 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     model.uid = uid;
     let shipment = await this.shipmentsService.getShipment(model.uid);
     shipment = { ...this.transformShipmentData(shipment) };
+
+    if (shipment.shipmentComments) {
+      shipment.comments = await this.getShipmentComments(shipment);
+    }
+
+    if (shipment.shipmentDocuments) {
+      shipment.documents = await this.getShipmentDocuments(shipment);
+    }
+
+
+    shipment.hasPickupDateTimeChangeRequest = typeof shipment.pickupDateTimeChangeRequest !== 'undefined';
+    if (shipment.hasPickupDateTimeChangeRequest) {
+      shipment.hasPickupDateTimeChangeRequest = true;
+      shipment.pickupDateTimeChangeRequest.requestPickupDateTime =  momentService(shipment.pickupDateTimeChangeRequest.requestPickupDateTime).format(Commons.DateTimeFormatPattern);
+      shipment.pickupDateTimeChangeRequest.date =  momentService(shipment.pickupDateTimeChangeRequest.date).format(Commons.DateTimeFormatPattern);
+    }
+
     model.shipmentModel.shipment = shipment;
-
-    if (model.shipmentModel.shipment.shipmentComments) {
-      model.shipmentModel.shipment.comments = await this.getShipmentComments(model.shipmentModel.shipment);
-    }
-
-    if (model.shipmentModel.shipment.shipmentDocuments) {
-      model.shipmentModel.shipment.documents = await this.getShipmentDocuments(model.shipmentModel.shipment);
-    }
-
     model.actions = this.setShipmentActions(model.shipmentModel.shipment);
-
-    let order = { ...this.transformOrderData(shipment) };
-    model.orderModel.order = order;
-    //console.log("MODEL " + JSON.stringify(model));
     this.model = model;
     this.attachRefreshListeners();
-  }
-
-  transformOrderData(data) {
-    if (data) {
-      data.delivery_date = this.getDateTime(data.deliveryDate);
-      return data;
-    }
-    return {};
   }
 
   reportWrongDeliveryAddress(){
@@ -135,6 +132,39 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
       expanded: false,
       centered: true,
     });
+  }
+
+  requestUpdatePickupDetails(){
+    this.model.pickupDateTimeChangeRequest = {
+      pickupDateTime: {
+        date:"",
+        time:""
+      },
+      reason: '',
+      incompleteRequest: true
+    };
+    this.showModalFromTemplate('requestUpdatePickupDetails', this.sendPickupDetailsRequest.bind(this), () => {
+    }, {
+      controller:"PickupDetailsRequestController",
+      disableExpanding: true,
+      disableBackdropClosing: true,
+      model: this.model
+    });
+  }
+
+  async sendPickupDetailsRequest() {
+    window.WebCardinal.loader.hidden = false;
+    const requestPickupDateTime = momentService(this.model.pickupDateTimeChangeRequest.pickupDateTime.date + ' ' + this.model.pickupDateTimeChangeRequest.pickupDateTime.time).valueOf();
+    const pickupDateTimeChangeRequest = {
+      shipmentSSI: this.model.shipmentModel.shipment.uid,
+      requestPickupDateTime: requestPickupDateTime,
+      reason: this.model.pickupDateTimeChangeRequest.reason
+    };
+
+    await this.shipmentsService.sendNewPickupDetailsRequest(this.model.shipmentModel.shipment.cmoId, pickupDateTimeChangeRequest);
+    eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, null);
+    window.WebCardinal.loader.hidden = true;
+
   }
 }
 

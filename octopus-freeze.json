@@ -29,7 +29,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "f256413e8d3833f3424d79315e7a68f6d91ed445"
+                    "commit": "efc69bd80aa9b6efe99c5c6701c0f96b72129947"
                 },
                 {
                     "type": "execute",
@@ -45,27 +45,11 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "75e7785e54304b86f5cae102e926eb6df42f6693"
+                    "commit": "a1dfc53b317b34e949c3c19584d20ffd0764b806"
                 },
                 {
                     "type": "execute",
                     "cmd": "cd webcardinal && npm install && npm run bundle-all && npm run dev"
-                }
-            ]
-        },
-        {
-            "name": "menu-wallet-prototype",
-            "src": "http://github.com/privatesky/menu-wallet-prototype.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "f1b399830c426eca33c3ee5af57a918441f808e7"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd menu-wallet-prototype && npm install"
                 }
             ]
         },
@@ -77,7 +61,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "21fd1451020a665f1b192b6f61565ec2542e1cd3"
+                    "commit": "3c644faf0d489c33362e4b57dcb7f1bce6e7a6f6"
                 },
                 {
                     "type": "execute",
@@ -97,7 +81,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "21fd1451020a665f1b192b6f61565ec2542e1cd3"
+                    "commit": "3c644faf0d489c33362e4b57dcb7f1bce6e7a6f6"
                 },
                 {
                     "type": "execute",
@@ -117,7 +101,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "21fd1451020a665f1b192b6f61565ec2542e1cd3"
+                    "commit": "3c644faf0d489c33362e4b57dcb7f1bce6e7a6f6"
                 },
                 {
                     "type": "execute",
@@ -137,7 +121,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "21fd1451020a665f1b192b6f61565ec2542e1cd3"
+                    "commit": "3c644faf0d489c33362e4b57dcb7f1bce6e7a6f6"
                 },
                 {
                     "type": "execute",
@@ -173,7 +157,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "21fd1451020a665f1b192b6f61565ec2542e1cd3"
+                    "commit": "3c644faf0d489c33362e4b57dcb7f1bce6e7a6f6"
                 },
                 {
                     "type": "execute",
@@ -251,22 +235,6 @@
             ]
         },
         {
-            "name": "themes/blue-csc-theme",
-            "src": "https://github.com/PharmaLedger-IMI/blue-csc-theme.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "721f2424b77c9c47056af98ed651451d8bc75f85"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/blue-csc-theme && npm install"
-                }
-            ]
-        },
-        {
             "name": "themes/blue-fluorite-theme",
             "src": "https://github.com/PrivateSky/blue-fluorite-theme.git",
             "actions": [
@@ -279,6 +247,16 @@
                 {
                     "type": "execute",
                     "cmd": "cd themes/blue-fluorite-theme && npm install"
+                }
+            ]
+        },
+        {
+            "name": "themes/blue-csc-theme",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd themes/blue-csc-theme && npm install"
                 }
             ]
         }

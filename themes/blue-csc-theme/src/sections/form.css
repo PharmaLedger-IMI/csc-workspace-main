@@ -1,0 +1,18 @@
+div.form-group label,
+div.form-inline label {
+    color: #4171b1;
+}
+
+div.form-inline {
+    justify-content: space-between;
+    flex-flow: row;
+}
+
+div.form-group psk-files-chooser label {
+    color: #FFFFFF;
+    margin:  0;
+}
+
+span.required{
+    color:darkred;
+}

@@ -1,0 +1,61 @@
+.notifications-section {
+    padding: 1rem 10% 2rem;
+}
+
+.notifications-section label,
+.notifications-section button i {
+    margin: 0;
+}
+
+.notifications-section .btn-bare {
+    background: transparent;
+}
+
+.notifications-section i{
+    padding: 5px;
+}
+
+.notifications-section i.fa-circle {
+    color: darkred;
+}
+
+.notifications-section i.fa-check,
+.notifications-section i.fa-search{
+    color: #008898;
+}
+
+.notifications-section table {
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+}
+
+.notifications-section tbody tr {
+    box-shadow: 0 0 0.5rem -0.375rem #000000;
+    background-color: #cafefc;
+}
+
+.notifications-section tbody tr[data-read-notification] {
+    background: #FFFFFF;
+}
+
+.notifications-section td {
+    padding: 0.5rem;
+}
+
+.notifications-section td:first-child {
+    border-left-style: solid;
+    border-top-left-radius: 0.75rem;
+    border-bottom-left-radius: 0.75rem;
+}
+
+.notifications-section td:last-child {
+    border-right-style: solid;
+    border-bottom-right-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+}
+
+@media (max-width: 991px) {
+    .notifications-section {
+        padding: 0.5rem 0.5rem 1.5rem;
+    }
+}

@@ -89,6 +89,7 @@ const orderBusinessRequirements = {
 	MinTemperature: "-100",
 	MaxTemperature: "100",
 	TemperatureUnits: "°C",
+	siteRegionIds: ['Region Id 1','Region Id 2','Region Id 3']
 }
 
 module.exports = {

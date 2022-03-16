@@ -27,7 +27,8 @@
         {
           "type": "smartClone",
           "target": ".",
-          "collectLog": false
+          "collectLog": false,
+		  "commit":"efc69bd80aa9b6efe99c5c6701c0f96b72129947"
         },
         {
           "type": "execute",
@@ -225,21 +226,6 @@
       ]
     },
     {
-      "name": "themes/blue-csc-theme",
-      "src": "https://github.com/PharmaLedger-IMI/blue-csc-theme.git",
-      "actions": [
-        {
-          "type": "smartClone",
-          "target": ".",
-          "collectLog": false
-        },
-        {
-          "type": "execute",
-          "cmd": "cd themes/blue-csc-theme && npm install"
-        }
-      ]
-    },
-    {
       "name": "themes/blue-fluorite-theme",
       "src": "https://github.com/PrivateSky/blue-fluorite-theme.git",
       "actions": [
@@ -251,6 +237,16 @@
         {
           "type": "execute",
           "cmd": "cd themes/blue-fluorite-theme && npm install"
+        }
+      ]
+    },
+    {
+      "name": "themes/blue-csc-theme",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd themes/blue-csc-theme && npm install"
         }
       ]
     }

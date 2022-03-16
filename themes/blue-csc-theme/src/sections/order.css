@@ -1,0 +1,69 @@
+.navigation-section {
+    text-align: left;
+    font-size: 1rem;
+    color: #00345b;
+    padding: 0.75rem 0.5rem;
+}
+
+.navigation-section span {
+    cursor: pointer;
+}
+
+.entity-title,
+.entity-subtitle,
+.entity-disclaimer {
+    color: #00345b;
+}
+
+.entity-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.entity-subtitle {
+    font-size: 1rem;
+}
+
+.entity-disclaimer {
+    padding-top: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.body-main-section {
+    padding: 20px;
+    background: #FFFFFF;
+    border-radius: 25px;
+    -webkit-box-shadow: 0 0 48px -19px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 48px -19px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 48px -19px rgba(0, 0, 0, 0.75);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.body-main-section .text-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.body-main-section .text-left {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.entity-data-section {
+    margin-top: 40px;
+    height: 100%;
+    flex-direction: column;
+}
+
+.entity-status-box {
+    text-align: center;
+    border-radius: 25px;
+    padding: 1rem 2rem;
+    color: #FFFFFF;
+    font-size: 13px;
+}

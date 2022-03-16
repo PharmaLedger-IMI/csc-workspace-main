@@ -1,0 +1,160 @@
+webc-app-root {
+    height: 100%;
+}
+webc-spinner{
+    background: rgba(64, 149, 131, 0.15);
+}
+
+.grid-column-wrapper {
+    display: grid;
+    row-gap: 0.5rem;
+    column-gap: 1.5rem;
+    grid-template-columns: 3fr 5fr;
+    width: 100%;
+    padding: 1rem;
+    color: #00345b;
+}
+
+.grid-column-wrapper > :nth-child(2n+1) {
+    font-weight: bold;
+    text-align: right;
+    font-size: 1rem;
+}
+
+.grid-column-wrapper > :nth-child(2n) {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    column-gap: 1rem;
+}
+
+.row-wrapper {
+    padding: 0.5rem 1.5rem;
+    display: flex;
+    width: 100%;
+}
+
+.button-wrapper {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 1rem;
+    row-gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.button-wrapper button {
+    padding: 0.5rem;
+    min-width: 11rem;
+}
+
+.full-flex-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.content-section {
+    display: grid;
+    height: 100%;
+    padding-bottom: 1rem;
+}
+
+.content-section > div,
+.button-wrapper > div {
+    display: none;
+}
+
+.content-section > div[data-if],
+.button-wrapper > div[data-if] {
+    display: block;
+}
+
+.header-section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0 10% 2rem;
+}
+.header-section-full-width{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0;
+}
+
+label.status {
+    -webkit-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #FFFFFF;
+    padding: 0.15rem 0;
+    min-width: 12rem;
+    text-align: center;
+}
+
+.background-primary {
+    background: #4171b1;
+}
+
+.background-approved {
+    background: #34a86b;
+}
+
+.background-cancelled {
+    background: red;
+}
+
+.nav-back a {
+    text-decoration: none !important;
+}
+
+.comments-container {
+    display: flex;
+    width: 100%;
+    padding: 0 2rem;
+    row-gap: 2rem;
+}
+
+.comments-wrapper {
+    background: #e9ecef;
+    border: 1px solid #ced4da;
+    padding: 0.25rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    row-gap: 1rem;
+}
+
+.comments-container .comments-wrapper {
+    background: transparent;
+    border: none;
+}
+
+.comments-container label {
+    color: #00345b;
+}
+
+.identity {
+    color: #888888;
+}
+
+@media (max-width: 991px) {
+    .button-wrapper button {
+        min-width: 8rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .row-wrapper {
+        padding: 0.5rem;
+    }
+
+    .order-section {
+        padding: 0.5rem 0.5rem 1.5rem;
+    }
+}

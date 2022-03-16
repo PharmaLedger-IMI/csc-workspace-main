@@ -1,0 +1,25 @@
+.header,
+.header-left,
+.header-right {
+    color: #FFFFFF;
+    padding: 0.5rem 1rem;
+}
+
+.header {
+    background: #00345b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.header-username {
+    font-size: 13px;
+}
+
+.header-role-title {
+    font-size: 18px;
+    font-weight: bold;
+    display: inline;
+    margin-left: 1rem;
+}

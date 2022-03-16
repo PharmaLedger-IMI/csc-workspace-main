@@ -4,8 +4,7 @@ const cscServices = require('csc-services');
 const momentService = cscServices.momentService;
 const statusesService = cscServices.StatusesService;
 const { Commons, Topics  } = cscServices.constants;
-const { orderStatusesEnum } = cscServices.constants.order;
-const { shipmentStatusesEnum  } = cscServices.constants.shipment;
+
 
 class HistoryModalControllerImpl extends WebcController {
 
@@ -69,10 +68,11 @@ class HistoryModalControllerImpl extends WebcController {
 			}))];
 
 			const lastIndex = order.status.length - 1;
+			const statuses = statusesService.getOrderStatuses();
 			order.status.forEach((item, index) => {
-				item.approved = item.status === orderStatusesEnum.Completed && index === lastIndex;
-				item.cancelled = item.status === orderStatusesEnum.Canceled;
-				item.normal = item.status !== orderStatusesEnum.Canceled && item.status !== orderStatusesEnum.Completed;
+				item.approved = statuses.approvedStatuses.includes(item.status) && index === lastIndex;
+				item.cancelled = statuses.canceledStatuses.includes(item.status);
+				item.normal = statuses.normalStatuses.includes(item.status);
 				item.date = momentService(item.date).format(Commons.DateTimeFormatPattern);
 			});
 		} else {

@@ -90,7 +90,7 @@ class ShipmentsControllerImpl extends WebcController {
 
         item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
         item.requestDate = item.requestDate ? momentService(item.requestDate).format(Commons.DateTimeFormatPattern) : '-';
-        item.deliveryDate = item.deliveryDate ? momentService(item.deliveryDate).format(Commons.DateTimeFormatPattern) : '-';
+        item.requestedDeliveryDateTime = item.requestedDeliveryDateTime ? momentService(item.requestedDeliveryDateTime).format(Commons.DateTimeFormatPattern) : '-';
         item.scheduledPickupDate = this.getPickupDateTime(item.scheduledPickupDateTime);
       });
     }
@@ -161,11 +161,10 @@ class ShipmentsControllerImpl extends WebcController {
       },
       slicedPages: [],
       currentPage: 0,
-      itemsPerPage: 10,
       totalPages: null,
-      itemsPerPageOptions: {
-        selectOptions: itemsPerPageArray.join(' | '),
-        value: itemsPerPageArray[1].toString()
+      itemsPerPage: {
+        options: itemsPerPageArray,
+        value: itemsPerPageArray[1]
       }
     };
   }

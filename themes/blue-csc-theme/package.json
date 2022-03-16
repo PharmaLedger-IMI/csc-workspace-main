@@ -1,0 +1,22 @@
+{
+  "name": "blue-csc-theme",
+  "version": "1.0.0",
+  "description": "",
+  "main": " ",
+  "scripts": {
+    "build-dossier": "node ./node_modules/octopus/scripts/buildDossier.js --bundles=./../../privatesky/psknode/bundles"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/PharmaLedger-IMI/blue-csc-theme.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PharmaLedger-IMI/blue-csc-theme/issues"
+  },
+  "homepage": "https://github.com/PharmaLedger-IMI/blue-csc-theme#readme",
+  "dependencies": {
+    "octopus": "git+http://github.com/privatesky/octopus.git"
+  }
+}
