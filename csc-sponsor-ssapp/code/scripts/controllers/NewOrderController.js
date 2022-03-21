@@ -239,7 +239,7 @@ export default class NewOrderController extends WebcController {
     this.onTagEvent('form_reset', 'click', (e) => {
       this.showModal(
         'All newly entered data will be removed. This will require you to start over the process of entering the details again',
-        'Cancel Changes',
+        'Clear Changes',
         () => {
           this.model.form = viewModelResolver('order').form;
           this.files = [];
