@@ -7,9 +7,9 @@
 		<!-- Shipment ID -->
 		<label>{{@shipmentModel.form.shipmentId.label}}</label>
 		<input class='form-control' value='@shipmentModel.shipment.shipmentId' readonly='readonly' />
-		<!-- Shipper ID -->
-		<label>{{@shipmentModel.form.shipperId.label}}</label>
-		<input class='form-control' value='@shipmentModel.shipment.shipperId' readonly='readonly' />
+		<!-- Courier ID -->
+		<label>{{@shipmentModel.form.courierId.label}}</label>
+		<input class='form-control' value='@shipmentModel.shipment.courierId' readonly='readonly' />
 		<!-- Origin -->
 		<label>{{@shipmentModel.form.origin.label}}</label>
 		<input class='form-control' value='@shipmentModel.shipment.origin' readonly='readonly' />
@@ -19,9 +19,9 @@
 		  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.delivery_date.name" type="text" value="@shipmentModel.shipment.requestedDeliveryDateTime.date" />
 		  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.delivery_time.name" type="text" value="@shipmentModel.shipment.requestedDeliveryDateTime.time" />
 		</div>
-		<!-- Type -->
-		<label>{{@shipmentModel.form.type.label}}</label>
-		<input class='form-control' type='text' value='@shipmentModel.shipment.shipmentType' readonly='readonly' />
+		<!-- Transport Mode -->
+		<label>{{@shipmentModel.form.transportMode.label}}</label>
+		<input class='form-control' type='text' value='@shipmentModel.shipment.transportMode' readonly='readonly' />
 		<!-- Dimension -->
 		<label>{{@shipmentModel.form.dimension.label}}</label>
 		<div>

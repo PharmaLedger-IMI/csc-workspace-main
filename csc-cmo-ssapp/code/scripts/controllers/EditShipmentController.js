@@ -194,9 +194,9 @@ export default class EditShipmentController extends WebcController {
 	checkFormValidity(){
 		//To be refactored according to current step
 		const requiredInputs = [
-			this.model.shipmentModel.form.shipperId.value,
+			this.model.shipmentModel.form.courierId.value,
 		  this.model.shipmentModel.form.origin.value,
-		  this.model.shipmentModel.form.type.value,
+		  this.model.shipmentModel.form.transportMode.value,
 		  this.model.shipmentModel.form.pickupDate.value,
 		  this.model.shipmentModel.form.pickupTime.value,
 		  this.model.shipmentModel.form.dimension.height.value,
@@ -235,9 +235,9 @@ export default class EditShipmentController extends WebcController {
 		const shipmentFormData = this.model.toObject('shipmentModel.form');
 
 		return {
-			shipperId: shipmentFormData.shipperId.value,
+			courierId: shipmentFormData.courierId.value,
 			origin: shipmentFormData.origin.value,
-			shipmentType: shipmentFormData.type.value,
+			transportMode: shipmentFormData.transportMode.value,
 			scheduledPickupDateTime: {
 				date: shipmentFormData.pickupDate.value,
 				time: shipmentFormData.pickupTime.value

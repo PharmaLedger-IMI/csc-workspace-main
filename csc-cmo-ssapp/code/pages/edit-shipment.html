@@ -28,23 +28,23 @@
 						<webc-template data-view-model='@orderModel' template='order/order-details'></webc-template>
 						<br />
 						<div class='container'>
-							<!-- Shipper ID -->
+							<!-- Courier ID -->
 							<div class='form-group'>
-								<label>{{@shipmentModel.form.shipperId.label}}</label>
+								<label>{{@shipmentModel.form.courierId.label}}</label>
 								<!-- Did Input -->
-								<did-input class="form-control" data-view-model='@shipmentModel.form.shipperId' value='@shipmentModel.form.shipperId.value'></did-input>
+								<did-input class="form-control" data-view-model='@shipmentModel.form.courierId' value='@shipmentModel.form.courierId.value'></did-input>
 							</div>
 							<!-- Origin -->
 							<div class='form-group'>
 								<label>{{@shipmentModel.form.origin.label}} <span class='required'>*</span></label>
 								<input class='form-control' data-view-model='@shipmentModel.form.origin' value='@shipmentModel.form.origin.value'  />
 							</div>
-							<!-- Type -->
+							<!-- Transport Mode -->
 							<div class='form-group'>
-								<label>{{@shipmentModel.form.type.label}} <span class='required'>*</span></label>
-								<select class='form-control' data-for='@shipmentModel.form.type.options'
-												id='@shipmentModel.form.type.name'
-												name='@shipmentModel.form.type.name' value='@shipmentModel.form.type.value'>
+								<label>{{@shipmentModel.form.transportMode.label}} <span class='required'>*</span></label>
+								<select class='form-control' data-for='@shipmentModel.form.transportMode.options'
+												id='@shipmentModel.form.transportMode.name'
+												name='@shipmentModel.form.transportMode.name' value='@shipmentModel.form.transportMode.value'>
 									<option value='@value'>{{@label}}</option>
 								</select>
 							</div>
@@ -116,15 +116,15 @@
 						<webc-template data-view-model='@orderModel' template='order/order-details'></webc-template>
 						<br />
 						<div class='grid-column-wrapper'>
-							<!-- Shipper ID -->
-							<label>{{@shipmentModel.form.shipperId.label}}</label>
-							<input class='form-control' data-view-model='@shipmentModel.form.shipperId' readonly='readonly' />
+							<!-- Courier ID -->
+							<label>{{@shipmentModel.form.courierId.label}}</label>
+							<input class='form-control' data-view-model='@shipmentModel.form.courierId' readonly='readonly' />
 							<!-- Origin -->
 							<label>{{@shipmentModel.form.origin.label}}</label>
 							<input class='form-control' data-view-model='@shipmentModel.form.origin' readonly='readonly' />
-							<!-- Type -->
-							<label>{{@shipmentModel.form.type.label}}</label>
-							<input class='form-control' type='text' value='@shipmentModel.form.type.value'
+							<!-- Transport Mode -->
+							<label>{{@shipmentModel.form.transportMode.label}}</label>
+							<input class='form-control' type='text' value='@shipmentModel.form.transportMode.value'
 										 readonly='readonly' />
 							<!-- Scheduled Pickup Date/Time -->
 							<label>{{@shipmentModel.form.pickupDate.label}}</label>

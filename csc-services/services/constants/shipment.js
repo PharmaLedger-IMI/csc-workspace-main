@@ -36,8 +36,8 @@ const shipmentCMOTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'shipperId',
-		label: 'Shipper ID',
+		column: 'courierId',
+		label: 'Courier ID',
 		notSortable: false,
 		type: 'string',
 		asc: null,
@@ -52,8 +52,8 @@ const shipmentCMOTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'type',
-		label: 'Type',
+		column: 'transportType',
+		label: 'Mode of Transport',
 		notSortable: false,
 		type: 'string',
 		asc: null,
@@ -109,8 +109,8 @@ const shipmentSiteTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'shipperId',
-		label: 'Shipper ID',
+		column: 'courierId',
+		label: 'Courier ID',
 		notSortable: false,
 		type: 'string',
 		asc: null,
@@ -125,8 +125,8 @@ const shipmentSiteTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'type',
-		label: 'Type',
+		column: 'transportMode',
+		label: 'Mode of Transport',
 		notSortable: false,
 		type: 'string',
 		asc: null,
@@ -182,8 +182,8 @@ const shipmentSponsorTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'shipperId',
-		label: 'Shipper ID',
+		column: 'courierId',
+		label: 'Courier ID',
 		notSortable: false,
 		type: 'string',
 		asc: null,
@@ -198,8 +198,8 @@ const shipmentSponsorTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'type',
-		label: 'Type',
+		column: 'transportMode',
+		label: 'Mode of Transport',
 		notSortable: false,
 		type: 'string',
 		asc: null,
@@ -280,8 +280,8 @@ const shipmentCourierTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'type',
-		label: 'Type',
+		column: 'transportMode',
+		label: 'Mode of Transport',
 		notSortable: false,
 		type: 'string',
 		asc: null,

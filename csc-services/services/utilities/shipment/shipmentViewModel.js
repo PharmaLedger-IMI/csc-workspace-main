@@ -15,12 +15,12 @@ const shipmentViewModel = {
 			type: 'text',
 			value: ''
 		},
-		shipperId: {
-			label: 'Shipper ID',
-			name: 'shipper-id',
-			id: 'shipper-id',
+		courierId: {
+			label: 'Courier ID',
+			name: 'courier-id',
+			id: 'courier-id',
 			required: true,
-			placeholder: 'Enter Shipper ID',
+			placeholder: 'Enter Courier ID',
 			disabled: false,
 			value: ""
 		},
@@ -41,9 +41,9 @@ const shipmentViewModel = {
 			value: '',
 		},
 		type: {
-			label: 'Type',
-			name: 'type',
-			id: 'type',
+			label: 'Mode of Transport',
+			name: 'transport_mode',
+			id: 'transport-mode',
 			required: true,
 			disabled: false,
 			options: [
