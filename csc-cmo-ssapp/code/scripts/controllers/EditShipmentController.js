@@ -196,6 +196,11 @@ export default class EditShipmentController extends WebcController {
 		const requiredInputs = [
 			this.model.shipmentModel.form.courierId.value,
 		  this.model.shipmentModel.form.origin.value,
+			this.model.shipmentModel.form.destinationAddress.country.value,
+			this.model.shipmentModel.form.destinationAddress.city.value,
+			this.model.shipmentModel.form.destinationAddress.poBox.value,
+			this.model.shipmentModel.form.destinationAddress.street.value,
+			this.model.shipmentModel.form.destinationAddress.building.value,
 		  this.model.shipmentModel.form.transportMode.value,
 		  this.model.shipmentModel.form.pickupDate.value,
 		  this.model.shipmentModel.form.pickupTime.value,
