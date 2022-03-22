@@ -1,15 +1,15 @@
 <div class="grid-column-wrapper">
   <!-- Shipment ID -->
   <label>{{@form.shipmentId.label}}</label>
-  <input class="form-control form-control-sm" readonly="readonly" name="@form.shipmentId.name" placeholder="@form.shipmentId.placeholder" type="text" value="@shipment.shipmentId" />
+  <input class="form-control form-control-sm" readonly name="@form.shipmentId.name" placeholder="@form.shipmentId.placeholder" type="text" value="@shipment.shipmentId" />
 
   <!-- Courier ID -->
   <label>{{@form.courierId.label}}</label>
-  <input class="form-control form-control-sm" readonly="readonly" name="@form.courierId.name" placeholder="@form.courierId.placeholder" type="text" value="@shipment.courierId" />
+  <input class="form-control form-control-sm" readonly name="@form.courierId.name" placeholder="@form.courierId.placeholder" type="text" value="@shipment.courierId" />
 
   <!-- Origin -->
   <label>{{@form.origin.label}}</label>
-  <input class="form-control form-control-sm" readonly="readonly" name="@form.origin.name" placeholder="@form.origin.placeholder" type="text" value="@shipment.origin" />
+  <input class="form-control form-control-sm" readonly name="@form.origin.name" placeholder="@form.origin.placeholder" type="text" value="@shipment.origin" />
   <!-- Destination Address -->
   <label>{{@form.destinationAddress.label}}</label>
   <div class='d-block'>
@@ -18,85 +18,85 @@
         <label>{{@form.destinationAddress.country.label}}</label>
         <input class='form-control' type='text'
                value='@shipment.destinationAddress.country'
-               readonly='readonly' />
+               readonly />
       </div>
       <div class='col-md-6'>
         <label>{{@form.destinationAddress.city.label}}</label>
         <input class='form-control' type='text' value='@shipment.destinationAddress.city'
-               readonly='readonly' />
+               readonly />
       </div>
     </div>
 
     <div>
       <label>{{@form.destinationAddress.street.label}}</label>
       <input class='form-control' type='text' value='@shipment.destinationAddress.street'
-             readonly='readonly' />
+             readonly />
     </div>
 
     <div class='form-row'>
       <div class='col-md-6'>
         <label>{{@form.destinationAddress.poBox.label}}</label>
         <input class='form-control' type='text' value='@shipment.destinationAddress.poBox'
-               readonly='readonly' />
+               readonly />
 
       </div>
       <div class='col-md-6'>
         <label>{{@form.destinationAddress.building.label}}</label>
         <input class='form-control' type='text'
                value='@shipment.destinationAddress.building'
-               readonly='readonly' />
+               readonly />
       </div>
     </div>
   </div>
   <!-- Transport Mode -->
   <label>{{@form.transportMode.label}}</label>
-  <input class="form-control form-control-sm" readonly="readonly" name="@form.transportMode.name" placeholder="@form.transportMode.placeholder" type="text" value="@shipment.transportMode" />
+  <input class="form-control form-control-sm" readonly name="@form.transportMode.name" placeholder="@form.transportMode.placeholder" type="text" value="@shipment.transportMode" />
 
   <!-- Scheduled Pickup Date/Time -->
   <label>{{@form.pickupDate.label}}</label>
   <div>
-    <input class="form-control form-control-sm" readonly="readonly" type="text" value="@shipment.scheduledPickupDateTime.date" />
-    <input class="form-control form-control-sm" readonly="readonly" type="text" value="@shipment.scheduledPickupDateTime.time" />
+    <input class="form-control form-control-sm" readonly type="text" value="@shipment.scheduledPickupDateTime.date" />
+    <input class="form-control form-control-sm" readonly type="text" value="@shipment.scheduledPickupDateTime.time" />
   </div>
 
   <!-- Volume UoM -->
   <label>{{@form.volumeUoM.label}}</label>
   <input class='form-control' type='text' value='@shipment.volumeUoM'
-         readonly='readonly' />
+         readonly />
 
   <label>{{@form.dimension.label}}</label>
   <div>
     <label>{{@form.dimension.height.label}}</label>
-    <input class="form-control form-control-sm" readonly="readonly" value="@shipment.dimension.dimensionHeight" />
+    <input class="form-control form-control-sm" readonly value="@shipment.dimension.dimensionHeight" />
     <label>{{@form.dimension.length.label}}</label>
-    <input class="form-control form-control-sm" readonly="readonly" value="@shipment.dimension.dimensionLength" />
+    <input class="form-control form-control-sm" readonly value="@shipment.dimension.dimensionLength" />
     <label>{{@form.dimension.width.label}}</label>
-    <input class="form-control form-control-sm" readonly="readonly" value="@shipment.dimension.dimensionWidth" />
+    <input class="form-control form-control-sm" readonly value="@shipment.dimension.dimensionWidth" />
   </div>
   <!-- Weight  UoM-->
   <label>{{@form.weightUoM.label}}</label>
   <input class='form-control' value='@shipment.weightUoM'
-         readonly='readonly' />
+         readonly />
   <!-- Weight -->
   <label>{{@form.weight.label}} </label>
   <input class='form-control' value='@shipment.weight'
-         readonly='readonly' />
+         readonly />
   <!-- Shipping/Handling Conditions -->
   <label>{{@form.shippingConditions.label}}</label>
-  <textarea class="form-control form-control-sm" readonly="readonly" value="@shipment.shippingConditions"></textarea>
+  <textarea class="form-control form-control-sm" readonly value="@shipment.shippingConditions"></textarea>
   <!-- Special Instructions -->
   <label>{{@form.specialInstructions.label}}</label>
-  <textarea class="form-control form-control-sm" readonly="readonly" value="@shipment.specialInstructions"></textarea>
+  <textarea class="form-control form-control-sm" readonly value="@shipment.specialInstructions"></textarea>
 </div>
 
   <div data-if='@shipment.contextualContent.afterInTransit'>
     <div class='grid-column-wrapper'>
       <!-- Master-way bill number -->
       <label>{{@form.billNumber.label}}</label>
-      <input class="form-control form-control-sm" readonly="readonly" name="@form.billNumber.name" placeholder="@form.billNumber.placeholder" type="text" value="@shipment.bill.billNumber" />
+      <input class="form-control form-control-sm" readonly name="@form.billNumber.name" placeholder="@form.billNumber.placeholder" type="text" value="@shipment.bill.billNumber" />
       <!-- HS Code -->
       <label>{{@form.hsCode.label}}</label>
-      <input class="form-control form-control-sm" readonly="readonly" name="@form.hsCode.name" placeholder="@form.hsCode.placeholder" type="text" value="@shipment.bill.hsCode" />
+      <input class="form-control form-control-sm" readonly name="@form.hsCode.name" placeholder="@form.hsCode.placeholder" type="text" value="@shipment.bill.hsCode" />
     </div>
   </div>
 

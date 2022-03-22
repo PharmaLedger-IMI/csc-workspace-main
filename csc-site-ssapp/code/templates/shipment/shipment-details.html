@@ -3,68 +3,68 @@
 	<div class='grid-column-wrapper'>
 		 <!-- Sponsor ID -->
 		 <label>{{@shipmentModel.form.inputs.sponsor_id.label}}</label>
-		 <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.sponsor_id.name" placeholder="@shipmentModel.form.inputs.sponsor_id.placeholder" type="text" value="@shipmentModel.shipment.sponsorId" />
+		 <input class="form-control form-control-sm" readonly name="@shipmentModel.form.inputs.sponsor_id.name" placeholder="@shipmentModel.form.inputs.sponsor_id.placeholder" type="text" value="@shipmentModel.shipment.sponsorId" />
 		<!-- Shipment ID -->
 		<label>{{@shipmentModel.form.shipmentId.label}}</label>
-		<input class='form-control' value='@shipmentModel.shipment.shipmentId' readonly='readonly' />
+		<input class='form-control' value='@shipmentModel.shipment.shipmentId' readonly />
 		<!-- Courier ID -->
 		<label>{{@shipmentModel.form.courierId.label}}</label>
-		<input class='form-control' value='@shipmentModel.shipment.courierId' readonly='readonly' />
+		<input class='form-control' value='@shipmentModel.shipment.courierId' readonly />
 		<!-- Origin -->
 		<label>{{@shipmentModel.form.origin.label}}</label>
-		<input class='form-control' value='@shipmentModel.shipment.origin' readonly='readonly' />
+		<input class='form-control' value='@shipmentModel.shipment.origin' readonly />
 		<!-- Request Delivery Date/Time -->
 		<label>Requested Delivery Date/Time</label>
 		<div>
-		  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.delivery_date.name" type="text" value="@shipmentModel.shipment.requestedDeliveryDateTime.date" />
-		  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.delivery_time.name" type="text" value="@shipmentModel.shipment.requestedDeliveryDateTime.time" />
+		  <input class="form-control form-control-sm" readonly name="@shipmentModel.form.inputs.delivery_date.name" type="text" value="@shipmentModel.shipment.requestedDeliveryDateTime.date" />
+		  <input class="form-control form-control-sm" readonly name="@shipmentModel.form.inputs.delivery_time.name" type="text" value="@shipmentModel.shipment.requestedDeliveryDateTime.time" />
 		</div>
 		<!-- Transport Mode -->
 		<label>{{@shipmentModel.form.transportMode.label}}</label>
-		<input class='form-control' type='text' value='@shipmentModel.shipment.transportMode' readonly='readonly' />
+		<input class='form-control' type='text' value='@shipmentModel.shipment.transportMode' readonly />
 		<!-- Volume UoM -->
 		<label>{{@shipmentModel.form.volumeUoM.label}}</label>
 		<input class='form-control' type='text' value='@shipmentModel.shipment.volumeUoM'
-					 readonly='readonly' />
+					 readonly />
 		<!-- Dimension -->
 		<label>{{@shipmentModel.form.dimension.label}}</label>
 		<div>
 			<div class='d-flex justify-content-center align-items-center'>
 				<label class='pr-2 m-0'>{{@shipmentModel.form.dimension.height.label}}</label>
-				<input class='form-control' value='@shipmentModel.shipment.dimension.dimensionHeight' readonly='readonly' />
+				<input class='form-control' value='@shipmentModel.shipment.dimension.dimensionHeight' readonly />
 			</div>
 			<div class='d-flex justify-content-center align-items-center'>
 				<label class='pr-2 m-0'>{{@shipmentModel.form.dimension.length.label}}</label>
-				<input class='form-control' value='@shipmentModel.shipment.dimension.dimensionLength' readonly='readonly' />
+				<input class='form-control' value='@shipmentModel.shipment.dimension.dimensionLength' readonly />
 			</div>
 			<div class='d-flex justify-content-center align-items-center'>
 				<label class='pr-2 m-0'>{{@shipmentModel.form.dimension.width.label}}</label>
-				<input class='form-control' value='@shipmentModel.shipment.dimension.dimensionWidth' readonly='readonly' />
+				<input class='form-control' value='@shipmentModel.shipment.dimension.dimensionWidth' readonly />
 			</div>
 		</div>
 		<!-- Weight  UoM-->
 		<label>{{@shipmentModel.form.weightUoM.label}}</label>
 		<input class='form-control' value='@shipmentModel.shipment.weightUoM'
-					 readonly='readonly' />
+					 readonly />
 
 		<!-- Weight -->
 		<label>{{@shipmentModel.form.weight.label}} </label>
 		<input class='form-control' value='@shipmentModel.shipment.weight'
-					 readonly='readonly' />
+					 readonly />
 		<!-- Special Instructions -->
 		<label>{{@shipmentModel.form.specialInstructions.label}}</label>
-		<textarea class='form-control' value='@shipmentModel.shipment.specialInstructions' readonly='readonly'></textarea>
+		<textarea class='form-control' value='@shipmentModel.shipment.specialInstructions' readonly></textarea>
 		<!-- Keep Between -->
 		<label>{{@shipmentModel.form.inputs.keep_between_temperature.label}}</label>
 		<div>
-		  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.keep_between_temperature_min.name" type="text" value="@shipmentModel.shipment.temperatures.min" />
+		  <input class="form-control form-control-sm" readonly name="@shipmentModel.form.inputs.keep_between_temperature_min.name" type="text" value="@shipmentModel.shipment.temperatures.min" />
 		  <label>{{@shipmentModel.form.inputs.keep_between_temperature.andLabel}}</label>
-		  <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.keep_between_temperature_max.name" type="text" value="@shipmentModel.shipment.temperatures.max" />
+		  <input class="form-control form-control-sm" readonly name="@shipmentModel.form.inputs.keep_between_temperature_max.name" type="text" value="@shipmentModel.shipment.temperatures.max" />
 		</div>
 
 		<!-- Temperature Comments -->
 		<label>{{@shipmentModel.form.inputs.temperature_comments.label}}</label>
-		<input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.temperature_comments.name" type="text" value="@shipmentModel.shipment.temperature_comments" />
+		<input class="form-control form-control-sm" readonly name="@shipmentModel.form.inputs.temperature_comments.name" type="text" value="@shipmentModel.shipment.temperature_comments" />
 	</div>
 </div>
 
@@ -72,13 +72,13 @@
 	<div class='grid-column-wrapper'>
 		<!-- Recipient Name -->
 		<label>{{@shipmentModel.form.recipientName.label}}</label>
-		<input class="form-control" value="@shipmentModel.shipment.recipientName" readonly='readonly' />
+		<input class="form-control" value="@shipmentModel.shipment.recipientName" readonly />
 		<!-- Delivery date/time -->
 		<label>{{@shipmentModel.form.deliveryDate.label}}</label>
 		<div>
-			<input class='form-control form-control-sm' readonly='readonly' type='date'
+			<input class='form-control form-control-sm' readonly type='date'
 				   value='@shipmentModel.shipment.deliveryDateTime.date' />
-			<input class='form-control form-control-sm' readonly='readonly' type='time'
+			<input class='form-control form-control-sm' readonly type='time'
 				   value='@shipmentModel.shipment.deliveryDateTime.time' />
 		</div>
 	</div>
@@ -87,12 +87,12 @@
 <div data-if='@shipmentModel.shipment.contextualContent.afterReceived'>
 	<div class='grid-column-wrapper'>
 		<label>Shipment Actual temperature observed</label>
-		<input class="form-control" value="@shipmentModel.shipmentActualTemperature" readonly='readonly' />
+		<input class="form-control" value="@shipmentModel.shipmentActualTemperature" readonly />
 		<label>{{@shipmentModel.form.receivedDate.label}}</label>
 		<div>
-			<input class='form-control form-control-sm' readonly='readonly' type='date'
+			<input class='form-control form-control-sm' readonly type='date'
 				   value='@shipmentModel.receivedDate' />
-			<input class='form-control form-control-sm' readonly='readonly' type='time'
+			<input class='form-control form-control-sm' readonly type='time'
 				   value='@shipmentModel.receivedTime' />
 		</div>
 	</div>

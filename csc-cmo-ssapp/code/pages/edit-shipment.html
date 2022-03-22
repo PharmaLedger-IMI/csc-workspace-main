@@ -190,10 +190,10 @@
 						<div class='grid-column-wrapper'>
 							<!-- Courier ID -->
 							<label>{{@shipmentModel.form.courierId.label}}</label>
-							<input class='form-control' data-view-model='@shipmentModel.form.courierId' readonly='readonly' />
+							<input class='form-control' data-view-model='@shipmentModel.form.courierId' readonly />
 							<!-- Origin -->
 							<label>{{@shipmentModel.form.origin.label}}</label>
-							<input class='form-control' data-view-model='@shipmentModel.form.origin' readonly='readonly' />
+							<input class='form-control' data-view-model='@shipmentModel.form.origin' readonly />
 
 							<!-- Destination Address -->
 							<label>{{@shipmentModel.form.destinationAddress.label}}</label>
@@ -204,33 +204,33 @@
 											<label>{{@shipmentModel.form.destinationAddress.country.label}}</label>
 											<input class='form-control' type='text'
 														 value='@shipmentModel.form.destinationAddress.country.value'
-														 readonly='readonly' />
+														 readonly />
 										</div>
 										<div class='col-md-6'>
 											<label>{{@shipmentModel.form.destinationAddress.city.label}}</label>
 											<input class='form-control' type='text' value='@shipmentModel.form.destinationAddress.city.value'
-														 readonly='readonly' />
+														 readonly />
 										</div>
 									</div>
 
 									<div>
 										<label>{{@shipmentModel.form.destinationAddress.street.label}}</label>
 										<input class='form-control' type='text' value='@shipmentModel.form.destinationAddress.street.value'
-													 readonly='readonly' />
+													 readonly />
 									</div>
 
 									<div class='form-row'>
 										<div class='col-md-6'>
 											<label>{{@shipmentModel.form.destinationAddress.poBox.label}}</label>
 											<input class='form-control' type='text' value='@shipmentModel.form.destinationAddress.poBox.value'
-														 readonly='readonly' />
+														 readonly />
 
 										</div>
 										<div class='col-md-6'>
 											<label>{{@shipmentModel.form.destinationAddress.building.label}}</label>
 											<input class='form-control' type='text'
 														 value='@shipmentModel.form.destinationAddress.building.value'
-														 readonly='readonly' />
+														 readonly />
 
 										</div>
 									</div>
@@ -240,20 +240,20 @@
 							<!-- Transport Mode -->
 							<label>{{@shipmentModel.form.transportMode.label}}</label>
 							<input class='form-control' type='text' value='@shipmentModel.form.transportMode.value'
-										 readonly='readonly' />
+										 readonly />
 							<!-- Scheduled Pickup Date/Time -->
 							<label>{{@shipmentModel.form.pickupDate.label}}</label>
 							<div>
-								<input class='form-control form-control-sm' readonly='readonly' type='date'
+								<input class='form-control form-control-sm' readonly type='date'
 											 value='@shipmentModel.form.pickupDate.value' />
-								<input class='form-control form-control-sm' readonly='readonly' type='time'
+								<input class='form-control form-control-sm' readonly type='time'
 											 value='@shipmentModel.form.pickupTime.value' />
 							</div>
 
 							<!-- Volume UoM -->
 							<label>{{@shipmentModel.form.volumeUoM.label}}</label>
 							<input class='form-control' type='text' value='@shipmentModel.form.volumeUoM.value'
-								 readonly='readonly' />
+								 readonly />
 
 							<!-- Dimension -->
 							<label>{{@shipmentModel.form.dimension.label}}</label>
@@ -261,17 +261,17 @@
 								<div class='d-flex justify-content-center align-items-center'>
 									<label class="pr-2 m-0">{{@shipmentModel.form.dimension.height.label}}</label>
 									<input class='form-control' data-view-model='@shipmentModel.form.dimension.height'
-												 readonly='readonly' />
+												 readonly />
 								</div>
 								<div class='d-flex justify-content-center align-items-center'>
 									<label class="pr-2 m-0">{{@shipmentModel.form.dimension.length.label}}</label>
 									<input class='form-control' data-view-model='@shipmentModel.form.dimension.length'
-												 readonly='readonly' />
+												 readonly />
 								</div>
 								<div class='d-flex justify-content-center align-items-center'>
 									<label class="pr-2 m-0">{{@shipmentModel.form.dimension.width.label}}</label>
 									<input class='form-control' data-view-model='@shipmentModel.form.dimension.width'
-												 readonly='readonly' />
+												 readonly />
 								</div>
 							</div>
 
@@ -279,22 +279,22 @@
 					   	<!-- Weight  UoM-->
 							<label>{{@shipmentModel.form.weightUoM.label}}</label>
 						  <input class='form-control' value='@shipmentModel.form.weightUoM.value'
-									 readonly='readonly' />
+									 readonly />
 
 							<!-- Weight -->
 							<label>{{@shipmentModel.form.weight.label}} </label>
 							<input class='form-control' value='@shipmentModel.form.weight.value'
-									 readonly='readonly' />
+									 readonly />
 
 							<!-- Shipping/Handling Conditions -->
 							<label>{{@shipmentModel.form.shippingConditions.label}}</label>
 							<textarea class='form-control' data-view-model='@shipmentModel.form.shippingConditions'
-												readonly='readonly'></textarea>
+												readonly></textarea>
 
 							<!-- Special Instructions -->
 							<label>{{@shipmentModel.form.specialInstructions.label}}</label>
 							<textarea class='form-control' data-view-model='@shipmentModel.form.specialInstructions'
-												readonly='readonly'></textarea>
+												readonly></textarea>
 
 						</div>
 		

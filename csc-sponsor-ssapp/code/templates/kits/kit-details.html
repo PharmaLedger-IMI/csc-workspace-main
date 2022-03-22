@@ -2,41 +2,41 @@
    
    <!-- Kit ID -->
    <label>{{@form.kitId.label}}</label>
-   <input class="form-control form-control-sm" readonly="readonly" name="@form.kitId.name" placeholder="@form.kitId.placeholder" type="text" value="@kit.kitId" />
+   <input class="form-control form-control-sm" readonly name="@form.kitId.name" placeholder="@form.kitId.placeholder" type="text" value="@kit.kitId" />
  
    <!-- Shipment ID -->
    <label>{{@form.shipmentId.label}}</label>
-   <input class="form-control form-control-sm" readonly="readonly" name="@form.shipmentId.name" placeholder="@form.shipmentId.placeholder" type="text" value="@kit.shipmentId" />
+   <input class="form-control form-control-sm" readonly name="@form.shipmentId.name" placeholder="@form.shipmentId.placeholder" type="text" value="@kit.shipmentId" />
  
    <!-- Order ID -->
    <label>{{@form.orderId.label}}</label>
-   <input class="form-control form-control-sm" readonly="readonly" name="@form.orderId.name" placeholder="@form.orderId.placeholder" type="text" value="@kit.orderId" />
+   <input class="form-control form-control-sm" readonly name="@form.orderId.name" placeholder="@form.orderId.placeholder" type="text" value="@kit.orderId" />
  
    <!-- Study ID -->
    <label>{{@form.studyId.label}}</label>
-   <input class="form-control form-control-sm" readonly="readonly" name="@form.studyId.name" placeholder="@form.studyId.placeholder" type="text" value="@kit.studyId" />
+   <input class="form-control form-control-sm" readonly name="@form.studyId.name" placeholder="@form.studyId.placeholder" type="text" value="@kit.studyId" />
  
     <!-- Recipient Name -->
     <label>{{@form.recipientName.label}}</label>
-    <input class="form-control form-control-sm" readonly="readonly" name="@form.recipientName.name" placeholder="@form.recipientName.placeholder" type="text" value="@kit.recipientName" />
+    <input class="form-control form-control-sm" readonly name="@form.recipientName.name" placeholder="@form.recipientName.placeholder" type="text" value="@kit.recipientName" />
  
     <label>{{@form.receivedDate.label}}</label>
     <div>
-      <input class="form-control form-control-sm" readonly="readonly" type="text" value="@kit.receivedDateTime.date" />
-      <input class="form-control form-control-sm" readonly="readonly" type="text" value="@kit.receivedDateTime.time" />
+      <input class="form-control form-control-sm" readonly type="text" value="@kit.receivedDateTime.date" />
+      <input class="form-control form-control-sm" readonly type="text" value="@kit.receivedDateTime.time" />
     </div>
 
     <!-- Keep Between -->
     <label>{{@form.keep_between_temperature.label}}</label>
     <div>
-      <input class="form-control form-control-sm" readonly="readonly" name="@form.keep_between_temperature_min.name" type="text" value="@kit.temperatures.min" />
+      <input class="form-control form-control-sm" readonly name="@form.keep_between_temperature_min.name" type="text" value="@kit.temperatures.min" />
       <label>{{@form.keep_between_temperature.andLabel}}</label>
-      <input class="form-control form-control-sm" readonly="readonly" name="@form.keep_between_temperature_max.name" type="text" value="@kit.temperatures.max" />
+      <input class="form-control form-control-sm" readonly name="@form.keep_between_temperature_max.name" type="text" value="@kit.temperatures.max" />
     </div>
  
    <!-- Temperature Comment -->
    <label>{{@form.temperature_comments.label}}</label>
-   <input class="form-control form-control-sm" readonly="readonly" name="@form.temperature_comments.name" placeholder="@form.temperature_comments.placeholder" type="text" value="@kit.temperatureComments" />
+   <input class="form-control form-control-sm" readonly name="@form.temperature_comments.name" placeholder="@form.temperature_comments.placeholder" type="text" value="@kit.temperatureComments" />
  
     <!-- Shipment Comments -->
   <label>{{@form.shipment_comment.label}}</label>
@@ -54,7 +54,7 @@
 
    <!-- Shipment Actual Temperature Observed -->
    <label>{{@form.temperature_observed.label}}</label>
-   <input class="form-control form-control-sm" readonly="readonly" name="@form.temperature_observed.name" placeholder="@form.temperature_observed.placeholder" type="text" value="@kit.shipmentActualTemperature" />
+   <input class="form-control form-control-sm" readonly name="@form.temperature_observed.name" placeholder="@form.temperature_observed.placeholder" type="text" value="@kit.shipmentActualTemperature" />
 
 </div>
 
@@ -62,7 +62,7 @@
     <div class="grid-column-wrapper">
     <!-- Kit Actual Temperature Observed -->
     <label>{{@form.kit_temperature_observed.label}}</label>
-    <input class="form-control form-control-sm" readonly="readonly" name="@form.kit_temperature_observed.name" placeholder="@form.kit_temperature_observed.placeholder" type="text" value="@kit.kitActualTemperatureObserved" />
+    <input class="form-control form-control-sm" readonly name="@form.kit_temperature_observed.name" placeholder="@form.kit_temperature_observed.placeholder" type="text" value="@kit.kitActualTemperatureObserved" />
 
     <!-- Kit Comments -->
     <label>{{@form.kit_comment.label}}</label>
@@ -83,7 +83,7 @@
 <div data-if='@kit.contextualContent.afterAssigned'>
     <div class="grid-column-wrapper">
         <label>{{@form.investigatorId.label}}</label>
-        <input class="form-control form-control-sm" readonly="readonly" name="@form.investigatorId.name" value="@kit.investigatorId" />
+        <input class="form-control form-control-sm" readonly name="@form.investigatorId.name" value="@kit.investigatorId" />
     </div>
 </div>
 
