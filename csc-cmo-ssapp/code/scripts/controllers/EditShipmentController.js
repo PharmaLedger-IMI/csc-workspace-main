@@ -195,20 +195,21 @@ export default class EditShipmentController extends WebcController {
 		//To be refactored according to current step
 		const requiredInputs = [
 			this.model.shipmentModel.form.courierId.value,
-		  this.model.shipmentModel.form.origin.value,
+			this.model.shipmentModel.form.origin.value,
 			this.model.shipmentModel.form.destinationAddress.country.value,
 			this.model.shipmentModel.form.destinationAddress.city.value,
 			this.model.shipmentModel.form.destinationAddress.poBox.value,
 			this.model.shipmentModel.form.destinationAddress.street.value,
 			this.model.shipmentModel.form.destinationAddress.building.value,
-		  this.model.shipmentModel.form.transportMode.value,
-		  this.model.shipmentModel.form.pickupDate.value,
-		  this.model.shipmentModel.form.pickupTime.value,
-		  this.model.shipmentModel.form.dimension.height.value,
-		  this.model.shipmentModel.form.dimension.length.value,
-		  this.model.shipmentModel.form.dimension.width.value,
+			this.model.shipmentModel.form.transportMode.value,
+			this.model.shipmentModel.form.pickupDate.value,
+			this.model.shipmentModel.form.pickupTime.value,
+			this.model.shipmentModel.form.dimension.height.value,
+			this.model.shipmentModel.form.dimension.length.value,
+			this.model.shipmentModel.form.dimension.width.value,
+			this.model.shipmentModel.form.weight.value,
 			this.model.shipmentModel.form.shippingConditions.value
-		]
+		];
 	
 		let validationConstraints = [
 		  ...requiredInputs.map(input => this.isInputFilled(input))

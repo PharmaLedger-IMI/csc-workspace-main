@@ -19,6 +19,45 @@
   <label>{{@shipmentModel.form.origin.label}}</label>
   <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.origin.name" placeholder="@shipmentModel.form.origin.placeholder" type="text" value="@shipmentModel.shipment.origin" />
 
+  <!-- Destination Address -->
+  <label>{{@shipmentModel.form.destinationAddress.label}}</label>
+  <div class='d-block'>
+    <div class='form-row'>
+      <div class='col-md-6'>
+        <label>{{@shipmentModel.form.destinationAddress.country.label}}</label>
+        <input class='form-control' type='text'
+               value='@shipmentModel.shipment.destinationAddress.country'
+               readonly='readonly' />
+      </div>
+      <div class='col-md-6'>
+        <label>{{@shipmentModel.form.destinationAddress.city.label}}</label>
+        <input class='form-control' type='text' value='@shipmentModel.shipment.destinationAddress.city'
+               readonly='readonly' />
+      </div>
+    </div>
+
+    <div>
+      <label>{{@shipmentModel.form.destinationAddress.street.label}}</label>
+      <input class='form-control' type='text' value='@shipmentModel.shipment.destinationAddress.street'
+             readonly='readonly' />
+    </div>
+
+    <div class='form-row'>
+      <div class='col-md-6'>
+        <label>{{@shipmentModel.form.destinationAddress.poBox.label}}</label>
+        <input class='form-control' type='text' value='@shipmentModel.shipment.destinationAddress.poBox'
+               readonly='readonly' />
+
+      </div>
+      <div class='col-md-6'>
+        <label>{{@shipmentModel.form.destinationAddress.building.label}}</label>
+        <input class='form-control' type='text'
+               value='@shipmentModel.shipment.destinationAddress.building'
+               readonly='readonly' />
+      </div>
+    </div>
+  </div>
+  
    <!-- Site ID -->
    <label>{{@shipmentModel.form.inputs.site_id.label}}</label>
    <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.site_id.name" type="text" value="@shipmentModel.shipment.siteId" />
@@ -49,7 +88,11 @@
      <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.delivery_date.name" type="text" value="@shipmentModel.shipment.requestedDeliveryDateTime.date" />
      <input class="form-control form-control-sm" readonly="readonly" name="@shipmentModel.form.inputs.delivery_time.name" type="text" value="@shipmentModel.shipment.requestedDeliveryDateTime.time" />
    </div>
-
+  <!-- Volume UoM -->
+  <label>{{@shipmentModel.form.volumeUoM.label}}</label>
+  <input class='form-control' type='text' value='@shipmentModel.shipment.volumeUoM'
+         readonly='readonly' />
+  <!-- Dimension -->
   <label>{{@shipmentModel.form.dimension.label}}</label>
   <div>
     <label>{{@shipmentModel.form.dimension.height.label}}</label>
@@ -60,11 +103,23 @@
     <input class="form-control form-control-sm" readonly="readonly" value="@shipmentModel.shipment.dimension.dimensionWidth" />
   </div>
 
-  <label>{{@shipmentModel.form.specialInstructions.label}}</label>
-  <textarea class="form-control form-control-sm" readonly="readonly" value="@shipmentModel.shipment.specialInstructions"></textarea>
+  <!-- Weight  UoM-->
+  <label>{{@shipmentModel.form.weightUoM.label}}</label>
+  <input class='form-control' value='@shipmentModel.shipment.weightUoM'
+         readonly='readonly' />
+
+  <!-- Weight -->
+  <label>{{@shipmentModel.form.weight.label}} </label>
+  <input class='form-control' value='@shipmentModel.shipment.weight'
+         readonly='readonly' />
+
   <!-- Shipping/Handling Conditions -->
   <label>{{@shipmentModel.form.shippingConditions.label}}</label>
   <textarea class="form-control form-control-sm" readonly="readonly" value="@shipmentModel.shipment.shippingConditions"></textarea>
+
+  <!-- Special Instructions -->
+  <label>{{@shipmentModel.form.specialInstructions.label}}</label>
+  <textarea class="form-control form-control-sm" readonly="readonly" value="@shipmentModel.shipment.specialInstructions"></textarea>
 
   <!-- Keep Between -->
   <label>{{@shipmentModel.form.inputs.keep_between_temperature.label}}</label>

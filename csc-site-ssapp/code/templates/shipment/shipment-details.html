@@ -22,6 +22,10 @@
 		<!-- Transport Mode -->
 		<label>{{@shipmentModel.form.transportMode.label}}</label>
 		<input class='form-control' type='text' value='@shipmentModel.shipment.transportMode' readonly='readonly' />
+		<!-- Volume UoM -->
+		<label>{{@shipmentModel.form.volumeUoM.label}}</label>
+		<input class='form-control' type='text' value='@shipmentModel.shipment.volumeUoM'
+					 readonly='readonly' />
 		<!-- Dimension -->
 		<label>{{@shipmentModel.form.dimension.label}}</label>
 		<div>
@@ -38,6 +42,15 @@
 				<input class='form-control' value='@shipmentModel.shipment.dimension.dimensionWidth' readonly='readonly' />
 			</div>
 		</div>
+		<!-- Weight  UoM-->
+		<label>{{@shipmentModel.form.weightUoM.label}}</label>
+		<input class='form-control' value='@shipmentModel.shipment.weightUoM'
+					 readonly='readonly' />
+
+		<!-- Weight -->
+		<label>{{@shipmentModel.form.weight.label}} </label>
+		<input class='form-control' value='@shipmentModel.shipment.weight'
+					 readonly='readonly' />
 		<!-- Special Instructions -->
 		<label>{{@shipmentModel.form.specialInstructions.label}}</label>
 		<textarea class='form-control' value='@shipmentModel.shipment.specialInstructions' readonly='readonly'></textarea>

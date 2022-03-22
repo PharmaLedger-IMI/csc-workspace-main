@@ -135,6 +135,51 @@
                          value='@shipment.origin' />
                 </div>
               </div>
+
+              <!-- Destination Address -->
+              <div class='col-12'>
+                <div class='form-group'>
+                  <label>{{@form.destinationAddress.label}}</label>
+
+                  <div class='form-row ml-4'>
+                    <div class='form-group col-md-6'>
+                      <label>{{@form.destinationAddress.country.label}}</label>
+                      <input class='form-control form-control-sm' readonly
+                             name='@form.destinationAddress.country.name'
+                             type='text' value='@shipment.destinationAddress.country' />
+                    </div>
+                    <div class='form-group col-md-6'>
+                      <label>{{@form.destinationAddress.city.label}}</label>
+                      <input class='form-control form-control-sm' readonly
+                             name='@form.destinationAddress.city.name'
+                             type='text' value='@shipment.destinationAddress.city' />
+                    </div>
+                  </div>
+
+                  <div class='form-group ml-4'>
+                    <label>{{@form.destinationAddress.street.label}}</label>
+                    <input class='form-control form-control-sm' readonly
+                           name='@form.destinationAddress.street.name'
+                           type='text' value='@shipment.destinationAddress.street' />
+                  </div>
+                  <div class='form-row ml-4'>
+                    <div class='form-group col-md-6'>
+                      <label>{{@form.destinationAddress.poBox.label}}</label>
+                      <input class='form-control form-control-sm' readonly
+                             name='@form.destinationAddress.poBox.name'
+                             type='text' value='@shipment.destinationAddress.poBox' />
+
+                    </div>
+                    <div class='form-group col-md-6'>
+                      <label>{{@form.destinationAddress.building.label}}</label>
+                      <input class='form-control form-control-sm' readonly
+                             name='@form.destinationAddress.building.name'
+                             type='text' value='@shipment.destinationAddress.building' />
+
+                    </div>
+                  </div>
+                </div>
+              </div>
               <!-- Transport Mode -->
               <div class='col-12'>
                 <div class='form-group'>
@@ -169,7 +214,12 @@
               <div class='col-12'>
                 <div class='form-group'>
                   <div class='row'>
-                    <div class='col-4'>
+                    <!-- Volume UoM -->
+                    <div class='col-3'>
+                      <label>{{@form.volumeUoM.label}} </label>
+                      <input class='form-control' readonly value='@shipment.volumeUoM' type='text' />
+                    </div>
+                    <div class='col-3'>
                       <label>{{@form.dimension.height.label}}</label>
                       <input class='form-control form-control-sm' readonly
                              name='@form.dimensionHeight.name'
@@ -177,7 +227,7 @@
                              value='@shipment.dimension.dimensionHeight' />
                     </div>
 
-                    <div class='col-4'>
+                    <div class='col-3'>
                       <label>{{@form.dimension.length.label}}</label>
                       <input class='form-control form-control-sm' readonly
                              name='@form.dimensionLength.name'
@@ -185,7 +235,7 @@
                              value='@shipment.dimension.dimensionLength' />
                     </div>
 
-                    <div class='col-4'>
+                    <div class='col-3'>
                       <label>{{@form.dimension.width.label}}</label>
                       <input class='form-control form-control-sm' readonly
                              name='@form.dimensionWidth.name'
@@ -193,6 +243,33 @@
                              value='@shipment.dimension.dimensionWidth' />
                     </div>
                   </div>
+                </div>
+              </div>
+
+              <div class='col-12'>
+                <div class='form-row'>
+                  <!-- Weight  UoM-->
+                  <div class='form-group col-md-6'>
+                    <label>{{@form.weightUoM.label}}</label>
+                    <input class='form-control' readonly value='@shipment.weightUoM' type='text' />
+                  </div>
+
+                  <!-- Weight -->
+                  <div class='form-group col-md-6'>
+                    <label>{{@form.weight.label}}</label>
+                    <input class='form-control' readonly value='@shipment.weight' type='text' />
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Shipping Conditions -->
+              <div class='col-12'>
+                <div class='form-group'>
+                  <label>{{@form.shippingConditions.label}}</label>
+                  <textarea class='form-control form-control-sm' readonly
+                            name='@form.shippingConditions.name'
+                            placeholder='@form.shippingConditions.placeholder' />{{@shipment.shippingConditions}}</textarea>
                 </div>
               </div>
 
@@ -206,15 +283,6 @@
                 </div>
               </div>
 
-              <!-- Shipping Conditions -->
-              <div class='col-12'>
-                <div class='form-group'>
-                  <label>{{@form.shippingConditions.label}}</label>
-                  <textarea class='form-control form-control-sm' readonly
-                            name='@form.shippingConditions.name'
-                            placeholder='@form.shippingConditions.placeholder' />{{@shipment.shippingConditions}}</textarea>
-                </div>
-              </div>
               <!-- Master-way bill number -->
               <div class='col-6'>
                 <div class='form-group'>
