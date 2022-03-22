@@ -243,16 +243,26 @@ export default class EditShipmentController extends WebcController {
 		return {
 			courierId: shipmentFormData.courierId.value,
 			origin: shipmentFormData.origin.value,
+			destinationAddress:{
+				country:shipmentFormData.destinationAddress.country.value,
+				city:shipmentFormData.destinationAddress.city.value,
+				street:shipmentFormData.destinationAddress.street.value,
+				poBox:shipmentFormData.destinationAddress.poBox.value,
+				building:shipmentFormData.destinationAddress.building.value
+			},
 			transportMode: shipmentFormData.transportMode.value,
 			scheduledPickupDateTime: {
 				date: shipmentFormData.pickupDate.value,
 				time: shipmentFormData.pickupTime.value
 			},
+			volumeUoM:shipmentFormData.volumeUoM.value,
 			dimension: {
 				dimensionWidth: shipmentFormData.dimension.width.value,
 				dimensionHeight: shipmentFormData.dimension.height.value,
 				dimensionLength: shipmentFormData.dimension.length.value
 			},
+			weightUoM:shipmentFormData.weightUoM.value,
+			weight:shipmentFormData.weight.value,
 			specialInstructions: shipmentFormData.specialInstructions.value,
 			shippingConditions: shipmentFormData.shippingConditions.value
 		};
