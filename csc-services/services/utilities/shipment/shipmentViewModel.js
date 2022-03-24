@@ -1,6 +1,7 @@
 const constants = require("csc-services").constants
 const shipmentBusinessRequirements = constants.shipment.shipmentBusinessRequirements;
 const momentService = require("csc-services").momentService;
+const countries = constants.countries;
 const DAYS_AHEAD = 2;
 
 const shipmentViewModel = {
@@ -15,12 +16,12 @@ const shipmentViewModel = {
 			type: 'text',
 			value: ''
 		},
-		shipperId: {
-			label: 'Shipper ID',
-			name: 'shipper-id',
-			id: 'shipper-id',
+		courierId: {
+			label: 'Courier ID',
+			name: 'courier-id',
+			id: 'courier-id',
 			required: true,
-			placeholder: 'Enter Shipper ID',
+			placeholder: 'Enter Courier ID',
 			disabled: false,
 			value: ""
 		},
@@ -40,10 +41,10 @@ const shipmentViewModel = {
 			disabled: true,
 			value: '',
 		},
-		type: {
-			label: 'Type',
-			name: 'type',
-			id: 'type',
+		transportMode: {
+			label: 'Mode of Transport',
+			name: 'transport_mode',
+			id: 'transport-mode',
 			required: true,
 			disabled: false,
 			options: [
@@ -69,10 +70,23 @@ const shipmentViewModel = {
 			type: 'time',
 			value: ''
 		},
+		volumeUoM: {
+			label: 'Volume UoM',
+			name: 'volume_uom',
+			id: 'volume-uom',
+			required: true,
+			disabled: false,
+			options: [
+				'Meters',
+				'Feet',
+				'Inches'
+			],
+			value: 'Meters'
+		},
 		dimension: {
 			label: 'Dimension (' + shipmentBusinessRequirements.dimensionUnit + ')',
 			height: {
-				label: 'H',
+				label: 'Height',
 				name: 'height',
 				required: true,
 				placeholder: 'Fill in the height',
@@ -82,7 +96,7 @@ const shipmentViewModel = {
 				value: ''
 			},
 			length: {
-				label: 'L',
+				label: 'Length',
 				name: 'length',
 				required: true,
 				placeholder: 'Fill in the length',
@@ -92,7 +106,7 @@ const shipmentViewModel = {
 				value: ''
 			},
 			width: {
-				label: 'W',
+				label: 'Width',
 				name: 'width',
 				required: true,
 				placeholder: 'Fill in the width',
@@ -102,6 +116,73 @@ const shipmentViewModel = {
 				value: ''
 			}
 		},
+		weightUoM:{
+			label:"Weight UoM",
+			name: 'weight_uom',
+			id: 'weight-uom',
+			required: true,
+			options: [
+				'Kg', 'Tones'
+			],
+			value: 'Kg'
+		},
+		weight: {
+			label: 'Weight',
+			name: 'weight',
+			required: true,
+			placeholder: 'Fill in the weight',
+			disabled: false,
+			type: 'number',
+			min: '0.0001',
+			value: ''
+		},
+
+		destinationAddress:{
+			label:"Destination Address",
+			country:  {
+				label: 'Country',
+				name: 'destination_country',
+				required: true,
+				disabled: false,
+				options: countries,
+				value: countries[0].name
+			},
+			poBox:{
+				label: 'PO Box',
+				name: 'destination-po-box',
+				required: true,
+				placeholder: 'Enter PO Box details',
+				disabled: false,
+				value: ''
+			},
+			city:{
+				label: 'City',
+				name: 'destination-city',
+				required: true,
+				placeholder: 'Enter City name',
+				disabled: false,
+				value: ''
+			},
+			street:{
+				label: 'Street',
+				name: 'destination-street',
+				required: true,
+				placeholder: 'Enter destination street name',
+				disabled: false,
+				value: ''
+			},
+			building:{
+				label: 'Building',
+				name: 'destination-building',
+				required: true,
+				placeholder: 'Enter building name/number',
+				disabled: false,
+				value: ''
+			}
+
+
+		},
+
 		specialInstructions: {
 			label: 'Special Instructions',
 			name: 'special-instructions',

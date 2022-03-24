@@ -2,3 +2,7 @@
     display: grid;
     grid-template-columns: 260px auto;
 }
+
+.scan-success{
+    color:#008898
+}

@@ -80,7 +80,7 @@ export default class EditShipmentController extends WebcController {
 
   attachFormActions() {
     this.onTagEvent('form_reset', 'click', (e) => {
-      let title = 'Cancel Changes';
+      let title = 'Clear Changes';
       let content = 'All newly entered data will be removed. You will have to start the edit process again';
       let confirmHandler = () => {
         this.model = this.initViewModel();

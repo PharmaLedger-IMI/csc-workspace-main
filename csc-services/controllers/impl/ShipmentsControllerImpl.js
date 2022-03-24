@@ -74,9 +74,9 @@ class ShipmentsControllerImpl extends WebcController {
       data.forEach((item) => {
         item.orderId = item.orderId || '-';
         item.shipmentId = item.shipmentId || '-';
-        item.shipperId = item.shipperId || '-';
+        item.courierId = item.courierId || '-';
         item.origin = item.origin || '-';
-        item.type = item.shipmentType || '-';
+        item.transportMode = item.transportMode || '-';
         item.recipientName = item.recipientName || '-';
 
         const latestStatus = item.status.sort(function(a, b) {

@@ -42,7 +42,7 @@
             </div>
   
             <div class="d-flex flex-column align-items-center" data-if="@showCorrectShipmentScanResult">
-              <i class="fas fa-check fa-10x" style="color: #00345b"></i>
+              <i class="fas fa-check fa-10x scan-success"></i>
               <label class="scan-modal-label"> Shipment Scan Successful! </label>
             </div>
   
@@ -133,9 +133,9 @@
 
               <div class='col-12'>
                 <div class="form-group">
-                  <label>{{@shipmentModel.form.shipperId.label}}</label>
-                  <input class="form-control form-control-sm" readonly name="@shipmentModel.form.shipperId.name" placeholder="@shipmentModel.form.shipperId.placeholder"
-                    type="text" value="@shipment.shipperId" />
+                  <label>{{@shipmentModel.form.courierId.label}}</label>
+                  <input class="form-control form-control-sm" readonly name="@shipmentModel.form.courierId.name" placeholder="@shipmentModel.form.courierId.placeholder"
+                    type="text" value="@shipment.courierId" />
                 </div>
               </div>
 

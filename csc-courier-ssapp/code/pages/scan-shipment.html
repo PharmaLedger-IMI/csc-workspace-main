@@ -46,7 +46,7 @@
             </div>
   
             <div class="d-flex flex-column align-items-center" data-if="@showCorrectShipmentScanResult">
-              <i class="fas fa-check fa-10x" style="color: #00345b"></i>
+              <i class="fas fa-check fa-10x scan-success"></i>
               <label class="scan-modal-label"> Shipment Scan Successful! </label>
             </div>
   
@@ -112,13 +112,13 @@
 
               <div class='col-12'>
                 <div class='form-group'>
-                  <label>{{@shipmentModel.form.shipperId.label}}</label>
-                  <input class='form-control form-control-sm' readonly name='@shipmentModel.form.shipperId.name'
-                         placeholder='@shipmentModel.form.shipperId.placeholder' type='text'
-                         value='@shipment.shipperId' />
+                  <label>{{@shipmentModel.form.courierId.label}}</label>
+                  <input class='form-control form-control-sm' readonly name='@shipmentModel.form.courierId.name'
+                         placeholder='@shipmentModel.form.courierId.placeholder' type='text'
+                         value='@shipment.courierId' />
                 </div>
               </div>
-
+              <!-- Origin -->
               <div class='col-12'>
                 <div class='form-group'>
                   <label>{{@shipmentModel.form.origin.label}}</label>
@@ -127,12 +127,57 @@
                 </div>
               </div>
 
+              <!-- Destination Address -->
               <div class='col-12'>
                 <div class='form-group'>
-                  <label>{{@shipmentModel.form.type.label}}</label>
-                  <input class='form-control form-control-sm' readonly name='@shipmentModel.form.type.name'
-                         placeholder='@shipmentModel.form.type.placeholder' type='text'
-                         value='@shipment.shipmentType' />
+                  <label>{{@shipmentModel.form.destinationAddress.label}}</label>
+
+                  <div class='form-row ml-4'>
+                    <div class='form-group col-md-6'>
+                      <label>{{@shipmentModel.form.destinationAddress.country.label}}</label>
+                      <input class='form-control form-control-sm' readonly
+                             name='@shipmentModel.form.destinationAddress.country.name'
+                             type='text' value='@shipment.destinationAddress.country' />
+                    </div>
+                    <div class='form-group col-md-6'>
+                      <label>{{@shipmentModel.form.destinationAddress.city.label}}</label>
+                      <input class='form-control form-control-sm' readonly
+                             name='@shipmentModel.form.destinationAddress.city.name'
+                             type='text' value='@shipment.destinationAddress.city' />
+                    </div>
+                  </div>
+
+                  <div class='form-group ml-4'>
+                    <label>{{@shipmentModel.form.destinationAddress.street.label}}</label>
+                    <input class='form-control form-control-sm' readonly
+                           name='@shipmentModel.form.destinationAddress.street.name'
+                           type='text' value='@shipment.destinationAddress.street' />
+                  </div>
+                  <div class='form-row ml-4'>
+                    <div class='form-group col-md-6'>
+                      <label>{{@shipmentModel.form.destinationAddress.poBox.label}}</label>
+                      <input class='form-control form-control-sm' readonly
+                             name='@shipmentModel.form.destinationAddress.poBox.name'
+                             type='text' value='@shipment.destinationAddress.poBox' />
+
+                    </div>
+                    <div class='form-group col-md-6'>
+                      <label>{{@shipmentModel.form.destinationAddress.building.label}}</label>
+                      <input class='form-control form-control-sm' readonly
+                             name='@shipmentModel.form.destinationAddress.building.name'
+                             type='text' value='@shipment.destinationAddress.building' />
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class='col-12'>
+                <div class='form-group'>
+                  <label>{{@shipmentModel.form.transportMode.label}}</label>
+                  <input class='form-control form-control-sm' readonly name='@shipmentModel.form.transportMode.name'
+                         placeholder='@shipmentModel.form.transportMode.placeholder' type='text'
+                         value='@shipment.transportMode' />
                 </div>
               </div>
 
@@ -152,17 +197,25 @@
                 </div>
               </div>
 
+              <!-- Dimensions -->
               <div class='col-12'>
                 <div class='form-group'>
                   <div class='row'>
-                    <div class='col-4'>
+                    <!-- Volume UoM -->
+                    <div class='col-3'>
+                      <label>{{@shipmentModel.form.volumeUoM.label}} </label>
+                      <input class='form-control' readonly value='@shipment.volumeUoM' type='text' />
+                    </div>
+
+
+                    <div class='col-3'>
                       <label>{{@shipmentModel.form.dimension.height.label}}</label>
                       <input class='form-control form-control-sm' readonly name='@shipmentModel.form.dimension.name'
                              placeholder='@shipmentModel.form.dimension.height.placeholder' type='text'
                              value='@shipment.dimension.dimensionHeight' />
                     </div>
 
-                    <div class='col-4'>
+                    <div class='col-3'>
                       <label>{{@shipmentModel.form.dimension.length.label}}</label>
                       <input class='form-control form-control-sm' readonly
                              name='@shipmentModel.form.dimension.length.name'
@@ -170,7 +223,7 @@
                              value='@shipment.dimension.dimensionLength' />
                     </div>
 
-                    <div class='col-4'>
+                    <div class='col-3'>
                       <label>{{@shipmentModel.form.dimension.width.label}}</label>
                       <input class='form-control form-control-sm' readonly
                              name='@shipmentModel.form.dimension.width.name'
@@ -181,14 +234,20 @@
                 </div>
 
               </div>
-
-              <!-- Special Instructions -->
               <div class='col-12'>
-                <div class='form-group'>
-                  <label>{{@shipmentModel.form.specialInstructions.label}}</label>
-                  <textarea class='form-control form-control-sm' readonly
-                            name='@shipmentModel.form.specialInstructions.name'
-                            placeholder='@shipmentModel.form.specialInstructions.placeholder' />{{@shipment.specialInstructions}}</textarea>
+                <div class='form-row'>
+                  <!-- Weight  UoM-->
+                  <div class='form-group col-md-6'>
+                    <label>{{@shipmentModel.form.weightUoM.label}}</label>
+                    <input class='form-control' readonly value='@shipment.weightUoM' type='text' />
+                  </div>
+
+                  <!-- Weight -->
+                  <div class='form-group col-md-6'>
+                    <label>{{@shipmentModel.form.weight.label}}</label>
+                    <input class='form-control' readonly value='@shipment.weight' type='text' />
+                  </div>
+
                 </div>
               </div>
 
@@ -199,6 +258,16 @@
                   <textarea class='form-control form-control-sm' readonly
                             name='@shipmentModel.form.shippingConditions.name'
                             placeholder='@shipmentModel.form.shippingConditions.placeholder' />{{@shipment.shippingConditions}}</textarea>
+                </div>
+              </div>
+
+              <!-- Special Instructions -->
+              <div class='col-12'>
+                <div class='form-group'>
+                  <label>{{@shipmentModel.form.specialInstructions.label}}</label>
+                  <textarea class='form-control form-control-sm' readonly
+                            name='@shipmentModel.form.specialInstructions.name'
+                            placeholder='@shipmentModel.form.specialInstructions.placeholder' />{{@shipment.specialInstructions}}</textarea>
                 </div>
               </div>
 

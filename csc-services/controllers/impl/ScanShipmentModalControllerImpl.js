@@ -96,26 +96,6 @@ class ScanShipmentModalControllerImpl extends WebcController {
         this.onTagClick('scan:reset', (model, target, e) => {
             this.initScanViewModel();
             this.makeStepActive('step-1', 'step-1-wrapper', e);
-
-            // TODO: Check how to implement clear changes confirmation because if you another modal, this one will send confirmation status back to controller (NOK)
-            // TODO: Possible solution: make scan page instead of modal
-            // let title = 'Cancel Changes';
-            // let content = 'All scanned data will be removed. You will have to start the scanning process again.';
-            // let confirmHandler = () => {
-            //     this.initScanViewModel();
-            //     this.makeStepActive('step-1', 'step-1-wrapper', e);
-            // };
-            // let modalCancelHandler = () => {
-            // };
-            //
-            // let modalOptions = {
-            //     disableExpanding: true,
-            //     cancelButtonText: 'Cancel',
-            //     confirmButtonText: 'Ok, let\'s start over',
-            //     id: 'confirm-modal'
-            // };
-            //
-            // this.showModal(content, title, confirmHandler, modalCancelHandler, modalOptions);
         });
 
         this.onTagClick('scan:submit', () => {

@@ -104,7 +104,7 @@ class ShipmentsService extends DSUService {
 		switch (newStatus) {
 			case shipmentStatusesEnum.ReadyForDispatch: {
 				notifyIdentities.push(shipmentDB.sponsorId);
-				notifyIdentities.push(shipmentDB.shipperId);
+				notifyIdentities.push(shipmentDB.courierId);
 				break;
 			}
 
@@ -294,7 +294,7 @@ class ShipmentsService extends DSUService {
 		);
     const courierMessage = { shipmentSSI: shipmentIdentifier };
 		this.sendMessageToEntity(
-					shipmentDB.shipperId,
+					shipmentDB.courierId,
         	shipmentStatusesEnum.ProofOfDelivery,
         	courierMessage,
         	shipmentStatusesEnum.ProofOfDelivery
@@ -594,7 +594,7 @@ class ShipmentsService extends DSUService {
 
 		await this.updateEntityAsync(shipmentDSU, FoldersEnum.Shipments);
 		await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentIdentifier, shipmentDB);
-		const notifiedActors = [shipmentDB.sponsorId, shipmentDB.shipperId];
+		const notifiedActors = [shipmentDB.sponsorId, shipmentDB.courierId];
 		notifiedActors.forEach((actor) => {
 			this.sendMessageToEntity(actor, shipmentsEventsEnum.PickupDateTimeChanged, {
 				shipmentSSI: shipmentDB.uid

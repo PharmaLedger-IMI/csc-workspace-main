@@ -126,7 +126,7 @@ class ScanShipmentController extends WebcController {
   async sign() {
     let payload = {};
     let {uid}  = this.model.shipment;
-    let shipmentDataProps = ["shipperId", "scheduledPickupDateTime", "dimension", "origin", "specialInstructions", "shippingConditions"];
+    let shipmentDataProps = ["courierId", "scheduledPickupDateTime", "dimension", "origin", "specialInstructions", "shippingConditions"];
     this.model.disableSign = true;
     window.WebCardinal.loader.hidden = false;
     shipmentDataProps.forEach((prop) => {
