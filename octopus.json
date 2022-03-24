@@ -22,13 +22,12 @@
     },
     {
       "name": "privatesky",
-      "src": "https://github.com/PrivateSky/psk-release.git",
+      "src": "https://github.com/PrivateSky/privatesky.git",
       "actions": [
         {
           "type": "smartClone",
           "target": ".",
-          "collectLog": false,
-		  "commit":"efc69bd80aa9b6efe99c5c6701c0f96b72129947"
+          "collectLog": false
         },
         {
           "type": "execute",
