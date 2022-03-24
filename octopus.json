@@ -22,7 +22,7 @@
     },
     {
       "name": "privatesky",
-      "src": "https://github.com/PrivateSky/privatesky.git",
+      "src": "http://github.com/privatesky/privatesky.git",
       "actions": [
         {
           "type": "smartClone",
@@ -32,6 +32,15 @@
         {
           "type": "execute",
           "cmd": "cd privatesky && npm install"
+        }
+      ]
+    },
+    {
+      "name": "build privatesky",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd privatesky && npm run build"
         }
       ]
     },
