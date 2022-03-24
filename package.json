@@ -12,7 +12,7 @@
     "add-loader": "node ./node_modules/octopus/scripts/add",
     "build": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/build\"",
     "build-ssapps": "npm run build csc-site-ssapp && npm run build csc-sponsor-ssapp && npm run build csc-cmo-ssapp && npm run build csc-courier-ssapp && cd themes/blue-csc-theme && npm run build-dossier",
-    "build-all": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build\" && node ./bin/seedsBackupTool.js ",
+    "build-all": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./bin/octopusRun.js  build\" && node ./bin/seedsBackupTool.js ",
     "build-mobile": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-mobile\"",
     "build-android-apk": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-android-apk\"",
     "update": "node ./node_modules/octopus/scripts/update",
@@ -50,7 +50,7 @@
     "npm": "~6"
   },
   "dependencies": {
-    "octopus": "git+https://github.com/PrivateSky/octopus.git#332df95a075af950dc3cc07698acdff194692280"
+    "octopus": "git+https://github.com/PrivateSky/octopus.git"
   },
   "devDependencies": {
     "form-data": "v3.0.0",

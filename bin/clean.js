@@ -41,10 +41,10 @@ function  walk(dir, filterFiles, filterFolders, done) {
 
 function filterFiles(name){
 
-    if(name.endsWith("\\seed") || name.endsWith("/seed")){
-            console.log("Deleting seed file:", name);
-            fs.unlinkSync(name);
-        }
+    // if(name.endsWith("\\seed") || name.endsWith("/seed")){
+    //         console.log("Deleting seed file:", name);
+    //         fs.unlinkSync(name);
+    //     }
     return undefined;
 }
 
@@ -52,13 +52,13 @@ function filterFiles(name){
 function deleteFolderContent(name, text){
     console.log(text, name);
     walk(name,
-        function(name){
-            fs.unlinkSync(name);
-        },
-        function(name){
-        },
-        function(err, result){}
-        );
+      function(name){
+          fs.unlinkSync(name);
+      },
+      function(name){
+      },
+      function(err, result){}
+    );
 }
 
 function filterFolders(name){
@@ -85,4 +85,3 @@ walk(myPath, filterFiles, filterFolders, function(err, result){
     })
 
 });
-
