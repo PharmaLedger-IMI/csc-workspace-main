@@ -12,7 +12,7 @@
     "add-loader": "node ./node_modules/octopus/scripts/add",
     "build": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/build\"",
     "build-ssapps": "npm run build csc-site-ssapp && npm run build csc-sponsor-ssapp && npm run build csc-cmo-ssapp && npm run build csc-courier-ssapp && cd themes/blue-csc-theme && npm run build-dossier",
-    "build-all": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./bin/octopusRun.js  build\" && node ./bin/seedsBackupTool.js ",
+    "build-all": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./bin/octopusRun.js build\"",
     "build-mobile": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-mobile\"",
     "build-android-apk": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run build-android-apk\"",
     "update": "node ./node_modules/octopus/scripts/update",
