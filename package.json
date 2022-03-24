@@ -50,7 +50,7 @@
     "npm": "~6"
   },
   "dependencies": {
-    "octopus": "git+https://github.com/PrivateSky/octopus.git"
+    "octopus": "git+https://github.com/PrivateSky/octopus.git#1.4.1"
   },
   "devDependencies": {
     "form-data": "v3.0.0",
