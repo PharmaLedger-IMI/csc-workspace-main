@@ -22,17 +22,25 @@
     },
     {
       "name": "privatesky",
-      "src": "https://github.com/PrivateSky/psk-release.git",
+      "src": "http://github.com/privatesky/privatesky.git",
       "actions": [
         {
           "type": "smartClone",
           "target": ".",
-          "collectLog": false,
-		  "commit":"efc69bd80aa9b6efe99c5c6701c0f96b72129947"
+          "collectLog": false
         },
         {
           "type": "execute",
           "cmd": "cd privatesky && npm install"
+        }
+      ]
+    },
+    {
+      "name": "build privatesky",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd privatesky && npm run build"
         }
       ]
     },
@@ -271,7 +279,7 @@
           "cmd": "cd csc-sponsor-ssapp && npm run build"
         },
         {
-          "type": "copy",
+          "type": "copySeed",
           "src": "./csc-sponsor-ssapp/seed",
           "target": "./apihub-root/csc-sponsor-wallet/wallet-patch/seed",
           "options": {
@@ -279,7 +287,7 @@
           }
         },
         {
-          "type": "copy",
+          "type": "copySeed",
           "src": "./csc-sponsor-ssapp/seed",
           "target": "./apihub-root/csc-sponsor-wallet/apps-patch/csc-sponsor-ssapp/seed",
           "options": {
@@ -301,7 +309,7 @@
           "cmd": "cd csc-cmo-ssapp && npm run build"
         },
         {
-          "type": "copy",
+          "type": "copySeed",
           "src": "./csc-cmo-ssapp/seed",
           "target": "./apihub-root/csc-cmo-wallet/wallet-patch/seed",
           "options": {
@@ -309,7 +317,7 @@
           }
         },
         {
-          "type": "copy",
+          "type": "copySeed",
           "src": "./csc-cmo-ssapp/seed",
           "target": "./apihub-root/csc-cmo-wallet/apps-patch/csc-cmo-ssapp/seed",
           "options": {
@@ -331,7 +339,7 @@
           "cmd": "cd csc-site-ssapp && npm run build"
         },
         {
-          "type": "copy",
+          "type": "copySeed",
           "src": "./csc-site-ssapp/seed",
           "target": "./apihub-root/csc-site-wallet/wallet-patch/seed",
           "options": {
@@ -339,7 +347,7 @@
           }
         },
         {
-          "type": "copy",
+          "type": "copySeed",
           "src": "./csc-site-ssapp/seed",
           "target": "./apihub-root/csc-site-wallet/apps-patch/csc-site-ssapp/seed",
           "options": {
@@ -361,7 +369,7 @@
           "cmd": "cd csc-courier-ssapp && npm run build"
         },
         {
-          "type": "copy",
+          "type": "copySeed",
           "src": "./csc-courier-ssapp/seed",
           "target": "./apihub-root/csc-courier-wallet/wallet-patch/seed",
           "options": {
@@ -369,7 +377,7 @@
           }
         },
         {
-          "type": "copy",
+          "type": "copySeed",
           "src": "./csc-site-ssapp/seed",
           "target": "./apihub-root/csc-courier-wallet/apps-patch/csc-courier-ssapp/seed",
           "options": {
@@ -471,7 +479,7 @@
           "cmd": "cd dossier-explorer-wallet-prototype && npm run build"
         },
         {
-          "type": "copy",
+          "type": "copySeed",
           "src": "./dossier-explorer-wallet-prototype/seed",
           "target": "./apihub-root/dsu-explorer/wallet-patch/seed",
           "options": {
@@ -489,7 +497,7 @@
           "cmd": "cd dossier-explorer-ssapp && npm run build"
         },
         {
-          "type": "copy",
+          "type": "copySeed",
           "src": "./dossier-explorer-ssapp/seed",
           "target": "./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed",
           "options": {
