@@ -39,13 +39,11 @@ export default class NewOrderController extends WebcController {
       formIsInvalid:true,
     };
 
-    let didService = DidService.getDidServiceInstance();
-    didService.getDID().then((did)=>{
-      this.model.form.inputs.sponsor_id.value = did;
-    });
+    this.model.form.filesEmpty = true;
+
+    this.setSponsorIdToForm();
 
     this.model.form.isSubmitting = false;
-    this.model.form.filesEmpty = true;
 
     this.on('add-file', (event) => {
       const files = event.data;
@@ -64,8 +62,8 @@ export default class NewOrderController extends WebcController {
           });
         });
       }
-
       this.model.form.filesEmpty = (this.files.length === 0);
+
       if (event.data) this.docs = event.data;
     });
 
@@ -245,6 +243,7 @@ export default class NewOrderController extends WebcController {
         'Clear Changes',
         () => {
           this.model.form = viewModelResolver('order').form;
+          this.setSponsorIdToForm();
           this.files = [];
           makeStepActive('step-1', 'step-1-wrapper', e);
         },
@@ -353,5 +352,13 @@ export default class NewOrderController extends WebcController {
     }
     console.log(ids);
     return ids;
+  }
+
+
+  setSponsorIdToForm() {
+    let didService = DidService.getDidServiceInstance();
+    didService.getDID().then((did)=>{
+      this.model.form.inputs.sponsor_id.value = did;
+    });
   }
 }
