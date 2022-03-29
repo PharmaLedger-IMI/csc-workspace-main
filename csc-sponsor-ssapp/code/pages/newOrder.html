@@ -161,14 +161,18 @@
 
         <!-- 2 - Documents -->
         <div class="step-holder step-hidden" id="step-2-wrapper">
+
           <!-- Attach Documents-->
           <div class="row">
             <div class="col-12 upload-attachment">
               <psk-files-chooser data-view-model="@form.attachment" event-name="add-file"></psk-files-chooser>
               <p>Maximum upload file size: 64MB</p>
             </div>
-            <div class="col-12">
-              <table class="table table-borderless attach-documents-table">
+            <div data-if="@form.areFilesEmpty"  class="col-12">
+              <div class="alert alert-light text-center" slot="true" role="alert">
+                There are no any Files uploaded yet!
+              </div>
+              <table slot="false" class="table table-borderless attach-documents-table">
                 <thead>
                   <tr>
                     <th scope="col">Document Name</th>

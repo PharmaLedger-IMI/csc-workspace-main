@@ -64,8 +64,11 @@
               <psk-files-chooser event-name="add-file" data-view-model="@form.attachment"></psk-files-chooser>
               <p>Maximum upload file size: 64MB</p>
             </div>
-            <div class="col-12">
-              <table class="table table-borderless attach-documents-table">
+            <div data-if="@form.filesEmpty"  class="col-12">
+              <div class="alert alert-light text-center" slot="true" role="alert">
+                There are no any Files uploaded yet!
+              </div>
+              <table slot="false" class="table table-borderless attach-documents-table">
                 <thead>
                   <tr>
                     <th scope="col">Document Name</th>
