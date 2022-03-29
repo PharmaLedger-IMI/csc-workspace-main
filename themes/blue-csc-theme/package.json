@@ -4,7 +4,7 @@
   "description": "",
   "main": " ",
   "scripts": {
-    "build-dossier": "node ./node_modules/octopus/scripts/buildDossier.js --bundles=./../../privatesky/psknode/bundles"
+    "build-dossier": "node ./node_modules/octopus/scripts/buildDSU.js --bundles=./../../privatesky/psknode/bundles"
   },
   "repository": {
     "type": "git",
