@@ -59,7 +59,7 @@ export default class EditShipmentController extends WebcController {
         });
       }
 
-      this.model.form.areFilesEmpty = (this.files.length <= 0);
+      this.model.form.filesEmpty = (this.files.length === 0);
 
     });
     this.onTagClick('remove-file', (document) => {
@@ -68,7 +68,7 @@ export default class EditShipmentController extends WebcController {
       let doc = this.model.form.documents.find((item) => item.uuid === document.uuid);
       let idx = this.model.form.documents.indexOf(doc);
       this.model.form.documents.splice(idx, 1);
-      this.model.form.areFilesEmpty = (this.files.length <= 0);
+      this.model.form.filesEmpty = (this.files.length === 0);
     });
     this.onTagClick('download-file', async (model, target, event) => {
       const uuid = target.getAttribute('data-custom') || null;
@@ -267,7 +267,7 @@ export default class EditShipmentController extends WebcController {
 	this.model.shipment = this.originalShipment;
     this.model.form.documents = [];
     this.model.wizard = this.getWizardForm();
-    this.model.form.areFilesEmpty = true;
+    this.model.form.filesEmpty = true;
 
   }
 
