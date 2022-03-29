@@ -39,6 +39,8 @@ export default class NewOrderController extends WebcController {
       formIsInvalid:true,
     };
 
+    this.model.form.filesEmpty = true;
+
     this.setSponsorIdToForm();
 
     this.model.form.isSubmitting = false;
@@ -60,6 +62,7 @@ export default class NewOrderController extends WebcController {
           });
         });
       }
+      this.model.form.filesEmpty = (this.files.length === 0);
 
       if (event.data) this.docs = event.data;
     });
@@ -97,6 +100,7 @@ export default class NewOrderController extends WebcController {
         let doc = this.model.form.documents.find((item) => item.uuid === document.uuid);
         let idx = this.model.form.documents.indexOf(doc);
         this.model.form.documents.splice(idx, 1);
+        this.model.form.filesEmpty = (this.files.length === 0);
       }
     });
 
