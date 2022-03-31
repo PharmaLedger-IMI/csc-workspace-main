@@ -12,7 +12,7 @@ class NotificationsControllerImpl extends WebcController {
 		super(...props);
 
 		this.role = role;
-		this.model = { notifications: [] };
+		this.model = { notifications: [] , notificationsEmpty: true  };
 		this.notificationsService = new NotificationsService(this.DSUStorage);
 
 		this.getNotifications();
@@ -28,6 +28,7 @@ class NotificationsControllerImpl extends WebcController {
 		let notifications = await this.notificationsService.getNotifications();
 		notifications = this.transformData(notifications);
 		this.model.setChainValue('notifications', notifications);
+		this.model.notificationsEmpty = (notifications.length == 0)
 	}
 
 	transformData(notifications) {
