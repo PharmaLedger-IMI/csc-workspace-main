@@ -12,7 +12,7 @@ class NotificationsControllerImpl extends WebcController {
 		super(...props);
 
 		this.role = role;
-		this.model = { notifications: [] , notificationsEmpty: true  };
+		this.model = { notifications: [] };
 		this.notificationsService = new NotificationsService(this.DSUStorage);
 
 		this.getNotifications();
