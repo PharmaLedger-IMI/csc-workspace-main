@@ -253,10 +253,6 @@ const shipmentViewModel = {
 			value: '',
 		},
 		documents: [],
-		temperature: [
-			{ value: "Within Range", text: "Within Range" },
-			{ value: "Out of Range", text: "Out of Range" },
-		],
 		comments: [],
         receivedDate: {
             label: 'Received Date/Time',
