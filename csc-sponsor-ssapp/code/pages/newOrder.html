@@ -68,6 +68,23 @@
                 <input class="form-control" data-view-model="@form.inputs.study_id" type="text" />
               </div>
 
+
+              <!-- Study Duration -->
+              <div class="form-group">
+                <!--Label -->
+                <label>{{@form.inputs.study_duration_from.label}} <span class='required'>*</span></label>
+                <div class="row">
+                  <div class="col-6">
+                    <!-- Input -->
+                    <input class="form-control" data-view-model="@form.inputs.study_duration_from" type="date" />
+                  </div>
+                  <div class="col-6">
+                    <!-- Input -->
+                    <input class="form-control" data-view-model="@form.inputs.study_duration_to" type="date" />
+                  </div>
+                </div>
+              </div>
+
               <!-- Order ID -->
               <div class="form-group">
                 <!--Label -->
@@ -170,7 +187,7 @@
             </div>
             <div data-if="@form.filesEmpty"  class="col-12">
               <div class="alert alert-light text-center" slot="true" role="alert">
-                There are no any Files uploaded yet!
+                There are no files uploaded yet!
               </div>
               <table slot="false" class="table table-borderless attach-documents-table">
                 <thead>

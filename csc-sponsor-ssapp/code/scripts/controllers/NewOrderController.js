@@ -2,7 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService;
-const { Topics, Roles, DocumentTypes } = cscServices.constants;
+const { Topics, Roles, DocumentTypes, Commons } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
 const DidService = cscServices.DidService;
 const momentService = cscServices.momentService;
@@ -293,8 +293,22 @@ export default class NewOrderController extends WebcController {
       }
     }
 
+    let studyDurationHandler = () => {
+      let fromDate = this.model.form.inputs.study_duration_from;
+      let toDate = this.model.form.inputs.study_duration_to;
+
+      let fromDateObj = new Date(fromDate.value);
+      let toDateObj = new Date(toDate.value);
+
+      if (fromDateObj > toDateObj || !(toDateObj instanceof Date)) {
+        toDate.value = fromDate.value;
+      }
+      toDate.min = momentService(fromDate.value).format(Commons.YearMonthDayPattern);
+    };
+
     this.model.onChange('form.inputs.keep_between_temperature_min.value',tempChangeHandler)
     this.model.onChange('form.inputs.keep_between_temperature_max.value', tempChangeHandler)
+    this.model.onChange('form.inputs.study_duration_from', studyDurationHandler);
     this.model.onChange('form.inputs', this.checkFormValidity.bind(this));
   }
 
