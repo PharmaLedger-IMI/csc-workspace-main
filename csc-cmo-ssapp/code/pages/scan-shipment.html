@@ -68,16 +68,18 @@
         </div>
 
         <div class="step-holder-modal step-hidden barcode-container" id="step-2-wrapper">
-          <div class="d-flex flex-column align-items-center" data-if="@canScanKit">
+          <div class="progress w-100" id="scan-progress">
+            <div class="progress-bar overflow-hidden" role="progressbar" style="width: 0;" aria-valuemin="0" aria-valuemax="100">{{@numberOfScannedKits}}/{{@kits.length}}</div>
+          </div>
+          <div class="d-flex flex-column align-items-center mt-4" data-if="@canScanKit">
             <label class="scan-modal-label"> Please find the QR code on the kit containers and scan</label>
-            <h5><b>{{@currentKit.kitNumber}}</b></h5>
-            <label class="scan-modal-label"> <b> Kit ID: {{@currentKit.kitId}} </b> </label>
+
+            <label class="scan-modal-label"> <b> Last Kit Scanned: {{@lastKitId}} </b> </label>
           </div>
 
           <div class="d-flex justify-content-center" data-if="@isKitsScannerActive">
             <div class="step-holder">
-              <h5><b>{{@currentKit.kitNumber}}</b></h5>
-              <label class="scan-modal-label"> <b> Kit ID: {{@currentKit.kitId}} </b> </label>
+              <label class="scan-modal-label"> <b> Last Kit Scanned: {{@lastKitId}} </b> </label>
               <div class='barcode-wrapper'>
                 <psk-barcode-scanner data='@scannedKitData'>
                   <webc-spinner slot='init'></webc-spinner>
@@ -92,9 +94,14 @@
             <label class="scan-modal-label">Wrong Kit Code scanned. Please try again!</label>
           </div>
 
+          <div class="d-flex flex-column align-items-center" data-if="@alreadyScanned">
+            <span class="fas fa-exclamation fa-10x" style="color: #ef6c00"></span>
+            <label class="scan-modal-label">Kit was already scanned. Try with the next kit!</label>
+          </div>
+
           <div class="d-flex flex-column align-items-center" data-if="@showCorrectKitScanResult">
             <i class="fas fa-check fa-10x scan-success"></i>
-            <label class="scan-modal-label"> Kit {{ @currentKit.kitId }} Scan Successful! </label>
+            <label class="scan-modal-label"> Kit {{ @lastKitId }} Scan Successful! </label>
           </div>
 
           <div data-if="@canScanKit">

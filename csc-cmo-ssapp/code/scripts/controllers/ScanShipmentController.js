@@ -78,10 +78,22 @@ export default class ScanShipmentController extends WebcController {
         this.model.showCorrectShipmentScanResult = this.model.isShipmentScanOk;
       }
     });
+
+    this.model.onChange('scannedKitIds',()=>{
+      const scanProgressElement = this.querySelector("#scan-progress .progress-bar");
+      scanProgressElement.style.width = (this.model.scannedKitIds.length / this.model.kits.length)*100+"%";
+      this.model.numberOfScannedKits = this.model.scannedKitIds.length;
+    })
   }
 
   step1NavigationHandler() {
     this.model.enableStep1Navigation = this.model.canScanShipment === false && this.model.isShipmentScannerActive === false;
+  }
+
+  resetScanStatus = () =>{
+    this.model.showWrongKitScanResult = false;
+    this.model.showCorrectKitScanResult = false;
+    this.model.alreadyScanned = false;
   }
 
   attachKitsScannerHandlers() {
@@ -92,9 +104,9 @@ export default class ScanShipmentController extends WebcController {
 
     let scanKitsAgainHandler = () => {
       this.model.isKitsScannerActive = true;
-      this.model.showWrongKitScanResult = false;
-      this.model.showCorrectKitScanResult = false;
+      this.resetScanStatus();
     };
+
     this.onTagClick('back-to-kit-scan', scanKitsAgainHandler);
     this.onTagClick('scan-again-kits', scanKitsAgainHandler);
 
@@ -104,21 +116,28 @@ export default class ScanShipmentController extends WebcController {
     this.model.onChange('scannedKitData', () => {
       if (this.handleOnChange) {
         console.log('[SCAN] ', this.model.scannedKitData);
-        const isKitOk = this.model.scannedKitData === this.model.currentKit.kitId;
+
+        this.resetScanStatus();
+
+        if (!this.model.kits.includes(this.model.scannedKitData)) {
+          this.model.showWrongKitScanResult = true;
+        } else if (this.model.scannedKitIds.includes(this.model.scannedKitData)) {
+          this.model.alreadyScanned = true;
+        } else {
+          this.model.showCorrectKitScanResult = true;
+          this.model.scannedKitIds.push(this.model.scannedKitData);
+          this.model.lastKitId = this.model.scannedKitData;
+        }
         this.model.isKitsScannerActive = false;
-        this.model.showWrongKitScanResult = !isKitOk;
-        this.model.showCorrectKitScanResult = isKitOk;
       }
       this.handleOnChange = true;
     });
 
     this.onTagClick('next-kit-scan', (model, target, e) => {
-      if (this.model.currentKit.kitNumber < this.model.kits.length) {
+      if (this.model.scannedKitIds.length < this.model.kits.length) {
         this.model.canScanKit = true;
-        this.model.showWrongKitScanResult = false;
-        this.model.showCorrectKitScanResult = false;
+        this.resetScanStatus();
         this.model.kitScanButtonText = 'Scan Next Kit';
-        this.model.currentKit = this.model.kits[this.model.currentKit.kitNumber];
       } else {
         this.model.foundAllCorrectKitScans = true;
         this.makeStepActive('step-3', 'step-3-wrapper', e);
@@ -255,8 +274,9 @@ export default class ScanShipmentController extends WebcController {
 
     this.model.scannedKitData = '';
     this.model.kitScanButtonText = 'Scan';
-    this.model.currentKit = this.model.kits[0];
+    this.model.lastKitId = "No kit was scanned yet";
     this.model.scannedKitIds = [];
+    this.model.numberOfScannedKits=0;
     this.model.foundAllCorrectKitScans = false;
     this.model.canScanKit = true;
     this.model.isKitsScannerActive = false;
@@ -266,6 +286,6 @@ export default class ScanShipmentController extends WebcController {
 
   async getKits() {
     const kitDSU = await this.kitsService.getKitIdsDsu(this.model.kitsSSI);
-    this.model.kits = kitDSU.kitIds;
+    this.model.kits = kitDSU.kitIds.map(singleKit=>singleKit.kitId);
   }
 }
