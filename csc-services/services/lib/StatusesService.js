@@ -64,8 +64,8 @@ class StatusesService {
 
   getKitStatuses() {
 
-        let normalKitStatuses = [kitsStatusesEnum.AvailableForAssignment,kitsStatusesEnum.Assigned,kitsStatusesEnum.Received];
-        let approvedKitStatuses = [kitsStatusesEnum.Dispensed];
+        let normalKitStatuses = [kitsStatusesEnum.Received, kitsStatusesEnum.AvailableForAssignment,kitsStatusesEnum.Assigned, kitsStatusesEnum.Dispensed, kitsStatusesEnum.Returned];
+        let approvedKitStatuses = [kitsStatusesEnum.Reconciled];
 
         return {
           normalKitStatuses : normalKitStatuses,

@@ -90,3 +90,10 @@
 <div data-if='@kit.contextualContent.afterDispensed'>
     <webc-template data-view-model='@' template='kits/dispense-details'></webc-template>
 </div>
+
+<div data-if='@kit.contextualContent.afterReturned'>
+  <div class="grid-column-wrapper">
+    <label>{{@form.returnedDate.label}}</label>
+    <input class="form-control form-control-sm" readonly name="@form.returnedDate.name" value="@kit.returnedDate" />
+  </div>
+</div>

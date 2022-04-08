@@ -3,7 +3,8 @@ const kitsStatusesEnum = {
 	AvailableForAssignment: 'Available for Assignment',
 	Assigned: 'Assigned',
 	Dispensed: 'Dispensed',
-	Administrated: 'Administrated'
+	Returned: 'Returned',
+	Reconciled: 'Reconciled'
 };
 
 
@@ -11,6 +12,8 @@ const kitsPendingActionEnum = {
 	ManageKit:"Manage Kit",
 	Assign: 'Assign',
 	Dispense: 'Dispense',
+	Return:"Return",
+	Reconcile:"Reconcile",
 	NoFurtherActionsRequired: 'No further actions required'
 };
 
@@ -62,6 +65,22 @@ const studiesKitsTableHeaders = [
 	{
 		column: 'dispensed',
 		label: 'Dispensed',
+		notSortable: true,
+		type: 'number',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'returned',
+		label: 'Returned',
+		notSortable: true,
+		type: 'number',
+		asc: null,
+		desc: null
+	},
+	{
+		column: 'reconciled',
+		label: 'Reconciled',
 		notSortable: true,
 		type: 'number',
 		asc: null,

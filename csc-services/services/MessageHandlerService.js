@@ -291,7 +291,9 @@ class MessageHandlerService {
 
       case kitsStatusesEnum.AvailableForAssignment:
       case kitsStatusesEnum.Assigned:
-      case kitsStatusesEnum.Dispensed: {
+      case kitsStatusesEnum.Dispensed:
+      case kitsStatusesEnum.Returned:
+      case kitsStatusesEnum.Reconciled:{
         const { kitSSI } = data.data;
         kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI, kitsMessage);
         break;

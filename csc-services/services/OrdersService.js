@@ -85,7 +85,15 @@ class OrdersService extends DSUService {
   // -> Functions for creation of order
 
   async createOrder(data) {
+    // try{
+    //   this.DSUStorage.beginBatch();
+    // }
+    // catch (e){
+    //   console.log(e);
+    // }
     const { statusDsu, sponsorDocumentsDsu, kitIdsDsu, commentsDsu } = await this.createOrderOtherDSUs();
+
+    //await $$.promisify(this.DSUStorage.commitBatch)();
     const statusDsuKeySSI = statusDsu.keySSI;
     const status = await this.updateStatusDsu(orderStatusesEnum.Initiated, statusDsuKeySSI);
 

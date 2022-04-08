@@ -77,6 +77,14 @@ class StudiesKitsControllerImpl extends WebcController {
       item.kitsDispensed = {
         progress: this.filterKitsByStatus(item.kits, kitsStatusesEnum.Dispensed).length,
         total: item.kitsNumber,
+      };
+      item.kitsReturned = {
+        progress: this.filterKitsByStatus(item.kits, kitsStatusesEnum.Returned).length,
+        total: item.kitsNumber,
+      };
+      item.kitsReconciled = {
+        progress: this.filterKitsByStatus(item.kits, kitsStatusesEnum.Reconciled).length,
+        total: item.kitsNumber,
         approved: true
       };
     });

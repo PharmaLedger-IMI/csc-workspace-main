@@ -2,8 +2,8 @@ const AccordionController  = require("./helpers/AccordionController");
 const cscServices = require('csc-services');
 const KitsService = cscServices.KitsService;
 const viewModelResolver = cscServices.viewModelResolver;
-const { shipmentStatusesEnum } = cscServices.constants.shipment;
 const momentService = cscServices.momentService;
+const eventBusService = cscServices.EventBusService;
 const { Commons, Topics, Roles } = cscServices.constants;
 const {kitsStatusesEnum, kitsPendingActionEnum} = cscServices.constants.kit;
 const statusesService = cscServices.StatusesService;
@@ -43,6 +43,15 @@ class SingleKitControllerImpl extends AccordionController {
 
   }
 
+  attachRefreshListeners() {
+    if (!this.addedRefreshListeners) {
+      this.addedRefreshListeners = true;
+      this.refreshModalOpened = false;
+      eventBusService.addEventListener(Topics.RefreshKits + this.model.kitModel.kit.kitId, this.initViewModel.bind(this));
+    }
+  }
+
+
   attachSiteEventHandlers(){
     this.onTagClick('manage-kit', () => {
       this.navigateToPageTag('scan-kit', {
@@ -69,6 +78,40 @@ class SingleKitControllerImpl extends AccordionController {
           ...this.model.toObject('kitModel.kit')
         }
       });
+    });
+
+    this.onTagClick('return-kit', () => {
+      this.showModal(
+        'Do you want to set this kit as \'Returned\'?',
+        'Kit Returning',
+        this.returnKit.bind(this),
+        () => {
+
+        },
+        {
+          disableExpanding: true,
+          cancelButtonText: 'Cancel',
+          confirmButtonText: 'Yes, Kit was returned',
+          id: 'confirm-modal'
+        }
+      );
+    });
+
+    this.onTagClick('reconcile-kit', () => {
+      this.showModal(
+        'Do you want to set this kit as \'Reconciled\'?',
+        'Kit Returning',
+        this.reconcileKit.bind(this),
+        () => {
+
+        },
+        {
+          disableExpanding: true,
+          cancelButtonText: 'Cancel',
+          confirmButtonText: 'Yes, mark kit as reconciled',
+          id: 'confirm-modal'
+        }
+      );
     });
 
 
@@ -103,14 +146,16 @@ class SingleKitControllerImpl extends AccordionController {
     }
 
     this.model = model;
+    this.attachRefreshListeners();
   }
 
   setKitActions(kit) {
     const actions = {};
-    actions.canDispenseKit = kit.status_value === kitsStatusesEnum.Assigned;
-    actions.canAssignKit = kit.status_value === kitsStatusesEnum.AvailableForAssignment;
     actions.canManageKit = kit.status_value === kitsStatusesEnum.Received;
+    actions.canAssignKit = kit.status_value === kitsStatusesEnum.AvailableForAssignment;
     actions.canDispenseKit = kit.status_value === kitsStatusesEnum.Assigned;
+    actions.canReturnKit = kit.status_value === kitsStatusesEnum.Dispensed;
+    actions.canReconcileKit = kit.status_value === kitsStatusesEnum.Returned;
     this.attachSiteEventHandlers();
     return actions;
   }
@@ -150,6 +195,10 @@ class SingleKitControllerImpl extends AccordionController {
         data.receivedDateTime = this.getDateTime(data.receivedDateTime)
       }
 
+      if(data.returnedDate){
+        data.returnedDate = this.getDateTime(data.returnedDate)
+      }
+
       data.pending_action = this.getPendingAction(data.status_value);
       const statuses = statusesService.getKitStatuses();
       const normalStatuses = statuses.normalKitStatuses;
@@ -161,7 +210,8 @@ class SingleKitControllerImpl extends AccordionController {
          afterReceived: data.status.findIndex(el => el.status === kitsStatusesEnum.Received) !== -1,
          afterAvailableForAssignment: data.status.findIndex(el => el.status === kitsStatusesEnum.AvailableForAssignment) !== -1,
          afterAssigned: data.status.findIndex(el => el.status === kitsStatusesEnum.Assigned) !== -1,
-         afterDispensed: data.status.findIndex(el => el.status === kitsStatusesEnum.Dispensed) !== -1
+         afterDispensed: data.status.findIndex(el => el.status === kitsStatusesEnum.Dispensed) !== -1,
+         afterReturned: data.status.findIndex(el => el.status === kitsStatusesEnum.Returned) !== -1
        };
       return data;
     }
@@ -176,9 +226,40 @@ class SingleKitControllerImpl extends AccordionController {
         return kitsPendingActionEnum.Assign;
       case kitsStatusesEnum.Assigned:
         return kitsPendingActionEnum.Dispense;
+      case kitsStatusesEnum.Dispensed:
+        return kitsPendingActionEnum.Return;
+      case kitsStatusesEnum.Returned:
+        return kitsPendingActionEnum.Reconcile;
     }
 
     return kitsPendingActionEnum.NoFurtherActionsRequired;
+  }
+
+  async returnKit(){
+    window.WebCardinal.loader.hidden = false;
+    const returnedData = {
+      returnedDate:Date.now()
+    }
+    await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Returned, returnedData);
+    eventBusService.emitEventListeners(Topics.RefreshKits + this.model.kitModel.kit.kitId, null);
+
+    this.showErrorModalAndRedirect('Kit is marked as Returned', 'Kit Returned', {
+      tag: 'kit',
+      state: { uid: this.model.uid }
+    }, 2000);
+
+    window.WebCardinal.loader.hidden = true;
+  }
+
+  async reconcileKit(){
+    window.WebCardinal.loader.hidden = false;
+    await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Reconciled,{});
+    eventBusService.emitEventListeners(Topics.RefreshKits + this.model.kitModel.kit.kitId, null);
+    this.showErrorModalAndRedirect('Kit is marked as Reconciled', 'Kit Reconciled', {
+      tag: 'kit',
+      state: { uid: this.model.uid }
+    }, 2000);
+    window.WebCardinal.loader.hidden = true;
   }
 
   onShowHistoryClick() {
