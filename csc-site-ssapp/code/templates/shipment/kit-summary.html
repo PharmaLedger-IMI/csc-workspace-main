@@ -1,6 +1,20 @@
 <webc-container controller="KitSummaryController" data-view-model="@kitsData">
   <div data-if="@kitsLoaded">
     <div class="grid-column-wrapper">
+
+      <!-- Study Id -->
+      <label>Study Id:</label>
+      <div>
+        <input class="form-control form-control-sm" readonly type="text" value="@studyData.studyId" />
+      </div>
+
+      <!-- Study Duration -->
+      <label>Study Duration From/To:</label>
+      <div>
+        <input class="form-control form-control-sm" readonly type="text" value="@studyData.studyDurationFrom" />
+        <input class="form-control form-control-sm" readonly type="text" value="@studyData.studyDurationTo" />
+      </div>
+
       <!-- Kit ID List -->
       <label>Kit ID List (.csv):</label>
       <div class='file-name-downloader'>
