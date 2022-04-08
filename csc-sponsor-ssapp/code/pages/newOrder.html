@@ -187,7 +187,7 @@
             </div>
             <div data-if="@form.filesEmpty"  class="col-12">
               <div class="alert alert-light text-center" slot="true" role="alert">
-                There are no files uploaded yet!
+                There are no files selected yet!
               </div>
               <table slot="false" class="table table-borderless attach-documents-table">
                 <thead>
@@ -291,6 +291,13 @@
                 <!-- Study ID -->
                 <label>{{@form.inputs.study_id.label}}</label>
                 <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.study_id.value" />
+
+                <!-- Study Duration -->
+                <label>{{@form.inputs.study_duration_from.label}}</label>
+                <div>
+                    <input class="form-control" value="@form.inputs.study_duration_from.value" readonly />
+                    <input class="form-control" value="@form.inputs.study_duration_to.value" readonly />
+                </div>
 
                 <!-- Order ID -->
                 <label>{{@form.inputs.order_id.label}}</label>

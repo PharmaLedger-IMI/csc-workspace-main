@@ -91,7 +91,12 @@ class OrdersService extends DSUService {
 
     const sponsorDocuments = await this.addDocumentsToDsu(data.files, sponsorDocumentsDsu.uid, Roles.Sponsor);
 
-    const kits = await this.addKitsToDsu(data.kitIdsFile, data.kitIds, kitIdsDsu.uid);
+    const studyData = {
+      studyId: data.study_id,
+      studyDurationFrom:data.study_duration_from,
+      studyDurationTo:data.study_duration_to,
+    }
+    const kits = await this.addKitsToDsu(data.kitIdsFile, data.kitIds, studyData, kitIdsDsu.uid);
     const kitIdKeySSIEncrypted = await EncryptionService.encryptData(kitIdsDsu.sReadSSI);
 
     const comment = { entity: Roles.Sponsor, comment: data.add_comment, date: new Date().getTime() };
@@ -100,7 +105,7 @@ class OrdersService extends DSUService {
     const orderModel = {
       sponsorId: data.sponsor_id,
       targetCmoId: data.target_cmo_id,
-      studyId: data.study_id,
+      ...studyData,
       orderId: data.order_id,
       siteId: data.site_id,
       siteRegionId: data.site_region_id,
@@ -219,12 +224,13 @@ class OrdersService extends DSUService {
     return result;
   }
 
-  async addKitsToDsu(file, kitIds, keySSI) {
+  async addKitsToDsu(file, kitIds, studyData, keySSI) {
     const kitsDataDsu = await this.getEntityAsync(keySSI, FoldersEnum.KitIds);
     const updatedDSU = await this.updateEntityAsync(
       {
         ...kitsDataDsu,
         kitIds,
+        studyData,
         file: {
           name: file.name,
           attached_by: Roles.Sponsor,

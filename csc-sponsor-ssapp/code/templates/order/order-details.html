@@ -18,6 +18,13 @@
   <label>{{@form.inputs.study_id.label}}</label>
   <input class="form-control form-control-sm" readonly name="@form.inputs.study_id.name" type="text" value="@order.studyId" />
 
+  <!-- Study Duration -->
+  <label>{{@form.inputs.study_duration_from.label}}</label>
+  <div>
+    <input class="form-control form-control-sm" readonly type="text" value="@order.studyDurationFrom" />
+    <input class="form-control form-control-sm" readonly type="text" value="@order.studyDurationTo" />
+  </div>
+
   <!-- Order ID -->
   <label>{{@form.inputs.order_id.label}}</label>
   <input class="form-control form-control-sm" readonly name="@form.inputs.order_id.name" type="text" value="@order.orderId" />
