@@ -123,7 +123,6 @@ class ScanShipmentController extends WebcController {
       this.model.disableSign = true;
       window.WebCardinal.loader.hidden = false;
       payload.shipmentId = this.model.shipment.shipmentId;
-      payload.shipmentActualTemperature = this.model.shipmentModel.form.temperature.value;
       payload.signature = true;
       let receivedComment = {
           date: new Date().getTime(),
@@ -135,7 +134,6 @@ class ScanShipmentController extends WebcController {
       eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
 
 
-      //let order = await this.orderService.getOrder(this.model.shipment.orderSSI);
       let {studyId, orderId}  = this.model.shipment;
       let shipmentId = this.model.shipment.shipmentId;
       let sponsorId = this.model.shipment.sponsorId;

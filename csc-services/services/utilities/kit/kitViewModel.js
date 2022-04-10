@@ -131,14 +131,6 @@ const kitViewModel = {
       disabled: false,
       value: ''
     },
-    temperature_observed: {
-      label: 'Shipment Actual Temperature Observed',
-      name: 'Shipment Temperature Observed',
-      required: true,
-      placeholder: 'Shipment Temperature Observed',
-      disabled: false,
-      value: ''
-    },
     kit_temperature_observed: {
       label: 'Kit Actual Temperature Observed',
       name: 'Kit Temperature Observed',
