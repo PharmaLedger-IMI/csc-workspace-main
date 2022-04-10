@@ -5,8 +5,9 @@
 			<webc-template template="dashboard-menu"></webc-template>
 		</section>
 
-		<section class="notifications-section">
-			<table class="table table-borderless">
+		<section class="notifications-section" data-if='@notificationsEmpty'>
+			<webc-spinner slot='loading'></webc-spinner>
+			<table class="table table-borderless" slot='false'>
 				<thead>
 				<tr>
 					<th></th>
@@ -40,6 +41,7 @@
 				</tr>
 				</tbody>
 			</table>
+			<div class='text-center' slot='true'> No notifications available.</div>
 		</section>
 	</main>
 </webc-container>

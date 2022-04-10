@@ -113,7 +113,6 @@ class KitsService extends DSUService {
     kitDetails.temperatures = shipment.temperatures;
     kitDetails.temperatureComments = shipment.temperature_comments;
     kitDetails.shipmentComments = shipmentComments.comments;
-    kitDetails.shipmentActualTemperature = shipmentReceivedDsu.shipmentActualTemperature;
     kitDetails.receivedDateTime = shipmentReceivedDsu.receivedDateTime;
     return kitDetails;
   }

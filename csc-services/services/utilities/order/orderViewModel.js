@@ -76,6 +76,21 @@ const orderViewModel = {
                 disabled: false,
                 value: '',
             },
+            study_duration_from:{
+                label: 'Study Duration From/To',
+                name: 'study_duration_from',
+                required: true,
+                disabled: false,
+                value: '',
+                min: momentService(new Date()).add(DAYS_AHEAD, 'days').format(constants.Commons.YearMonthDayPattern)
+            },
+            study_duration_to:{
+                name: 'study_duration_to',
+                required: true,
+                disabled: false,
+                value: '',
+                min: ""
+            },
             order_id: {
                 label: 'Order ID',
                 name: 'order_id',

@@ -134,7 +134,6 @@ class ScanShipmentController extends WebcController {
       eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
 
 
-      //let order = await this.orderService.getOrder(this.model.shipment.orderSSI);
       let {studyId, orderId}  = this.model.shipment;
       let shipmentId = this.model.shipment.shipmentId;
       let sponsorId = this.model.shipment.sponsorId;

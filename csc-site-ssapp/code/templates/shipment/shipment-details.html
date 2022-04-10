@@ -76,9 +76,9 @@
 		<!-- Delivery date/time -->
 		<label>{{@shipmentModel.form.deliveryDate.label}}</label>
 		<div>
-			<input class='form-control form-control-sm' readonly type='date'
+			<input class='form-control form-control-sm' readonly type='text'
 				   value='@shipmentModel.shipment.deliveryDateTime.date' />
-			<input class='form-control form-control-sm' readonly type='time'
+			<input class='form-control form-control-sm' readonly type='text'
 				   value='@shipmentModel.shipment.deliveryDateTime.time' />
 		</div>
 	</div>
@@ -88,9 +88,9 @@
 	<div class='grid-column-wrapper'>
 		<label>{{@shipmentModel.form.receivedDate.label}}</label>
 		<div>
-			<input class='form-control form-control-sm' readonly type='date'
+			<input class='form-control form-control-sm' readonly type='text'
 				   value='@shipmentModel.receivedDate' />
-			<input class='form-control form-control-sm' readonly type='time'
+			<input class='form-control form-control-sm' readonly type='text'
 				   value='@shipmentModel.receivedTime' />
 		</div>
 	</div>

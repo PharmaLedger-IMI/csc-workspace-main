@@ -68,6 +68,23 @@
                 <input class="form-control" data-view-model="@form.inputs.study_id" type="text" />
               </div>
 
+
+              <!-- Study Duration -->
+              <div class="form-group">
+                <!--Label -->
+                <label>{{@form.inputs.study_duration_from.label}} <span class='required'>*</span></label>
+                <div class="row">
+                  <div class="col-6">
+                    <!-- Input -->
+                    <input class="form-control" data-view-model="@form.inputs.study_duration_from" type="date" />
+                  </div>
+                  <div class="col-6">
+                    <!-- Input -->
+                    <input class="form-control" data-view-model="@form.inputs.study_duration_to" type="date" />
+                  </div>
+                </div>
+              </div>
+
               <!-- Order ID -->
               <div class="form-group">
                 <!--Label -->
@@ -161,14 +178,18 @@
 
         <!-- 2 - Documents -->
         <div class="step-holder step-hidden" id="step-2-wrapper">
+
           <!-- Attach Documents-->
           <div class="row">
             <div class="col-12 upload-attachment">
               <psk-files-chooser data-view-model="@form.attachment" event-name="add-file"></psk-files-chooser>
               <p>Maximum upload file size: 64MB</p>
             </div>
-            <div class="col-12">
-              <table class="table table-borderless attach-documents-table">
+            <div data-if="@form.filesEmpty"  class="col-12">
+              <div class="alert alert-light text-center" slot="true" role="alert">
+                There are no files selected yet!
+              </div>
+              <table slot="false" class="table table-borderless attach-documents-table">
                 <thead>
                   <tr>
                     <th scope="col">Document Name</th>
@@ -259,8 +280,8 @@
                 <!-- Request Delivery Date/Time -->
                 <label>Requested Delivery Date/Time</label>
                 <div>
-                  <input class="form-control form-control-sm" readonly type="date" min='@form.inputs.delivery_date.min' value="@form.inputs.delivery_date.value" />
-                  <input class="form-control form-control-sm" readonly type="time" value="@form.inputs.delivery_time.value" />
+                  <input class="form-control form-control-sm" readonly type="text" min='@form.inputs.delivery_date.min' value="@form.inputs.delivery_date.value" />
+                  <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.delivery_time.value" />
                 </div>
 
                 <!-- Target CMO ID -->
@@ -270,6 +291,13 @@
                 <!-- Study ID -->
                 <label>{{@form.inputs.study_id.label}}</label>
                 <input class="form-control form-control-sm" readonly type="text" value="@form.inputs.study_id.value" />
+
+                <!-- Study Duration -->
+                <label>{{@form.inputs.study_duration_from.label}}</label>
+                <div>
+                    <input class="form-control" value="@form.inputs.study_duration_from.value" readonly />
+                    <input class="form-control" value="@form.inputs.study_duration_to.value" readonly />
+                </div>
 
                 <!-- Order ID -->
                 <label>{{@form.inputs.order_id.label}}</label>

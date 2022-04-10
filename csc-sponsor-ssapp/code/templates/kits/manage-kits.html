@@ -65,6 +65,13 @@
           <webc-template template='kits/progress-status' data-view-model='@kitsDispensed'></webc-template>
         </td>
 
+        <td>
+          <webc-template template='kits/progress-status' data-view-model='@kitsReturned'></webc-template>
+        </td>
+        <td>
+          <webc-template template='kits/progress-status' data-view-model='@kitsReconciled'></webc-template>
+        </td>
+
         <td><label>{{@lastModified}}</label></td>
         <td data-if='@synchronized'>
           <button class='btn-bare table-cell' data-tag='view-kit' slot='true' title='View Kits'>

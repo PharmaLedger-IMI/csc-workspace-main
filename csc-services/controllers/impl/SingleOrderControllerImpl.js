@@ -43,7 +43,6 @@ class SingleOrderControllerImpl extends AccordionController {
       const filename = target.getAttribute('data-custom') || null;
       if (filename) {
         if (model.name && model.name === filename) {
-          const document = this.model.order.documents.find((x) => x.name === filename);
           const keySSI = this.model.order.sponsorDocumentsKeySSI;
           await this.downloadFile(filename, FoldersEnum.Documents, keySSI);
         } else {

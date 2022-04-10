@@ -2,7 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService;
-const { Topics, Roles, DocumentTypes } = cscServices.constants;
+const { Topics, Roles, DocumentTypes, Commons } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
 const DidService = cscServices.DidService;
 const momentService = cscServices.momentService;
@@ -39,10 +39,9 @@ export default class NewOrderController extends WebcController {
       formIsInvalid:true,
     };
 
-    let didService = DidService.getDidServiceInstance();
-    didService.getDID().then((did)=>{
-      this.model.form.inputs.sponsor_id.value = did;
-    });
+    this.model.form.filesEmpty = true;
+
+    this.setSponsorIdToForm();
 
     this.model.form.isSubmitting = false;
 
@@ -63,6 +62,7 @@ export default class NewOrderController extends WebcController {
           });
         });
       }
+      this.model.form.filesEmpty = (this.files.length === 0);
 
       if (event.data) this.docs = event.data;
     });
@@ -100,6 +100,7 @@ export default class NewOrderController extends WebcController {
         let doc = this.model.form.documents.find((item) => item.uuid === document.uuid);
         let idx = this.model.form.documents.indexOf(doc);
         this.model.form.documents.splice(idx, 1);
+        this.model.form.filesEmpty = (this.files.length === 0);
       }
     });
 
@@ -242,6 +243,7 @@ export default class NewOrderController extends WebcController {
         'Clear Changes',
         () => {
           this.model.form = viewModelResolver('order').form;
+          this.setSponsorIdToForm();
           this.files = [];
           makeStepActive('step-1', 'step-1-wrapper', e);
         },
@@ -291,8 +293,22 @@ export default class NewOrderController extends WebcController {
       }
     }
 
+    let studyDurationHandler = () => {
+      let fromDate = this.model.form.inputs.study_duration_from;
+      let toDate = this.model.form.inputs.study_duration_to;
+
+      let fromDateObj = new Date(fromDate.value);
+      let toDateObj = new Date(toDate.value);
+
+      if (fromDateObj > toDateObj || !(toDateObj instanceof Date)) {
+        toDate.value = fromDate.value;
+      }
+      toDate.min = momentService(fromDate.value).format(Commons.YearMonthDayPattern);
+    };
+
     this.model.onChange('form.inputs.keep_between_temperature_min.value',tempChangeHandler)
     this.model.onChange('form.inputs.keep_between_temperature_max.value', tempChangeHandler)
+    this.model.onChange('form.inputs.study_duration_from', studyDurationHandler);
     this.model.onChange('form.inputs', this.checkFormValidity.bind(this));
   }
 
@@ -350,5 +366,13 @@ export default class NewOrderController extends WebcController {
     }
     console.log(ids);
     return ids;
+  }
+
+
+  setSponsorIdToForm() {
+    let didService = DidService.getDidServiceInstance();
+    didService.getDID().then((did)=>{
+      this.model.form.inputs.sponsor_id.value = did;
+    });
   }
 }
