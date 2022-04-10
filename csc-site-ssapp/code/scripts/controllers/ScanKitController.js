@@ -125,7 +125,7 @@ class ScanKitController extends WebcController {
     }
 
     await this.kitsService.updateKit(this.model.kit.uid, kitsStatusesEnum.AvailableForAssignment, {
-      kitActualTemperatureObserved: this.model.kitModel.form.temperature.value,
+      // kitActualTemperatureObserved: this.model.kitModel.form.temperature.value,
       kitComment: receivedComment
     });
 
