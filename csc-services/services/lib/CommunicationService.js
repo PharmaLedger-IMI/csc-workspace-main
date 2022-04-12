@@ -22,15 +22,22 @@ class CommunicationService {
 
             try {
                 const sc = scAPI.getSecurityContext();
-                sc.on("initialised", async () => {
+
+                const resolveDid = async() => {
                     try {
                         this.didDocument = await this.getDidDocumentInstance(didData);
                         console.log(this.didDocument);
-                    }
-                    catch (e){
+                    } catch (e) {
                         console.log(e);
                     }
-                });
+                };
+
+                if (sc.isInitialised()) {
+                    resolveDid();
+                } else {
+                    sc.on('initialised', resolveDid);
+                }
+
             } catch (e) {
                 console.error(e);
             }
