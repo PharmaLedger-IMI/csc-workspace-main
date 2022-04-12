@@ -1,8 +1,10 @@
 const constants = require('csc-services').constants;
 const orderBusinessRequirements = constants.order.orderBusinessRequirements;
+const siteBusinessRequirements = constants.kit.siteBusinessRequirements;
 const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
 const DAYS_AHEAD = orderBusinessRequirements.DeliveryDateDaysAhead;
 const momentService = require('csc-services').momentService;
+const doseUomIds = siteBusinessRequirements.doseUomIds;
 
 const kitViewModel = {
 
@@ -171,8 +173,18 @@ const kitViewModel = {
       disabled: false,
       value: ''
     },
+    doseUom: {
+      label: 'Dose UoM',
+      name: 'dose-uom',
+      id: 'dose-uom',
+      required: true,
+      placeholder: 'e.g. mL',
+      disabled: false,
+      options: doseUomIds,
+      value: doseUomIds[0],
+    },
     doseVolume: {
-      label: 'Dose Volume(mL)',
+      label: 'Dose Volume',
       name: 'dose-volume',
       id: 'dose-volume',
       required: true,
