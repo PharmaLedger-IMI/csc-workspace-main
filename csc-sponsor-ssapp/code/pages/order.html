@@ -69,16 +69,20 @@
             <span>Attached Documents</span>
           </div>
           <div class="accordion-item-holder" data-if="@order.documents">
-            <table class="table table-borderless attach-documents-table">
-              <thead>
+            <div data-if="@order.filesEmpty"  class="col-12">
+              <div class="alert alert-light text-center" slot="true" role="alert">
+                There are no any files attached!
+              </div>
+              <table slot="false" class="table table-borderless attach-documents-table">
+                <thead>
                 <tr>
                   <th scope="col">Document Name</th>
                   <th scope="col">Attached By</th>
                   <th scope="col">Date/Time Attached</th>
                   <th class="text-center" scope="col">Open/Download</th>
                 </tr>
-              </thead>
-              <tbody data-for="@order.documents">
+                </thead>
+                <tbody data-for="@order.documents">
                 <tr>
                   <th>{{@name}}</th>
                   <td>{{@attached_by}}</td>
@@ -87,8 +91,9 @@
                     <i class='attach-documents-table-icon fas fa-download'></i>
                   </td>
                 </tr>
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <!-- Order Comments -->
