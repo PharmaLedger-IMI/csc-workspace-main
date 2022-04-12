@@ -60,7 +60,6 @@ class DispenseKitController extends WebcController {
       model.userName = userDetails.username;
       this.model = model;
     });
-
   }
 
   initHandlers() {
@@ -87,6 +86,7 @@ class DispenseKitController extends WebcController {
     return {
       patientId: this.model.kitModel.form.patientId.value,
       doseType: this.model.kitModel.form.doseType.value,
+      doseUom: this.model.kitModel.form.doseUom.value,
       doseVolume: this.model.kitModel.form.doseVolume.value,
       visitId: this.model.kitModel.form.visitId.value,
       dispensingPartyId: this.model.kitModel.form.dispensingPartyId.value,

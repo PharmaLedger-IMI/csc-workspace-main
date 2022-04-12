@@ -167,10 +167,18 @@ const kitsTableHeaders = [
 	}
 ];
 
+const siteBusinessRequirements = {
+	doseUomIds : ["mL" , "mg"]
+}
+
 module.exports = {
 	kitsStatusesEnum,
 	kitsTableHeaders,
 	studiesKitsTableHeaders,
 	kitsPendingActionEnum,
-	kitsMessagesEnum
+	kitsMessagesEnum,
+	siteBusinessRequirements
+
 };
+
+
