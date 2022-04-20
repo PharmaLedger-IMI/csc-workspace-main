@@ -15,7 +15,6 @@ class ScanKitController extends WebcController {
     this.kitsService = new KitsService(this.DSUStorage);
     this.model = { kitModel: viewModelResolver('kit') };
     this.model.kit = this.originalKit;
-    console.log("originalKit " + JSON.stringify(this.model.kit));
     this.model.disableSign = false;
 
     this.initScanViewModel();
@@ -125,7 +124,6 @@ class ScanKitController extends WebcController {
     }
 
     await this.kitsService.updateKit(this.model.kit.uid, kitsStatusesEnum.AvailableForAssignment, {
-      // kitActualTemperatureObserved: this.model.kitModel.form.temperature.value,
       kitComment: receivedComment
     });
 

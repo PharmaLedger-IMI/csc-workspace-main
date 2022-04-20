@@ -133,18 +133,6 @@ const kitViewModel = {
       disabled: false,
       value: ''
     },
-    kit_temperature_observed: {
-      label: 'Kit Actual Temperature Observed',
-      name: 'Kit Temperature Observed',
-      required: true,
-      placeholder: 'Kit Temperature Observed',
-      disabled: false,
-      value: ''
-    },
-    temperature: [
-      { value: 'Within Range', text: 'Within Range' },
-      { value: 'Out of Range', text: 'Out of Range' }
-    ],
     comments: [],
     add_comment: {
       label: 'Add a Comment',

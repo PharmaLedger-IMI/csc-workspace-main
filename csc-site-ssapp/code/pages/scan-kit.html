@@ -18,10 +18,10 @@
           <div class='stepper-container'>
             <button id='step-1' data-tag='step-1' class='step-element step-active'>1 - Scan Kit</button>
             <div class="step-break-line"></div>
-            <button id='step-2' data-tag='step-2' disabled='@formIsInvalid' class='step-element'>2 - Add Details
+            <button id='step-2' data-tag='step-2' disabled='@formIsInvalid' class='step-element'>2 - Add Comment
             </button>
             <div class="step-break-line"></div>
-            <button id='step-3' data-tag='step-3' disabled='@formIsInvalid' class='step-element'>3 - Confirmation
+            <button id='step-3' data-tag='step-3' disabled='@formIsInvalid' class='step-element'>3 - Sign
             </button>
           </div>
 
@@ -72,18 +72,8 @@
 
           <div class='step-holder-modal step-hidden' id='step-2-wrapper'>
             <div class='row comments-container'>
-              <div class='col-lg-12 col-xl-6'>
-                <div class='form-group'>
-                  <label>Actual temperature observed</label><br>
-                  <select class='form-control' data-for='@kitModel.form.temperature' id='temperature' name='temperature'
-                          value='@kitModel.form.temperature.value'>
-                    <option value='@value'>{{ @text }}</option>
-                  </select>
-                </div>
-              </div>
-
               <!-- Comments Submission -->
-              <div class='col-lg-12 col-xl-6'>
+              <div class='col-lg-12 col-xl-12'>
                 <!-- Add Comment -->
                 <div class='form-group'>
                   <label>{{@kitModel.form.add_comment.label}}</label>
@@ -146,15 +136,6 @@
                          name='@kitModel.form.temperature_comments.name'
                          placeholder='@kitModel.form.temperature_comments.placeholder' type='text'
                          value='@kit.temperatureComments' />
-                </div>
-              </div>
-
-              <div class='col-12'>
-                <div class='form-group'>
-                  <label>Actual temperature observed</label>
-                  <input class='form-control form-control-sm' readonly name='temperature' type='text'
-                         value='@kitModel.form.temperature.value'
-                  />
                 </div>
               </div>
 
