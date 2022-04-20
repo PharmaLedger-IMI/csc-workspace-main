@@ -184,6 +184,10 @@ export default class EditShipmentController extends WebcController {
 		};
 	}
 
+	getTimestampFromDateTime(dateTime) {
+		return momentService(dateTime.date + ' ' + dateTime.time).valueOf();
+	}
+
 	getWizardForm() {
 		return [
 			{ id: 'step-1', holder_id: 'step-1-wrapper', name: 'Shipment Details', visible: true, validated: false },
@@ -252,10 +256,10 @@ export default class EditShipmentController extends WebcController {
 				building:shipmentFormData.destinationAddress.building.value
 			},
 			transportMode: shipmentFormData.transportMode.value,
-			scheduledPickupDateTime: {
+			scheduledPickupDateTime: this.getTimestampFromDateTime({
 				date: shipmentFormData.pickupDate.value,
 				time: shipmentFormData.pickupTime.value
-			},
+			}),
 			volumeUoM:shipmentFormData.volumeUoM.value,
 			dimension: {
 				dimensionWidth: shipmentFormData.dimension.width.value,
