@@ -91,6 +91,9 @@
                   <div data-if='@status_normal'>
                     <label class='status background-primary'>{{@status_value}}</label>
                   </div>
+                  <div data-if='@status_cancelled'>
+                    <label class='status background-cancelled'>{{@status_value}}</label>
+                  </div>
                 </td>
                 <td><label>{{@lastModified}}</label></td>
                 <td>

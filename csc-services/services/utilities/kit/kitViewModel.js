@@ -5,6 +5,7 @@ const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
 const DAYS_AHEAD = orderBusinessRequirements.DeliveryDateDaysAhead;
 const momentService = require('csc-services').momentService;
 const doseUomIds = siteBusinessRequirements.doseUomIds;
+const quarantineReasons = siteBusinessRequirements.quarantineReason;
 
 const kitViewModel = {
 
@@ -227,7 +228,14 @@ const kitViewModel = {
 			required: true,
 			type: 'text',
 			value: ''
-		}
+		},
+    quarantineReason:{
+      label: 'Quarantine Reason',
+      name: 'quarantine-reason',
+      id: 'quarantine-reason',
+      options: quarantineReasons,
+      value: quarantineReasons[0],
+    }
   }
 
 };

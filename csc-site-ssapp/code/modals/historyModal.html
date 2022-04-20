@@ -80,6 +80,14 @@
 							<div><b>{{@status}}:</b> {{@count}}</div>
 						</div>
 					</div>
+
+					<div data-if='@cancelled'>
+						<div slot='true' class='history-status background-cancelled'>
+							<div class='history-date'>{{@date}}</div>
+							<div><b>{{@status}}:</b> {{@count}}</div>
+						</div>
+					</div>
+
 				</div>
 				<div slot='false' class='m-3'><i>No kits are available yet</i></div>
 			</div>

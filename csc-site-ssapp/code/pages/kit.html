@@ -30,6 +30,13 @@
                   <div>{{@kitModel.kit.status_date}}</div>
                 </div>
               </div>
+              <div data-if="@kitModel.kit.status_cancelled">
+                <div class='entity-status-box background-cancelled'>
+                  <div>Kit Status:</div>
+                  <div><b>{{@kitModel.kit.status_value}}</b></div>
+                  <div>{{@kitModel.kit.status_date}}</div>
+                </div>
+              </div>
             </div>
             
   
@@ -58,6 +65,16 @@
             </div>
           </div>
           <div class='row-wrapper button-wrapper'>
+
+
+
+            <div data-if='@actions.canQuarantineKit'>
+              <button class='btn-cancel' data-tag='quarantine-kit'>
+                <i class="fas fa-triangle-exclamation"></i>
+                Quarantine Kit
+              </button>
+            </div>
+
             <div data-if='@actions.canManageKit'>
             <button class='btn-default' data-tag='manage-kit'>
               <span class='fas fa-icon fa-qrcode'></span>

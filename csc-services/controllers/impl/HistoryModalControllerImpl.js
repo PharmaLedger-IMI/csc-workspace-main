@@ -149,6 +149,7 @@ class HistoryModalControllerImpl extends WebcController {
 				if (Object.keys(final[key]).length !== 0) {
 					final[key].approved = statuses.approvedKitStatuses.indexOf(final[key].status) !== -1;
 					final[key].normal = statuses.normalKitStatuses.indexOf(final[key].status) !== -1;
+					final[key].cancelled = statuses.canceledKitsStatuses.indexOf(final[key].status) !== -1;
 					final[key].date = momentService(Math.max(...final[key].date)).format(Commons.DateTimeFormatPattern);
 					object.status.push(final[key]);
 				}

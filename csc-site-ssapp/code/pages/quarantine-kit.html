@@ -1,0 +1,141 @@
+<webc-container controller='QuarantineKitController'>
+  <main class='full-flex-column'>
+    <section>
+      <webc-template template='header-template'></webc-template>
+      <webc-template template='dashboard-menu'></webc-template>
+    </section>
+
+    <section class='header-section'>
+      <div class='navigation-section'>
+        <span class='nav-back' data-tag='nav-back'>
+          <i class="fa-solid fa-arrow-left"></i>
+        </span>
+        <span data-tag='dashboard'>Dashboard / Kits Management </span> / <span data-tag='view-study-kits'>{{@kit.studyId}} - {{@kit.orderId}} / Kits</span> / <span
+        data-tag='view-kit'>{{@kit.kitId}}</span> / <strong>Quarantine Kit</strong>
+      </div>
+
+      <div class='body-main-section'>
+          <div class='stepper-container'>
+            <button id='step-1' data-tag='step-1' class='step-element step-active'>1 - Scan Kit</button>
+            <div class="step-break-line"></div>
+            <button id='step-2' data-tag='step-2' disabled='@formIsInvalid' class='step-element'>2 - Add Details
+            </button>
+            <div class="step-break-line"></div>
+            <button id='step-3' data-tag='step-3' disabled='@formIsInvalid' class='step-element'>3 - Submit
+            </button>
+          </div>
+
+          <div class="step-holder-modal barcode-container" id="step-1-wrapper">
+            <div class="d-flex flex-column align-items-center" data-if="@canScanKit">
+              <label class="scan-modal-label"> Please find the QR code on kit and scan it. </label>
+            </div>
+  
+            <div class="d-flex justify-content-center" data-if="@isKitScannerActive">
+              <psk-barcode-scanner data="@scannedKitData">
+                <webc-spinner slot='init'></webc-spinner>
+                <webc-spinner slot='feedback'></webc-spinner>
+              </psk-barcode-scanner>
+            </div>
+  
+            <div class="d-flex flex-column align-items-center" data-if="@showWrongKitScanResult">
+              <span class="fas fa-times fa-10x" style="color: #ef6c00"></span>
+              <label class="scan-modal-label">Wrong Kit Code Scanned. Please try again!</label>
+            </div>
+  
+            <div class="d-flex flex-column align-items-center" data-if="@showCorrectKitScanResult">
+              <i class="fas fa-check fa-10x scan-success"></i>
+              <label class="scan-modal-label"> Kit Scan Successful! </label>
+            </div>
+  
+            <div data-if="@canScanKit">
+              <div class="row-wrapper button-wrapper">
+                <button class="btn-default" data-tag="open-kit-scanner">SCAN</button>
+              </div>
+            </div>
+  
+            <div data-if="@enableStep1Navigation">
+              <div class="row-wrapper button-wrapper">
+                <button class="btn-default" data-tag="from_step_1_to_1" disabled id="from_step_1_to_1">
+                  <i class="fas fa-angle-left"></i>
+                  Previous
+                </button>
+                <button class="btn-default scan-again-button" data-tag="scan-again-kit"  disabled="@showCorrectKitScanResult" >
+                  Scan Again
+                </button>
+                <button class="btn-default" data-tag="from_step_1_to_2" disabled="@showWrongKitScanResult" id="from_step_1_to_2">
+                  Next
+                  <i class="fas fa-angle-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class='step-holder-modal step-hidden' id='step-2-wrapper'>
+            <div class='row comments-container'>
+              <!-- Quarantine Reason -->
+              <div class='col-lg-12 col-xl-12'>
+                <div class='form-group'>
+                  <label>{{@kitModel.form.quarantineReason.label}}</label>
+                  <select class='form-control' name='@kitModel.form.quarantineReason.name'
+                          value='@kitModel.form.quarantineReason.value' data-for='@kitModel.form.quarantineReason.options'>
+                    <option value='@'>{{@}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Navigation Between Steps-->
+              <div class='row-wrapper button-wrapper'>
+                <button class='btn-default' data-tag='from_step_2_to_1' id='from_step_2_to_1'>
+                  <i class='fas fa-angle-left'></i>
+                  Previous
+                </button>
+                <!-- Next Button -->
+                <button disabled='@formIsInvalid' class='btn-default' data-tag='from_step_2_to_3' id='from_step_2_to_3'>
+                  Next
+                  <i class='fas fa-angle-right'></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class='step-holder step-hidden' id='step-3-wrapper'>
+            <div class='row'>
+              <div class='col-12'>
+                <div class='form-group'>
+                  <!-- Kit ID -->
+                  <label>{{@kitModel.form.kitId.label}}</label>
+                  <input class='form-control form-control-sm' readonly name='@kitModel.form.kitId.name'
+                         type='text' value='@kit.kitId' />
+                </div>
+              </div>
+
+              <div class='col-12'>
+                <div class='form-group'>
+                  <!-- Kit Quarantine Reason -->
+                  <label>{{@kitModel.form.quarantineReason.label}}</label>
+                  <input class='form-control form-control-sm' readonly name='@kitModel.form.quarantineReason.name'
+                         type='text' value='@kitModel.form.quarantineReason.value' />
+                </div>
+              </div>
+
+
+
+
+              <!-- Navigation Between Steps-->
+              <div class='row-wrapper button-wrapper'>
+                <button class='btn-default' data-tag='from_step_3_to_2' id='from_step_3_to_2'>
+                  <i class='fas fa-angle-left'></i>
+                  Previous
+                </button>
+                <button class='btn-cancel' data-tag='quarantine_kit' id='quarantine_kit'
+                        disabled='@disableSubmission'>
+                  <i class="fas fa-triangle-exclamation"></i>
+                  Quarantine Kit
+                </button>
+              </div>
+            </div>
+          </div>
+      </div>
+    </section>
+  </main>
+</webc-container>

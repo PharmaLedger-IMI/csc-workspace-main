@@ -95,3 +95,11 @@
     </div>
   </div>
 </div>
+
+<div data-if='@kit.contextualContent.afterQuarantined'>
+  <div class="grid-column-wrapper">
+    <label>{{@form.quarantineReason.label}}</label>
+    <input class="form-control form-control-sm" readonly value="@kit.quarantineReason" />
+  </div>
+</div>
+

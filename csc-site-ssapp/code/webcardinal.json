@@ -82,6 +82,13 @@
       "src": "assign-kit.html",
       "indexed": false,
       "tag": "assign-kit"
+    },
+    {
+      "name": "Quarantine Kit",
+      "path": "./quarantine-kit",
+      "src": "quarantine-kit.html",
+      "indexed": false,
+      "tag": "quarantine-kit"
     }
   ]
 }

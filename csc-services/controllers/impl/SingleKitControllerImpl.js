@@ -62,6 +62,15 @@ class SingleKitControllerImpl extends AccordionController {
       });
     });
 
+    this.onTagClick('quarantine-kit', () => {
+      this.navigateToPageTag('quarantine-kit', {
+        kit: {
+          kitId: this.model.kitModel.kit.kitId,
+          ...this.model.toObject('kitModel.kit')
+        }
+      });
+    });
+
     this.onTagClick('assign-kit', () => {
       this.navigateToPageTag('assign-kit', {
         kit: {
@@ -152,6 +161,7 @@ class SingleKitControllerImpl extends AccordionController {
   setKitActions(kit) {
     const actions = {};
     actions.canManageKit = kit.status_value === kitsStatusesEnum.Received;
+    actions.canQuarantineKit = [kitsStatusesEnum.Received, kitsStatusesEnum.AvailableForAssignment, kitsStatusesEnum.Assigned].includes(kit.status_value);
     actions.canAssignKit = kit.status_value === kitsStatusesEnum.AvailableForAssignment;
     actions.canDispenseKit = kit.status_value === kitsStatusesEnum.Assigned;
     actions.canReturnKit = kit.status_value === kitsStatusesEnum.Dispensed;
@@ -203,15 +213,17 @@ class SingleKitControllerImpl extends AccordionController {
       const statuses = statusesService.getKitStatuses();
       const normalStatuses = statuses.normalKitStatuses;
       const approvedStatuses = statuses.approvedKitStatuses;
+      const cancelledStatuses = statuses.canceledKitsStatuses;
       data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
-      data.status_cancelled = data.status_value === kitsStatusesEnum.Cancelled;
+      data.status_cancelled = cancelledStatuses.indexOf(data.status_value) !== -1;
       data.status_normal = normalStatuses.indexOf(data.status_value) !== -1;
       data.contextualContent = {
          afterReceived: data.status.findIndex(el => el.status === kitsStatusesEnum.Received) !== -1,
          afterAvailableForAssignment: data.status.findIndex(el => el.status === kitsStatusesEnum.AvailableForAssignment) !== -1,
          afterAssigned: data.status.findIndex(el => el.status === kitsStatusesEnum.Assigned) !== -1,
          afterDispensed: data.status.findIndex(el => el.status === kitsStatusesEnum.Dispensed) !== -1,
-         afterReturned: data.status.findIndex(el => el.status === kitsStatusesEnum.Returned) !== -1
+         afterReturned: data.status.findIndex(el => el.status === kitsStatusesEnum.Returned) !== -1,
+         afterQuarantined:data.status.findIndex(el => el.status === kitsStatusesEnum.InQuarantine) !== -1
        };
       return data;
     }
@@ -230,6 +242,10 @@ class SingleKitControllerImpl extends AccordionController {
         return kitsPendingActionEnum.Return;
       case kitsStatusesEnum.Returned:
         return kitsPendingActionEnum.Reconcile;
+      case kitsStatusesEnum.InQuarantine:
+        return kitsPendingActionEnum.PendingDestruction;
+      case kitsStatusesEnum.PendingDestruction:
+        return kitsPendingActionEnum.SubmitDestructionDetails;
     }
 
     return kitsPendingActionEnum.NoFurtherActionsRequired;

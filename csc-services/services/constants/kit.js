@@ -4,7 +4,10 @@ const kitsStatusesEnum = {
 	Assigned: 'Assigned',
 	Dispensed: 'Dispensed',
 	Returned: 'Returned',
-	Reconciled: 'Reconciled'
+	Reconciled: 'Reconciled',
+	InQuarantine:"In Quarantine",
+	PendingDestruction:"Pending Destruction",
+	Destroyed:"Destroyed",
 };
 
 
@@ -14,6 +17,8 @@ const kitsPendingActionEnum = {
 	Dispense: 'Dispense',
 	Return:"Return",
 	Reconcile:"Reconcile",
+	PendingDestruction:"Pending Destruction",
+	SubmitDestructionDetails:"Submit Destruction Details",
 	NoFurtherActionsRequired: 'No further actions required'
 };
 
@@ -168,7 +173,8 @@ const kitsTableHeaders = [
 ];
 
 const siteBusinessRequirements = {
-	doseUomIds : ["mL" , "mg"]
+	doseUomIds : ["mL" , "mg"],
+	quarantineReason: ["Product Damaged","Temperature Excursion","End of Study"]
 }
 
 module.exports = {
@@ -178,7 +184,6 @@ module.exports = {
 	kitsPendingActionEnum,
 	kitsMessagesEnum,
 	siteBusinessRequirements
-
 };
 
 
