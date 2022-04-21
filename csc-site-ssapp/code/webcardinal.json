@@ -89,6 +89,13 @@
       "src": "quarantine-kit.html",
       "indexed": false,
       "tag": "quarantine-kit"
+    },
+    {
+      "name": "Destruction Confirmation",
+      "path": "./destruction-confirmation",
+      "src": "destruction-confirmation.html",
+      "indexed": false,
+      "tag": "destruction-confirmation"
     }
   ]
 }

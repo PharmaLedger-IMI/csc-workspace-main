@@ -9,7 +9,7 @@ module.exports = class FileDownloaderService extends DSUService {
   }
 
   async prepareDownloadFromDsu(path, filename) {
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, reject) => {
       let file = this.files.find((x) => x.filename === filename);
       if (!file) {
         file = {
@@ -18,7 +18,12 @@ module.exports = class FileDownloaderService extends DSUService {
         };
         this.files.push(file);
 
-        await this._getFileBlob(file.path, file.filename);
+        try{
+          await this._getFileBlob(file.path, file.filename);
+        }
+        catch (e) {
+          reject(e);
+        }
         resolve();
       } else resolve();
     });
@@ -59,10 +64,15 @@ module.exports = class FileDownloaderService extends DSUService {
 
   async _getFileBlob(path, filename) {
     const file = this.files.find((x) => x.filename === filename);
-    const buffer = await this.readFileAsync(path + '/' + filename);
+    let buffer;
+    try {
+      buffer = await this.readFileAsync(path + '/' + filename);
+    } catch (e) {
+      throw new Error('File not found');
+    }
+
     const blob = new Blob([buffer]);
     file['rawBlob'] = blob;
     file['mimeType'] = blob.type;
-    return;
   }
 };

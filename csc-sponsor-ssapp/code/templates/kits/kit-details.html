@@ -97,3 +97,42 @@
     <input class="form-control form-control-sm" readonly value="@kit.quarantineReason" />
   </div>
 </div>
+
+
+<div data-if='@kit.contextualContent.afterDestroyedConfirmation'>
+  <div class='grid-column-wrapper'>
+    <label> Certification of Destruction </label>
+    <div class='file-name-downloader'>
+      <div class='input-group'>
+        <input class='form-control form-control-sm' readonly type='text'
+               value='@kit.kitDestroyDetails.certificationOfDestructionName' />
+        <div class='input-group-append'>
+          <button class='btn btn-outline-secondary' type='button'
+                  data-tag='download-certification-of-destruction-file'>
+            <i class='fa fa-download'></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class='grid-column-wrapper'>
+    <label>{{@form.destructionFacilityProvider.label}}</label>
+    <input class='form-control form-control-sm' readonly value='@kit.kitDestroyDetails.destructionFacilityProvider' />
+  </div>
+
+  <div class='grid-column-wrapper'>
+    <label>{{@form.responsiblePerson.label}}</label>
+    <input class='form-control form-control-sm' readonly value='@kit.kitDestroyDetails.responsiblePerson' />
+  </div>
+
+  <div class='grid-column-wrapper'>
+    <label>{{@form.dateOfDestruction.label}}</label>
+    <input class='form-control form-control-sm' readonly value='@kit.kitDestroyDetails.dateOfDestruction' />
+  </div>
+
+  <div class='grid-column-wrapper'>
+    <label>{{@form.destructionComment.label}}</label>
+    <input class='form-control form-control-sm' readonly value='@kit.kitDestroyDetails.destructionComment' />
+  </div>
+</div>

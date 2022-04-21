@@ -234,7 +234,7 @@ class DSUService {
     });
   };
 
-  static getUidFromSSI(ssi){
+  getUidFromSSI(ssi){
     const ssiObj = keySSISpace.parse(ssi);
     return ssiObj.getAnchorId();
   }
