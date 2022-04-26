@@ -142,9 +142,6 @@ class ViewShipmentBaseControllerImpl extends AccordionController{
         data.pickupDateTimeChangeRequest.proposedDateTime = momentService(data.pickupDateTimeChangeRequest.requestPickupDateTime).format(Commons.DateTimeFormatPattern);
       }
 
-      if(data.requestedDeliveryDateTime){
-        data.requestedDeliveryDateTime = this.getDateTime (data.requestedDeliveryDateTime)
-      }
 
       if(data.scheduledPickupDateTime){
         data.scheduledPickupDateTime = this.getDateTime (data.scheduledPickupDateTime)
