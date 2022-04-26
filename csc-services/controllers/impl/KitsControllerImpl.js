@@ -109,11 +109,15 @@ class KitsControllerImpl extends WebcController {
 				const normalStatuses = statuses.normalKitStatuses;
 				const approvedStatuses = statuses.approvedKitStatuses;
 				const cancelledStatuses = statuses.canceledKitsStatuses;
+				const inQuarantineStatues = statuses.quarantineStatuses;
+				const pendingDestructionStatuses = statuses.pendingDestructionStatuses;
 				item.status_value = latestStatus.status;
 				item.receivedDate = momentService(receivedStatus.date).format(Commons.DateTimeFormatPattern);
 				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
 				item.status_approved = approvedStatuses.indexOf(item.status_value) !== -1;
 				item.status_normal = normalStatuses.indexOf(item.status_value) !== -1;
+				item.status_in_quarantine = inQuarantineStatues.indexOf(item.status_value) !== -1;
+				item.status_pending_destruction = pendingDestructionStatuses.indexOf(item.status_value) !== -1;
 				item.status_cancelled = cancelledStatuses.indexOf(item.status_value) !== -1;
 
 			});

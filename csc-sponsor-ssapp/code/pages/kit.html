@@ -31,6 +31,22 @@
                 </div>
               </div>
 
+              <div data-if="@kitModel.kit.status_quarantine">
+                <div class='entity-status-box background-in-quarantine'>
+                  <div>Kit Status:</div>
+                  <div><b>{{@kitModel.kit.status_value}}</b></div>
+                  <div>{{@kitModel.kit.status_date}}</div>
+                </div>
+              </div>
+
+              <div data-if="@kitModel.kit.status_pending_destruction">
+                <div class='entity-status-box background-pending-destruction'>
+                  <div>Kit Status:</div>
+                  <div><b>{{@kitModel.kit.status_value}}</b></div>
+                  <div>{{@kitModel.kit.status_date}}</div>
+                </div>
+              </div>
+
               <div data-if="@kitModel.kit.status_cancelled">
                 <div class='entity-status-box background-cancelled'>
                   <div>Kit Status:</div>

@@ -105,8 +105,17 @@ label.status {
     background: #34a86b;
 }
 
+.background-in-quarantine{
+    background: #EF6A77;
+}
+
+.background-pending-destruction,
+.background-relabeling-request{
+    background: #ED1C24;
+}
+
 .background-cancelled {
-    background: red;
+    background: #DB0010;
 }
 
 .nav-back a {

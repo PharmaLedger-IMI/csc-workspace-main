@@ -36,7 +36,7 @@ button i{
 }
 
 .btn-cancel {
-    background: red;
+    background: #DB0010;
 }
 
 .btn-cancel:focus,

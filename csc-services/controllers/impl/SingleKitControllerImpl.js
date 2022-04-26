@@ -271,9 +271,13 @@ class SingleKitControllerImpl extends AccordionController {
       const normalStatuses = statuses.normalKitStatuses;
       const approvedStatuses = statuses.approvedKitStatuses;
       const cancelledStatuses = statuses.canceledKitsStatuses;
+      const inQuarantineStatues = statuses.quarantineStatuses;
+      const pendingDestructionStatuses = statuses.pendingDestructionStatuses;
       data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
       data.status_cancelled = cancelledStatuses.indexOf(data.status_value) !== -1;
       data.status_normal = normalStatuses.indexOf(data.status_value) !== -1;
+      data.status_quarantine = inQuarantineStatues.indexOf(data.status_value) !== -1;
+      data.status_pending_destruction = pendingDestructionStatuses.indexOf(data.status_value) !== -1;
       data.contextualContent = {
          afterReceived: data.status.findIndex(el => el.status === kitsStatusesEnum.Received) !== -1,
          afterAvailableForAssignment: data.status.findIndex(el => el.status === kitsStatusesEnum.AvailableForAssignment) !== -1,
