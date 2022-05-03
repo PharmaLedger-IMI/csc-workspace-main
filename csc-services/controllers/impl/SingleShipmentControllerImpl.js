@@ -71,7 +71,6 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   transformOrderData(data) {
     if (data) {
       data.delivery_date = this.getDateTime(data.deliveryDate);
-
       data.documents = [];
       if (data.sponsorDocuments) {
         data.sponsorDocuments.forEach((doc) => {

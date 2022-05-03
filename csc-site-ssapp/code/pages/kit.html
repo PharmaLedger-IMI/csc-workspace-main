@@ -30,6 +30,31 @@
                   <div>{{@kitModel.kit.status_date}}</div>
                 </div>
               </div>
+
+
+              <div data-if="@kitModel.kit.status_quarantine">
+                <div class='entity-status-box background-in-quarantine'>
+                  <div>Kit Status:</div>
+                  <div><b>{{@kitModel.kit.status_value}}</b></div>
+                  <div>{{@kitModel.kit.status_date}}</div>
+                </div>
+              </div>
+
+              <div data-if="@kitModel.kit.status_pending_destruction">
+                <div class='entity-status-box background-pending-destruction'>
+                  <div>Kit Status:</div>
+                  <div><b>{{@kitModel.kit.status_value}}</b></div>
+                  <div>{{@kitModel.kit.status_date}}</div>
+                </div>
+              </div>
+
+              <div data-if="@kitModel.kit.status_cancelled">
+                <div class='entity-status-box background-cancelled'>
+                  <div>Kit Status:</div>
+                  <div><b>{{@kitModel.kit.status_value}}</b></div>
+                  <div>{{@kitModel.kit.status_date}}</div>
+                </div>
+              </div>
             </div>
             
   
@@ -58,22 +83,46 @@
             </div>
           </div>
           <div class='row-wrapper button-wrapper'>
+
+
+
+            <div data-if='@actions.canQuarantineKit'>
+              <button class='btn-cancel' data-tag='quarantine-kit'>
+                <i class="fas fa-triangle-exclamation"></i>
+                Quarantine Kit
+              </button>
+            </div>
+
+            <div data-if='@actions.canRequestDestruction'>
+              <button class='btn-cancel' data-tag='request-kit-destruction'>
+                <i class="fas fa-triangle-exclamation"></i>
+                Request Destruction
+              </button>
+            </div>
+
+            <div data-if='@actions.canConfirmDestruction'>
+              <button class='btn-cancel' data-tag='confirm-kit-destruction'>
+                <i class="fas fa-triangle-exclamation"></i>
+               Confirm Destruction
+              </button>
+            </div>
+
             <div data-if='@actions.canManageKit'>
-            <button class='btn-default' data-tag='manage-kit'>
+            <button class='btn-default' data-tag='manage-kit' disabled='@kitModel.kit.studyHasEnded'>
               <span class='fas fa-icon fa-qrcode'></span>
               Manage Kit
             </button>
             </div>
 
             <div data-if='@actions.canAssignKit'>
-              <button class='btn-default' data-tag='assign-kit'>
+              <button class='btn-default' data-tag='assign-kit' disabled='@kitModel.kit.studyHasEnded'>
                 <span class='fas fa-medkit mr-2'></span>
                 Assign Kit
               </button>
             </div>
 
             <div data-if='@actions.canDispenseKit'>
-              <button class='btn-default' data-tag='dispense-kit'>
+              <button class='btn-default' data-tag='dispense-kit' disabled='@kitModel.kit.studyHasEnded'>
                 <span class='fas fa-medkit mr-2'></span>
                 Dispense Kit
               </button>

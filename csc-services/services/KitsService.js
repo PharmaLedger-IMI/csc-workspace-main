@@ -2,7 +2,7 @@ const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedSto
 const DSUService = require('./lib/DSUService.js');
 const ShipmentsService = require('./ShipmentsService.js');
 const {getCommunicationServiceInstance} = require("./lib/CommunicationService");
-const { FoldersEnum, kit } = require('./constants');
+const { FoldersEnum, kit, Roles } = require('./constants');
 const { kitsStatusesEnum } = kit;
 
 class KitsService extends DSUService {
@@ -114,6 +114,20 @@ class KitsService extends DSUService {
     kitDetails.temperatureComments = shipment.temperature_comments;
     kitDetails.shipmentComments = shipmentComments.comments;
     kitDetails.receivedDateTime = shipmentReceivedDsu.receivedDateTime;
+
+    //only SPO, CMO keep orderIdentifier in their dbs
+    if (typeof shipment.kitIdSSI === 'undefined' && typeof shipment.orderSSI !== 'undefined') {
+      const order = await this.getEntityAsync(shipment.orderSSI, FoldersEnum.Orders);
+      kitDetails.studyData = {
+        studyDurationFrom: order.studyDurationFrom,
+        studyDurationTo: order.studyDurationTo,
+        studyId: order.studyId
+      };
+    } else {
+      const kitIdDsu = await this.getKitIdsDsu(shipment.kitIdSSI);
+      kitDetails.studyData = kitIdDsu.studyData;
+    }
+
     return kitDetails;
   }
 
@@ -202,6 +216,53 @@ class KitsService extends DSUService {
       modifiedKit.investigatorId = kitDetails.investigatorId;
     }
     return await this.storageService.updateRecord(this.KITS_TABLE, kitDetails.studyId, studyKitDb);
+  }
+
+  async addCertificationOfDestruction(file) {
+    const certificationOfDestructionDSU = await this.saveEntityAsync(
+      {
+        file: {
+          name: file.name,
+          attached_by: Roles.Site,
+          date: new Date().getTime(),
+        },
+      },
+      FoldersEnum.CertificationOfDestruction
+    );
+
+    certificationOfDestructionDSU.file.attachmentKeySSI = await this.uploadFile(FoldersEnum.CertificationOfDestruction + '/' + certificationOfDestructionDSU.uid + '/' + 'files' + '/' + file.name, file);
+    return await this.updateEntityAsync(certificationOfDestructionDSU, FoldersEnum.CertificationOfDestruction);
+  }
+
+  async mountCertificationOfDestruction(ssi){
+    return await this.mountEntityAsync(ssi, FoldersEnum.CertificationOfDestruction);
+  }
+
+  //TODO move to utils
+  uploadFile(path, file) {
+    function getFileContentAsBuffer(file, callback) {
+      let fileReader = new FileReader();
+      fileReader.onload = function (evt) {
+        let arrayBuffer = fileReader.result;
+        callback(undefined, arrayBuffer);
+      };
+
+      fileReader.readAsArrayBuffer(file);
+    }
+
+    return new Promise((resolve, reject) => {
+      getFileContentAsBuffer(file, (err, arrayBuffer) => {
+        if (err) {
+          return reject('Could not get file as a Buffer');
+        }
+        this.DSUStorage.writeFile(path, $$.Buffer.from(arrayBuffer), undefined, (err, keySSI) => {
+          if (err) {
+            return reject(new Error(err));
+          }
+          resolve();
+        });
+      });
+    });
   }
 }
 

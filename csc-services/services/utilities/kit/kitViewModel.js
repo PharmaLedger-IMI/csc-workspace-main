@@ -5,6 +5,7 @@ const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
 const DAYS_AHEAD = orderBusinessRequirements.DeliveryDateDaysAhead;
 const momentService = require('csc-services').momentService;
 const doseUomIds = siteBusinessRequirements.doseUomIds;
+const quarantineReasons = siteBusinessRequirements.quarantineReason;
 
 const kitViewModel = {
 
@@ -133,18 +134,6 @@ const kitViewModel = {
       disabled: false,
       value: ''
     },
-    kit_temperature_observed: {
-      label: 'Kit Actual Temperature Observed',
-      name: 'Kit Temperature Observed',
-      required: true,
-      placeholder: 'Kit Temperature Observed',
-      disabled: false,
-      value: ''
-    },
-    temperature: [
-      { value: 'Within Range', text: 'Within Range' },
-      { value: 'Out of Range', text: 'Out of Range' }
-    ],
     comments: [],
     add_comment: {
       label: 'Add a Comment',
@@ -239,7 +228,58 @@ const kitViewModel = {
 			required: true,
 			type: 'text',
 			value: ''
-		}
+		},
+    quarantineReason:{
+      label: 'Quarantine Reason',
+      name: 'quarantine-reason',
+      id: 'quarantine-reason',
+      options: quarantineReasons,
+      value: quarantineReasons[0],
+    },
+
+    certificationOfDestruction: {
+      label: 'Upload File',
+      listFiles: false,
+      filesAppend: false,
+      files: [],
+      name: 'No File',
+      ids: [],
+      error: '',
+    },
+    destructionFacilityProvider:{
+      label: 'Destruction Facility',
+      name: 'destruction-facility',
+      id: 'destruction-facility',
+      options: ["Sponsor","CMO"],
+      value: "CMO",
+    },
+    responsiblePerson:{
+      label: 'Responsible Person ID',
+      name: 'responsible-person',
+      id: 'responsible-person',
+      required: true,
+      placeholder: 'ID of the responsible person for destruction',
+      type: 'text',
+      value: ''
+    },
+    dateOfDestruction:{
+      label: 'Date of Destruction',
+      name: 'date-of-destruction',
+      required: true,
+      disabled: false,
+      type: 'date',
+      max: momentService(new Date()).format(constants.Commons.YearMonthDayPattern),
+      value: ''
+    },
+    destructionComment:{
+      label: 'Destruction Comment',
+      name: 'destruction-comment',
+      id: 'destruction-comment',
+      required: true,
+      placeholder: 'Provide some details regarding kit destruction',
+      type: 'text',
+      value: ''
+    }
   }
 
 };

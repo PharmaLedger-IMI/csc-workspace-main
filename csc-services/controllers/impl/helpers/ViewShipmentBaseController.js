@@ -142,6 +142,11 @@ class ViewShipmentBaseControllerImpl extends AccordionController{
         data.pickupDateTimeChangeRequest.proposedDateTime = momentService(data.pickupDateTimeChangeRequest.requestPickupDateTime).format(Commons.DateTimeFormatPattern);
       }
 
+
+      if(data.scheduledPickupDateTime){
+        data.scheduledPickupDateTime = this.getDateTime (data.scheduledPickupDateTime)
+      }
+
       const statuses = statusesService.getShipmentStatusesByRole(this.role);
       const normalStatuses = statuses.normalStatuses;
       const approvedStatuses = statuses.approvedStatuses;

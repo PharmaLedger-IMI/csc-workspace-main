@@ -504,7 +504,7 @@ class ShipmentsService extends DSUService {
     	}
 
 	async updateLocalShipment(shipmentIdentifier, newShipmentData = {}) {
-		shipmentIdentifier = DSUService.getUidFromSSI(shipmentIdentifier);
+		shipmentIdentifier = this.getUidFromSSI(shipmentIdentifier);
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
 		const loadedShipmentDSU = await this.getEntityAsync(shipmentIdentifier, FoldersEnum.Shipments);
 
@@ -578,15 +578,22 @@ class ShipmentsService extends DSUService {
 		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentIdentifier, shipmentDB);
 	}
 
+	getTimestampFromDateTime(dateTime) {
+		return momentService(dateTime.date + ' ' + dateTime.time).valueOf();
+	}
+
+
 	async acceptNewPickupDateTimeRequest(shipmentIdentifier) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
 		let shipmentDSU = await this.getEntityAsync(shipmentIdentifier, FoldersEnum.Shipments);
 
 		const requestedPickupTimestamp = shipmentDB.pickupDateTimeChangeRequest.requestPickupDateTime;
-		const scheduledPickupDateTime = {
+		const scheduledPickupDateTime = this.getTimestampFromDateTime({
 			date: momentService(requestedPickupTimestamp).format(Commons.DateFormatPattern),
 			time: momentService(requestedPickupTimestamp).format(Commons.HourFormatPattern)
-		};
+		});
+
+
 
 		shipmentDSU.scheduledPickupDateTime = scheduledPickupDateTime;
 		shipmentDB.scheduledPickupDateTime = scheduledPickupDateTime;

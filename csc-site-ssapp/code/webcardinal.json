@@ -82,6 +82,20 @@
       "src": "assign-kit.html",
       "indexed": false,
       "tag": "assign-kit"
+    },
+    {
+      "name": "Quarantine Kit",
+      "path": "./quarantine-kit",
+      "src": "quarantine-kit.html",
+      "indexed": false,
+      "tag": "quarantine-kit"
+    },
+    {
+      "name": "Destruction Confirmation",
+      "path": "./destruction-confirmation",
+      "src": "destruction-confirmation.html",
+      "indexed": false,
+      "tag": "destruction-confirmation"
     }
   ]
 }

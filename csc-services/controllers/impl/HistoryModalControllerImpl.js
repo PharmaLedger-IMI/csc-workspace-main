@@ -111,33 +111,33 @@ class HistoryModalControllerImpl extends WebcController {
 
 	transformKitData() {
 		const kits = this.model.toObject('kits')
-		let final = [];
-		const object = { status: [] , orderId : "" , studyId: ""};
+		let statusesCounter = [];
+		const kitsHistory = { status: [] , orderId : "" , studyId: ""};
 		if (kits) {
 			kits.forEach((kit) => {
 				if (kit.status) {
-					object.orderId = kit.orderId;
-					object.studyId = kit.studyId;
+					kitsHistory.orderId = kit.orderId;
+					kitsHistory.studyId = kit.studyId;
 
 					kit.status.forEach((item) => {
 
-						if (!final[item.status]) {
-							final[item.status] = {};
+						if (!statusesCounter[item.status]) {
+							statusesCounter[item.status] = {};
 						}
 
-						final[item.status].status = item.status;
+						statusesCounter[item.status].status = item.status;
 
-						if (!final[item.status].count) {
-							final[item.status].count = 1;
+						if (!statusesCounter[item.status].count) {
+							statusesCounter[item.status].count = 1;
 						} else {
-							final[item.status].count += 1;
+							statusesCounter[item.status].count += 1;
 						}
 
-						if (!final[item.status].date) {
-							final[item.status].date = [];
-							final[item.status].date.push(item.date);
+						if (!statusesCounter[item.status].date) {
+							statusesCounter[item.status].date = [];
+							statusesCounter[item.status].date.push(item.date);
 						} else {
-							final[item.status].date.push(item.date);
+							statusesCounter[item.status].date.push(item.date);
 						}
 					});
 				}
@@ -145,17 +145,20 @@ class HistoryModalControllerImpl extends WebcController {
 
 			const statuses = statusesService.getKitStatuses();
 
-			Object.keys(final).forEach(key => {
-				if (Object.keys(final[key]).length !== 0) {
-					final[key].approved = statuses.approvedKitStatuses.indexOf(final[key].status) !== -1;
-					final[key].normal = statuses.normalKitStatuses.indexOf(final[key].status) !== -1;
-					final[key].date = momentService(Math.max(...final[key].date)).format(Commons.DateTimeFormatPattern);
-					object.status.push(final[key]);
+			Object.keys(statusesCounter).forEach(key => {
+				if (Object.keys(statusesCounter[key]).length !== 0) {
+					statusesCounter[key].approved = statuses.approvedKitStatuses.indexOf(statusesCounter[key].status) !== -1;
+					statusesCounter[key].normal = statuses.normalKitStatuses.indexOf(statusesCounter[key].status) !== -1;
+					statusesCounter[key].inQuarantine = statuses.quarantineStatuses.indexOf(statusesCounter[key].status) !== -1;
+					statusesCounter[key].pendingDestruction = statuses.pendingDestructionStatuses.indexOf(statusesCounter[key].status) !== -1;
+					statusesCounter[key].cancelled = statuses.canceledKitsStatuses.indexOf(statusesCounter[key].status) !== -1;
+					statusesCounter[key].date = momentService(Math.max(...statusesCounter[key].date)).format(Commons.DateTimeFormatPattern);
+					kitsHistory.status.push(statusesCounter[key]);
 				}
 			});
 		}
 
-		return object;
+		return kitsHistory;
 
 	}
 

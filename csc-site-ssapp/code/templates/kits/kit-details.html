@@ -1,51 +1,59 @@
-<div class="grid-column-wrapper">
-   
-   <!-- Kit ID -->
-   <label>{{@form.kitId.label}}</label>
-   <input class="form-control form-control-sm" readonly name="@form.kitId.name" placeholder="@form.kitId.placeholder" type="text" value="@kit.kitId" />
- 
-   <!-- Shipment ID -->
-   <label>{{@form.shipmentId.label}}</label>
-   <input class="form-control form-control-sm" readonly name="@form.shipmentId.name" placeholder="@form.shipmentId.placeholder" type="text" value="@kit.shipmentId" />
- 
-   <!-- Order ID -->
-   <label>{{@form.orderId.label}}</label>
-   <input class="form-control form-control-sm" readonly name="@form.orderId.name" placeholder="@form.orderId.placeholder" type="text" value="@kit.orderId" />
- 
-   <!-- Study ID -->
-   <label>{{@form.studyId.label}}</label>
-   <input class="form-control form-control-sm" readonly name="@form.studyId.name" placeholder="@form.studyId.placeholder" type="text" value="@kit.studyId" />
- 
-    <!-- Recipient Name -->
-    <label>{{@form.recipientName.label}}</label>
-    <input class="form-control form-control-sm" readonly name="@form.recipientName.name" placeholder="@form.recipientName.placeholder" type="text" value="@kit.recipientName" />
- 
-    <label>{{@form.receivedDate.label}}</label>
-    <div>
-      <input class="form-control form-control-sm" readonly type="text" value="@kit.receivedDateTime.date" />
-      <input class="form-control form-control-sm" readonly type="text" value="@kit.receivedDateTime.time" />
-    </div>
+<div class='grid-column-wrapper'>
 
-    <!-- Keep Between -->
-    <label>{{@form.keep_between_temperature.label}}</label>
-    <div>
-      <input class="form-control form-control-sm" readonly name="@form.keep_between_temperature_min.name" type="text" value="@kit.temperatures.min" />
-      <label>{{@form.keep_between_temperature.andLabel}}</label>
-      <input class="form-control form-control-sm" readonly name="@form.keep_between_temperature_max.name" type="text" value="@kit.temperatures.max" />
-    </div>
- 
-   <!-- Temperature Comment -->
-   <label>{{@form.temperature_comments.label}}</label>
-   <input class="form-control form-control-sm" readonly name="@form.temperature_comments.name" placeholder="@form.temperature_comments.placeholder" type="text" value="@kit.temperatureComments" />
- 
-    <!-- Shipment Comments -->
+  <!-- Kit ID -->
+  <label>{{@form.kitId.label}}</label>
+  <input class='form-control form-control-sm' readonly name='@form.kitId.name' placeholder='@form.kitId.placeholder'
+         type='text' value='@kit.kitId' />
+
+  <!-- Shipment ID -->
+  <label>{{@form.shipmentId.label}}</label>
+  <input class='form-control form-control-sm' readonly name='@form.shipmentId.name'
+         placeholder='@form.shipmentId.placeholder' type='text' value='@kit.shipmentId' />
+
+  <!-- Order ID -->
+  <label>{{@form.orderId.label}}</label>
+  <input class='form-control form-control-sm' readonly name='@form.orderId.name' placeholder='@form.orderId.placeholder'
+         type='text' value='@kit.orderId' />
+
+  <!-- Study ID -->
+  <label>{{@form.studyId.label}}</label>
+  <input class='form-control form-control-sm' readonly name='@form.studyId.name' placeholder='@form.studyId.placeholder'
+         type='text' value='@kit.studyId' />
+
+  <!-- Recipient Name -->
+  <label>{{@form.recipientName.label}}</label>
+  <input class='form-control form-control-sm' readonly name='@form.recipientName.name'
+         placeholder='@form.recipientName.placeholder' type='text' value='@kit.recipientName' />
+
+  <label>{{@form.receivedDate.label}}</label>
+  <div>
+    <input class='form-control form-control-sm' readonly type='text' value='@kit.receivedDateTime.date' />
+    <input class='form-control form-control-sm' readonly type='text' value='@kit.receivedDateTime.time' />
+  </div>
+
+  <!-- Keep Between -->
+  <label>{{@form.keep_between_temperature.label}}</label>
+  <div>
+    <input class='form-control form-control-sm' readonly name='@form.keep_between_temperature_min.name' type='text'
+           value='@kit.temperatures.min' />
+    <label>{{@form.keep_between_temperature.andLabel}}</label>
+    <input class='form-control form-control-sm' readonly name='@form.keep_between_temperature_max.name' type='text'
+           value='@kit.temperatures.max' />
+  </div>
+
+  <!-- Temperature Comment -->
+  <label>{{@form.temperature_comments.label}}</label>
+  <input class='form-control form-control-sm' readonly name='@form.temperature_comments.name'
+         placeholder='@form.temperature_comments.placeholder' type='text' value='@kit.temperatureComments' />
+
+  <!-- Shipment Comments -->
   <label>{{@form.shipment_comment.label}}</label>
   <div class='overflow-auto'>
     <div class='container d-flex' data-if='@kit.comments'>
       <span class='py-3 text-muted' slot='false'>There is no comment added.</span>
-      <div class="comments-container py-5 flex-column" data-for="@kit.comments" slot='true'>
-        <div class="comment">
-          <div class="identity"><small>{{@entity}}</small>, <small>{{@date}}</small></div>
+      <div class='comments-container py-5 flex-column' data-for='@kit.comments' slot='true'>
+        <div class='comment'>
+          <div class='identity'><small>{{@entity}}</small>, <small>{{@date}}</small></div>
           <div>{{@comment}}</div>
         </div>
       </div>
@@ -55,46 +63,90 @@
 </div>
 
 <div data-if='@kit.contextualContent.afterAvailableForAssignment'>
-    <div class="grid-column-wrapper">
-    <!-- Kit Actual Temperature Observed -->
-    <label>{{@form.kit_temperature_observed.label}}</label>
-    <input class="form-control form-control-sm" readonly name="@form.kit_temperature_observed.name" placeholder="@form.kit_temperature_observed.placeholder" type="text" value="@kit.kitActualTemperatureObserved" />
+  <div class='grid-column-wrapper'>
 
     <!-- Kit Comments -->
     <label>{{@form.kit_comment.label}}</label>
     <div class='overflow-auto'>
-        <div class='container d-flex' data-if='@kit.kitcomments'>
-            <span class='py-3 text-muted' slot='false'>There is no comment added.</span>
-            <div class="comments-container py-5 flex-column" data-if="@kit.kitcomments" slot='true'>
-                <div class="comment">
-                    <div class="identity"><small>{{@kit.kitcomments.entity}}</small>, <small>{{@kit.kitcomments.date}}</small></div>
-                    <div>{{@kit.kitcomments.comment}}</div>
-                </div>
+      <div class='container d-flex' data-if='@kit.kitcomments'>
+        <span class='py-3 text-muted' slot='false'>There is no comment added.</span>
+        <div class='comments-container py-5 flex-column' data-if='@kit.kitcomments' slot='true'>
+          <div class='comment'>
+            <div class='identity'><small>{{@kit.kitcomments.entity}}</small>, <small>{{@kit.kitcomments.date}}</small>
             </div>
+            <div>{{@kit.kitcomments.comment}}</div>
+          </div>
         </div>
+      </div>
     </div>
-    </div>
+  </div>
 </div>
 
 <div data-if='@kit.contextualContent.afterAssigned'>
-    <div class="grid-column-wrapper">
-        <label>{{@form.investigatorId.label}}</label>
-        <input class="form-control form-control-sm" readonly name="@form.investigatorId.name" value="@kit.investigatorId" />
-    </div>
+  <div class='grid-column-wrapper'>
+    <label>{{@form.investigatorId.label}}</label>
+    <input class='form-control form-control-sm' readonly name='@form.investigatorId.name' value='@kit.investigatorId' />
+  </div>
 </div>
 
 <div data-if='@kit.contextualContent.afterDispensed'>
-    <webc-template data-view-model='@' template='kits/dispense-details'></webc-template>
+  <webc-template data-view-model='@' template='kits/dispense-details'></webc-template>
 </div>
 
 <div data-if='@kit.contextualContent.afterReturned'>
   <div class='grid-column-wrapper'>
     <label>{{@form.returnedDate.label}}</label>
     <div>
-      <input class='form-control form-control-sm' readonly name='@form.returnedDate.name'
+      <input class='form-control form-control-sm' readonly
              value='@kit.returnedDate.date' />
-      <input class='form-control form-control-sm' readonly name='@form.returnedDate.name'
+      <input class='form-control form-control-sm' readonly
              value='@kit.returnedDate.time' />
     </div>
   </div>
 </div>
+
+<div data-if='@kit.contextualContent.afterQuarantined'>
+  <div class='grid-column-wrapper'>
+    <label>{{@form.quarantineReason.label}}</label>
+    <input class='form-control form-control-sm' readonly value='@kit.quarantineReason' />
+  </div>
+</div>
+
+<div data-if='@kit.contextualContent.afterDestroyedConfirmation'>
+  <div class='grid-column-wrapper'>
+    <label> Certification of Destruction </label>
+    <div class='file-name-downloader'>
+      <div class='input-group'>
+        <input class='form-control form-control-sm' readonly type='text'
+               value='@kit.kitDestroyDetails.certificationOfDestructionName' />
+        <div class='input-group-append'>
+          <button class='btn btn-outline-secondary' type='button'
+                  data-tag='download-certification-of-destruction-file'>
+            <i class='fa fa-download'></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class='grid-column-wrapper'>
+    <label>{{@form.destructionFacilityProvider.label}}</label>
+    <input class='form-control form-control-sm' readonly value='@kit.kitDestroyDetails.destructionFacilityProvider' />
+  </div>
+
+  <div class='grid-column-wrapper'>
+    <label>{{@form.responsiblePerson.label}}</label>
+    <input class='form-control form-control-sm' readonly value='@kit.kitDestroyDetails.responsiblePerson' />
+  </div>
+
+  <div class='grid-column-wrapper'>
+    <label>{{@form.dateOfDestruction.label}}</label>
+    <input class='form-control form-control-sm' readonly value='@kit.kitDestroyDetails.dateOfDestruction' />
+  </div>
+
+  <div class='grid-column-wrapper'>
+    <label>{{@form.destructionComment.label}}</label>
+    <input class='form-control form-control-sm' readonly value='@kit.kitDestroyDetails.destructionComment' />
+  </div>
+</div>
+

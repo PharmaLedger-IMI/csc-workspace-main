@@ -3,11 +3,11 @@ const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const KitsService = cscServices.KitsService;
 const eventBusService = cscServices.EventBusService;
-const { Roles, Topics } = cscServices.constants;
+const { Topics } = cscServices.constants;
 const { kitsStatusesEnum } = cscServices.constants.kit;
 
 
-class ScanKitController extends WebcController {
+class QuarantineKitController extends WebcController {
 
   constructor(...props) {
     super(...props);
@@ -15,11 +15,21 @@ class ScanKitController extends WebcController {
     this.kitsService = new KitsService(this.DSUStorage);
     this.model = { kitModel: viewModelResolver('kit') };
     this.model.kit = this.originalKit;
-    this.model.disableSign = false;
-
+    this.model.disableSubmission = false;
+    this.checkQuarantineReasons();
     this.initScanViewModel();
     this.initStepperNavigationHandlers();
     this.attachKitScannerHandlers();
+  }
+
+  checkQuarantineReasons(){
+    const currentDate = new Date();
+    //action next day
+    const studyTo = new Date(new Date(this.model.kit.studyData.studyDurationTo).getTime() + 86400000);
+    if (currentDate < studyTo) {
+        this.model.kitModel.form.quarantineReason.options.pop();
+    }
+
   }
 
   attachKitScannerHandlers() {
@@ -108,28 +118,22 @@ class ScanKitController extends WebcController {
       this.history.goBack();
     });
     
-    this.onTagEvent('sign_button', 'click', (e) => {
-      this.sign();
+    this.onTagEvent('quarantine_kit', 'click', (e) => {
+      this.quarantineKit();
     });
 
   }
 
-  async sign() {
-    this.model.disableSign = true;
+  async quarantineKit() {
+    this.model.disableSubmission = true;
     window.WebCardinal.loader.hidden = false;
-    let receivedComment = {
-      date: new Date().getTime(),
-      entity: Roles.Site,
-      comment: this.model.kitModel.form.add_comment.value
-    }
 
-    await this.kitsService.updateKit(this.model.kit.uid, kitsStatusesEnum.AvailableForAssignment, {
-      kitComment: receivedComment
+    await this.kitsService.updateKit(this.model.kit.uid, kitsStatusesEnum.InQuarantine, {
+      quarantineReason: this.model.kitModel.form.quarantineReason.value
     });
 
     eventBusService.emitEventListeners(Topics.RefreshKits, null);
-    this.showErrorModalAndRedirect('Kit is marked as available for assignment', 'Kit Available', { tag: 'kit', state: { uid: this.model.kit.uid } }, 2000);
-
+    this.showErrorModalAndRedirect('Kit is marked as being in Quarantine', 'Kit In Quarantine', { tag: 'kit', state: { uid: this.model.kit.uid } }, 2000);
     window.WebCardinal.loader.hidden = true;
   }
 
@@ -182,4 +186,4 @@ class ScanKitController extends WebcController {
   }
 }
 
-export default ScanKitController;
+export default QuarantineKitController;

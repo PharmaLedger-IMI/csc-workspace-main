@@ -56,9 +56,6 @@
 
 <div data-if='@kit.contextualContent.afterAvailableForAssignment'>
     <div class="grid-column-wrapper">
-    <!-- Kit Actual Temperature Observed -->
-    <label>{{@form.kit_temperature_observed.label}}</label>
-    <input class="form-control form-control-sm" readonly name="@form.kit_temperature_observed.name" placeholder="@form.kit_temperature_observed.placeholder" type="text" value="@kit.kitActualTemperatureObserved" />
 
     <!-- Kit Comments -->
     <label>{{@form.kit_comment.label}}</label>
@@ -90,6 +87,57 @@
 <div data-if='@kit.contextualContent.afterReturned'>
   <div class="grid-column-wrapper">
     <label>{{@form.returnedDate.label}}</label>
-    <input class="form-control form-control-sm" readonly name="@form.returnedDate.name" value="@kit.returnedDate" />
+    <div>
+      <input class='form-control form-control-sm' readonly
+             value='@kit.returnedDate.date' />
+      <input class='form-control form-control-sm' readonly
+             value='@kit.returnedDate.time' />
+    </div>
+  </div>
+</div>
+
+<div data-if='@kit.contextualContent.afterQuarantined'>
+  <div class="grid-column-wrapper">
+    <label>{{@form.quarantineReason.label}}</label>
+    <input class="form-control form-control-sm" readonly value="@kit.quarantineReason" />
+  </div>
+</div>
+
+
+<div data-if='@kit.contextualContent.afterDestroyedConfirmation'>
+  <div class='grid-column-wrapper'>
+    <label> Certification of Destruction </label>
+    <div class='file-name-downloader'>
+      <div class='input-group'>
+        <input class='form-control form-control-sm' readonly type='text'
+               value='@kit.kitDestroyDetails.certificationOfDestructionName' />
+        <div class='input-group-append'>
+          <button class='btn btn-outline-secondary' type='button'
+                  data-tag='download-certification-of-destruction-file'>
+            <i class='fa fa-download'></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class='grid-column-wrapper'>
+    <label>{{@form.destructionFacilityProvider.label}}</label>
+    <input class='form-control form-control-sm' readonly value='@kit.kitDestroyDetails.destructionFacilityProvider' />
+  </div>
+
+  <div class='grid-column-wrapper'>
+    <label>{{@form.responsiblePerson.label}}</label>
+    <input class='form-control form-control-sm' readonly value='@kit.kitDestroyDetails.responsiblePerson' />
+  </div>
+
+  <div class='grid-column-wrapper'>
+    <label>{{@form.dateOfDestruction.label}}</label>
+    <input class='form-control form-control-sm' readonly value='@kit.kitDestroyDetails.dateOfDestruction' />
+  </div>
+
+  <div class='grid-column-wrapper'>
+    <label>{{@form.destructionComment.label}}</label>
+    <input class='form-control form-control-sm' readonly value='@kit.kitDestroyDetails.destructionComment' />
   </div>
 </div>

@@ -1,10 +1,11 @@
 const AccordionController  = require("./helpers/AccordionController");
 const cscServices = require('csc-services');
 const KitsService = cscServices.KitsService;
+const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
 const momentService = cscServices.momentService;
 const eventBusService = cscServices.EventBusService;
-const { Commons, Topics, Roles } = cscServices.constants;
+const { Commons, Topics, Roles, FoldersEnum } = cscServices.constants;
 const {kitsStatusesEnum, kitsPendingActionEnum} = cscServices.constants.kit;
 const statusesService = cscServices.StatusesService;
 
@@ -15,6 +16,7 @@ class SingleKitControllerImpl extends AccordionController {
     this.actor = actor;
 
     this.kitsService = new KitsService(this.DSUStorage);
+    this.fileDownloaderService = new FileDownloaderService(this.DSUStorage);
     this.initViewModel();
     this.openFirstAccordion();
     this.attachEventListeners();
@@ -23,6 +25,33 @@ class SingleKitControllerImpl extends AccordionController {
   attachEventListeners() {
     this.toggleAccordionItemHandler();
     this.navigationHandlers();
+    this.attachDownloadHandler();
+  }
+
+  attachDownloadHandler() {
+    this.onTagClick('download-certification-of-destruction-file', async (model) => {
+
+      window.WebCardinal.loader.hidden = false;
+      const fileName = this.model.kitModel.kit.kitDestroyDetails.certificationOfDestructionName;
+      const keySSI  = this.model.kitModel.kit.kitDestroyDetails.certificationOfDestructionSSI;
+      const uid = this.kitsService.getUidFromSSI(keySSI);
+      const path = FoldersEnum.CertificationOfDestruction + '/' + uid + '/' + 'files';
+
+      const downloadFile = async ()=>{
+        try{
+          await this.fileDownloaderService.prepareDownloadFromDsu(path, fileName);
+        }
+        catch (e){
+          await this.kitsService.mountCertificationOfDestruction(keySSI);
+          downloadFile(path, fileName, keySSI);
+        }
+        this.fileDownloaderService.downloadFileToDevice(fileName);
+        window.WebCardinal.loader.hidden = true;
+      }
+
+      await downloadFile();
+
+    });
   }
 
   navigationHandlers() {
@@ -55,6 +84,15 @@ class SingleKitControllerImpl extends AccordionController {
   attachSiteEventHandlers(){
     this.onTagClick('manage-kit', () => {
       this.navigateToPageTag('scan-kit', {
+        kit: {
+          kitId: this.model.kitModel.kit.kitId,
+          ...this.model.toObject('kitModel.kit')
+        }
+      });
+    });
+
+    this.onTagClick('quarantine-kit', () => {
+      this.navigateToPageTag('quarantine-kit', {
         kit: {
           kitId: this.model.kitModel.kit.kitId,
           ...this.model.toObject('kitModel.kit')
@@ -114,6 +152,32 @@ class SingleKitControllerImpl extends AccordionController {
       );
     });
 
+    this.onTagClick('request-kit-destruction', () => {
+      this.showModal(
+        'Do you want to request kit destruction?',
+        'Kit Destruction',
+        this.requestKitDestruction.bind(this),
+        () => {
+
+        },
+        {
+          disableExpanding: true,
+          cancelButtonText: 'Cancel',
+          confirmButtonText: 'Yes, request destruction',
+          id: 'confirm-modal'
+        }
+      );
+    });
+
+    this.onTagClick('confirm-kit-destruction', () => {
+      this.navigateToPageTag('destruction-confirmation', {
+        kit: {
+          kitId: this.model.kitModel.kit.kitId,
+          ...this.model.toObject('kitModel.kit')
+        }
+      });
+    });
+
 
     this.onTagEvent('history-button', 'click', (e) => {
         this.onShowHistoryClick();
@@ -129,6 +193,11 @@ class SingleKitControllerImpl extends AccordionController {
     let { uid } = this.history.location.state;
     model.uid = uid;
     model.kitModel.kit = await this.kitsService.getKitDetails(model.uid);
+
+    const currentDate = new Date();
+    const studyTo = new Date(new Date(model.kitModel.kit.studyData.studyDurationTo).getTime() + 86400000);
+    model.kitModel.kit.studyHasEnded = currentDate > studyTo;
+
     model.kitModel.kit = { ...this.transformKitData(model.kitModel.kit) };
 
     if (model.kitModel.kit.shipmentComments) {
@@ -152,6 +221,9 @@ class SingleKitControllerImpl extends AccordionController {
   setKitActions(kit) {
     const actions = {};
     actions.canManageKit = kit.status_value === kitsStatusesEnum.Received;
+    actions.canQuarantineKit = [kitsStatusesEnum.Received, kitsStatusesEnum.AvailableForAssignment, kitsStatusesEnum.Assigned].includes(kit.status_value);
+    actions.canRequestDestruction = kit.status_value === kitsStatusesEnum.InQuarantine;
+    actions.canConfirmDestruction = kit.status_value === kitsStatusesEnum.PendingDestruction;
     actions.canAssignKit = kit.status_value === kitsStatusesEnum.AvailableForAssignment;
     actions.canDispenseKit = kit.status_value === kitsStatusesEnum.Assigned;
     actions.canReturnKit = kit.status_value === kitsStatusesEnum.Dispensed;
@@ -199,19 +271,32 @@ class SingleKitControllerImpl extends AccordionController {
         data.returnedDate = this.getDateTime(data.returnedDate)
       }
 
-      data.pending_action = this.getPendingAction(data.status_value);
       const statuses = statusesService.getKitStatuses();
       const normalStatuses = statuses.normalKitStatuses;
       const approvedStatuses = statuses.approvedKitStatuses;
+      const cancelledStatuses = statuses.canceledKitsStatuses;
+      const inQuarantineStatues = statuses.quarantineStatuses;
+      const pendingDestructionStatuses = statuses.pendingDestructionStatuses;
       data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
-      data.status_cancelled = data.status_value === kitsStatusesEnum.Cancelled;
+      data.status_cancelled = cancelledStatuses.indexOf(data.status_value) !== -1;
       data.status_normal = normalStatuses.indexOf(data.status_value) !== -1;
+      data.status_quarantine = inQuarantineStatues.indexOf(data.status_value) !== -1;
+      data.status_pending_destruction = pendingDestructionStatuses.indexOf(data.status_value) !== -1;
+
+      if (data.studyHasEnded && data.status_normal) {
+        data.pending_action = kitsPendingActionEnum.InQuarantine;
+      } else {
+        data.pending_action = this.getPendingAction(data.status_value);
+      }
+
       data.contextualContent = {
          afterReceived: data.status.findIndex(el => el.status === kitsStatusesEnum.Received) !== -1,
          afterAvailableForAssignment: data.status.findIndex(el => el.status === kitsStatusesEnum.AvailableForAssignment) !== -1,
          afterAssigned: data.status.findIndex(el => el.status === kitsStatusesEnum.Assigned) !== -1,
          afterDispensed: data.status.findIndex(el => el.status === kitsStatusesEnum.Dispensed) !== -1,
-         afterReturned: data.status.findIndex(el => el.status === kitsStatusesEnum.Returned) !== -1
+         afterReturned: data.status.findIndex(el => el.status === kitsStatusesEnum.Returned) !== -1,
+         afterQuarantined:data.status.findIndex(el => el.status === kitsStatusesEnum.InQuarantine) !== -1,
+         afterDestroyedConfirmation:data.status.findIndex(el => el.status === kitsStatusesEnum.Destroyed) !== -1
        };
       return data;
     }
@@ -230,6 +315,10 @@ class SingleKitControllerImpl extends AccordionController {
         return kitsPendingActionEnum.Return;
       case kitsStatusesEnum.Returned:
         return kitsPendingActionEnum.Reconcile;
+      case kitsStatusesEnum.InQuarantine:
+        return kitsPendingActionEnum.PendingDestruction;
+      case kitsStatusesEnum.PendingDestruction:
+        return kitsPendingActionEnum.SubmitDestructionDetails;
     }
 
     return kitsPendingActionEnum.NoFurtherActionsRequired;
@@ -256,6 +345,17 @@ class SingleKitControllerImpl extends AccordionController {
     await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Reconciled,{});
     eventBusService.emitEventListeners(Topics.RefreshKits + this.model.kitModel.kit.kitId, null);
     this.showErrorModalAndRedirect('Kit is marked as Reconciled', 'Kit Reconciled', {
+      tag: 'kit',
+      state: { uid: this.model.uid }
+    }, 2000);
+    window.WebCardinal.loader.hidden = true;
+  }
+
+  async requestKitDestruction(){
+    window.WebCardinal.loader.hidden = false;
+    await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.PendingDestruction,{});
+    eventBusService.emitEventListeners(Topics.RefreshKits + this.model.kitModel.kit.kitId, null);
+    this.showErrorModalAndRedirect('Kit destruction was requested', 'Destruction Request', {
       tag: 'kit',
       state: { uid: this.model.uid }
     }, 2000);

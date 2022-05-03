@@ -1,0 +1,68 @@
+<webc-container controller='ConfirmKitDestructionController'>
+  <main class='full-flex-column'>
+    <section>
+      <webc-template template='header-template'></webc-template>
+      <webc-template template='dashboard-menu'></webc-template>
+    </section>
+
+    <section class='header-section'>
+      <div class='navigation-section'>
+          <span class='nav-back' data-tag='nav-back'>
+            <i class="fa-solid fa-arrow-left"></i>
+          </span>
+
+        <span data-tag='dashboard'>Dashboard</span> / <span data-tag='kits-management'>Kits Management</span> / <span data-tag='view-study-kits'>{{@studyId}} - {{@orderId}}/ Kits</span> / <span data-tag='view-kit'> {{@kitId}} </span>
+        / <strong>Destruction Confirmation</strong>
+      </div>
+      <div class='body-main-section'>
+
+        <div class='entity-title text-center'>
+          <b>Confirm Kit Destruction</b>
+        </div>
+
+        <div class='form-group'>
+          <label>{{@kitModel.form.certificationOfDestruction.label}}<span class='required'>*</span></label>
+          <div class='input-group d-flex flex-column'>
+            <div class='input-group d-flex justify-content-between align-items-center'>
+              <input class='form-control' disabled value='@kitModel.form.certificationOfDestruction.name' />
+              <psk-files-chooser class='pl-3' data-view-model='@kitModel.form.certificationOfDestruction' accept='.*'
+                                 event-name='add-certification-of-destruction-file'></psk-files-chooser>
+            </div>
+          </div>
+        </div>
+
+        <div class='form-group'>
+          <label>{{@kitModel.form.destructionFacilityProvider.label}}<span class='required'>*</span></label>
+          <select class='form-control' data-for='@kitModel.form.destructionFacilityProvider.options' value='@kitModel.form.destructionFacilityProvider.value'>
+            <option value='@'>{{@}}</option>
+          </select>
+        </div>
+
+       <div class='form-group'>
+          <label>{{@kitModel.form.responsiblePerson.label}}<span class='required'>*</span></label>
+          <input class="form-control form-control-sm" name="@kitModel.form.responsiblePerson.name" placeholder="@kitModel.form.responsiblePerson.placeholder" value="@kitModel.form.responsiblePerson.value" />
+        </div>
+
+        <div class='form-group'>
+          <label>{{@kitModel.form.dateOfDestruction.label}}<span class='required'>*</span></label>
+          <input class="form-control form-control-sm" data-view-model="@kitModel.form.dateOfDestruction" value="@kitModel.form.dateOfDestruction.value"/>
+        </div>
+
+        <div class='form-group'>
+          <label>{{@kitModel.form.destructionComment.label}}</label>
+          <input class="form-control form-control-sm" name="@kitModel.form.destructionComment.name" placeholder="@kitModel.form.destructionComment.placeholder" value="@kitModel.form.destructionComment.value" />
+        </div>
+
+        <div class='row-wrapper button-wrapper'>
+
+          <button class='btn-default' data-tag='confirm-kit-destruction'>
+            <span class='fas fa-medkit mr-2'></span>
+            Confirm Kit Destruction
+          </button>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+</webc-container>

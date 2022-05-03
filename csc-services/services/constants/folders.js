@@ -12,5 +12,6 @@ module.exports.FoldersEnum = {
     ShipmentTransit:'/shipmenttransit',
     ShipmentDocuments:'/shipmentdocuments',
     ShipmentComments:'/shipmentcomments',
-    ShipmentReceived: '/shipmentreceived'
+    ShipmentReceived: '/shipmentreceived',
+    CertificationOfDestruction:"/certificationofdestruction"
 };

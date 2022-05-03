@@ -63,13 +63,14 @@ class StatusesService {
   }
 
   getKitStatuses() {
-
         let normalKitStatuses = [kitsStatusesEnum.Received, kitsStatusesEnum.AvailableForAssignment,kitsStatusesEnum.Assigned, kitsStatusesEnum.Dispensed, kitsStatusesEnum.Returned];
-        let approvedKitStatuses = [kitsStatusesEnum.Reconciled];
 
         return {
           normalKitStatuses : normalKitStatuses,
-          approvedKitStatuses: approvedKitStatuses
+          approvedKitStatuses: [kitsStatusesEnum.Reconciled],
+          quarantineStatuses:[kitsStatusesEnum.InQuarantine],
+          pendingDestructionStatuses : [kitsStatusesEnum.PendingDestruction],
+          canceledKitsStatuses : [kitsStatusesEnum.Destroyed]
         }
       }
 }
