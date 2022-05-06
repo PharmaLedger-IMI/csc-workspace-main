@@ -37,8 +37,8 @@
       ]
     },
     {
-      "name": "webcardinal",
-      "src": "https://github.com/webcardinal/webcardinal-bundler",
+      "name": "webcardinal/bundle",
+      "src": "https://github.com/webcardinal/webcardinal-all-release",
       "actions": [
         {
           "type": "smartClone",
@@ -47,7 +47,7 @@
         },
         {
           "type": "execute",
-          "cmd": "cd webcardinal && npm install && npm run bundle-all && npm run dev"
+          "cmd": "cd webcardinal && npm install"
         }
       ]
     },
