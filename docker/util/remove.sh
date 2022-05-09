@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 name="$(./util/name.sh -1)"
