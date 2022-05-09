@@ -45,7 +45,6 @@ csc-courier-ssapp/docs
 csc-courier-ssapp/code/scripts/bundles
 csc-courier-ssapp/seed
 
-/webcardinal
 documentation/bin/draw.io.path
 !ddocumentation/bin/resources/drawings/*.md
 documentation/drawings/*.xml
