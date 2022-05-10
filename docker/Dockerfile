@@ -12,7 +12,7 @@ ENV TARGET_FOLDER_NAME="csc-workspace"
 RUN git clone https://github.com/Mastaleru/csc-workspace-main.git $TARGET_FOLDER_NAME
 
 RUN cd $TARGET_FOLDER_NAME && \
-    npm run dev-install --unsafe-perm
+    npm install --unsafe-perm
 
 #All of the next lines will be handled from deployment.yaml
 
