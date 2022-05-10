@@ -2,6 +2,22 @@
     "workDir": ".",
     "dependencies": [
         {
+            "name": "webcardinal/bundle",
+            "src": "https://github.com/webcardinal/webcardinal-all-release",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "0b8ef9818b375a2f99da2c990507fce59ab0bec1"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd webcardinal && npm install"
+                }
+            ]
+        },
+        {
             "name": "cardinal",
             "src": "https://github.com/PrivateSky/cardinal.git",
             "actions": [
@@ -29,27 +45,11 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "29f5aed15d639bf79fd015a20b28b7b1ee4c6f5d"
+                    "commit": "5f6ad05f05d9cc0b1b2a9dfe67812520d27f2e82"
                 },
                 {
                     "type": "execute",
                     "cmd": "cd privatesky && npm install"
-                }
-            ]
-        },
-        {
-            "name": "webcardinal",
-            "src": "https://github.com/webcardinal/webcardinal-bundler",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "fc5053f1fa3d807cf928d8181dde969365dd5448"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd webcardinal && npm install && npm run bundle-all && npm run dev"
                 }
             ]
         },
@@ -458,7 +458,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd webcardinal && npm run build-dossier"
+                    "cmd": "cd webcardinal && npm run build"
                 }
             ]
         },
