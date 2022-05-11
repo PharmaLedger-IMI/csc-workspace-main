@@ -172,10 +172,8 @@ export default class ScanShipmentController extends WebcController {
         this.showModal(
           'Shipment scanned successfully!',
           'Scan Shipment',
-          () => {
-            this.navigateToPageTag('shipment', { uid: this.model.shipmentUID });
-          },
-          () => {},
+          () => { this.navigateToPageTag('shipment', { uid: this.model.shipmentUID }); },
+          () => { this.navigateToPageTag('shipment', { uid: this.model.shipmentUID }); },
           modalOptions
         );
       }
