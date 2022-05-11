@@ -222,7 +222,7 @@ const kitViewModel = {
       value: ''
     },
 		returnedDate:{
-			label: 'Return Date',
+			label: 'Return Date / Time',
 			name: 'return-date',
 			id: 'return-date',
 			required: true,
