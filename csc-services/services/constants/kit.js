@@ -175,6 +175,7 @@ const kitsTableHeaders = [
 
 const siteBusinessRequirements = {
 	doseUomIds : ["mL" , "mg"],
+	doseTypeOptions : ["Pill" , "Syringe", "Suspension", "Syrup", "Lotion", "Other"],
 	quarantineReason: ["Product Damaged","Temperature Excursion","End of Study"]
 }
 
