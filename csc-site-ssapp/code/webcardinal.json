@@ -96,6 +96,13 @@
       "src": "destruction-confirmation.html",
       "indexed": false,
       "tag": "destruction-confirmation"
+    },
+    {
+      "name": "Make Kit Available",
+      "path": "./make-kit-available",
+      "src": "make-kit-available.html",
+      "indexed": false,
+      "tag": "make-kit-available"
     }
   ]
 }

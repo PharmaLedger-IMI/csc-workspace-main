@@ -55,6 +55,22 @@
                   <div>{{@kitModel.kit.status_date}}</div>
                 </div>
               </div>
+
+              <div data-if="@kitModel.kit.status_request_relabeling">
+                <div class='entity-status-box background-orange'>
+                  <div>Kit Status:</div>
+                  <div><b>{{@kitModel.kit.status_value}}</b></div>
+                  <div>{{@kitModel.kit.status_date}}</div>
+                </div>
+              </div>
+
+              <div data-if="@kitModel.kit.status_blocked">
+                <div class='entity-status-box background-orange'>
+                  <div>Kit Status:</div>
+                  <div><b>{{@kitModel.kit.status_value}}</b></div>
+                  <div>{{@kitModel.kit.status_date}}</div>
+                </div>
+              </div>
             </div>
             
   
@@ -139,6 +155,20 @@
               <button class='btn-default' data-tag='reconcile-kit'>
                 <span class='fas fa-user-check mr-2'></span>
                 Reconcile Kit
+              </button>
+            </div>
+
+            <div data-if='@actions.canBlockKit'>
+              <button class='btn-reset' data-tag='block-kit'>
+                <span class='fas fa-check'></span>
+                Block Kit
+              </button>
+            </div>
+
+            <div data-if='@actions.canMakeKitAvailable'>
+              <button class='btn-default' data-tag='make-kit-available'>
+                <span class='fas fa-check'></span>
+                Make Kit Available
               </button>
             </div>
 
