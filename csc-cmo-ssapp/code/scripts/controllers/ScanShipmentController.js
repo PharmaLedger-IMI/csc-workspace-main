@@ -175,7 +175,9 @@ export default class ScanShipmentController extends WebcController {
           () => {
             this.navigateToPageTag('shipment', { uid: this.model.shipmentUID });
           },
-          () => {},
+          () => {
+            this.navigateToPageTag('shipment', { uid: this.model.shipmentUID });
+          },
           modalOptions
         );
       }
