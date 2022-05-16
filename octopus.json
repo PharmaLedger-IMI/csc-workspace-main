@@ -2,6 +2,21 @@
   "workDir": ".",
   "dependencies": [
     {
+      "name": "webcardinal/bundle",
+      "src": "https://github.com/webcardinal/webcardinal-all-release",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd webcardinal && npm install"
+        }
+      ]
+    },
+    {
       "name": "cardinal",
       "src": "https://github.com/PrivateSky/cardinal.git",
       "actions": [
@@ -27,27 +42,11 @@
         {
           "type": "smartClone",
           "target": ".",
-          "collectLog": false,
-          "commit": "29f5aed15d639bf79fd015a20b28b7b1ee4c6f5d"
-        },
-        {
-          "type": "execute",
-          "cmd": "cd privatesky && npm install"
-        }
-      ]
-    },
-    {
-      "name": "webcardinal",
-      "src": "https://github.com/webcardinal/webcardinal-bundler",
-      "actions": [
-        {
-          "type": "smartClone",
-          "target": ".",
           "collectLog": false
         },
         {
           "type": "execute",
-          "cmd": "cd webcardinal && npm install && npm run bundle-all && npm run dev"
+          "cmd": "cd privatesky && npm install"
         }
       ]
     },
@@ -448,7 +447,7 @@
       "actions": [
         {
           "type": "execute",
-          "cmd": "cd webcardinal && npm run build-dossier"
+          "cmd": "cd webcardinal && npm run build"
         }
       ]
     },
