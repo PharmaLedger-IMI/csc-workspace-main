@@ -115,6 +115,12 @@ class KitsService extends DSUService {
     kitDetails.shipmentComments = shipmentComments.comments;
     kitDetails.receivedDateTime = shipmentReceivedDsu.receivedDateTime;
 
+    const studyKits = await this.getStudyKits(kitDetails.studyId);
+debugger;
+    const kit = studyKits.kits.find( kit => { return kit.uid === kitDetails.uid});
+
+    kitDetails.hasRequestRelabeled = kit.hasRequestRelabeled;
+
     //only SPO, CMO keep orderIdentifier in their dbs
     if (typeof shipment.kitIdSSI === 'undefined' && typeof shipment.orderSSI !== 'undefined') {
       const order = await this.getEntityAsync(shipment.orderSSI, FoldersEnum.Orders);

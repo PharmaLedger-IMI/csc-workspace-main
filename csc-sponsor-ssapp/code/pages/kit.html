@@ -100,7 +100,7 @@
 
           <div class='row-wrapper button-wrapper'>
             <div data-if='@actions.canRequestRelabelingKit'>
-              <button class='btn-reset' data-tag='request-relabeling'>
+              <button class='btn-reset' data-tag='request-relabeling' disabled='@actions.relabeledAlreadyRequested'>
                 <i class="fas fa-check"></i>
                 Request Relabeling
               </button>

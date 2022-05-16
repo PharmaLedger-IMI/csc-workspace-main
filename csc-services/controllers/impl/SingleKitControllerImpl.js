@@ -294,6 +294,8 @@ class SingleKitControllerImpl extends AccordionController {
 
   setKitActions(kit) {
     const actions = {};
+
+
     actions.canManageKit = kit.status_value === kitsStatusesEnum.Received;
     actions.canQuarantineKit = [kitsStatusesEnum.Received, kitsStatusesEnum.AvailableForAssignment, kitsStatusesEnum.Assigned].includes(kit.status_value);
     actions.canRequestDestruction = kit.status_value === kitsStatusesEnum.InQuarantine;
@@ -302,7 +304,9 @@ class SingleKitControllerImpl extends AccordionController {
     actions.canDispenseKit = kit.status_value === kitsStatusesEnum.Assigned;
     actions.canReturnKit = kit.status_value === kitsStatusesEnum.Dispensed;
     actions.canReconcileKit = kit.status_value === kitsStatusesEnum.Returned;
-    actions.canRequestRelabelingKit = kit.status_value === kitsStatusesEnum.AvailableForAssignment;
+    // actions.canRequestRelabelingKit = (kit.status_value === kitsStatusesEnum.AvailableForAssignment);
+    actions.canRequestRelabelingKit = (kit.status_value === kitsStatusesEnum.AvailableForAssignment);
+    actions.relabeledAlreadyRequested = typeof kit.hasRequestRelabeled === 'boolean' && kit.hasRequestRelabeled;
     actions.canBlockKit = kit.status_value === kitsStatusesEnum.RequestRelabeling;
     actions.canMakeKitAvailable = kit.status_value === kitsStatusesEnum.Blocked;
 
@@ -457,7 +461,10 @@ class SingleKitControllerImpl extends AccordionController {
       const shipment = shipments.find(i =>{ return i.shipmentId === this.model.kitModel.kit.shipmentId });
       const siteId = shipment.siteId;
       const sponsorId = shipment.sponsorId;
-
+      const studyKits = await this.kitsService.getStudyKits(this.model.kitModel.kit.studyId);
+      let kit = studyKits.kits.find( kit => { return kit.uid  = this.model.uid });
+      kit.hasRequestRelabeled =  true;
+      await this.kitsService.addStudyKitDataToDb(this.model.kitModel.kit.studyId, studyKits);
       // Sponsor sends message to site in order to update the kit.
       await this.communicationService.sendMessage(siteId, {
         operation: kitsStatusesEnum.RequestRelabeling,
