@@ -30,7 +30,7 @@ const kitsPendingActionEnum = {
 const kitsMessagesEnum = {
 	ShipmentSigned: 'Shipment Signed By Site',
 	MakeKitAvailable: "Make Kit Available",
-	KitRequestRelabeled: 'Kit Request Relabeled',
+	KitRequestRelabeled: 'Kit Relabel Request',
 	kitBlocked: 'Kit Blocked'
 }
 

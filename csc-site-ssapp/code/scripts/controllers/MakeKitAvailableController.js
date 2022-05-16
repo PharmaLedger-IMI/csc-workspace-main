@@ -122,10 +122,6 @@ class MakeKitAvailableController extends WebcController {
     this.model.disableSign = true;
     window.WebCardinal.loader.hidden = false;
 
-    const shipments = await this.shipmentService.getShipments();
-    const shipment = shipments.find(i =>{ return i.shipmentId === this.model.kit.shipmentId });
-    const sponsorId = shipment.sponsorId;
-
     let receivedComment = {
       date: new Date().getTime(),
       entity: Roles.Site,
@@ -134,14 +130,7 @@ class MakeKitAvailableController extends WebcController {
 
     await this.kitsService.updateKit(this.model.kit.uid, kitsStatusesEnum.AvailableForAssignment, {
       kitComment: receivedComment
-    });
-
-
-    await this.communicationService.sendMessage(sponsorId,{
-      operation: kitsMessagesEnum.MakeKitAvailable,
-      data: {kitId: this.model.kit.kitId , kitSSI: this.model.kit.uid},
-      shortDescription: kitsMessagesEnum.MakeKitAvailable,
-    });
+    },kitsMessagesEnum.MakeKitAvailable);
 
     eventBusService.emitEventListeners(Topics.RefreshKits + this.model.kit.uid, null);
 

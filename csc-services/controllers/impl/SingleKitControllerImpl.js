@@ -91,8 +91,8 @@ class SingleKitControllerImpl extends AccordionController {
   showKitUpdateModal() {
     if (!this.refreshModalOpened) {
       this.refreshModalOpened = true;
-      let title = 'Order Updated';
-      let content = 'Order was updated';
+      let title = 'Kit Updated';
+      let content = 'Kit was updated';
       let modalOptions = {
         disableExpanding: true,
         disableClosing: true,
@@ -462,16 +462,17 @@ class SingleKitControllerImpl extends AccordionController {
       const siteId = shipment.siteId;
       const sponsorId = shipment.sponsorId;
       const studyKits = await this.kitsService.getStudyKits(this.model.kitModel.kit.studyId);
-      let kit = studyKits.kits.find( kit => { return kit.uid  = this.model.uid });
+      let kit = studyKits.kits.find( kit => { return kit.uid  === this.model.uid });
       kit.hasRequestRelabeled =  true;
+
       await this.kitsService.addStudyKitDataToDb(this.model.kitModel.kit.studyId, studyKits);
       // Sponsor sends message to site in order to update the kit.
       await this.communicationService.sendMessage(siteId, {
-        operation: kitsStatusesEnum.RequestRelabeling,
+        operation: kitsMessagesEnum.KitRequestRelabeled,
         data: { kitSSI: this.model.uid , sponsorId: sponsorId, kitId: this.model.kitModel.kit.kitId},
-        shortDescription: kitsStatusesEnum.RequestRelabeling,
+        shortDescription: kitsMessagesEnum.KitRequestRelabeled,
       });
-
+      await this.initViewModel();
       window.WebCardinal.loader.hidden = true;
     }
   }

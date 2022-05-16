@@ -290,20 +290,12 @@ class MessageHandlerService {
 
         break;
       }
-      case kitsStatusesEnum.RequestRelabeling:{
+      case kitsMessagesEnum.KitRequestRelabeled:{
 
         if(this.role === Roles.Site) {
           // Site updates the status of the kit
-          const { kitSSI, sponsorId, kitId } = data.data;
-          kitsData = await this.kitsService.updateKit(kitSSI, kitsMessage);
-          // kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI, kitsMessage);
-
-          // Site send a message to the sponsor in order to inform kit is updated.
-          await this.communicationService.sendMessage(sponsorId, {
-            operation: kitsMessagesEnum.KitRequestRelabeled,
-            data: {kitSSI: kitSSI, kitId: kitId},
-            shortDescription: kitsMessagesEnum.KitRequestRelabeled,
-          });
+          const { kitSSI, kitId } = data.data;
+          kitsData = await this.kitsService.updateKit(kitSSI, kitsStatusesEnum.RequestRelabeling,{});
 
           const notification = {
             operation: NotificationTypes.UpdateKitStatus,
@@ -328,10 +320,11 @@ class MessageHandlerService {
 
         break;
       }
-      case kitsMessagesEnum.KitRequestRelabeled:{
+      case kitsStatusesEnum.RequestRelabeling:{
+        debugger;
         if(this.role === Roles.Sponsor) {
           const { kitSSI } = data.data;
-          kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsMessagesEnum.kitBlocked );
+          kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsStatusesEnum.RequestRelabeling );
 
           // Sponsor get a message in order to update his kit id.
           eventBusService.emitEventListeners(Topics.RefreshKits + data.data.kitId, null);
@@ -341,7 +334,7 @@ class MessageHandlerService {
       case kitsMessagesEnum.kitBlocked:{
         if(this.role === Roles.Sponsor) {
           const { kitSSI } = data.data;
-          kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsMessagesEnum.kitBlocked );
+          kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsStatusesEnum.Blocked );
 
           const notification = {
             operation: NotificationTypes.UpdateKitStatus,
@@ -369,7 +362,7 @@ class MessageHandlerService {
         if(this.role === Roles.Sponsor) {
 
           const { kitSSI } = data.data;
-          kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsMessagesEnum.kitBlocked );
+          kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsStatusesEnum.AvailableForAssignment );
 
           const notification = {
             operation: NotificationTypes.UpdateKitStatus,
