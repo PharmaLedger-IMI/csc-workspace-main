@@ -20,6 +20,7 @@ class KitsControllerImpl extends WebcController {
 		this.model.kitsListIsReady = false;
 		this.attachEvents();
 		this.init();
+		console.log(this.model);
 	}
 
 	async init() {
@@ -111,6 +112,9 @@ class KitsControllerImpl extends WebcController {
 				const cancelledStatuses = statuses.canceledKitsStatuses;
 				const inQuarantineStatues = statuses.quarantineStatuses;
 				const pendingDestructionStatuses = statuses.pendingDestructionStatuses;
+				const requestRelabelingStatuses = statuses.requestRelabelingStatuses;
+				const blockedStatuses = statuses.blockedStatuses;
+
 				item.status_value = latestStatus.status;
 				item.receivedDate = momentService(receivedStatus.date).format(Commons.DateTimeFormatPattern);
 				item.lastModified = latestStatus.date ? momentService(latestStatus.date).format(Commons.DateTimeFormatPattern) : '-';
@@ -119,6 +123,8 @@ class KitsControllerImpl extends WebcController {
 				item.status_in_quarantine = inQuarantineStatues.indexOf(item.status_value) !== -1;
 				item.status_pending_destruction = pendingDestructionStatuses.indexOf(item.status_value) !== -1;
 				item.status_cancelled = cancelledStatuses.indexOf(item.status_value) !== -1;
+				item.status_request_relabeling = requestRelabelingStatuses.indexOf(item.status_value) !== -1;
+				item.status_blocked = blockedStatuses.indexOf(item.status_value) !== -1;
 
 			});
 

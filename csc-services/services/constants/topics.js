@@ -5,5 +5,6 @@ module.exports.Topics = {
   RefreshKits: 'refresh-kits',
   Order: 'order',
   Shipment: 'shipment',
-  Kits: 'kits'
+  Kits: 'kits',
+  RequestRelabeling: 'Request Relabeling'
 };

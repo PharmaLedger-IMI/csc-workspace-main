@@ -1,13 +1,16 @@
 const AccordionController  = require("./helpers/AccordionController");
 const cscServices = require('csc-services');
 const KitsService = cscServices.KitsService;
+const OrderService = cscServices.OrderService;
+const ShipmentService = cscServices.ShipmentService;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
 const momentService = cscServices.momentService;
 const eventBusService = cscServices.EventBusService;
 const { Commons, Topics, Roles, FoldersEnum } = cscServices.constants;
-const {kitsStatusesEnum, kitsPendingActionEnum} = cscServices.constants.kit;
+const {kitsStatusesEnum,kitsMessagesEnum, kitsPendingActionEnum} = cscServices.constants.kit;
 const statusesService = cscServices.StatusesService;
+const {getCommunicationServiceInstance} = cscServices.CommunicationService;
 
 class SingleKitControllerImpl extends AccordionController {
 
@@ -16,10 +19,15 @@ class SingleKitControllerImpl extends AccordionController {
     this.actor = actor;
 
     this.kitsService = new KitsService(this.DSUStorage);
+    this.ordersService = new OrderService(this.DSUStorage);
+    this.shipmentService = new ShipmentService(this.DSUStorage);
+    this.communicationService = getCommunicationServiceInstance();
     this.fileDownloaderService = new FileDownloaderService(this.DSUStorage);
     this.initViewModel();
     this.openFirstAccordion();
     this.attachEventListeners();
+
+    console.log(this.model);
   }
 
   attachEventListeners() {
@@ -75,11 +83,26 @@ class SingleKitControllerImpl extends AccordionController {
   attachRefreshListeners() {
     if (!this.addedRefreshListeners) {
       this.addedRefreshListeners = true;
-      this.refreshModalOpened = false;
-      eventBusService.addEventListener(Topics.RefreshKits + this.model.kitModel.kit.kitId, this.initViewModel.bind(this));
+      eventBusService.addEventListener(Topics.RefreshKits + this.model.kitModel.kit.kitId, this.showKitUpdateModal.bind(this) );
     }
+    this.refreshModalOpened = false;
   }
 
+  showKitUpdateModal() {
+    if (!this.refreshModalOpened) {
+      this.refreshModalOpened = true;
+      let title = 'Kit Updated';
+      let content = 'Kit was updated';
+      let modalOptions = {
+        disableExpanding: true,
+        disableClosing: true,
+        disableCancelButton: true,
+        confirmButtonText: 'Update View',
+        id: 'confirm-modal'
+      };
+      this.showModal(content, title, this.initViewModel.bind(this), this.initViewModel.bind(this), modalOptions);
+    }
+  }
 
   attachSiteEventHandlers(){
     this.onTagClick('manage-kit', () => {
@@ -178,6 +201,57 @@ class SingleKitControllerImpl extends AccordionController {
       });
     });
 
+    this.onTagClick('request-relabeling',  (model, target, event) => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      this.showModal(
+        'Do you want to request relabeling?',
+        'Request Relabeling',
+        this.requestRelabelingKit.bind(this),
+        () => {
+
+        },
+        {
+          disableExpanding: true,
+          cancelButtonText: 'Cancel',
+          confirmButtonText: 'Yes',
+          id: 'confirm-modal'
+        }
+      );
+      console.log("Pressed Request Relabeling");
+
+    });
+
+    this.onTagClick('block-kit', (model, target, event) => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      this.showModal(
+        'Do you want to block kit?',
+        'Block Kit',
+        this.blockKit.bind(this),
+        () => {},
+        {
+          disableExpanding: true,
+          cancelButtonText: 'Cancel',
+          confirmButtonText: 'Yes',
+          id: 'confirm-modal'
+        }
+      );
+      console.log("Pressed Block kit");
+
+    });
+
+    this.onTagClick('make-kit-available', () => {
+      this.navigateToPageTag('make-kit-available', {
+        kit: {
+          kitId: this.model.kitModel.kit.kitId,
+          ...this.model.toObject('kitModel.kit')
+        }
+      });
+    });
+
 
     this.onTagEvent('history-button', 'click', (e) => {
         this.onShowHistoryClick();
@@ -220,6 +294,8 @@ class SingleKitControllerImpl extends AccordionController {
 
   setKitActions(kit) {
     const actions = {};
+
+
     actions.canManageKit = kit.status_value === kitsStatusesEnum.Received;
     actions.canQuarantineKit = [kitsStatusesEnum.Received, kitsStatusesEnum.AvailableForAssignment, kitsStatusesEnum.Assigned].includes(kit.status_value);
     actions.canRequestDestruction = kit.status_value === kitsStatusesEnum.InQuarantine;
@@ -228,6 +304,12 @@ class SingleKitControllerImpl extends AccordionController {
     actions.canDispenseKit = kit.status_value === kitsStatusesEnum.Assigned;
     actions.canReturnKit = kit.status_value === kitsStatusesEnum.Dispensed;
     actions.canReconcileKit = kit.status_value === kitsStatusesEnum.Returned;
+    // actions.canRequestRelabelingKit = (kit.status_value === kitsStatusesEnum.AvailableForAssignment);
+    actions.canRequestRelabelingKit = (kit.status_value === kitsStatusesEnum.AvailableForAssignment);
+    actions.relabeledAlreadyRequested = typeof kit.hasRequestRelabeled === 'boolean' && kit.hasRequestRelabeled;
+    actions.canBlockKit = kit.status_value === kitsStatusesEnum.RequestRelabeling;
+    actions.canMakeKitAvailable = kit.status_value === kitsStatusesEnum.Blocked;
+
     this.attachSiteEventHandlers();
     return actions;
   }
@@ -277,11 +359,16 @@ class SingleKitControllerImpl extends AccordionController {
       const cancelledStatuses = statuses.canceledKitsStatuses;
       const inQuarantineStatues = statuses.quarantineStatuses;
       const pendingDestructionStatuses = statuses.pendingDestructionStatuses;
+      const requestRelabelingStatuses = statuses.requestRelabelingStatuses;
+      const blockedStatuses = statuses.blockedStatuses;
+
       data.status_approved = approvedStatuses.indexOf(data.status_value) !== -1;
       data.status_cancelled = cancelledStatuses.indexOf(data.status_value) !== -1;
       data.status_normal = normalStatuses.indexOf(data.status_value) !== -1;
       data.status_quarantine = inQuarantineStatues.indexOf(data.status_value) !== -1;
       data.status_pending_destruction = pendingDestructionStatuses.indexOf(data.status_value) !== -1;
+      data.status_request_relabeling = requestRelabelingStatuses.indexOf(data.status_value) !== -1;
+      data.status_blocked = blockedStatuses.indexOf(data.status_value) !== -1;
 
       if (data.studyHasEnded && data.status_normal) {
         data.pending_action = kitsPendingActionEnum.InQuarantine;
@@ -296,7 +383,8 @@ class SingleKitControllerImpl extends AccordionController {
          afterDispensed: data.status.findIndex(el => el.status === kitsStatusesEnum.Dispensed) !== -1,
          afterReturned: data.status.findIndex(el => el.status === kitsStatusesEnum.Returned) !== -1,
          afterQuarantined:data.status.findIndex(el => el.status === kitsStatusesEnum.InQuarantine) !== -1,
-         afterDestroyedConfirmation:data.status.findIndex(el => el.status === kitsStatusesEnum.Destroyed) !== -1
+         afterDestroyedConfirmation:data.status.findIndex(el => el.status === kitsStatusesEnum.Destroyed) !== -1,
+         afterRequestRelabeling:data.status.findIndex(el => el.status === kitsStatusesEnum.Blocked) !== -1
        };
       return data;
     }
@@ -319,6 +407,8 @@ class SingleKitControllerImpl extends AccordionController {
         return kitsPendingActionEnum.PendingDestruction;
       case kitsStatusesEnum.PendingDestruction:
         return kitsPendingActionEnum.SubmitDestructionDetails;
+      case kitsStatusesEnum.RequestRelabeling:
+        return kitsPendingActionEnum.RequestRelabeling;
     }
 
     return kitsPendingActionEnum.NoFurtherActionsRequired;
@@ -360,6 +450,57 @@ class SingleKitControllerImpl extends AccordionController {
       state: { uid: this.model.uid }
     }, 2000);
     window.WebCardinal.loader.hidden = true;
+  }
+
+  async requestRelabelingKit(){
+    if(this.actor === Roles.Sponsor) {
+      window.WebCardinal.loader.hidden = false;
+
+      // Needed
+      const shipments = await this.shipmentService.getShipments();
+      const shipment = shipments.find(i =>{ return i.shipmentId === this.model.kitModel.kit.shipmentId });
+      const siteId = shipment.siteId;
+      const sponsorId = shipment.sponsorId;
+      const studyKits = await this.kitsService.getStudyKits(this.model.kitModel.kit.studyId);
+      let kit = studyKits.kits.find( kit => { return kit.uid  === this.model.uid });
+      kit.hasRequestRelabeled =  true;
+
+      await this.kitsService.addStudyKitDataToDb(this.model.kitModel.kit.studyId, studyKits);
+      // Sponsor sends message to site in order to update the kit.
+      await this.communicationService.sendMessage(siteId, {
+        operation: kitsMessagesEnum.KitRequestRelabeled,
+        data: { kitSSI: this.model.uid , sponsorId: sponsorId, kitId: this.model.kitModel.kit.kitId},
+        shortDescription: kitsMessagesEnum.KitRequestRelabeled,
+      });
+      await this.initViewModel();
+      window.WebCardinal.loader.hidden = true;
+    }
+  }
+
+  async blockKit(){
+    if(this.actor === Roles.Site) {
+      window.WebCardinal.loader.hidden = false;
+
+      // Needed
+      const shipments = await this.shipmentService.getShipments();
+      const shipment = shipments.find(i =>{ return i.shipmentId === this.model.kitModel.kit.shipmentId });
+      const sponsorId = shipment.sponsorId;
+
+      // Site updates the kit
+      const data = await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Blocked);
+
+      // Site updates himself to refresh the kit
+      eventBusService.emitEventListeners(Topics.RefreshKits + this.model.kitModel.kit.kitId, null);
+
+      // Site send a message to sponsor that the kit is blocked.
+      await this.communicationService.sendMessage(sponsorId,{
+        operation: kitsMessagesEnum.kitBlocked,
+        data: {kitSSI: this.model.uid, kitId: this.model.kitModel.kit.kitId},
+        shortDescription: kitsMessagesEnum.kitBlocked,
+      });
+
+      window.WebCardinal.loader.hidden = true;
+    }
   }
 
   onShowHistoryClick() {

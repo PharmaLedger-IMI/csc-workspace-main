@@ -44,6 +44,8 @@ class KitHistoryModalControllerImpl extends WebcController {
 				item.inQuarantine = statuses.quarantineStatuses.indexOf(item.status) !== -1;
 				item.pendingDestruction = statuses.pendingDestructionStatuses.indexOf(item.status) !== -1;
 				item.cancelled = statuses.canceledKitsStatuses.indexOf(item.status) !== -1;
+				item.blocked = statuses.blockedStatuses.indexOf(item.status) !== -1;
+				item.requestRelabeling = statuses.requestRelabelingStatuses.indexOf(item.status) !== -1;
 				item.date = momentService(item.date).format(Commons.DateTimeFormatPattern);
 			});
 		} else {
