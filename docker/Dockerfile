@@ -1,9 +1,15 @@
-FROM node:12.16.0
+FROM debian:latest
+
+RUN apt-get update && \
+	apt-get -y install nodejs && \
+	apt-get -y install npm --no-install-recommends
 
 RUN npm install -g node-gyp
 
-ENV TARGET_FOLDER_NAME="fgt-workspace"
-RUN git clone https://github.com/PharmaLedger-IMI/fgt-workspace.git $TARGET_FOLDER_NAME
+RUN apt-get -y install git
+
+ENV TARGET_FOLDER_NAME="csc-workspace"
+RUN git clone https://github.com/Mastaleru/csc-workspace-main.git $TARGET_FOLDER_NAME
 
 RUN cd $TARGET_FOLDER_NAME && \
     npm install --unsafe-perm

@@ -7,7 +7,7 @@ export default {
   browser: 'any',
   mode: 'dev-secure',
   domain: 'csc',
-  vaultDomain:"csc",
+  vaultDomain:"vault",
   didDomain:"csc",
   enclaveType:"WalletDBEnclave",
   sw: false,

@@ -2,6 +2,22 @@
     "workDir": ".",
     "dependencies": [
         {
+            "name": "webcardinal/bundle",
+            "src": "https://github.com/webcardinal/webcardinal-all-release",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "0b8ef9818b375a2f99da2c990507fce59ab0bec1"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd webcardinal && npm install"
+                }
+            ]
+        },
+        {
             "name": "cardinal",
             "src": "https://github.com/PrivateSky/cardinal.git",
             "actions": [
@@ -9,7 +25,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "f2080909d6780d532225389eefadbbba494d70b4"
+                    "commit": "517a141d5b84fd87f69b2e51d838cd410652febd"
                 },
                 {
                     "type": "execute",
@@ -23,33 +39,17 @@
         },
         {
             "name": "privatesky",
-            "src": "https://github.com/PrivateSky/psk-release.git",
+            "src": "http://github.com/privatesky/psk-release.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "efc69bd80aa9b6efe99c5c6701c0f96b72129947"
+                    "commit": "5f6ad05f05d9cc0b1b2a9dfe67812520d27f2e82"
                 },
                 {
                     "type": "execute",
                     "cmd": "cd privatesky && npm install"
-                }
-            ]
-        },
-        {
-            "name": "webcardinal",
-            "src": "https://github.com/webcardinal/webcardinal-bundler",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false,
-                    "commit": "a1dfc53b317b34e949c3c19584d20ffd0764b806"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd webcardinal && npm install && npm run bundle-all && npm run dev"
                 }
             ]
         },
@@ -61,7 +61,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "3c644faf0d489c33362e4b57dcb7f1bce6e7a6f6"
+                    "commit": "7b1b86fb70da80de46b0ad559064a47b3b1dbac8"
                 },
                 {
                     "type": "execute",
@@ -81,7 +81,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "3c644faf0d489c33362e4b57dcb7f1bce6e7a6f6"
+                    "commit": "7b1b86fb70da80de46b0ad559064a47b3b1dbac8"
                 },
                 {
                     "type": "execute",
@@ -101,7 +101,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "3c644faf0d489c33362e4b57dcb7f1bce6e7a6f6"
+                    "commit": "7b1b86fb70da80de46b0ad559064a47b3b1dbac8"
                 },
                 {
                     "type": "execute",
@@ -121,7 +121,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "3c644faf0d489c33362e4b57dcb7f1bce6e7a6f6"
+                    "commit": "7b1b86fb70da80de46b0ad559064a47b3b1dbac8"
                 },
                 {
                     "type": "execute",
@@ -141,7 +141,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "8ccb66adb594da6571bb5024c4556b2c899388df"
+                    "commit": "bcb4b80bc3b4b5576a9dfded5bb169163ec44690"
                 },
                 {
                     "type": "execute",
@@ -157,7 +157,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "3c644faf0d489c33362e4b57dcb7f1bce6e7a6f6"
+                    "commit": "7b1b86fb70da80de46b0ad559064a47b3b1dbac8"
                 },
                 {
                     "type": "execute",
@@ -181,7 +181,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "6e7bed56f5c040908c32c099f5dd2a313fb1652c"
+                    "commit": "5af2aaf2b3b862de6fdf209e63aba02a504979c8"
                 },
                 {
                     "type": "execute",
@@ -242,7 +242,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "7dfa8dd6bd13239b698e0bd1a71e0aa353e16ba2"
+                    "commit": "9559e0dc32a4bfd8cd8c6159877171edb857c63d"
                 },
                 {
                     "type": "execute",
@@ -281,7 +281,7 @@
                     "cmd": "cd csc-sponsor-ssapp && npm run build"
                 },
                 {
-                    "type": "copy",
+                    "type": "copySeed",
                     "src": "./csc-sponsor-ssapp/seed",
                     "target": "./apihub-root/csc-sponsor-wallet/wallet-patch/seed",
                     "options": {
@@ -289,7 +289,7 @@
                     }
                 },
                 {
-                    "type": "copy",
+                    "type": "copySeed",
                     "src": "./csc-sponsor-ssapp/seed",
                     "target": "./apihub-root/csc-sponsor-wallet/apps-patch/csc-sponsor-ssapp/seed",
                     "options": {
@@ -311,7 +311,7 @@
                     "cmd": "cd csc-cmo-ssapp && npm run build"
                 },
                 {
-                    "type": "copy",
+                    "type": "copySeed",
                     "src": "./csc-cmo-ssapp/seed",
                     "target": "./apihub-root/csc-cmo-wallet/wallet-patch/seed",
                     "options": {
@@ -319,7 +319,7 @@
                     }
                 },
                 {
-                    "type": "copy",
+                    "type": "copySeed",
                     "src": "./csc-cmo-ssapp/seed",
                     "target": "./apihub-root/csc-cmo-wallet/apps-patch/csc-cmo-ssapp/seed",
                     "options": {
@@ -341,7 +341,7 @@
                     "cmd": "cd csc-site-ssapp && npm run build"
                 },
                 {
-                    "type": "copy",
+                    "type": "copySeed",
                     "src": "./csc-site-ssapp/seed",
                     "target": "./apihub-root/csc-site-wallet/wallet-patch/seed",
                     "options": {
@@ -349,7 +349,7 @@
                     }
                 },
                 {
-                    "type": "copy",
+                    "type": "copySeed",
                     "src": "./csc-site-ssapp/seed",
                     "target": "./apihub-root/csc-site-wallet/apps-patch/csc-site-ssapp/seed",
                     "options": {
@@ -371,7 +371,7 @@
                     "cmd": "cd csc-courier-ssapp && npm run build"
                 },
                 {
-                    "type": "copy",
+                    "type": "copySeed",
                     "src": "./csc-courier-ssapp/seed",
                     "target": "./apihub-root/csc-courier-wallet/wallet-patch/seed",
                     "options": {
@@ -379,7 +379,7 @@
                     }
                 },
                 {
-                    "type": "copy",
+                    "type": "copySeed",
                     "src": "./csc-site-ssapp/seed",
                     "target": "./apihub-root/csc-courier-wallet/apps-patch/csc-courier-ssapp/seed",
                     "options": {
@@ -458,7 +458,7 @@
             "actions": [
                 {
                     "type": "execute",
-                    "cmd": "cd webcardinal && npm run build-dossier"
+                    "cmd": "cd webcardinal && npm run build"
                 }
             ]
         },
@@ -481,7 +481,7 @@
                     "cmd": "cd dossier-explorer-wallet-prototype && npm run build"
                 },
                 {
-                    "type": "copy",
+                    "type": "copySeed",
                     "src": "./dossier-explorer-wallet-prototype/seed",
                     "target": "./apihub-root/dsu-explorer/wallet-patch/seed",
                     "options": {
@@ -499,7 +499,7 @@
                     "cmd": "cd dossier-explorer-ssapp && npm run build"
                 },
                 {
-                    "type": "copy",
+                    "type": "copySeed",
                     "src": "./dossier-explorer-ssapp/seed",
                     "target": "./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed",
                     "options": {
