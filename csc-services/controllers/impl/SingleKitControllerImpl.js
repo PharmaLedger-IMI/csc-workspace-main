@@ -83,9 +83,9 @@ class SingleKitControllerImpl extends AccordionController {
   attachRefreshListeners() {
     if (!this.addedRefreshListeners) {
       this.addedRefreshListeners = true;
-      eventBusService.addEventListener(Topics.RefreshKits + this.model.kitModel.kit.kitId, this.showKitUpdateModal.bind(this) );
+      this.refreshModalOpened = false;
+      eventBusService.addEventListener(Topics.RefreshKits + this.model.kitModel.kit.kitId, this.showKitUpdateModal.bind(this));
     }
-    this.refreshModalOpened = false;
   }
 
   showKitUpdateModal() {
@@ -304,7 +304,6 @@ class SingleKitControllerImpl extends AccordionController {
     actions.canDispenseKit = kit.status_value === kitsStatusesEnum.Assigned;
     actions.canReturnKit = kit.status_value === kitsStatusesEnum.Dispensed;
     actions.canReconcileKit = kit.status_value === kitsStatusesEnum.Returned;
-    // actions.canRequestRelabelingKit = (kit.status_value === kitsStatusesEnum.AvailableForAssignment);
     actions.canRequestRelabelingKit = (kit.status_value === kitsStatusesEnum.AvailableForAssignment);
     actions.relabeledAlreadyRequested = typeof kit.hasRequestRelabeled === 'boolean' && kit.hasRequestRelabeled;
     actions.canBlockKit = kit.status_value === kitsStatusesEnum.RequestRelabeling;
@@ -420,8 +419,7 @@ class SingleKitControllerImpl extends AccordionController {
       returnedDate:Date.now()
     }
     await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Returned, returnedData);
-    eventBusService.emitEventListeners(Topics.RefreshKits + this.model.kitModel.kit.kitId, null);
-
+    await this.initViewModel();
     this.showErrorModalAndRedirect('Kit is marked as Returned', 'Kit Returned', {
       tag: 'kit',
       state: { uid: this.model.uid }
@@ -433,7 +431,7 @@ class SingleKitControllerImpl extends AccordionController {
   async reconcileKit(){
     window.WebCardinal.loader.hidden = false;
     await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Reconciled,{});
-    eventBusService.emitEventListeners(Topics.RefreshKits + this.model.kitModel.kit.kitId, null);
+    await this.initViewModel();
     this.showErrorModalAndRedirect('Kit is marked as Reconciled', 'Kit Reconciled', {
       tag: 'kit',
       state: { uid: this.model.uid }
@@ -444,7 +442,7 @@ class SingleKitControllerImpl extends AccordionController {
   async requestKitDestruction(){
     window.WebCardinal.loader.hidden = false;
     await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.PendingDestruction,{});
-    eventBusService.emitEventListeners(Topics.RefreshKits + this.model.kitModel.kit.kitId, null);
+    await this.initViewModel();
     this.showErrorModalAndRedirect('Kit destruction was requested', 'Destruction Request', {
       tag: 'kit',
       state: { uid: this.model.uid }
