@@ -115,6 +115,11 @@ class KitsService extends DSUService {
     kitDetails.shipmentComments = shipmentComments.comments;
     kitDetails.receivedDateTime = shipmentReceivedDsu.receivedDateTime;
 
+    const studyKits = await this.getStudyKits(kitDetails.studyId);
+    const kit = studyKits.kits.find( kit => { return kit.uid === kitDetails.uid});
+
+    kitDetails.hasRequestRelabeled = kit.hasRequestRelabeled;
+
     //only SPO, CMO keep orderIdentifier in their dbs
     if (typeof shipment.kitIdSSI === 'undefined' && typeof shipment.orderSSI !== 'undefined') {
       const order = await this.getEntityAsync(shipment.orderSSI, FoldersEnum.Orders);
@@ -131,7 +136,10 @@ class KitsService extends DSUService {
     return kitDetails;
   }
 
-  async updateKit(kitSSI, status, kitData){
+  async updateKit(kitSSI, status, kitData, customOperation){
+    /*
+    customOperation is needed in order to define custom messages when going back to happy path track
+     */
     //update KitDSU
     let kitDSU = await this.getKitsDSU(kitSSI);
     let newStatus ={
@@ -166,7 +174,7 @@ class KitsService extends DSUService {
     });
 
     await this.communicationService.sendMessage(shipment.sponsorId,{
-        operation: status,
+      operation: customOperation ? customOperation : status,
         //sending always the sReadSSI in order to let sponsor to mount a kit even if the studyKits DSU was not mounted yet
         data: { kitSSI: modifiedKit.kitKeySSI },
         shortDescription: status

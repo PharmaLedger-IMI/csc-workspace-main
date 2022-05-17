@@ -54,6 +54,22 @@
                   <div>{{@kitModel.kit.status_date}}</div>
                 </div>
               </div>
+
+              <div data-if="@kitModel.kit.status_request_relabeling">
+                <div class='entity-status-box background-orange'>
+                  <div>Kit Status:</div>
+                  <div><b>{{@kitModel.kit.status_value}}</b></div>
+                  <div>{{@kitModel.kit.status_date}}</div>
+                </div>
+              </div>
+
+              <div data-if="@kitModel.kit.status_blocked">
+                <div class='entity-status-box background-orange'>
+                  <div>Kit Status:</div>
+                  <div><b>{{@kitModel.kit.status_value}}</b></div>
+                  <div>{{@kitModel.kit.status_date}}</div>
+                </div>
+              </div>
             </div>
             
   
@@ -81,7 +97,16 @@
               <webc-template data-view-model='@kitModel' template='kits/kit-details'></webc-template>
             </div>
           </div>
-        </div>
+
+          <div class='row-wrapper button-wrapper'>
+            <div data-if='@actions.canRequestRelabelingKit'>
+              <button class='btn-reset' data-tag='request-relabeling' disabled='@actions.relabeledAlreadyRequested'>
+                <i class="fas fa-check"></i>
+                Request Relabeling
+              </button>
+            </div>
+          </div>
+
         </div>
         </div>
       </section>

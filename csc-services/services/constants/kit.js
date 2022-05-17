@@ -8,6 +8,8 @@ const kitsStatusesEnum = {
 	InQuarantine:"In Quarantine",
 	PendingDestruction:"Pending Destruction",
 	Destroyed:"Destroyed",
+	RequestRelabeling: "Request Relabeling",
+	Blocked: "Blocked"
 };
 
 
@@ -20,11 +22,16 @@ const kitsPendingActionEnum = {
 	InQuarantine:"Move to Quarantine",
 	PendingDestruction:"Pending Destruction",
 	SubmitDestructionDetails:"Submit Destruction Details",
-	NoFurtherActionsRequired: 'No further actions required'
+	NoFurtherActionsRequired: 'No further actions required',
+	RequestRelabeling: "Block",
+	Blocked: "Available for Assignment"
 };
 
 const kitsMessagesEnum = {
 	ShipmentSigned: 'Shipment Signed By Site',
+	MakeKitAvailable: "Make Kit Available",
+	KitRequestRelabeled: 'Kit Relabel Request',
+	kitBlocked: 'Kit Blocked'
 }
 
 const studiesKitsTableHeaders = [
@@ -175,6 +182,7 @@ const kitsTableHeaders = [
 
 const siteBusinessRequirements = {
 	doseUomIds : ["mL" , "mg"],
+	doseTypeOptions: [ "Pill", "Syringe", "Suspension", "Syrup", "Lotion", "Other"],
 	quarantineReason: ["Product Damaged","Temperature Excursion","End of Study"]
 }
 

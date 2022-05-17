@@ -5,6 +5,7 @@ const TEMPERATURE_UNITS = orderBusinessRequirements.TemperatureUnits;
 const DAYS_AHEAD = orderBusinessRequirements.DeliveryDateDaysAhead;
 const momentService = require('csc-services').momentService;
 const doseUomIds = siteBusinessRequirements.doseUomIds;
+const doseTypeOptions = siteBusinessRequirements.doseTypeOptions;
 const quarantineReasons = siteBusinessRequirements.quarantineReason;
 
 const kitViewModel = {
@@ -160,7 +161,8 @@ const kitViewModel = {
       required: true,
       placeholder: 'e.g. Syringe',
       disabled: false,
-      value: ''
+      options: doseTypeOptions,
+      value: doseTypeOptions[0],
     },
     doseUom: {
       label: 'Dose UoM',
@@ -222,7 +224,7 @@ const kitViewModel = {
       value: ''
     },
 		returnedDate:{
-			label: 'Return Date',
+			label: 'Return Date / Time',
 			name: 'return-date',
 			id: 'return-date',
 			required: true,

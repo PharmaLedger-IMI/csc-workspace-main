@@ -70,7 +70,9 @@ class StatusesService {
           approvedKitStatuses: [kitsStatusesEnum.Reconciled],
           quarantineStatuses:[kitsStatusesEnum.InQuarantine],
           pendingDestructionStatuses : [kitsStatusesEnum.PendingDestruction],
-          canceledKitsStatuses : [kitsStatusesEnum.Destroyed]
+          canceledKitsStatuses : [kitsStatusesEnum.Destroyed],
+          requestRelabelingStatuses : [kitsStatusesEnum.RequestRelabeling],
+          blockedStatuses: [kitsStatusesEnum.Blocked]
         }
       }
 }

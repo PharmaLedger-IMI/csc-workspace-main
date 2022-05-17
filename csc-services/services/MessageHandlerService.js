@@ -119,7 +119,6 @@ class MessageHandlerService {
     if (!kitsData || !notificationRole) {
       return;
     }
-
     eventBusService.emitEventListeners(Topics.RefreshKits, null);
   }
 
@@ -265,7 +264,6 @@ class MessageHandlerService {
     let kitsData;
     let kitsMessage = data.operation;
     let notificationRole = Roles.Site;
-
     switch (kitsMessage) {
       case kitsMessagesEnum.ShipmentSigned: {
         const { studyKeySSI } = data.data;
@@ -286,9 +284,108 @@ class MessageHandlerService {
         };
 
         await this.notificationsService.insertNotification(notification);
+
+        // Refresh Notifications
+        eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+
         break;
       }
+      case kitsMessagesEnum.KitRequestRelabeled:{
 
+        if(this.role === Roles.Site) {
+          // Site updates the status of the kit
+          const { kitSSI, kitId } = data.data;
+          kitsData = await this.kitsService.updateKit(kitSSI, kitsStatusesEnum.RequestRelabeling,{});
+
+          const notification = {
+            operation: NotificationTypes.UpdateKitStatus,
+            studyId: kitsData.studyId,
+            orderId: kitsData.kits[0].orderId,
+            read: false,
+            status: kitsStatusesEnum.RequestRelabeling,
+            uid: kitsData.uid,
+            role: Roles.Sponsor,
+            did: data.senderIdentity,
+            date: new Date().getTime()
+          };
+
+          await this.notificationsService.insertNotification(notification);
+
+          // Refresh Notifications
+          eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+
+          // Site updates himself to refresh the kit
+          eventBusService.emitEventListeners(Topics.RefreshKits + kitId, null);
+        }
+
+        break;
+      }
+      case kitsStatusesEnum.RequestRelabeling:{
+        debugger;
+        if(this.role === Roles.Sponsor) {
+          const { kitSSI } = data.data;
+          kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsStatusesEnum.RequestRelabeling );
+
+          // Sponsor get a message in order to update his kit id.
+          eventBusService.emitEventListeners(Topics.RefreshKits + data.data.kitId, null);
+        }
+        break;
+      }
+      case kitsMessagesEnum.kitBlocked:{
+        if(this.role === Roles.Sponsor) {
+          const { kitSSI } = data.data;
+          kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsStatusesEnum.Blocked );
+
+          const notification = {
+            operation: NotificationTypes.UpdateKitStatus,
+            studyId: kitsData.studyId,
+            orderId: kitsData.kits[0].orderId,
+            read: false,
+            status: kitsStatusesEnum.Blocked,
+            uid: kitsData.uid,
+            role: Roles.Site,
+            did: data.senderIdentity,
+            date: new Date().getTime()
+          };
+
+          await this.notificationsService.insertNotification(notification);
+
+          // Refresh Notifications
+          eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+
+          // Sponsor get a message in order to update his kit id.
+          eventBusService.emitEventListeners(Topics.RefreshKits + data.data.kitId, null);
+        }
+        break;
+      }
+      case kitsMessagesEnum.MakeKitAvailable:{
+        if(this.role === Roles.Sponsor) {
+
+          const { kitSSI } = data.data;
+          kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsStatusesEnum.AvailableForAssignment );
+
+          const notification = {
+            operation: NotificationTypes.UpdateKitStatus,
+            studyId: kitsData.studyId,
+            orderId: kitsData.kits[0].orderId,
+            read: false,
+            status: kitsStatusesEnum.AvailableForAssignment,
+            uid: kitsData.uid,
+            role: Roles.Site,
+            did: data.senderIdentity,
+            date: new Date().getTime()
+          };
+
+          await this.notificationsService.insertNotification(notification);
+
+          // Refresh Notifications
+          eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+
+          // Sponsor get a message in order to update his kit id.
+          eventBusService.emitEventListeners(Topics.RefreshKits + data.data.kitId, null);
+        }
+        break;
+      }
       case kitsStatusesEnum.AvailableForAssignment:
       case kitsStatusesEnum.Assigned:
       case kitsStatusesEnum.Dispensed:

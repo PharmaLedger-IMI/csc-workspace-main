@@ -1,4 +1,4 @@
-<webc-container controller='QuarantineKitController'>
+<webc-container controller='MakeKitAvailableController'>
   <main class='full-flex-column'>
     <section>
       <webc-template template='header-template'></webc-template>
@@ -11,17 +11,17 @@
           <i class="fa-solid fa-arrow-left"></i>
         </span>
         <span data-tag='dashboard'>Dashboard / Kits Management </span> / <span data-tag='view-study-kits'>{{@kit.studyId}} - {{@kit.orderId}} / Kits</span> / <span
-        data-tag='view-kit'>{{@kit.kitId}}</span> / <strong>Quarantine Kit</strong>
+        data-tag='view-kit'>{{@kit.kitId}}</span> / <strong>Blocked</strong>
       </div>
 
       <div class='body-main-section'>
           <div class='stepper-container'>
             <button id='step-1' data-tag='step-1' class='step-element step-active'>1 - Scan Kit</button>
             <div class="step-break-line"></div>
-            <button id='step-2' data-tag='step-2' disabled='@formIsInvalid' class='step-element'>2 - Add Details
+            <button id='step-2' data-tag='step-2' disabled='@formIsInvalid' class='step-element'>2 - Add Comment
             </button>
             <div class="step-break-line"></div>
-            <button id='step-3' data-tag='step-3' disabled='@formIsInvalid' class='step-element'>3 - Submit
+            <button id='step-3' data-tag='step-3' disabled='@formIsInvalid' class='step-element'>3 - Sign
             </button>
           </div>
 
@@ -72,14 +72,15 @@
 
           <div class='step-holder-modal step-hidden' id='step-2-wrapper'>
             <div class='row comments-container'>
-              <!-- Quarantine Reason -->
+              <!-- Comments Submission -->
               <div class='col-lg-12 col-xl-12'>
+                <!-- Add Comment -->
                 <div class='form-group'>
-                  <label>{{@kitModel.form.quarantineReason.label}}</label>
-                  <select class='form-control' name='@kitModel.form.quarantineReason.name'
-                          value='@kitModel.form.quarantineReason.value' data-for='@kitModel.form.quarantineReason.options'>
-                    <option value='@'>{{@}}</option>
-                  </select>
+                  <label>Relabeling Comment</label>
+                  <input class='form-control' name='@kitModel.form.add_comment.name'
+                         placeholder='@kitModel.form.add_comment.placeholder'
+                         required='@kitModel.form.add_comment.required'
+                         type='text' value='@kitModel.form.add_comment.value' />
                 </div>
               </div>
 
@@ -105,20 +106,47 @@
                   <!-- Kit ID -->
                   <label>{{@kitModel.form.kitId.label}}</label>
                   <input class='form-control form-control-sm' readonly name='@kitModel.form.kitId.name'
+                         placeholder='@kitModel.form.kitId.placeholder'
                          type='text' value='@kit.kitId' />
                 </div>
               </div>
 
               <div class='col-12'>
                 <div class='form-group'>
-                  <!-- Kit Quarantine Reason -->
-                  <label>{{@kitModel.form.quarantineReason.label}}</label>
-                  <input class='form-control form-control-sm' readonly name='@kitModel.form.quarantineReason.name'
-                         type='text' value='@kitModel.form.quarantineReason.value' />
+                  <label>{{@kitModel.form.keep_between_temperature.label}}</label>
+                  <div class='row'>
+                    <div class='col-6'>
+                      <input class='form-control form-control-sm' readonly
+                             name='@kitModel.form.keep_between_temperature_min.name'
+                             type='text' value='@kit.temperatures.min' />
+                    </div>
+                    <div class='col-6'>
+                      <input class='form-control form-control-sm' readonly
+                             name='@kitModel.form.keep_between_temperature_max.name'
+                             type='text' value='@kit.temperatures.max' />
+                    </div>
+                  </div>
                 </div>
               </div>
 
+              <div class='col-12'>
+                <div class='form-group'>
+                  <label>{{@kitModel.form.temperature_comments.label}}</label>
+                  <input class='form-control form-control-sm' readonly
+                         name='@kitModel.form.temperature_comments.name'
+                         placeholder='@kitModel.form.temperature_comments.placeholder' type='text'
+                         value='@kit.temperatureComments' />
+                </div>
+              </div>
 
+              <div class='col-12'>
+                <div class='form-group'>
+                  <label>Comments</label>
+                  <input class='form-control form-control-sm' readonly name='@kitModel.form.add_comment.name'
+                         type='text' value='@kitModel.form.add_comment.value'
+                  />
+                </div>
+              </div>
 
 
               <!-- Navigation Between Steps-->
@@ -127,10 +155,11 @@
                   <i class='fas fa-angle-left'></i>
                   Previous
                 </button>
-                <button class='btn-default' data-tag='quarantine_kit' id='quarantine_kit'
-                        disabled='@disableSubmission'>
-                  <i class="fas fa-check"></i>
-                  Submit
+                <button class='btn-default' data-tag='sign_button' id='sign_button'
+                        disabled='@disableSign'>
+                  <i class='fas fa-check'></i>
+                  <!--<i class="fas fa-check"></i>-->
+                  Sign
                 </button>
               </div>
             </div>

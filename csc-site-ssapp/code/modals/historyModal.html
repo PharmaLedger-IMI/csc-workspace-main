@@ -81,6 +81,21 @@
 						</div>
 					</div>
 
+
+					<div data-if='@requestRelabelingStatuses'>
+						<div slot='true' class='history-status background-orange'>
+							<div class='history-date'>{{@date}}</div>
+							<div><b>{{@status}}:</b> {{@count}}</div>
+						</div>
+					</div>
+
+					<div data-if='@blockedStatuses'>
+						<div slot='true' class='history-status background-orange'>
+							<div class='history-date'>{{@date}}</div>
+							<div><b>{{@status}}:</b> {{@count}}</div>
+						</div>
+					</div>
+
 					<div data-if='@inQuarantine'>
 						<div slot='true' class='history-status background-in-quarantine'>
 							<div class='history-date'>{{@date}}</div>
