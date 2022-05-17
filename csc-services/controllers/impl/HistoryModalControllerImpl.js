@@ -152,6 +152,8 @@ class HistoryModalControllerImpl extends WebcController {
 					statusesCounter[key].inQuarantine = statuses.quarantineStatuses.indexOf(statusesCounter[key].status) !== -1;
 					statusesCounter[key].pendingDestruction = statuses.pendingDestructionStatuses.indexOf(statusesCounter[key].status) !== -1;
 					statusesCounter[key].cancelled = statuses.canceledKitsStatuses.indexOf(statusesCounter[key].status) !== -1;
+					statusesCounter[key].requestRelabelingStatuses = statuses.requestRelabelingStatuses.indexOf(statusesCounter[key].status) !== -1;
+					statusesCounter[key].blockedStatuses = statuses.blockedStatuses.indexOf(statusesCounter[key].status) !== -1;
 					statusesCounter[key].date = momentService(Math.max(...statusesCounter[key].date)).format(Commons.DateTimeFormatPattern);
 					kitsHistory.status.push(statusesCounter[key]);
 				}
