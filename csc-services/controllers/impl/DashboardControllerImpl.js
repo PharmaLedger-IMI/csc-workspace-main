@@ -7,7 +7,7 @@ class DashboardControllerImpl extends WebcController {
 		super(...props);
 		this.role = role;
 		let selectedTab;
-		MessageHandlerService.init(role, this.DSUStorage);
+		MessageHandlerService.init(role);
 		if (this.history.location.state && this.history.location.state.tab) {
 			selectedTab = this.history.location.state.tab;
 		} else {

@@ -14,7 +14,7 @@ class KitsControllerImpl extends WebcController {
 	constructor(role, ...props) {
 		super(...props);
 		this.role = role;
-		this.kitsService = new KitsService(this.DSUStorage);
+		this.kitsService = new KitsService();
 		this.searchService = new SearchService(kitsTableHeaders);
 		this.model = this.getKitsViewModel();
 		this.model.kitsListIsReady = false;

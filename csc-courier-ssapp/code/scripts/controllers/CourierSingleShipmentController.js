@@ -18,7 +18,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
   }
 
   async initServices(){
-    this.shipmentsService = new ShipmentsService(this.DSUStorage);
+    this.shipmentsService = new ShipmentsService();
   }
 
   attachEventListeners() {

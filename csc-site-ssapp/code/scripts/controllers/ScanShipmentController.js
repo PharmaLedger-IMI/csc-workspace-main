@@ -11,8 +11,8 @@ class ScanShipmentController extends WebcController {
   constructor(...props) {
     super(...props);
     this.originalShipment = this.history.location.state.shipment;
-    this.shipmentService = new ShipmentService(this.DSUStorage);
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.shipmentService = new ShipmentService();
+    this.kitsService = new KitsService();
     this.model = { shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;
     this.retrieveKitIds(this.originalShipment.kitIdSSI);

@@ -18,11 +18,11 @@ class SingleKitControllerImpl extends AccordionController {
     super(...props);
     this.actor = actor;
 
-    this.kitsService = new KitsService(this.DSUStorage);
-    this.ordersService = new OrderService(this.DSUStorage);
-    this.shipmentService = new ShipmentService(this.DSUStorage);
+    this.kitsService = new KitsService();
+    this.ordersService = new OrderService();
+    this.shipmentService = new ShipmentService();
     this.communicationService = getCommunicationServiceInstance();
-    this.fileDownloaderService = new FileDownloaderService(this.DSUStorage);
+    this.fileDownloaderService = new FileDownloaderService();
     this.initViewModel();
     this.openFirstAccordion();
     this.attachEventListeners();

@@ -8,12 +8,11 @@ const { kitsStatusesEnum } = kit;
 class KitsService extends DSUService {
   KITS_TABLE = 'kits';
 
-  constructor(DSUStorage) {
-    super(DSUStorage, FoldersEnum.Kits);
+  constructor() {
+    super(FoldersEnum.Kits);
     this.communicationService = getCommunicationServiceInstance();
-    this.storageService = getSharedStorage(DSUStorage);
-    this.shipmentsService = new ShipmentsService(DSUStorage);
-    this.DSUStorage = DSUStorage;
+    this.storageService = getSharedStorage(this.DSUStorage);
+    this.shipmentsService = new ShipmentsService();
   }
 
   async getKitIdsDsu(kitIdsSSI){

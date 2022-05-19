@@ -56,10 +56,10 @@ class SingleOrderControllerImpl extends AccordionController {
   }
 
   async initServices(){
-    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
-    this.ordersService = new OrdersService(this.DSUStorage);
-    this.shipmentsService = new ShipmentsService(this.DSUStorage);
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.FileDownloaderService = new FileDownloaderService();
+    this.ordersService = new OrdersService();
+    this.shipmentsService = new ShipmentsService();
+    this.kitsService = new KitsService();
     this.init();
 
   }

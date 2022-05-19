@@ -1,3 +1,5 @@
+const opendsu = require("opendsu");
+const scAPI = opendsu.loadAPI("sc");
 class DidService {
 
 	constructor() {
@@ -37,16 +39,27 @@ class DidService {
 			if(this.did){
 				return resolve(this.did);
 			}
-			this.getUserDetails(async (err, userDetails)=>{
-				if(err){
-					return reject(err);
-				}
 
-				const domain = await this.getWalletDomain();
-				const did = `did:ssi:name:${domain}:${userDetails.username}`
-				this.did = did;
-				resolve(did);
-			})
+			const resolveDid = () => {
+				this.getUserDetails(async (err, userDetails) => {
+					if (err) {
+						return reject(err);
+					}
+
+					const domain = await this.getWalletDomain();
+					const did = `did:ssi:name:${domain}:${userDetails.username}`;
+					this.did = did;
+					resolve(did);
+				});
+			};
+
+			const sc = scAPI.getSecurityContext();
+
+			if (sc.isInitialised()) {
+				resolveDid();
+			} else {
+				sc.on('initialised', resolveDid);
+			}
 		});
 	}
 

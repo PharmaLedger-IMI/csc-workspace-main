@@ -12,13 +12,12 @@ const { kitsMessagesEnum, kitsStatusesEnum } = kit;
 
 class MessageHandlerService {
 
-  constructor(role,DSUStorage) {
+  constructor(role) {
     this.role = role;
-    this.DSUStorage = DSUStorage;
-    this.ordersService = new OrdersService(this.DSUStorage);
-    this.shipmentService = new ShipmentsService(this.DSUStorage);
-    this.notificationsService = new NotificationsService(this.DSUStorage);
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.ordersService = new OrdersService();
+    this.shipmentService = new ShipmentsService();
+    this.notificationsService = new NotificationsService();
+    this.kitsService = new KitsService();
     this.communicationService = getCommunicationServiceInstance();
 
 
@@ -407,9 +406,9 @@ class MessageHandlerService {
 }
 
 let instance = null;
-const init = (role, dsuStorage) => {
+const init = (role) => {
   if (instance === null) {
-    instance = new MessageHandlerService(role, dsuStorage);
+    instance = new MessageHandlerService(role);
   }
 
   return instance;

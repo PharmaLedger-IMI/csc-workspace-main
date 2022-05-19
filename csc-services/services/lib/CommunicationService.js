@@ -56,19 +56,7 @@ class CommunicationService {
             try {
                 const didDocument = await $$.promisify(w3cDID.createIdentity)(didData.didType, didData.domain, didData.publicName);
                 console.log(`Identity ${didDocument.getIdentifier()} created successfully.`);
-                /**
-                 * there seems to be an issue with the didDocument fresh created instance, therefore will resolve it again.
-                 */
-                //return didDocument;
-                /*return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        this.getDidDocumentInstance(didData).then((did) => {
-                            resolve(did);
-                        });
-                    }, 1000);
-                });*/
-                //temporary hack:)
-                window.location.reload();
+                return didDocument;
 
             } catch (e) {
                 console.log(`DID creation failed for didType:'${didData.didType}' , publicName: '${didData.publicName}' , domain: '${didData.domain}'`)
