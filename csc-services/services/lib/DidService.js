@@ -22,16 +22,11 @@ class DidService {
 	async getWalletDomain() {
 		const opendsu = require("opendsu");
 		const config = opendsu.loadAPI("config");
-		const defaultDomain = "default";
-		try {
 			let domain = await $$.promisify(config.getEnv)("domain");
 			if (!domain) {
-				domain = defaultDomain;
+				throw new Error("No domain was set up in the environment configuration file.")
 			}
 			return domain;
-		} catch (e) {
-			return defaultDomain;
-		}
 	}
 
 	async getDID(){
