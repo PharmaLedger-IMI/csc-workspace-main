@@ -19,10 +19,10 @@ class DidService {
 			});
 	}
 
-	async getWalletDomain() {
+	async getDidDomain() {
 		const opendsu = require("opendsu");
 		const config = opendsu.loadAPI("config");
-			let domain = await $$.promisify(config.getEnv)("domain");
+			let domain = await $$.promisify(config.getEnv)("didDomain");
 			if (!domain) {
 				throw new Error("No domain was set up in the environment configuration file.")
 			}
@@ -41,7 +41,7 @@ class DidService {
 						return reject(err);
 					}
 
-					const domain = await this.getWalletDomain();
+					const domain = await this.getDidDomain();
 					const did = `did:ssi:name:${domain}:${userDetails.username}`;
 					this.did = did;
 					resolve(did);
