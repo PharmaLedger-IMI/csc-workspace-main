@@ -3,6 +3,9 @@ const w3cDID = opendsu.loadAPI('w3cdid');
 const scAPI = opendsu.loadAPI("sc");
 const DidService = require("./DidService");
 const messageQueueServiceInstance = require("./MessageQueueService");
+const MAX_RECONNECTION_ATTEMPTS = 5;
+const INITIAL_CONNECTION_DELAY = 1000;
+const MAX_RECONENCT_DELAY = INITIAL_CONNECTION_DELAY * 30;
 
 class CommunicationService {
 
@@ -12,6 +15,8 @@ class CommunicationService {
      */
     constructor() {
         this.createOrLoadIdentity();
+        this.connectionDelay = INITIAL_CONNECTION_DELAY;
+        this.reconnectionAttempts  = 0;
     }
 
     createOrLoadIdentity() {
@@ -111,15 +116,44 @@ class CommunicationService {
         }
 
         this.didDocument.readMessage((err, decryptedMessage) => {
+            //network errors
             if (err) {
-                return console.error(err)
-            }
-            console.log("[Received Message]", decryptedMessage);
-            messageQueueServiceInstance.addCallback(async () => {
-                await callback(err, decryptedMessage);
-            });
+                    if(this.establishedConnectionCheckId){
+                        clearTimeout(this.establishedConnectionCheckId);
+                    }
 
-            this.listenForMessages(callback);
+                    if(this.pendingReadRetryTimeoutId){
+                        clearTimeout(this.pendingReadRetryTimeoutId);
+                    }
+
+                    if (this.reconnectionAttempts < MAX_RECONNECTION_ATTEMPTS) {
+
+                        if (this.connectionDelay < MAX_RECONENCT_DELAY) {
+                            this.connectionDelay = this.connectionDelay * 2;
+                        }
+
+                        this.pendingReadRetryTimeoutId = setTimeout(() => {
+                            this.reconnectionAttempts++;
+                            console.log("Reading message attempt #", this.reconnectionAttempts)
+                            this.listenForMessages(callback);
+                            this.establishedConnectionCheckId = setTimeout(()=>{
+                                this.connectionDelay = INITIAL_CONNECTION_DELAY;
+                                this.reconnectionAttempts = 0;
+                            },MAX_RECONENCT_DELAY)
+
+                        }, this.connectionDelay);
+                    }
+                    else{
+                        callback(new Error('Unexpected error occurred. Please refresh your application'));
+                    }
+            }
+            else {
+                messageQueueServiceInstance.addCallback(async () => {
+                    await callback(err, decryptedMessage);
+                    this.listenForMessages(callback);
+                });
+            }
+
         });
     }
 
