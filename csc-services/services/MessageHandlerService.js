@@ -12,13 +12,15 @@ const { kitsMessagesEnum, kitsStatusesEnum } = kit;
 
 class MessageHandlerService {
 
-  constructor(role,DSUStorage) {
+  constructor(role,messageInProgress,messageCompleted, errorCallback) {
     this.role = role;
-    this.DSUStorage = DSUStorage;
-    this.ordersService = new OrdersService(this.DSUStorage);
-    this.shipmentService = new ShipmentsService(this.DSUStorage);
-    this.notificationsService = new NotificationsService(this.DSUStorage);
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.messageInProgress = messageInProgress;
+    this.messageCompleted = messageCompleted;
+    this.errorCallback = errorCallback;
+    this.ordersService = new OrdersService();
+    this.shipmentService = new ShipmentsService();
+    this.notificationsService = new NotificationsService();
+    this.kitsService = new KitsService();
     this.communicationService = getCommunicationServiceInstance();
 
 
@@ -27,12 +29,10 @@ class MessageHandlerService {
         this.communicationService.listenForMessages(async (err, data) => {
 
           if (err) {
-            return console.error(err);
+            return this.errorCallback(err);
           }
 
-
           //TODO refactor handling messages
-
           console.log('message received', data);
 
           switch (this.role) {
@@ -407,9 +407,9 @@ class MessageHandlerService {
 }
 
 let instance = null;
-const init = (role, dsuStorage) => {
+const init = (role, messageInProgress,messageCompleted, errorCallback) => {
   if (instance === null) {
-    instance = new MessageHandlerService(role, dsuStorage);
+    instance = new MessageHandlerService(role, messageInProgress,messageCompleted, errorCallback);
   }
 
   return instance;

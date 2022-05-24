@@ -12,7 +12,7 @@ class DeliverShipmentController extends WebcController {
     super(...props);
     this.originalShipment = this.history.location.state.shipment;
 
-    this.shipmentService = new ShipmentService(this.DSUStorage);
+    this.shipmentService = new ShipmentService();
     this.model = this.getDeliverShipmentViewModel(shipment);
 
     this.model.shipment = this.originalShipment;

@@ -9,7 +9,7 @@ class ScanShipmentModalControllerImpl extends WebcController {
         super(...props);
         this.role = role;
 
-        this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
+        this.FileDownloaderService = new FileDownloaderService();
 
         this.initScanViewModel();
         this.attachEventListeners();

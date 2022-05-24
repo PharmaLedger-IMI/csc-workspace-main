@@ -1,4 +1,5 @@
 let LOADER_GLOBALS = {
+  DEBUG:false,
   THEME: 'app',
   SHOW_ACTION_BUTTON: false,
   LABELS_DICTIONARY: {

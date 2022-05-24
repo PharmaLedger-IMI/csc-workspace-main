@@ -7,11 +7,10 @@ const EncryptionService = require('./lib/EncryptionService.js');
 class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
 
-  constructor(DSUStorage) {
-    super(DSUStorage, FoldersEnum.Orders);
+  constructor() {
+    super(FoldersEnum.Orders);
     this.communicationService = getCommunicationServiceInstance();
-    this.storageService = getSharedStorage(DSUStorage);
-    this.DSUStorage = DSUStorage;
+    this.storageService = getSharedStorage(this.DSUStorage);
   }
 
 

@@ -1,3 +1,5 @@
+const opendsu = require("opendsu");
+const scAPI = opendsu.loadAPI("sc");
 class DidService {
 
 	constructor() {
@@ -17,19 +19,14 @@ class DidService {
 			});
 	}
 
-	async getWalletDomain() {
+	async getDidDomain() {
 		const opendsu = require("opendsu");
 		const config = opendsu.loadAPI("config");
-		const defaultDomain = "default";
-		try {
-			let domain = await $$.promisify(config.getEnv)("domain");
+			let domain = await $$.promisify(config.getEnv)("didDomain");
 			if (!domain) {
-				domain = defaultDomain;
+				throw new Error("No domain was set up in the environment configuration file.")
 			}
 			return domain;
-		} catch (e) {
-			return defaultDomain;
-		}
 	}
 
 	async getDID(){
@@ -37,16 +34,27 @@ class DidService {
 			if(this.did){
 				return resolve(this.did);
 			}
-			this.getUserDetails(async (err, userDetails)=>{
-				if(err){
-					return reject(err);
-				}
 
-				const domain = await this.getWalletDomain();
-				const did = `did:ssi:name:${domain}:${userDetails.username}`
-				this.did = did;
-				resolve(did);
-			})
+			const resolveDid = () => {
+				this.getUserDetails(async (err, userDetails) => {
+					if (err) {
+						return reject(err);
+					}
+
+					const domain = await this.getDidDomain();
+					const did = `did:ssi:name:${domain}:${userDetails.username}`;
+					this.did = did;
+					resolve(did);
+				});
+			};
+
+			const sc = scAPI.getSecurityContext();
+
+			if (sc.isInitialised()) {
+				resolveDid();
+			} else {
+				sc.on('initialised', resolveDid);
+			}
 		});
 	}
 

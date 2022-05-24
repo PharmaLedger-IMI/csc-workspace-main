@@ -13,7 +13,7 @@ class AssignKitController extends WebcController {
     super(...props);
     this.originalKit = this.history.location.state.kit;
     let { studyId, orderId, uid, kitId } = this.history.location.state.kit;
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.kitsService = new KitsService();
     this.model = { kitModel: viewModelResolver('kit') };
     this.model.kit = this.originalKit;
     this.model.studyId = studyId;

@@ -24,7 +24,7 @@ class ShipmentsControllerImpl extends WebcController {
     this.role = role;
     this.model = this.getShipmentsViewModel();
     this.model.shipmentsListIsReady = false;
-    this.shipmentService = new ShipmentService(this.DSUStorage);
+    this.shipmentService = new ShipmentService();
     
     const tableHeaders = this.getTableHeaders();
     this.searchService = new SearchService(tableHeaders);

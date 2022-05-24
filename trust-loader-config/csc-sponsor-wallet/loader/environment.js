@@ -8,7 +8,7 @@ export default {
   mode: 'dev-secure',
   domain: 'csc',
   vaultDomain:"vault",
-  didDomain:"csc",
+  didDomain:"rms",
   enclaveType:"WalletDBEnclave",
   sw: false,
   pwa: false,

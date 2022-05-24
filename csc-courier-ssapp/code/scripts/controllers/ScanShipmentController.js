@@ -23,7 +23,7 @@ class ScanShipmentController extends WebcController {
   }
 
   async initServices(){
-    this.shipmentService = new ShipmentService(this.DSUStorage);
+    this.shipmentService = new ShipmentService();
     this.model = {	shipmentModel: viewModelResolver('shipment') };
     this.model.shipment = this.originalShipment;
     this.model.disableSign = false;
