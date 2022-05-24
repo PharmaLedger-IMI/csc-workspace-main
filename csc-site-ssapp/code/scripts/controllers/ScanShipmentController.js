@@ -126,7 +126,7 @@ class ScanShipmentController extends WebcController {
       payload.signature = true;
       let receivedComment = {
           date: new Date().getTime(),
-          entity: Roles.Site,
+          entity: '[' + Roles.Site + '][' + this.model.shipment.siteId + ']',
           comment: this.model.shipmentModel.form.add_comment.value
       }
 
