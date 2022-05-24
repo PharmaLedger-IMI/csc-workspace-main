@@ -20,7 +20,7 @@ class WrongDeliveryAddressModalController extends WebcController {
       }
     }
 
-    this.shipmentService = new ShipmentService (this.DSUStorage);
+    this.shipmentService = new ShipmentService ();
 
     this.initHandlers();
   }

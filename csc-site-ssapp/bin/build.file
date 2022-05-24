@@ -1,5 +1,7 @@
 delete /
 addfolder code
-mount ../cardinal/seed /cardinal
+addfile ../privatesky/psknode/bundles/pskruntime.js scripts/bundles/pskruntime.js
+addfile ../privatesky/psknode/bundles/webshims.js scripts/bundles/webshims.js
+addfile ../privatesky/psknode/bundles/iframeBoot.js scripts/bundles/iframeBoot.js
 mount ../webcardinal/seed /webcardinal
-mount ../themes/*/seed /themes/*
+mount ../themes/blue-csc-theme/seed /themes/blue-csc-theme

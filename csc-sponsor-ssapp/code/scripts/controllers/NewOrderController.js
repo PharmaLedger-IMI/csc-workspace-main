@@ -314,8 +314,8 @@ export default class NewOrderController extends WebcController {
 
 
   async initServices(){
-    this.ordersService = new OrdersService(this.DSUStorage);
-    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
+    this.ordersService = new OrdersService();
+    this.FileDownloaderService = new FileDownloaderService();
   }
   checkFormValidity(){
 

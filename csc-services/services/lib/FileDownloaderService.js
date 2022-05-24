@@ -1,12 +1,6 @@
-const DSUService = require('./DSUService.js');
-
-module.exports = class FileDownloaderService extends DSUService {
+module.exports = class FileDownloaderService  {
   files = [];
-
-  constructor(DSUStorage) {
-    super(DSUStorage);
-    this.DSUStorage = DSUStorage;
-  }
+  constructor() { }
 
   async prepareDownloadFromDsu(path, filename) {
     return new Promise(async (resolve, reject) => {

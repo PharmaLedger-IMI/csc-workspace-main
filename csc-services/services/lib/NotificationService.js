@@ -1,11 +1,13 @@
 const getSharedStorage = require('./SharedDBStorageService.js').getSharedStorage;
 const { uuidv4 } = require("../lib/utils");
+const DSUService = require('./DSUService');
 
-module.exports = class NotificationsService {
+module.exports = class NotificationsService  extends DSUService {
 	NOTIFICATIONS_TABLE = 'notifications';
 
-	constructor(DSUStorage) {
-		this.storageService = getSharedStorage(DSUStorage);
+	constructor() {
+		super();
+		this.storageService = getSharedStorage(this.DSUStorage);
 	}
 
 	async getNumberOfUnreadNotifications() {

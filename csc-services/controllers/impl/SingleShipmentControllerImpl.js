@@ -20,10 +20,10 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   }
 
   async initServices(){
-    this.notificationsService = new NotificationsService(this.DSUStorage);
-    this.ordersService = new OrdersService(this.DSUStorage);
-    this.shipmentsService = new ShipmentsService(this.DSUStorage);
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.notificationsService = new NotificationsService();
+    this.ordersService = new OrdersService();
+    this.shipmentsService = new ShipmentsService();
+    this.kitsService = new KitsService();
 
     this.initViewModel();
     this.attachEventListeners();

@@ -11,7 +11,7 @@ class DashboardMenuControllerImpl extends WebcController {
 		super(...props);
 
 		this.model = { unread: 0 };
-		this.notificationsService = new NotificationsService(this.DSUStorage);
+		this.notificationsService = new NotificationsService();
 
 		this.updateActiveMenu();
 		this.getNotificationsUnread();

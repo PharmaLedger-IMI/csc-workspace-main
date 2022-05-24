@@ -19,9 +19,9 @@ export default class EditShipmentController extends WebcController {
 	}
 
 	async initServices(){
-		this.ordersService = new OrderService(this.DSUStorage);
-		this.shipmentsService = new ShipmentService(this.DSUStorage);
-		this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
+		this.ordersService = new OrderService();
+		this.shipmentsService = new ShipmentService();
+		this.FileDownloaderService = new FileDownloaderService();
 
 		this.attachEventHandlers();
 		this.initViewModel();

@@ -11,7 +11,7 @@ class DispenseKitController extends WebcController {
 
   constructor(...props) {
     super(...props);
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.kitsService = new KitsService();
     this.initViewModel();
     this.initHandlers();
     this.navigationHandlers();

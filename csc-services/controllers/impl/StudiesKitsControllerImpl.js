@@ -13,7 +13,7 @@ class StudiesKitsControllerImpl extends WebcController {
   constructor(role, ...props) {
     super(...props);
     this.role = role;
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.kitsService = new KitsService();
     this.searchService = new SearchService(studiesKitsTableHeaders);
     this.model = this.getKitsViewModel();
     this.model.kitsListIsReady = false;

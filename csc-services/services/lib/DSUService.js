@@ -1,5 +1,6 @@
 const opendsu = require('opendsu');
 const resolver = opendsu.loadAPI('resolver');
+const storage = opendsu.loadApi('storage');
 const keySSISpace = opendsu.loadAPI('keyssi');
 class DSUService {
   PATH = '/';
@@ -7,11 +8,11 @@ class DSUService {
   dsuServiceIsReady = false;
   onReadyCallbacks = [];
 
-  constructor(DSUStorage, path = this.PATH) {
-    this.DSUStorage = DSUStorage;
+  constructor(path = this.PATH) {
+    this.DSUStorage = storage.getDSUStorage();
     this.PATH = path;
 
-    DSUStorage.enableDirectAccess(() => {
+    this.DSUStorage.enableDirectAccess(() => {
       this.dsuServiceIsReady = true;
       while (this.onReadyCallbacks.length > 0) {
         let callback = this.onReadyCallbacks.shift();
