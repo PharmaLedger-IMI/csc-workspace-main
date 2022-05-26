@@ -119,8 +119,6 @@ class ScanKitController extends WebcController {
   async sign() {
     this.model.disableSign = true;
     window.WebCardinal.loader.hidden = false;
-
-    console.log(this.model);
     const shipments = await this.shipmentService.getShipments();
     const shipment = shipments.find((i)=> { return i.shipmentId =  this.model.kit.shipmentId});
     let receivedComment = {

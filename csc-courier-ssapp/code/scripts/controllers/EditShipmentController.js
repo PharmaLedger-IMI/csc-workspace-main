@@ -131,7 +131,7 @@ export default class EditShipmentController extends WebcController {
     let billingData = {...this.shipmentData.bill};
     let {uid}  = this.model.shipment;
 
-    this.shipmentData.editComment.entity = '[' + Roles.Courier + '][' +  this.model.shipment.courierId + ']';
+    this.shipmentData.editComment.entity = '<' + Roles.Courier + '> (' +  this.model.shipment.courierId + ']';
     await this.shipmentsService.createAndMountShipmentTransitOtherDSUs(uid, billingData, this.shipmentData.documents, this.shipmentData.editComment);
     window.WebCardinal.loader.hidden = true;
     this.showErrorModalAndRedirect('Shipment Edited, redirecting to dashboard...', 'Shipment Edit', {
