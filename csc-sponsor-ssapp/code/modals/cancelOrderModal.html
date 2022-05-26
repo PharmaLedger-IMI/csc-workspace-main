@@ -1,35 +1,38 @@
-<div class="custom-modal-header header-color" slot="header">
-  <h5>Cancel Order</h5>
-</div>
-<main>
-  <p>Are you sure you want to cancel this order?</p>
-
-  <div class='form-group'>
-    <label class='col-form-label'>Cancellation Reason:</label>
-    <textarea class='form-control' id='order_cancellation_comment' data-view-model='@cancelOrderModal.comment'></textarea>
-  </div>
-</main>
-<footer class="modal-action-menu" slot="footer">
-  <button class='btn-reset' data-close >No</button>
-  <button class='btn-default' disabled='@cancelOrderModal.commentIsEmpty' data-confirm>Cancel Order</button>
-</footer>
-<style>
-    button.cancel,button.confirm{
-        border-radius: 3px;
-        padding: 0.5rem 1.1rem;
-        margin:0 0.5rem;
-        border: none;
-        font-size: 1rem;
-    }
-    button.cancel {
-        color: #222;
-        background-color: #EFEFEF;
-    }
-    button.confirm[disabled]{
-        opacity: 0.5;
-    }
-    button.confirm {
-        color: #FAFAFA;
-        background-color: #5e7fe1
+<style xmlns='http://www.w3.org/1999/html'>
+    webc-modal {
+        --width: calc( 100% - 40px) ;
+        --max-width: 720px;
     }
 </style>
+
+<div slot="header">
+  <div class="modal-main-title">Cancel Order</div>
+</div>
+
+
+<div class='row'>
+  <div class='col-12'>
+    <p>Are you sure you want to cancel this order?</p>
+    <div class='form-group'>
+      <label>Cancellation Reason:</label>
+      <textarea class='form-control' id='order_cancellation_comment' data-view-model='@cancelOrderModal.comment'></textarea>
+    </div>
+  </div>
+
+  <!-- Navigation Between Steps-->
+  <div class="row-wrapper button-wrapper">
+
+    <button id='closeModalButton' class="btn-reset" data-close>
+      <i class="fas fa-window-close"></i>
+      Cancel
+    </button>
+
+    <button class="btn-default" disabled='@cancelOrderModal.commentIsEmpty' data-confirm>
+      <i class="fas fa-check"></i>
+      Cancel Order
+    </button>
+  </div>
+</div>
+
+<div slot="footer">
+</div>
