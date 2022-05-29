@@ -193,6 +193,11 @@ class SingleKitControllerImpl extends AccordionController {
     let { uid } = this.history.location.state;
     model.uid = uid;
     model.kitModel.kit = await this.kitsService.getKitDetails(model.uid);
+
+    const currentDate = new Date();
+    const studyTo = new Date(new Date(model.kitModel.kit.studyData.studyDurationTo).getTime() + 86400000);
+    model.kitModel.kit.studyHasEnded = currentDate > studyTo;
+
     model.kitModel.kit = { ...this.transformKitData(model.kitModel.kit) };
 
     if (model.kitModel.kit.shipmentComments) {
@@ -266,7 +271,6 @@ class SingleKitControllerImpl extends AccordionController {
         data.returnedDate = this.getDateTime(data.returnedDate)
       }
 
-      data.pending_action = this.getPendingAction(data.status_value);
       const statuses = statusesService.getKitStatuses();
       const normalStatuses = statuses.normalKitStatuses;
       const approvedStatuses = statuses.approvedKitStatuses;
@@ -278,6 +282,13 @@ class SingleKitControllerImpl extends AccordionController {
       data.status_normal = normalStatuses.indexOf(data.status_value) !== -1;
       data.status_quarantine = inQuarantineStatues.indexOf(data.status_value) !== -1;
       data.status_pending_destruction = pendingDestructionStatuses.indexOf(data.status_value) !== -1;
+
+      if (data.studyHasEnded && data.status_normal) {
+        data.pending_action = kitsPendingActionEnum.InQuarantine;
+      } else {
+        data.pending_action = this.getPendingAction(data.status_value);
+      }
+
       data.contextualContent = {
          afterReceived: data.status.findIndex(el => el.status === kitsStatusesEnum.Received) !== -1,
          afterAvailableForAssignment: data.status.findIndex(el => el.status === kitsStatusesEnum.AvailableForAssignment) !== -1,

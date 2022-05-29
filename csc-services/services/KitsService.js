@@ -118,7 +118,11 @@ class KitsService extends DSUService {
     //only SPO, CMO keep orderIdentifier in their dbs
     if (typeof shipment.kitIdSSI === 'undefined' && typeof shipment.orderSSI !== 'undefined') {
       const order = await this.getEntityAsync(shipment.orderSSI, FoldersEnum.Orders);
-      kitDetails.studyData = order.studyData;
+      kitDetails.studyData = {
+        studyDurationFrom: order.studyDurationFrom,
+        studyDurationTo: order.studyDurationTo,
+        studyId: order.studyId
+      };
     } else {
       const kitIdDsu = await this.getKitIdsDsu(shipment.kitIdSSI);
       kitDetails.studyData = kitIdDsu.studyData;

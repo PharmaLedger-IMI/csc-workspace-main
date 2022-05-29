@@ -108,21 +108,21 @@
             </div>
 
             <div data-if='@actions.canManageKit'>
-            <button class='btn-default' data-tag='manage-kit'>
+            <button class='btn-default' data-tag='manage-kit' disabled='@kitModel.kit.studyHasEnded'>
               <span class='fas fa-icon fa-qrcode'></span>
               Manage Kit
             </button>
             </div>
 
             <div data-if='@actions.canAssignKit'>
-              <button class='btn-default' data-tag='assign-kit'>
+              <button class='btn-default' data-tag='assign-kit' disabled='@kitModel.kit.studyHasEnded'>
                 <span class='fas fa-medkit mr-2'></span>
                 Assign Kit
               </button>
             </div>
 
             <div data-if='@actions.canDispenseKit'>
-              <button class='btn-default' data-tag='dispense-kit'>
+              <button class='btn-default' data-tag='dispense-kit' disabled='@kitModel.kit.studyHasEnded'>
                 <span class='fas fa-medkit mr-2'></span>
                 Dispense Kit
               </button>

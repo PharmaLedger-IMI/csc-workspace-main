@@ -17,6 +17,7 @@ const kitsPendingActionEnum = {
 	Dispense: 'Dispense',
 	Return:"Return",
 	Reconcile:"Reconcile",
+	InQuarantine:"Move to Quarantine",
 	PendingDestruction:"Pending Destruction",
 	SubmitDestructionDetails:"Submit Destruction Details",
 	NoFurtherActionsRequired: 'No further actions required'
