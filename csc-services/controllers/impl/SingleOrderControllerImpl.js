@@ -267,6 +267,7 @@ class SingleOrderControllerImpl extends AccordionController {
   }
 
   async cancelOrder() {
+    window.WebCardinal.loader.hidden = false;
     const { uid } = this.model.order;
     let comment = this.model.cancelOrderModal.comment.value ? {
       entity: this.role,
@@ -284,6 +285,7 @@ class SingleOrderControllerImpl extends AccordionController {
     }
 
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+    window.WebCardinal.loader.hidden = true;
     this.showErrorModalAndRedirect(orderLabel + ' was canceled, redirecting to dashboard...', orderLabel + ' Cancelled', {tag:'dashboard'}, 2000);
   }
 
