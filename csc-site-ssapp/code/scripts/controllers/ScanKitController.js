@@ -123,7 +123,7 @@ class ScanKitController extends WebcController {
     const shipment = shipments.find((i)=> { return i.shipmentId =  this.model.kit.shipmentId});
     let receivedComment = {
       date: new Date().getTime(),
-      entity: '[' + Roles.Site + ']['  + shipment.siteId + ']',
+      entity: '<' + Roles.Site + '> ('  + shipment.siteId + ')',
       comment: this.model.kitModel.form.add_comment.value
     }
 
