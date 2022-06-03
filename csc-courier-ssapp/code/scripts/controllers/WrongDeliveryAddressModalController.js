@@ -15,18 +15,18 @@ class WrongDeliveryAddressModalController extends WebcController {
       inputs:{
         comment:{
           value: "",
-          placeholder: "Enter elaboration"
+          placeholder: "Enter elaboration",
+          isEmpty:true
         }
       }
     }
 
     this.shipmentService = new ShipmentService ();
 
-    this.initHandlers();
-  }
+    this.model.onChange('form.inputs.comment.value', () => {
+      this.model.form.inputs.comment.isEmpty = this.model.form.inputs.comment.value.trim() === '';
+    });
 
-
-  initHandlers() {
     this.onTagEvent('submit-wrong-delivery-comment', 'click', (e) => {
       this.submit();
     });

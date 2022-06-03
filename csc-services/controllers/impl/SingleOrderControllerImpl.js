@@ -259,6 +259,7 @@ class SingleOrderControllerImpl extends AccordionController {
           controller: 'CancelOrderController',
           disableExpanding: true,
           disableBackdropClosing: true,
+          disableFooter: true,
           model: this.model
         });
     });
