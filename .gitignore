@@ -29,11 +29,6 @@ apihub-root/seedsBackup
 dossier-explorer-ssapp
 dossier-explorer-wallet-prototype
 env.json.devel
-csc-sponsor-ssapp/code/scripts/bundles
-csc-site-ssapp/code/scripts/bundles
-csc-cmo-ssapp/code/scripts/bundles
-csc-courier-ssapp/code/scripts/bundles
-
 node_modules
 package-lock.json
 themes/blue-fluorite-theme
