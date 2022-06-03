@@ -3,6 +3,7 @@ const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
 const KitsService = cscServices.KitsService;
 const eventBusService = cscServices.EventBusService;
+const shipmentService = cscServices.ShipmentService;
 const { Roles, Topics } = cscServices.constants;
 const { kitsStatusesEnum } = cscServices.constants.kit;
 
@@ -11,6 +12,7 @@ class ScanKitController extends WebcController {
 
   constructor(...props) {
     super(...props);
+    this.shipmentService = new shipmentService();
     this.originalKit = this.history.location.state.kit;
     this.kitsService = new KitsService();
     this.model = { kitModel: viewModelResolver('kit') };
@@ -117,9 +119,11 @@ class ScanKitController extends WebcController {
   async sign() {
     this.model.disableSign = true;
     window.WebCardinal.loader.hidden = false;
+    const shipments = await this.shipmentService.getShipments();
+    const shipment = shipments.find((i)=> { return i.shipmentId =  this.model.kit.shipmentId});
     let receivedComment = {
       date: new Date().getTime(),
-      entity: Roles.Site,
+      entity: '<' + Roles.Site + '> ('  + shipment.siteId + ')',
       comment: this.model.kitModel.form.add_comment.value
     }
 

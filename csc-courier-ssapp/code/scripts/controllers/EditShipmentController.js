@@ -2,6 +2,7 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const ShipmentService = cscServices.ShipmentService;
+const {Roles} = cscServices.constants;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const viewModelResolver = cscServices.viewModelResolver;
 const { uuidv4 } = cscServices.utils;
@@ -129,6 +130,8 @@ export default class EditShipmentController extends WebcController {
     window.WebCardinal.loader.hidden = false;
     let billingData = {...this.shipmentData.bill};
     let {uid}  = this.model.shipment;
+
+    this.shipmentData.editComment.entity = '<' + Roles.Courier + '> (' +  this.model.shipment.courierId + ')';
     await this.shipmentsService.createAndMountShipmentTransitOtherDSUs(uid, billingData, this.shipmentData.documents, this.shipmentData.editComment);
     window.WebCardinal.loader.hidden = true;
     this.showErrorModalAndRedirect('Shipment Edited, redirecting to dashboard...', 'Shipment Edit', {
@@ -144,7 +147,7 @@ export default class EditShipmentController extends WebcController {
       this.model.allComments = [...[]];
       if (comment) {
         this.model.allComments.push({
-          entity: this.role,
+          entity:  '<' + Roles.Courier + '> (' +  this.model.shipment.courierId + ')',
           date: new Date().toLocaleString(),
           comment: comment,
         });
@@ -269,13 +272,14 @@ export default class EditShipmentController extends WebcController {
     this.model.wizard = this.getWizardForm();
     this.model.form.filesEmpty = true;
 
+
   }
 
   prepareShipmentData() {
     const { billNumber, hsCode } = this.model.toObject('form');
     const documents = this.files.filter((x) => x.fileContent instanceof File).map((x) => x.fileContent);
     const editComment = {
-      entity: this.role,
+      entity:  '<' + Roles.Courier + '> (' +  this.model.shipment.courierId + ')',
       comment: this.model.form.add_comment.value,
       date: new Date().getTime(),
     };
