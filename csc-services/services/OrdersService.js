@@ -7,11 +7,10 @@ const EncryptionService = require('./lib/EncryptionService.js');
 class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
 
-  constructor(DSUStorage) {
-    super(DSUStorage, FoldersEnum.Orders);
+  constructor() {
+    super(FoldersEnum.Orders);
     this.communicationService = getCommunicationServiceInstance();
-    this.storageService = getSharedStorage(DSUStorage);
-    this.DSUStorage = DSUStorage;
+    this.storageService = getSharedStorage(this.DSUStorage);
   }
 
 
@@ -107,7 +106,7 @@ class OrdersService extends DSUService {
     const kits = await this.addKitsToDsu(data.kitIdsFile, data.kitIds, studyData, kitIdsDsu.uid);
     const kitIdKeySSIEncrypted = await EncryptionService.encryptData(kitIdsDsu.sReadSSI);
 
-    const comment = { entity: Roles.Sponsor, comment: data.add_comment, date: new Date().getTime() };
+    const comment = { entity:  '<' + Roles.Courier + '> (' +  data.courierId + ')' , comment: data.add_comment, date: new Date().getTime() };
     const comments = await this.addCommentToDsu(comment, commentsDsu.uid);
 
     const orderModel = {

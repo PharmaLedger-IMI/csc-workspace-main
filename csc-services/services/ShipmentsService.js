@@ -10,11 +10,10 @@ const DidService  = require('./lib/DidService');
 class ShipmentsService extends DSUService {
 	SHIPMENTS_TABLE = 'shipments';
 
-	constructor(DSUStorage) {
-		super(DSUStorage, FoldersEnum.Shipments);
+	constructor() {
+		super(FoldersEnum.Shipments);
 		this.communicationService = getCommunicationServiceInstance();
-		this.storageService = getSharedStorage(DSUStorage);
-		this.DSUStorage = DSUStorage;
+		this.storageService = getSharedStorage(this.DSUStorage);
 	}
 
 	async addShipmentToDB(data, key) {

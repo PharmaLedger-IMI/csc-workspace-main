@@ -56,10 +56,10 @@ class SingleOrderControllerImpl extends AccordionController {
   }
 
   async initServices(){
-    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
-    this.ordersService = new OrdersService(this.DSUStorage);
-    this.shipmentsService = new ShipmentsService(this.DSUStorage);
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.FileDownloaderService = new FileDownloaderService();
+    this.ordersService = new OrdersService();
+    this.shipmentsService = new ShipmentsService();
+    this.kitsService = new KitsService();
     this.init();
 
   }
@@ -124,7 +124,6 @@ class SingleOrderControllerImpl extends AccordionController {
     this.model.order.actions = this.setOrderActions();
     this.attachRefreshListeners();
     this.model.order.filesEmpty = (this.model.order.documents.length == 0);
-
   }
 
    attachRefreshListeners() {
@@ -260,6 +259,7 @@ class SingleOrderControllerImpl extends AccordionController {
           controller: 'CancelOrderController',
           disableExpanding: true,
           disableBackdropClosing: true,
+          disableFooter: true,
           model: this.model
         });
     });
@@ -268,6 +268,7 @@ class SingleOrderControllerImpl extends AccordionController {
   }
 
   async cancelOrder() {
+    window.WebCardinal.loader.hidden = false;
     const { uid } = this.model.order;
     let comment = this.model.cancelOrderModal.comment.value ? {
       entity: this.role,
@@ -285,6 +286,7 @@ class SingleOrderControllerImpl extends AccordionController {
     }
 
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+    window.WebCardinal.loader.hidden = true;
     this.showErrorModalAndRedirect(orderLabel + ' was canceled, redirecting to dashboard...', orderLabel + ' Cancelled', {tag:'dashboard'}, 2000);
   }
 

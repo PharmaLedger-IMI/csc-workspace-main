@@ -7,8 +7,8 @@ const KitsService = cscServices.KitsService;
 class KitSummaryControllerImpl extends WebcController {
   constructor(role, ...props) {
     super(...props);
-    this.kitsService = new KitsService(this.DSUStorage);
-    this.fileDownloaderService = new FileDownloaderService(this.DSUStorage);
+    this.kitsService = new KitsService();
+    this.fileDownloaderService = new FileDownloaderService();
     this.model.kitsLoaded = false;
     this.init();
   }

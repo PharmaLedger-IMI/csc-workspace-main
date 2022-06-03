@@ -14,10 +14,10 @@ class ViewShipmentBaseControllerImpl extends AccordionController{
   constructor(role,...props) {
     super(...props);
     this.role = role;
-    this.shipmentService = new ShipmentService(this.DSUStorage);
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.shipmentService = new ShipmentService();
+    this.kitsService = new KitsService();
     this.addedRefreshListeners = false;
-    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
+    this.FileDownloaderService = new FileDownloaderService();
   }
 
   navigationHandlers() {

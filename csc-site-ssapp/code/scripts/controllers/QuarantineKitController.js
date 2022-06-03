@@ -12,7 +12,7 @@ class QuarantineKitController extends WebcController {
   constructor(...props) {
     super(...props);
     this.originalKit = this.history.location.state.kit;
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.kitsService = new KitsService();
     this.model = { kitModel: viewModelResolver('kit') };
     this.model.kit = this.originalKit;
     this.model.disableSubmission = false;

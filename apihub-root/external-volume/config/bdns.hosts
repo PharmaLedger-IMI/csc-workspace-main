@@ -25,5 +25,14 @@
       "anchoringServices":[
          "$ORIGIN"
       ]
+   },
+   "rms":{
+        "replicas":[],
+         "brickStorages":[
+            "$ORIGIN"
+         ],
+         "anchoringServices":[
+            "$ORIGIN"
+         ]
    }
 }

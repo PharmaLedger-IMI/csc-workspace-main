@@ -20,10 +20,10 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   }
 
   async initServices(){
-    this.notificationsService = new NotificationsService(this.DSUStorage);
-    this.ordersService = new OrdersService(this.DSUStorage);
-    this.shipmentsService = new ShipmentsService(this.DSUStorage);
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.notificationsService = new NotificationsService();
+    this.ordersService = new OrdersService();
+    this.shipmentsService = new ShipmentsService();
+    this.kitsService = new KitsService();
 
     this.initViewModel();
     this.attachEventListeners();
@@ -122,12 +122,14 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
         controller: 'CancelOrderController',
         disableExpanding: true,
         disableBackdropClosing: true,
+        disableFooter: true,
         model: this.model
       });
     });
   }
 
   async cancelOrder() {
+    window.WebCardinal.loader.hidden = false;
     const keySSI = this.model.shipmentModel.shipment.orderSSI;
     let comment = this.model.cancelOrderModal.comment.value ? {
           entity: this.role,
@@ -140,6 +142,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
 
     eventBusService.emitEventListeners(Topics.RefreshOrders, null);
     eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+    window.WebCardinal.loader.hidden = true;
     this.showErrorModalAndRedirect('Order and Shipment were canceled, redirecting to dashboard...', 'Order and Shipment Cancelled', {tag:'dashboard'}, 2000);
   }
 

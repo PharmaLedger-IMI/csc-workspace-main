@@ -14,7 +14,7 @@ class OrdersControllerImpl extends WebcController {
 	constructor(role, ...props) {
 		super(...props);
 
-		this.ordersService = new OrdersService(this.DSUStorage);
+		this.ordersService = new OrdersService();
 		this.searchService = new SearchService(orderTableHeaders);
 		this.model = this.getOrdersViewModel();
 		this.model.ordersListIsReady = false;

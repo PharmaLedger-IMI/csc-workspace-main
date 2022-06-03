@@ -14,8 +14,8 @@ class MakeKitAvailableController extends WebcController {
   constructor(...props) {
     super(...props);
     this.originalKit = this.history.location.state.kit;
-    this.kitsService = new KitsService(this.DSUStorage);
-    this.shipmentService = new ShipmentService(this.DSUStorage);
+    this.kitsService = new KitsService();
+    this.shipmentService = new ShipmentService();
     this.communicationService = getCommunicationServiceInstance();
     this.model = { kitModel: viewModelResolver('kit') };
     this.model.kit = this.originalKit;

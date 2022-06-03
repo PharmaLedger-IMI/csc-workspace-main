@@ -13,7 +13,7 @@ class NotificationsControllerImpl extends WebcController {
 
 		this.role = role;
 		this.model = { notifications: [] };
-		this.notificationsService = new NotificationsService(this.DSUStorage);
+		this.notificationsService = new NotificationsService();
 
 		this.getNotifications();
 		this.attachAll();
@@ -103,9 +103,11 @@ class NotificationsControllerImpl extends WebcController {
 
 	markNotificationHandler() {
 		this.onTagClick('mark-notification', async (model) => {
+			window.WebCardinal.loader.hidden = false;
 			await this.notificationsService.changeNotificationStatus(model.pk);
 			await this.getNotifications();
 			eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+			window.WebCardinal.loader.hidden = true;
 		});
 	}
 }

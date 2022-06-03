@@ -12,9 +12,9 @@ export default class ScanShipmentController extends WebcController {
     this.role = Roles.CMO;
     this.model = this.history.location.state.shipment;
     this.model.submitDisabled = false;
-    this.FileDownloaderService = new FileDownloaderService(this.DSUStorage);
-    this.shipmentsService = new ShipmentsService(this.DSUStorage);
-    this.kitsService = new KitsService(this.DSUStorage);
+    this.FileDownloaderService = new FileDownloaderService();
+    this.shipmentsService = new ShipmentsService();
+    this.kitsService = new KitsService();
     this.init();
   }
 

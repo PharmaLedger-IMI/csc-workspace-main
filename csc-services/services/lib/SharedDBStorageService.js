@@ -38,9 +38,6 @@ class SharedStorage {
     }
   }
 
-  addSharedFile(path, value) {
-    throw Error('Not implemented');
-  }
 
   getRecord(tableName, key, callback) {
     if (this.dbReady()) {
@@ -106,44 +103,13 @@ class SharedStorage {
     }
   }
 
-  getSharedSSI(callback) {
-    this.DSUStorage.listFiles('/', (err, fileList) => {
-      if (err) {
-        return callback(err);
-      }
-      if (fileList.includes(KEYSSI_FILE_PATH)) {
-        this.DSUStorage.getObject(KEYSSI_FILE_PATH, (err, data) => {
-          if (err) {
-            return callback(err);
-          }
-          const parsed = keySSISpace.parse(data.sharedSSI);
-          callback(undefined, parsed);
-        });
-      } else {
-        return this.createSharedSSI(callback);
-      }
-    });
-  }
-
-  createSharedSSI(callback) {
-
-    keySSISpace.createSeedSSI('csc', (err, ssi) => {
-      debugger;
-      this.DSUStorage.setObject(KEYSSI_FILE_PATH, { sharedSSI: ssi.derive().getIdentifier() }, (err) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(undefined, ssi);
-      });
-    });
-  }
 }
 
 let instance;
 module.exports.getSharedStorage = function (dsuStorage) {
     if (typeof instance === 'undefined') {
       instance = new SharedStorage(dsuStorage);
-      const promisifyFns = ["addSharedFile","cancelBatch","commitBatch","filter","getRecord","getSharedSSI","insertRecord","updateRecord"]
+      const promisifyFns = ["cancelBatch","commitBatch","filter","getRecord","insertRecord","updateRecord"]
       for(let i = 0; i<promisifyFns.length; i++){
         let prop = promisifyFns[i];
         if(typeof instance[prop] ==="function"){

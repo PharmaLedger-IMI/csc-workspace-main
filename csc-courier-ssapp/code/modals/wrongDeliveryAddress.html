@@ -22,17 +22,14 @@
   <!-- Navigation Between Steps-->
   <div class="row-wrapper button-wrapper">
 
-    <button id='closeModalButton' class="btn-default" data-close>
+    <button id='closeModalButton' class="btn-reset" data-close>
       <i class="fas fa-window-close"></i>
       Cancel
     </button>
 
-    <button class="btn-default" data-tag="submit-wrong-delivery-comment" id="submitButton">
+    <button class="btn-default" data-tag="submit-wrong-delivery-comment" id="submitButton" disabled='@form.inputs.comment.isEmpty'>
       <i class="fas fa-check"></i>
       Confirm
     </button>
   </div>
-</div>
-
-<div slot="footer">
 </div>
