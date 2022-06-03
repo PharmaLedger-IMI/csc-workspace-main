@@ -20,14 +20,6 @@
                 {
                     "type": "execute",
                     "cmd": "cd ../csc-services && npm run build"
-                },
-                {
-                    "type": "copy",
-                    "src": "../csc-services/build/bundles/cscServices.js",
-                    "target": "code/scripts/bundles/cscServices.js",
-                    "options": {
-                        "overwrite": true
-                    }
                 }
             ]
         }
