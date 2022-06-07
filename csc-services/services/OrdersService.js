@@ -105,8 +105,6 @@ class OrdersService extends DSUService {
     }
     const kits = await this.addKitsToDsu(data.kitIdsFile, data.kitIds, studyData, kitIdsDsu.uid);
     const kitIdKeySSIEncrypted = await EncryptionService.encryptData(kitIdsDsu.sReadSSI);
-
-    debugger;
     const comment = { entity:  '<' + Roles.Sponsor + '> (' +  data.sponsor_id + ')' , comment: data.add_comment, date: new Date().getTime() };
     const comments = await this.addCommentToDsu(comment, commentsDsu.uid);
 
