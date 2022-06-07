@@ -34,8 +34,8 @@ class KitSummaryControllerImpl extends WebcController {
     const keySSI = this.model.kitsSSI;
     const kits = await this.kitsService.getKitIdsDsu(keySSI);
     this.model = { ...JSON.parse(JSON.stringify(this.model)), ...kits };
-    this.model.kitsLoaded = true;
     this.model = JSON.parse(JSON.stringify(this.model));
+    this.model.kitsLoaded = true;
   }
 }
 

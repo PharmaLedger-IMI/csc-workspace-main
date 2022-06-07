@@ -1,6 +1,6 @@
 <webc-container controller="KitSummaryController" data-view-model="@kitsData">
   <div data-if="@kitsLoaded">
-    <div slot='true' class="grid-column-wrapper">
+    <div class="grid-column-wrapper">
       <!-- Kit ID List -->
       <label>Kit ID List (.csv):</label>
 
@@ -22,7 +22,7 @@
         <input class="form-control form-control-sm" readonly type="text" value="@kitIds.length" />
       </div>
     </div>
-    <div slot='true' class="responsive-table kits-table-wrapper">
+    <div  class="responsive-table kits-table-wrapper">
       <table class="table table-borderless kits-table">
         <thead>
           <tr>
