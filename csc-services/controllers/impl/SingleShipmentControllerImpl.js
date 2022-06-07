@@ -122,6 +122,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
         controller: 'CancelOrderController',
         disableExpanding: true,
         disableBackdropClosing: true,
+        disableFooter: true,
         model: this.model
       });
     });
