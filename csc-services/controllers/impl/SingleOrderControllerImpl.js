@@ -124,7 +124,6 @@ class SingleOrderControllerImpl extends AccordionController {
     this.model.order.actions = this.setOrderActions();
     this.attachRefreshListeners();
     this.model.order.filesEmpty = (this.model.order.documents.length == 0);
-
   }
 
    attachRefreshListeners() {
@@ -260,6 +259,7 @@ class SingleOrderControllerImpl extends AccordionController {
           controller: 'CancelOrderController',
           disableExpanding: true,
           disableBackdropClosing: true,
+          disableFooter: true,
           model: this.model
         });
     });
