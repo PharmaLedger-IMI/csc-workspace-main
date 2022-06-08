@@ -114,7 +114,6 @@ class DeliverShipmentController extends WebcController {
   async sign() {
     let payload = {
       recipientName: this.model.form.recipientName.value,
-      signature: true,
       deliveryDateTime: new Date().getTime()
     };
     this.model.disableSign = true;

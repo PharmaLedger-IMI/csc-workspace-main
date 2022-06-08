@@ -133,7 +133,6 @@ class ScanShipmentController extends WebcController {
       payload[prop] = this.model.shipment[prop];
     });
     payload.shipmentId = this.model.shipmentModel.form.shipmentId.value;
-    payload.signature = true;
 
     await this.shipmentService.createAndMountTransitDSU(this.model.shipment.uid, payload);
     eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);

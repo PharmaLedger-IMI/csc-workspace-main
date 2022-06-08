@@ -3,7 +3,7 @@ const DSUService = require('./lib/DSUService.js');
 const { Roles, messagesEnum, order, FoldersEnum } = require('./constants');
 const orderStatusesEnum = order.orderStatusesEnum;
 const {getCommunicationServiceInstance} = require("./lib/CommunicationService");
-const EncryptionService = require('./lib/EncryptionService.js');
+const JWTService = require('./lib/JWTService.js');
 class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
 
@@ -11,6 +11,7 @@ class OrdersService extends DSUService {
     super(FoldersEnum.Orders);
     this.communicationService = getCommunicationServiceInstance();
     this.storageService = getSharedStorage(this.DSUStorage);
+    this.JWTService = new JWTService();
   }
 
 
@@ -104,7 +105,7 @@ class OrdersService extends DSUService {
       studyDurationTo:data.study_duration_to,
     }
     const kits = await this.addKitsToDsu(data.kitIdsFile, data.kitIds, studyData, kitIdsDsu.uid);
-    const kitIdKeySSIEncrypted = await EncryptionService.encryptData(kitIdsDsu.sReadSSI);
+    const kitIdJWTVerifiablePresentation = await this.JWTService.createKitsIdsPresentationForSite(data.sponsor_id, data.site_id, kitIdsDsu.sReadSSI);
     const comment = { entity:  '<' + Roles.Sponsor + '> (' +  data.sponsor_id + ')' , comment: data.add_comment, date: new Date().getTime() };
     const comments = await this.addCommentToDsu(comment, commentsDsu.uid);
 
@@ -120,7 +121,7 @@ class OrdersService extends DSUService {
       temperature_comments: data.temperature_comments,
       requestDate: new Date().getTime(),
       deliveryDate: data.delivery_date,
-      kitIdKeySSIEncrypted:kitIdKeySSIEncrypted
+      kitIdJWTVerifiablePresentation: kitIdJWTVerifiablePresentation
     };
 
     const order = await this.saveEntityAsync(orderModel);

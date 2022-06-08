@@ -3,9 +3,9 @@ const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum,Commons } = require('./constants');
 const { shipmentStatusesEnum,shipmentsEventsEnum} = require('./constants/shipment');
 const {getCommunicationServiceInstance} = require("./lib/CommunicationService");
-const EncryptionService = require('./lib/EncryptionService.js');
 const momentService  = require('./lib/moment.min');
 const DidService  = require('./lib/DidService');
+const JWTService  = require('./lib/JWTService');
 
 class ShipmentsService extends DSUService {
 	SHIPMENTS_TABLE = 'shipments';
@@ -14,6 +14,7 @@ class ShipmentsService extends DSUService {
 		super(FoldersEnum.Shipments);
 		this.communicationService = getCommunicationServiceInstance();
 		this.storageService = getSharedStorage(this.DSUStorage);
+		this.JWTService = new JWTService();
 	}
 
 	async addShipmentToDB(data, key) {
@@ -60,9 +61,7 @@ class ShipmentsService extends DSUService {
 			temperatures:data.temperatures,
 			temperature_comments:data.temperature_comments,
 			status: status.history,
-			encryptedMessages: {
-				kitIdKeySSIEncrypted: order.kitIdKeySSIEncrypted
-			}
+			kitIdJWTVerifiablePresentation: order.kitIdJWTVerifiablePresentation
 		};
 		const shipmentDSU = await this.saveEntityAsync(shipmentModel);
 		const shipmentDBData = {
@@ -160,8 +159,19 @@ class ShipmentsService extends DSUService {
 		let shipmentDB;
 		if (role === Roles.Site) {
 			shipmentDB = await this.mountAndReceiveShipment(shipmentIdentifier, role, statusKeySSI);
-			let kitIdKeySSIEncrypted = shipmentDB.encryptedMessages.kitIdKeySSIEncrypted;
-			const kitIdSSI = await EncryptionService.decryptData(kitIdKeySSIEncrypted);
+			const { kitIdSSI } = await this.JWTService.verifyKitsIdsPresentation(shipmentDB.kitIdJWTVerifiablePresentation);
+			if (shipmentDB.shipmentJWTVerifiablePresentation) {
+				const {
+					shipmentUID,
+					shipmentPickupAtWarehouseSigned,
+					shipmentDeliveredSigned
+				} = await this.JWTService.verifyShipmentPresentation(shipmentDB.shipmentJWTVerifiablePresentation);
+				if (shipmentIdentifier === shipmentUID && shipmentPickupAtWarehouseSigned && shipmentDeliveredSigned) {
+					console.log('[Shipment verification with success]');
+				} else {
+					console.log('[Shipment verification failed]', shipmentUID, shipmentPickupAtWarehouseSigned, shipmentDeliveredSigned);
+				}
+			}
 			shipmentDB.kitIdSSI = kitIdSSI;
 			await this.mountEntityAsync(kitIdSSI, FoldersEnum.KitIds);
 		}
@@ -203,8 +213,7 @@ class ShipmentsService extends DSUService {
 		shipmentDB = {
 			...shipmentDB,
 			recipientName: transitShipment.recipientName,
-			deliveryDateTime: transitShipment.deliveryDateTime,
-			signature: transitShipment.signature
+			deliveryDateTime: transitShipment.deliveryDateTime
 		}
 		const statusIdentifier = await this.getEntityPathAsync(shipmentDB.statusSSI,FoldersEnum.ShipmentsStatuses);
 		const status = await this.getEntityAsync(statusIdentifier, FoldersEnum.ShipmentsStatuses);
@@ -230,6 +239,11 @@ class ShipmentsService extends DSUService {
 	async createAndMountTransitDSU(shipmentUid, transientDataModel) {
 
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentUid);
+		transientDataModel.shipmentJWTVerifiableCredential = await this.JWTService
+			.createShipmentVerifiableCredential(shipmentDB.courierId, shipmentDB.siteId, {
+				shipmentIdentifier: shipmentUid,
+				shipmentPickupAtWarehouseSigned: true
+			});
 
 		const shipmentTransitDSU = await this.saveEntityAsync(transientDataModel, FoldersEnum.ShipmentTransit);
 		const status = await this.updateStatusDsu(shipmentStatusesEnum.PickUpAtWarehouse, shipmentDB.statusSSI);
@@ -238,7 +252,6 @@ class ShipmentsService extends DSUService {
 		shipmentDB.status = status.history;
 		shipmentDB.shipmentId = shipmentTransitDSU.shipmentId;
 		await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentUid, shipmentDB);
-
 
 		const inTransitDSUMessage = {
 			transitShipmentSSI: shipmentTransitDSU.sReadSSI,
@@ -267,6 +280,8 @@ class ShipmentsService extends DSUService {
 	async createAndMountReceivedDSU(shipmentIdentifier, transientDataModel, shipmentComments) {
 
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
+		transientDataModel.shipmentReceivedJWTVerifiablePresentation = await this.JWTService
+			.createShipmentReceivedPresentation(shipmentDB.siteId, shipmentDB.courierId, { shipmentReceivedSigned: true });
 		const shipmentReceivedDSU = await this.saveEntityAsync(transientDataModel, FoldersEnum.ShipmentReceived);
 		const status = await this.updateStatusDsu(shipmentStatusesEnum.Received, shipmentDB.statusSSI);
 
@@ -303,8 +318,12 @@ class ShipmentsService extends DSUService {
 	//add new data to shipmentTransitDSU and update shipment status
 	async updateTransitShipmentDSU(shipmentIdentifier, data, newStatus) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
-
 		let shipmentTransitDSU = await this.getEntityAsync(shipmentDB.transitDSUUid, FoldersEnum.ShipmentTransit);
+		const shipmentJWTVerifiableCredential = await this.JWTService
+			.updateShipmentVerifiableCredential(shipmentTransitDSU.shipmentJWTVerifiableCredential, { shipmentDeliveredSigned: true });
+		data.shipmentJWTVerifiablePresentation = await this.JWTService
+			.createShipmentPresentation(shipmentJWTVerifiableCredential, shipmentDB.courierId);
+
 		shipmentTransitDSU = { ...shipmentTransitDSU, ...data };
 		await this.updateEntityAsync(shipmentTransitDSU, FoldersEnum.ShipmentTransit);
 		const status = await this.updateStatusDsu(newStatus, shipmentDB.statusSSI);
@@ -337,6 +356,8 @@ class ShipmentsService extends DSUService {
 		for (let prop in billData) {
 			shipmentTransitBillingDSU[prop] = billData[prop];
 		}
+		shipmentTransitBillingDSU.shipmentBillingJWTVerifiablePresentation = await this.JWTService
+			.createShipmentBillingPresentationForSponsor(shipmentDB.courierId, shipmentDB.sponsorId, billData);
 
 		shipmentDB.bill = billData;
 		shipmentDB.shipmentBilling = shipmentTransitBillingDSU.uid;
@@ -454,6 +475,12 @@ class ShipmentsService extends DSUService {
 		shipmentDB.shipmentTransitBillingDSU = shipmentTransitDSU.uid;
 		shipmentDB.bill = await this.getEntityAsync(shipmentDB.shipmentTransitBillingDSU, FoldersEnum.ShipmentTransitBilling);
 
+		const {
+			billNumber,
+			hsCode
+		} = this.JWTService.verifyShipmentBillingPresentation(shipmentTransitDSU.shipmentBillingJWTVerifiablePresentation);
+		console.log('[shipmentTransitBillingDSU]', billNumber, hsCode);
+
 		const statusIdentifier = await this.getEntityPathAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
 		const status = await this.getEntityAsync(statusIdentifier, FoldersEnum.ShipmentsStatuses);
 		shipmentDB.status = status.history;
@@ -481,6 +508,10 @@ class ShipmentsService extends DSUService {
 		const receivedShipmentDsu = await this.mountEntityAsync(receivedShipmentSSI, FoldersEnum.ShipmentReceived);
 		//TODO refactor this to use proper property name for receivedShipmentDSu uid. use identifier instead of receivedDSUKeySSI
 		shipmentDB.receivedDSUKeySSI = receivedShipmentDsu.uid;
+
+		const {shipmentReceivedSigned} = this.JWTService.verifyShipmentReceivedPresentation(receivedShipmentDsu.shipmentReceivedJWTVerifiablePresentation);
+		console.log("[shipmentReceivedSigned]", shipmentReceivedSigned);
+
 		const statusIdentifier = await this.getEntityPathAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
 		const status = await this.getEntityAsync(statusIdentifier, FoldersEnum.ShipmentsStatuses);
 		shipmentDB.status = status.history;
@@ -635,7 +666,6 @@ class ShipmentsService extends DSUService {
 			});
 		});
 	}
-
 
 }
 
