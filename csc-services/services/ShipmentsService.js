@@ -159,7 +159,7 @@ class ShipmentsService extends DSUService {
 		let shipmentDB;
 		if (role === Roles.Site) {
 			shipmentDB = await this.mountAndReceiveShipment(shipmentIdentifier, role, statusKeySSI);
-			const { kitIdSSI } = await this.JWTService.verifyKitsIdsPresentation(shipmentDB.kitIdJWTVerifiablePresentation);
+			const { kitsIdsSReadSSI } = await this.JWTService.verifyKitsIdsPresentation(shipmentDB.kitIdJWTVerifiablePresentation);
 			if (shipmentDB.shipmentJWTVerifiablePresentation) {
 				const {
 					shipmentUID,
@@ -172,8 +172,8 @@ class ShipmentsService extends DSUService {
 					console.log('[Shipment verification failed]', shipmentUID, shipmentPickupAtWarehouseSigned, shipmentDeliveredSigned);
 				}
 			}
-			shipmentDB.kitIdSSI = kitIdSSI;
-			await this.mountEntityAsync(kitIdSSI, FoldersEnum.KitIds);
+			shipmentDB.kitIdSSI = kitsIdsSReadSSI;
+			await this.mountEntityAsync(kitsIdsSReadSSI, FoldersEnum.KitIds);
 		}
 		else {
 			shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
