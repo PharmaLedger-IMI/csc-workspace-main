@@ -25,8 +25,10 @@ class ScanShipmentController extends WebcController {
   async initServices(){
     this.shipmentService = new ShipmentService();
     this.model = {	shipmentModel: viewModelResolver('shipment') };
+    await this.getAllShipmentIds();
     this.model.shipment = this.originalShipment;
-    this.model.disableSign = false;
+    this.uniqueShipmentIdError = false;
+      this.model.disableSign = false;
   }
 
     navigationHandlers() {
@@ -72,7 +74,9 @@ class ScanShipmentController extends WebcController {
 
   addModelChangeHandlers() {
     this.shipmentIdHandler = () => {
-      this.model.formIsInvalid = this.model.shipmentModel.form.shipmentId.value.trim() === '';
+
+      this.model.uniqueShipmentIdError = this.model.shipmentIds.includes(this.model.shipmentModel.form.shipmentId.value.trim());
+      this.model.formIsInvalid = this.model.shipmentModel.form.shipmentId.value.trim() === '' || this.model.uniqueShipmentIdError;
     };
     this.model.onChange("shipmentModel.form.shipmentId.value", this.shipmentIdHandler.bind(this));
   }
@@ -196,6 +200,18 @@ class ScanShipmentController extends WebcController {
     this.model.isShipmentScannerActive = false;
     this.model.showWrongShipmentScanResult = false;
     this.model.showCorrectShipmentScanResult = false;
+  }
+
+  async getAllShipmentIds(){
+    const shipmentIds = [];
+    const shipments = await this.shipmentService.getShipments();
+    if(shipments){
+      shipments.forEach((i) => {
+        shipmentIds.push(i.shipmentId);
+      })
+    }
+    this.model.shipmentIds = shipmentIds;
+    console.log("MODEL:",  this.model);
   }
 }
 
