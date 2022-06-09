@@ -195,20 +195,20 @@ class ShipmentsService extends DSUService {
 	}
 
 	//update shipmentDB with data from shipmentTransitDSU
-	async updateShipmentDB(shipmentIdentifier) {
-		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
+	async updateShipmentDB(shipmentUUID) {
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentUUID);
 		const transitShipment = await this.getEntityAsync(shipmentDB.transitShipmentIdentifier, FoldersEnum.ShipmentTransit);
 		console.log("transitShipment.shipmentJWTVerifiablePresentation", transitShipment.shipmentJWTVerifiablePresentation);
 		if (transitShipment.shipmentJWTVerifiablePresentation) {
 			const {
-				shipmentUID,
+				shipmentIdentifier,
 				shipmentPickupAtWarehouseSigned,
 				shipmentDeliveredSigned
 			} = await this.JWTService.verifyShipmentPresentation(transitShipment.shipmentJWTVerifiablePresentation, shipmentDB.courierId);
-			if (shipmentIdentifier === shipmentUID && shipmentPickupAtWarehouseSigned && shipmentDeliveredSigned) {
+			if (shipmentUUID === shipmentIdentifier && shipmentPickupAtWarehouseSigned && shipmentDeliveredSigned) {
 				console.log('[Shipment verification with success]');
 			} else {
-				console.log('[Shipment verification failed]', shipmentUID, shipmentPickupAtWarehouseSigned, shipmentDeliveredSigned);
+				console.log('[Shipment verification failed]', shipmentIdentifier, shipmentPickupAtWarehouseSigned, shipmentDeliveredSigned);
 			}
 		}
 		shipmentDB = {
@@ -219,7 +219,7 @@ class ShipmentsService extends DSUService {
 		const statusIdentifier = await this.getEntityPathAsync(shipmentDB.statusSSI,FoldersEnum.ShipmentsStatuses);
 		const status = await this.getEntityAsync(statusIdentifier, FoldersEnum.ShipmentsStatuses);
 		shipmentDB.status = status.history;
-		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentIdentifier, shipmentDB);
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentUUID, shipmentDB);
 	}
 
 	async updateStatusDsu(newStatus, knownIdentifier) {
