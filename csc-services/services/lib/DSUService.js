@@ -100,7 +100,7 @@ class DSUService {
 
     config.getEnv('domain', (err, domain) => {
       if (err || !domain) {
-        domain = 'default';
+        throw new Error("No domain was set up in the environment configuration file.")
       }
 
       const templateSSI = keySSISpace.createTemplateSeedSSI(domain);
