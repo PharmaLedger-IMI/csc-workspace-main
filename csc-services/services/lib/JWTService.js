@@ -7,7 +7,7 @@ class JWTService {
     return await credentials.createJWTVerifiableCredentialAsync(issuer, subject, options);
   }
 
-  async verifyCredential(encodedJWTVerifiableCredential, atDate = Date.now(), rootsOfTrust = []) {
+  async verifyCredential(encodedJWTVerifiableCredential, atDate = new Date().getTime(), rootsOfTrust = []) {
     const jwtVcInstance = await credentials.loadJWTVerifiableCredentialAsync(encodedJWTVerifiableCredential);
     const verifyCredentialStatus = await jwtVcInstance.verifyJWTAsync(atDate, rootsOfTrust);
 
@@ -19,7 +19,7 @@ class JWTService {
     return await credentials.createJWTVerifiablePresentationAsync(issuer, options);
   }
 
-  async verifyPresentation(encodedJWTVerifiablePresentation, atDate = Date.now(), rootsOfTrust = []) {
+  async verifyPresentation(encodedJWTVerifiablePresentation, atDate = new Date().getTime(), rootsOfTrust = []) {
     const loadedPresentation = await credentials.loadJWTVerifiablePresentationAsync(encodedJWTVerifiablePresentation);
     const verifyPresentationStatus = await loadedPresentation.verifyJWTAsync(atDate, rootsOfTrust);
 
@@ -78,8 +78,8 @@ class JWTService {
     return encodedJwtVp;
   }
 
-  async verifyShipmentPresentation(shipmentJWTVerifiablePresentation) {
-    const jwtVpVerifyResult = await this.verifyPresentation(shipmentJWTVerifiablePresentation);
+  async verifyShipmentPresentation(shipmentJWTVerifiablePresentation, courierId) {
+    const jwtVpVerifyResult = await this.verifyPresentation(shipmentJWTVerifiablePresentation, new Date().getTime(), [courierId]);
     const {
       shipmentIdentifier,
       shipmentPickupAtWarehouseSigned,
@@ -125,10 +125,10 @@ class JWTService {
     };
   }
 
-  async createShipmentReceivedPresentation(siteDID, courierDID, billingClaims) {
+  async createShipmentReceivedPresentation(siteDID, courierDID, shipmentReceivedClaims) {
     const jwtVcInstance = await this.createVerifiableCredential(siteDID, courierDID);
-    for (const claimKey of Object.keys(billingClaims)) {
-      await jwtVcInstance.embedClaimAsync(claimKey, billingClaims[claimKey]);
+    for (const claimKey of Object.keys(shipmentReceivedClaims)) {
+      await jwtVcInstance.embedClaimAsync(claimKey, shipmentReceivedClaims[claimKey]);
     }
     const encodedJwtVc = await jwtVcInstance.getEncodedJWTAsync();
 
@@ -141,8 +141,8 @@ class JWTService {
     return encodedJwtVp;
   }
 
-  async verifyShipmentReceivedPresentation(shipmentJWTVerifiablePresentation) {
-    const jwtVpVerifyResult = await this.verifyPresentation(shipmentJWTVerifiablePresentation);
+  async verifyShipmentReceivedPresentation(shipmentJWTVerifiablePresentation, siteId) {
+    const jwtVpVerifyResult = await this.verifyPresentation(shipmentJWTVerifiablePresentation, new Date().getTime(), [siteId]);
     const { shipmentReceivedSigned } = jwtVpVerifyResult.vp.verifiableCredential[0];
 
     console.log('shipment details from presentation: ', jwtVpVerifyResult, shipmentReceivedSigned);
