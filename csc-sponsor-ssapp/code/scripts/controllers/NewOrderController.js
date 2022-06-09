@@ -19,7 +19,7 @@ export default class NewOrderController extends WebcController {
     this.initServices();
 
 
-    this.model = {
+     this.model = {
       wizard_form: [
         { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Order Details', visible: true, validated: false },
         { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Documents', visible: false, validated: false },
@@ -35,8 +35,12 @@ export default class NewOrderController extends WebcController {
       ],
       form: viewModelResolver('order').form,
       temperatureError:false,
+      orderIdUniqueError:false,
       formIsInvalid:true,
     };
+
+     this.getAllOrderIds();
+
 
     this.model.form.filesEmpty = true;
 
@@ -303,16 +307,37 @@ export default class NewOrderController extends WebcController {
       toDate.min = momentService(fromDate.value).format(Commons.YearMonthDayPattern);
     };
 
+    let orderIdChangeHandler = () => {
+      this.model.orderIdUniqueError =  this.model.validation.orderIds.includes(this.model.form.inputs.order_id.value.trim());
+      this.checkFormValidity();
+    };
+
     this.model.onChange('form.inputs.keep_between_temperature_min.value',tempChangeHandler)
     this.model.onChange('form.inputs.keep_between_temperature_max.value', tempChangeHandler)
     this.model.onChange('form.inputs.study_duration_from', studyDurationHandler);
+    this.model.onChange('form.inputs.order_id.value',orderIdChangeHandler)
     this.model.onChange('form.inputs', this.checkFormValidity.bind(this));
+
+
+
   }
 
 
   async initServices(){
     this.ordersService = new OrdersService();
     this.FileDownloaderService = new FileDownloaderService();
+  }
+
+  async getAllOrderIds(){
+    const orderIds = [];
+    const ordersTemp = await this.ordersService.getOrders();
+    if(ordersTemp){
+      ordersTemp.forEach((i) => {
+        orderIds.push(i.orderId);
+      })
+    }
+    this.model.validation = { orderIds: orderIds };
+    console.log("MODEL:",  this.model);
   }
   checkFormValidity(){
 
@@ -322,6 +347,7 @@ export default class NewOrderController extends WebcController {
     let validationConstraints = [
       typeof this.model.form.inputs.kit_ids_attachment.ids !== 'undefined' && this.model.form.inputs.kit_ids_attachment.ids.length > 0,
       this.model.temperatureError === false,
+      this.model.orderIdUniqueError === false,
       ...requiredInputs.map(input => this.isInputFilled(input))
     ];
     this.model.formIsInvalid = typeof (validationConstraints.find(val => val !== true)) !== 'undefined';
@@ -365,11 +391,11 @@ export default class NewOrderController extends WebcController {
     return ids;
   }
 
-
   setSponsorIdToForm() {
     let didService = DidService.getDidServiceInstance();
     didService.getDID().then((did)=>{
       this.model.form.inputs.sponsor_id.value = did;
     });
   }
+
 }
