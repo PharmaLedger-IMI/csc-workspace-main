@@ -46,6 +46,7 @@ webc-spinner{
 .button-wrapper button {
     padding: 0.5rem;
     min-width: 11rem;
+    margin-right:10px;
 }
 
 .full-flex-column {
