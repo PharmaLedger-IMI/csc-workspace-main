@@ -2,6 +2,7 @@ const opendsu = require('opendsu');
 const resolver = opendsu.loadAPI('resolver');
 const storage = opendsu.loadApi('storage');
 const keySSISpace = opendsu.loadAPI('keyssi');
+
 class DSUService {
   PATH = '/';
   DATA_FILE = 'data.json';
@@ -79,28 +80,29 @@ class DSUService {
     return this.asyncMyFunction(this.getEntity, [...arguments]);
   }
 
-  getEntityPath(keySSI, pathPrefix, callback){
+  getEntityPath(keySSI, pathPrefix, callback) {
     this.DSUStorage.listMountedDSUs(pathPrefix, (err, dsuList) => {
-      const dsu  = dsuList.find(dsu=>dsu.identifier === keySSI);
-      if(!dsu){
+      const dsu = dsuList.find(dsu => dsu.identifier === keySSI);
+      if (!dsu) {
         return callback(undefined, keySSI);
       }
-      callback(undefined,dsu.path);
+      callback(undefined, dsu.path);
     });
   }
 
-  async getEntityPathAsync(knownIdentifier, pathPrefix){
+  async getEntityPathAsync(knownIdentifier, pathPrefix) {
     return this.asyncMyFunction(this.getEntityPath, [...arguments]);
   }
 
   saveEntity(entity, path, callback) {
+
     [path, callback] = this.swapParamsIfPathIsMissing(path, callback);
 
     const config = opendsu.loadAPI('config');
 
     config.getEnv('domain', (err, domain) => {
       if (err || !domain) {
-        throw new Error("No domain was set up in the environment configuration file.")
+        throw new Error('No domain was set up in the environment configuration file.');
       }
 
       const templateSSI = keySSISpace.createTemplateSeedSSI(domain);
@@ -109,7 +111,6 @@ class DSUService {
           console.log(err);
           return callback(err);
         }
-
 
         dsuInstance.getKeySSIAsString((err, seedSSI) => {
           if (err) {
@@ -123,24 +124,24 @@ class DSUService {
             if (err) {
               return callback(err);
             }
+            entity.uid = anchorId;
 
-            this.DSUStorage.mount(path + '/' + anchorId, seedSSI, (err) => {
+            this.updateDSUData(dsuInstance, path, entity, (err) => {
               if (err) {
-                console.log(err);
+                return callback(err, entity);
               }
-              entity.uid = anchorId;
+              entity.keySSI = seedSSI;
+              entity.sReadSSI = sreadSSI;
 
-              this.updateEntity(entity, path, (err, entity) => {
+              this.DSUStorage.mount(path + '/' + anchorId, seedSSI, (err) => {
                 if (err) {
-                  return callback(err, entity);
+                  console.log(err);
                 }
-
-                entity.keySSI = seedSSI;
-                entity.sReadSSI = sreadSSI;
                 callback(undefined, entity);
               });
 
             });
+
           });
         });
       });
@@ -160,6 +161,11 @@ class DSUService {
       }
       callback(undefined, entity);
     });
+  }
+
+  updateDSUData(dsu, path, data, callback) {
+    const dataSerialized = JSON.stringify(data);
+    dsu.writeFile(this.DATA_FILE, dataSerialized, callback);
   }
 
   async updateEntityAsync(entity, path) {
@@ -235,7 +241,7 @@ class DSUService {
     });
   };
 
-  getUidFromSSI(ssi){
+  getUidFromSSI(ssi) {
     const ssiObj = keySSISpace.parse(ssi);
     return ssiObj.getAnchorId();
   }

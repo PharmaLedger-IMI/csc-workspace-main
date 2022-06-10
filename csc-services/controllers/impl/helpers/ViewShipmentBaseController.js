@@ -34,10 +34,10 @@ class ViewShipmentBaseControllerImpl extends AccordionController{
     this.onTagClick('download-file', async (model) => {
       const { name, attached_by } = model;
       let keySSI;
-      let location = FoldersEnum.Documents;
+      let location = FoldersEnum.Orders;
       switch (attached_by) {
         case Roles.Sponsor: {
-          keySSI = this.model.orderModel.order.sponsorDocumentsKeySSI;
+          keySSI = this.model.orderModel.order.uid;
           break;
         }
         case Roles.Courier: {

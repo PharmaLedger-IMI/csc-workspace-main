@@ -102,14 +102,12 @@
             <span>Order Comments</span>
           </div>
           <div class="accordion-item-holder overflow-auto">
-            <div data-if="@order.comments">
-              <div class="comments-container py-5 flex-column" data-for="@order.comments">
-                <div class="comment">
-                  <div class="identity"><small>{{@entity}}</small>, <small>{{@date}}</small></div>
-                  <div>{{@comment}}</div>
+            <div data-if="@order.hasComment" class="comments-container py-5 flex-column">
+                <div class="@order.comment" slot='true'>
+                  <div class="identity"><small>{{@order.comment.entity}}</small>, <small>{{@order.comment.date}}</small></div>
+                  <div>{{@order.comment.comment}}</div>
                 </div>
                 <div slot="no-data">No comments</div>
-              </div>
             </div>
           </div>
         </div>

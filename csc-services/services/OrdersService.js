@@ -25,16 +25,12 @@ class OrdersService extends DSUService {
     //TODO check with business this requirement
     try{
       order = await this.storageService.getRecord(this.ORDERS_TABLE, keySSI);
-      const documentsAndComments = await this.getDocumentsAndComments(order);
-      order = {...order, ...documentsAndComments};
     }
     catch (e){
       const orderDataDSU = await this.mountEntityAsync(keySSI,FoldersEnum.Orders);
       order = await this.storageService.insertRecord(this.ORDERS_TABLE, keySSI,orderDataDSU);
-      const documentsAndComments = await this.getDocumentsAndComments(order);
-      order = {...order, ...documentsAndComments};
     }
-    return order
+    return order;
 
   }
 
@@ -84,29 +80,37 @@ class OrdersService extends DSUService {
   // -> Functions for creation of order
 
   async createOrder(data) {
-    // try{
-    //   this.DSUStorage.beginBatch();
-    // }
-    // catch (e){
-    //   console.log(e);
-    // }
-    const { statusDsu, sponsorDocumentsDsu, kitIdsDsu, commentsDsu } = await this.createOrderOtherDSUs();
 
-    //await $$.promisify(this.DSUStorage.commitBatch)();
-    const statusDsuKeySSI = statusDsu.keySSI;
-    const status = await this.updateStatusDsu(orderStatusesEnum.Initiated, statusDsuKeySSI);
-
-    const sponsorDocuments = await this.addDocumentsToDsu(data.files, sponsorDocumentsDsu.uid, Roles.Sponsor);
-
+    try{
+      this.DSUStorage.beginBatch();
+    }
+    catch (e){
+      console.log(e);
+    }
     const studyData = {
       studyId: data.study_id,
       studyDurationFrom:data.study_duration_from,
       studyDurationTo:data.study_duration_to,
     }
-    const kits = await this.addKitsToDsu(data.kitIdsFile, data.kitIds, studyData, kitIdsDsu.uid);
+
+    const statusData = {  history: [{ status: orderStatusesEnum.Initiated, date: new Date().getTime() }]}
+    const kitIdsData = {
+      kitIds:data.kitIds,
+      studyData:studyData,
+      file: {
+        name: data.kitIdsFile.name,
+        attached_by: Roles.Sponsor,
+        date: new Date().getTime(),
+      },};
+    const { statusDsu, kitIdsDsu } = await this.createOrderOtherDSUs(statusData,kitIdsData) ;
+
+    const statusDsuKeySSI = statusDsu.keySSI;
+    //const status = await this.updateStatusDsu(orderStatusesEnum.Initiated, statusDsuKeySSI);
+
+
+    await this.addKitsFileToDsu(kitIdsDsu, data.kitIdsFile);
     const kitIdKeySSIEncrypted = await EncryptionService.encryptData(kitIdsDsu.sReadSSI);
     const comment = { entity:  '<' + Roles.Sponsor + '> (' +  data.sponsor_id + ')' , comment: data.add_comment, date: new Date().getTime() };
-    const comments = await this.addCommentToDsu(comment, commentsDsu.uid);
 
     const orderModel = {
       sponsorId: data.sponsor_id,
@@ -120,34 +124,30 @@ class OrdersService extends DSUService {
       temperature_comments: data.temperature_comments,
       requestDate: new Date().getTime(),
       deliveryDate: data.delivery_date,
+      comment: comment,
       kitIdKeySSIEncrypted:kitIdKeySSIEncrypted
     };
 
-    const order = await this.saveEntityAsync(orderModel);
-
+    const order = await this.saveOrderDsu(orderModel, data.files, Roles.Sponsor);
     const orderDb = await this.addOrderToDB(
       {
         ...orderModel,
         orderSSI: order.keySSI,
-        status: status.history,
+        status: statusDsu.history,
         statusSSI: statusDsuKeySSI,
-        sponsorDocumentsKeySSI: sponsorDocuments.uid,
-        kitsSSI: kits.uid,
-        kitsFilename: kits.file.name,
-        commentsKeySSI: comments.uid,
+        kitsSSI: kitIdsDsu.uid,
+        kitsFilename: kitIdsDsu.file.name,
       },
       order.uid
     );
+    await $$.promisify(this.DSUStorage.commitBatch)();
 
-    // TODO: send correct type of SSIs (sread, keySSI, etc)
     this.sendMessageToEntity(
       order.targetCmoId,
       messagesEnum.StatusInitiated,
       {
         orderSSI: order.sReadSSI,
-        sponsorDocumentsKeySSI: sponsorDocumentsDsu.sReadSSI,
         kitIdsKeySSI: kitIdsDsu.sReadSSI,
-        commentsKeySSI: commentsDsu.keySSI,
         statusKeySSI: statusDsuKeySSI,
       },
       'Order Initiated'
@@ -156,38 +156,19 @@ class OrdersService extends DSUService {
     return orderDb;
   }
 
-  async createOrderOtherDSUs() {
-    const statusDsu = await this.saveEntityAsync(
-      {
-        history: [],
-      },
+  async createOrderOtherDSUs(statusData, kitIdsData) {
+    const statusDsuPromise = this.saveEntityAsync(
+      statusData,
       FoldersEnum.Statuses
     );
 
-    const sponsorDocumentsDsu = await this.saveEntityAsync(
-      {
-        documents: [],
-      },
-      FoldersEnum.Documents
-    );
-
-
-    const kitIdsDsu = await this.saveEntityAsync(
-      {
-        kitIds: [],
-        file: null,
-      },
+    const kitIdsDsuPromise = this.saveEntityAsync(
+      kitIdsData,
       FoldersEnum.KitIds
     );
 
-    const commentsDsu = await this.saveEntityAsync(
-      {
-        comments: [],
-      },
-      FoldersEnum.Comments
-    );
-
-    return { statusDsu, sponsorDocumentsDsu, kitIdsDsu, commentsDsu };
+    const promisesValues = await Promise.allSettled([statusDsuPromise, kitIdsDsuPromise]);
+    return { statusDsu: promisesValues[0].value, kitIdsDsu: promisesValues[1].value };
   }
 
   async updateStatusDsu(newStatus, knownIdentifier) {
@@ -203,78 +184,35 @@ class OrdersService extends DSUService {
     return result;
   }
 
-  async addDocumentsToDsu(files, uid, role) {
-    const documentsDsu = await this.getEntityAsync(uid, FoldersEnum.Documents);
-
-    const updatedDocumentsDSU = await this.updateEntityAsync(
-      {
-        ...documentsDsu,
-        documents: [
-          ...documentsDsu.documents,
-          ...files.map((x) => ({
-            name: x.name,
-            attached_by: role,
-            date: new Date().getTime(),
-          })),
-        ],
-      },
-      FoldersEnum.Documents
-    );
+  async saveOrderDsu(orderData, files, role) {
+    orderData.documents = [
+      ...files.map((x) => ({
+        name: x.name,
+        attached_by: role,
+        date: new Date().getTime(),
+      })),
+    ]
+    const order = await this.saveEntityAsync(orderData,FoldersEnum.Orders);
 
     for (const file of files) {
-      const attachmentKeySSI = await this.uploadFile(FoldersEnum.Documents + '/' + updatedDocumentsDSU.uid + '/' + 'files' + '/' + file.name, file);
-      updatedDocumentsDSU.documents.find((x) => x.name === file.name).attachmentKeySSI = attachmentKeySSI;
+      await this.uploadFile(FoldersEnum.Orders + '/' + order.uid + '/' + 'files' + '/' + file.name, file);
     }
-    const result = await this.updateEntityAsync(updatedDocumentsDSU, FoldersEnum.Documents);
 
-    return result;
+    return order;
   }
 
-  async addKitsToDsu(file, kitIds, studyData, keySSI) {
-    const kitsDataDsu = await this.getEntityAsync(keySSI, FoldersEnum.KitIds);
-    const updatedDSU = await this.updateEntityAsync(
-      {
-        ...kitsDataDsu,
-        kitIds,
-        studyData,
-        file: {
-          name: file.name,
-          attached_by: Roles.Sponsor,
-          date: new Date().getTime(),
-        },
-      },
-      FoldersEnum.KitIds
-    );
-
-    const attachmentKeySSI = await this.uploadFile(FoldersEnum.KitIds + '/' + updatedDSU.uid + '/' + 'files' + '/' + file.name, file);
-    updatedDSU.file.attachmentKeySSI = attachmentKeySSI;
-    const result = await this.updateEntityAsync(updatedDSU, FoldersEnum.KitIds);
-    return result;
-  }
-
-  async addCommentToDsu(comments, uid) {
-    const commentsDsu = await this.getEntityAsync(uid, FoldersEnum.Comments);
-    const result = await this.updateEntityAsync(
-      {
-        ...commentsDsu,
-        comments: [...commentsDsu.comments, comments],
-      },
-      FoldersEnum.Comments
-    );
-    return result;
+  async addKitsFileToDsu(kitsDsu,file) {
+     await this.uploadFile(FoldersEnum.KitIds + '/' + kitsDsu.uid + '/' + 'files' + '/' + file.name, file);
   }
 
   // -> Functions for mounting newly created order in other actors except sponsor
-
   async mountAndReceiveOrder(orderSSI, role, attachedDSUKeySSIs) {
-    let order, sponsorDocuments, kits, comments, orderDb, status;
+    let order, kits, orderDb, status;
     switch (role) {
       case Roles.CMO:
         order = await this.mountEntityAsync(orderSSI, FoldersEnum.Orders);
         status = await this.mountEntityAsync(attachedDSUKeySSIs.statusKeySSI, FoldersEnum.Statuses);
-        sponsorDocuments = await this.mountEntityAsync(attachedDSUKeySSIs.sponsorDocumentsKeySSI, FoldersEnum.Documents);
         kits = await this.mountEntityAsync(attachedDSUKeySSIs.kitIdsKeySSI, FoldersEnum.KitIds);
-        comments = await this.mountEntityAsync(attachedDSUKeySSIs.commentsKeySSI, FoldersEnum.Comments);
 
         orderDb = await this.addOrderToDB(
           {
@@ -282,10 +220,8 @@ class OrdersService extends DSUService {
             orderSSI: order.uid,
             status: status.history,
             statusSSI: attachedDSUKeySSIs.statusKeySSI,
-            sponsorDocumentsKeySSI: sponsorDocuments.uid,
             kitsSSI: kits.uid,
             kitsFilename: kits.file.name,
-            commentsKeySSI: comments.uid,
           },
           order.uid
         );
@@ -297,16 +233,17 @@ class OrdersService extends DSUService {
   // -> Function for reviewing, canceling, approving orders.
 
   async updateOrder(orderUID, comment, role, newStatus, otherDetails) {
-
+    try{
+      this.DSUStorage.beginBatch();
+    }
+    catch (e){
+      console.log(e);
+    }
     const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderUID);
 
     if (newStatus) {
       const status = await this.updateStatusDsu(newStatus, orderDB.statusSSI);
       orderDB.status = status.history;
-    }
-
-    if (comment) {
-      await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
     }
 
     if (otherDetails) {
@@ -316,6 +253,9 @@ class OrdersService extends DSUService {
     }
 
     const result = await this.updateOrderToDB(orderDB, orderUID);
+
+    await $$.promisify(this.DSUStorage.commitBatch)();
+
     let identity = role === Roles.CMO ? orderDB.sponsorId : orderDB.targetCmoId;
 
     if (newStatus) {
@@ -342,19 +282,6 @@ class OrdersService extends DSUService {
     return await this.updateOrderToDB(orderDB, orderKeySSI);
   }
 
-  async getDocumentsAndComments(order) {
-    let result = {};
-    if (order.sponsorDocumentsKeySSI) {
-      const sponsorDocuments = await this.getEntityAsync(order.sponsorDocumentsKeySSI, FoldersEnum.Documents);
-      result.sponsorDocuments = sponsorDocuments.documents;
-    }
-    if (order.commentsKeySSI) {
-      const comments = await this.getEntityAsync(order.commentsKeySSI, FoldersEnum.Comments);
-      result.comments = comments.comments;
-    }
-
-    return result;
-  }
 }
 
 module.exports = OrdersService;
