@@ -83,6 +83,10 @@
               <input class='form-control form-control-sm' name='@shipmentModel.form.shipmentId.name'
                      placeholder='@shipmentModel.form.shipmentId.placeholder' type='text'
                      value='@shipmentModel.form.shipmentId.value' />
+
+              <div data-if='@uniqueShipmentIdError' style='color:red'>
+                This Shipment Id already exists. Pick another one.
+              </div>
             </div>
             <!-- Navigation Between Steps-->
             <div class='row-wrapper button-wrapper'>
