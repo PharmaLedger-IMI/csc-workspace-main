@@ -39,8 +39,7 @@ export default class NewOrderController extends WebcController {
       formIsInvalid:true,
     };
 
-     this.getAllOrderIds();
-
+    this.getAllOrderIds();
 
     this.model.form.filesEmpty = true;
 
@@ -308,7 +307,7 @@ export default class NewOrderController extends WebcController {
     };
 
     let orderIdChangeHandler = () => {
-      this.model.orderIdUniqueError =  this.model.validation.orderIds.includes(this.model.form.inputs.order_id.value.trim());
+      this.model.orderIdUniqueError =  this.orderIds.includes(this.model.form.inputs.order_id.value.trim());
       this.checkFormValidity();
     };
 
@@ -328,17 +327,10 @@ export default class NewOrderController extends WebcController {
     this.FileDownloaderService = new FileDownloaderService();
   }
 
-  async getAllOrderIds(){
-    const orderIds = [];
-    const ordersTemp = await this.ordersService.getOrders();
-    if(ordersTemp){
-      ordersTemp.forEach((i) => {
-        orderIds.push(i.orderId);
-      })
-    }
-    this.model.validation = { orderIds: orderIds };
-    console.log("MODEL:",  this.model);
+  async getAllOrderIds() {
+    this.orderIds = (await this.ordersService.getOrders()).map(order => order.orderId);
   }
+
   checkFormValidity(){
 
     const inputs = this.model.form.inputs
