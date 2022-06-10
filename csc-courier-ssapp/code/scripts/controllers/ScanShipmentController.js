@@ -75,7 +75,7 @@ class ScanShipmentController extends WebcController {
   addModelChangeHandlers() {
     this.shipmentIdHandler = () => {
 
-      this.model.uniqueShipmentIdError = this.model.shipmentIds.includes(this.model.shipmentModel.form.shipmentId.value.trim());
+      this.model.uniqueShipmentIdError = this.shipmentIds.includes(this.model.shipmentModel.form.shipmentId.value.trim());
       this.model.formIsInvalid = this.model.shipmentModel.form.shipmentId.value.trim() === '' || this.model.uniqueShipmentIdError;
     };
     this.model.onChange("shipmentModel.form.shipmentId.value", this.shipmentIdHandler.bind(this));
@@ -203,15 +203,7 @@ class ScanShipmentController extends WebcController {
   }
 
   async getAllShipmentIds(){
-    const shipmentIds = [];
-    const shipments = await this.shipmentService.getShipments();
-    if(shipments){
-      shipments.forEach((i) => {
-        shipmentIds.push(i.shipmentId);
-      })
-    }
-    this.model.shipmentIds = shipmentIds;
-    console.log("MODEL:",  this.model);
+    this.shipmentIds = (await this.shipmentService.getShipments()).map(shipment => shipment.shipmentId);
   }
 }
 

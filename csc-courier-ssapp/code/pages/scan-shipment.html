@@ -84,8 +84,11 @@
                      placeholder='@shipmentModel.form.shipmentId.placeholder' type='text'
                      value='@shipmentModel.form.shipmentId.value' />
 
-              <div data-if='@uniqueShipmentIdError' style='color:red'>
-                This Shipment Id already exists. Pick another one.
+              <div data-if='@uniqueShipmentIdError'>
+
+              </div>
+              <div data-if='@uniqueShipmentIdError' style='color:red' class='justify-content-start'>
+                A shipment with this ID already exists.
               </div>
             </div>
             <!-- Navigation Between Steps-->
