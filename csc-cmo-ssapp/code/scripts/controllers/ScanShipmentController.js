@@ -11,6 +11,7 @@ export default class ScanShipmentController extends WebcController {
     super(...props);
     this.role = Roles.CMO;
     this.model = this.history.location.state.shipment;
+    this.model.kitsData = { kitsSSI: this.model.kitsSSI };
     this.model.submitDisabled = false;
     this.FileDownloaderService = new FileDownloaderService();
     this.shipmentsService = new ShipmentsService();
@@ -260,7 +261,6 @@ export default class ScanShipmentController extends WebcController {
 
   async initScanViewModel() {
     await this.getKits();
-    this.model.kitsData = { kitsSSI: this.model.kitsSSI };
     this.model.wizard_form = [
       { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Scan Shipment', visible: true, validated: false },
       { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Scan Kits', visible: false, validated: false },
