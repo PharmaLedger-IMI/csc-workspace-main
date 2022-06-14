@@ -84,7 +84,7 @@ const shipmentViewModel = {
 			value: 'Meters'
 		},
 		dimension: {
-			label: 'Dimension (' + shipmentBusinessRequirements.dimensionUnit + ')',
+			label: 'Dimension',
 			height: {
 				label: 'Height',
 				name: 'height',
