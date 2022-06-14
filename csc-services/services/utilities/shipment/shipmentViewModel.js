@@ -1,5 +1,4 @@
 const constants = require("csc-services").constants
-const shipmentBusinessRequirements = constants.shipment.shipmentBusinessRequirements;
 const momentService = require("csc-services").momentService;
 const countries = constants.countries;
 const DAYS_AHEAD = 2;
