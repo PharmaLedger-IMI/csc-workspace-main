@@ -331,6 +331,14 @@ export default class NewOrderController extends WebcController {
     this.orderIds = (await this.ordersService.getOrders()).map(order => order.orderId);
   }
 
+  didIsValid(did){
+    const didSegments = did.split(':');
+    if(didSegments.length !== 5) {
+      return false
+    }
+    return !didSegments.some(segment => segment.trim() === '');
+  }
+
   checkFormValidity(){
 
     const inputs = this.model.form.inputs
@@ -339,6 +347,8 @@ export default class NewOrderController extends WebcController {
     let validationConstraints = [
       typeof this.model.form.inputs.kit_ids_attachment.ids !== 'undefined' && this.model.form.inputs.kit_ids_attachment.ids.length > 0,
       this.model.temperatureError === false,
+      this.didIsValid(this.model.form.inputs.target_cmo_id.value),
+      this.didIsValid(this.model.form.inputs.site_id.value),
       this.model.orderIdUniqueError === false,
       ...requiredInputs.map(input => this.isInputFilled(input))
     ];

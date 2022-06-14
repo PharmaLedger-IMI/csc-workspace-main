@@ -21,7 +21,7 @@ const shipmentViewModel = {
 			name: 'courier-id',
 			id: 'courier-id',
 			required: true,
-			placeholder: 'Enter Courier ID',
+			placeholder: 'e.g did:ssi:name:dhl:dhl-sponsor',
 			disabled: false,
 			value: ""
 		},

@@ -214,9 +214,18 @@ export default class EditShipmentController extends WebcController {
 			this.model.shipmentModel.form.weight.value,
 			this.model.shipmentModel.form.shippingConditions.value
 		];
-	
+
+		const didIsValid = (did)=>{
+			const didSegments = did.split(':');
+			if(didSegments.length !== 5) {
+				return false
+			}
+			return !didSegments.some(segment => segment.trim() === '');
+		}
+
 		let validationConstraints = [
-		  ...requiredInputs.map(input => this.isInputFilled(input))
+			...requiredInputs.map(input => this.isInputFilled(input)),
+			didIsValid(this.model.shipmentModel.form.courierId.value)
 		];
 		this.model.formIsInvalid = typeof (validationConstraints.find(val => val !== true)) !== 'undefined';
 	  }
