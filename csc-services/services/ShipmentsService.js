@@ -39,9 +39,15 @@ class ShipmentsService extends DSUService {
 
 	// -> Functions for creation of shipment
 	async createShipment(data) {
-		const statusModel = { history: [] };
+
+		try{
+			this.DSUStorage.beginBatch();
+		}
+		catch (e){
+			console.log(e);
+		}
+		const statusModel = { history: [{ status: shipmentStatusesEnum.InPreparation, date: new Date().getTime() }] };
 		const statusDSU = await this.saveEntityAsync(statusModel, FoldersEnum.ShipmentsStatuses);
-		const status = await this.updateStatusDsu(shipmentStatusesEnum.InPreparation, statusDSU.keySSI);
 		const order = await this.getEntityAsync(data.orderSSI, FoldersEnum.Orders);
 		const cmoId = await DidService.getDidServiceInstance().getDID();
 		const shipmentModel = {
@@ -59,7 +65,7 @@ class ShipmentsService extends DSUService {
 			studyId:data.studyId,
 			temperatures:data.temperatures,
 			temperature_comments:data.temperature_comments,
-			status: status.history,
+			status: statusDSU.history,
 			encryptedMessages: {
 				kitIdKeySSIEncrypted: order.kitIdKeySSIEncrypted
 			}
@@ -73,6 +79,7 @@ class ShipmentsService extends DSUService {
 		};
 		const shipmentDb = await this.addShipmentToDB(shipmentDBData, shipmentDSU.uid);
 
+		await $$.promisify(this.DSUStorage.commitBatch)();
 		this.sendMessageToEntity(
 			shipmentDb.sponsorId,
 			shipmentStatusesEnum.InPreparation,

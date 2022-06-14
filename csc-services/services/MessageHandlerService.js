@@ -133,13 +133,11 @@ class MessageHandlerService {
 
         const {
           orderSSI,
-          sponsorDocumentsKeySSI,
           kitIdsKeySSI,
-          commentsKeySSI,
           statusKeySSI
         } = data.data;
         orderData = await this.ordersService.mountAndReceiveOrder(orderSSI, this.role,
-          { sponsorDocumentsKeySSI, kitIdsKeySSI, commentsKeySSI, statusKeySSI });
+          { kitIdsKeySSI, statusKeySSI });
 
         break;
       }
@@ -321,7 +319,6 @@ class MessageHandlerService {
         break;
       }
       case kitsStatusesEnum.RequestRelabeling:{
-        debugger;
         if(this.role === Roles.Sponsor) {
           const { kitSSI } = data.data;
           kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsStatusesEnum.RequestRelabeling );

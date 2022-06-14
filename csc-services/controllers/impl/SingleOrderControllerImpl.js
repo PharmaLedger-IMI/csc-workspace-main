@@ -41,14 +41,12 @@ class SingleOrderControllerImpl extends AccordionController {
 
     this.onTagClick('download-file', async (model, target, event) => {
       const filename = target.getAttribute('data-custom') || null;
-      if (filename) {
-        if (model.name && model.name === filename) {
-          const keySSI = this.model.order.sponsorDocumentsKeySSI;
-          await this.downloadFile(filename, FoldersEnum.Documents, keySSI);
-        } else {
-          await this.downloadFile(filename, FoldersEnum.KitIds, model.order.kitsSSI);
-        }
-      }
+      await this.downloadFile(filename, FoldersEnum.Orders, this.model.uid);
+    });
+
+    this.onTagClick('download-kits-file', async (model, target, event) => {
+      const filename = target.getAttribute('data-custom') || null;
+      await this.downloadFile(filename, FoldersEnum.KitIds, model.order.kitsSSI);
     });
 
     this.navigationHandlers();
@@ -123,7 +121,7 @@ class SingleOrderControllerImpl extends AccordionController {
 
     this.model.order.actions = this.setOrderActions();
     this.attachRefreshListeners();
-    this.model.order.filesEmpty = (this.model.order.documents.length == 0);
+    this.model.order.filesEmpty = !this.model.order.documents;
   }
 
    attachRefreshListeners() {
@@ -161,7 +159,6 @@ class SingleOrderControllerImpl extends AccordionController {
 
   transformOrderData(data) {
     if (data) {
-      data.documents = [];
 
       data.status_value = data.status.sort(function(a, b) {
         return new Date(b.date) - new Date(a.date);
@@ -179,16 +176,16 @@ class SingleOrderControllerImpl extends AccordionController {
       data.status_normal = statuses.normalStatuses.includes(data.status_value);
       data.pending_action = this.getPendingAction(data.status_value);
 
-      if (data.comments) {
-        data.comments.forEach((comment) => {
-          comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
-        });
+      if (data.comment) {
+        data.hasComment = true;
+        data.comment.date = momentService(data.comment.date).format(Commons.DateTimeFormatPattern);
+      } else {
+        data.hasComment = false;
       }
 
-      if (data.sponsorDocuments) {
-        data.sponsorDocuments.forEach((doc) => {
+      if (data.documents) {
+        data.documents.forEach((doc) => {
           doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
-          data.documents.push(doc);
         });
       }
 
