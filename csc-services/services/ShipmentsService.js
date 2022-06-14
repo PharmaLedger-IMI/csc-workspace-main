@@ -102,8 +102,13 @@ class ShipmentsService extends DSUService {
 			status: status.history
 		};
     let shipmentDSU = await this.getEntityAsync(shipmentUid,FoldersEnum.Shipments);
-		shipmentDSU = {...shipmentDSU, ...newShipmentData};
-		await this.updateEntityAsync(shipmentDSU, FoldersEnum.Shipments);
+
+		//head-up: only cmo should be able to add additionalData
+		if(newShipmentData){
+			shipmentDSU = {...shipmentDSU, ...newShipmentData};
+			await this.updateEntityAsync(shipmentDSU, FoldersEnum.Shipments);
+		}
+
 		const result = await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentUid, shipmentDB);
 
 		let notifyIdentities = [];
