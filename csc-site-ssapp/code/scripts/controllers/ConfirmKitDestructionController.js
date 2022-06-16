@@ -5,6 +5,7 @@ const viewModelResolver = cscServices.viewModelResolver;
 const { kitsStatusesEnum } = cscServices.constants.kit;
 const eventBusService = cscServices.EventBusService;
 const { Topics } = cscServices.constants;
+const FileDownloaderService = cscServices.FileDownloaderService;
 
 class ConfirmKitDestructionController extends WebcController {
 
@@ -41,12 +42,56 @@ class ConfirmKitDestructionController extends WebcController {
       this.model.kitModel.form.certificationOfDestruction.name = this.certificationOfDestructionFile.name;
     });
 
+    this.onTagEvent('step-1', 'click', () => {
+      this.makeStepActive('step-1', 'step-1-wrapper');
+    });
+
+    this.onTagEvent('step-2', 'click', () => {
+      this.makeStepActive('step-2', 'step-2-wrapper');
+    });
+
+    this.onTagEvent('from_step_1_to_2', 'click', () => {
+      this.makeStepActive('step-2', 'step-2-wrapper');
+    });
+
+  }
+
+  makeStepActive(stepId, stepHolderId) {
+    this.model.wizard.forEach((item) => {
+      this.querySelector('#' + item.id).classList.remove('step-active');
+      this.hideStep(item.holder_id);
+    });
+
+    this.querySelector('#' + stepId).classList.add('step-active');
+    this.showStep(stepHolderId);
+  }
+
+  showStep(item) {
+    const el = document.getElementById(item);
+    if (el) {
+      el.classList.remove('step-hidden');
+    }
+  }
+
+  hideStep(item) {
+    const el = document.getElementById(item);
+    if (el) {
+      el.classList.add('step-hidden');
+    }
+  }
+
+  getWizardForm() {
+    return [
+      { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Shipment Details', visible: true, validated: false },
+      { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Confirmation' }
+    ];
   }
 
   async initViewModel() {
     let { studyId, orderId, uid, kitId } = this.history.location.state.kit;
 
     this.model = {
+      isSubmitting:false,
       kitModel: viewModelResolver('kit'),
       studyId: studyId,
       orderId: orderId,
@@ -54,16 +99,70 @@ class ConfirmKitDestructionController extends WebcController {
       kitId: kitId
     };
 
+    this.model.wizard = this.getWizardForm();
+    this.model.formIsInvalid = true;
   }
 
   initHandlers() {
+
+    this.model.onChange('kitModel.form', this.checkFormValidity.bind(this));
+
     this.onTagEvent('confirm-kit-destruction', 'click', (e) => {
       this.confirmKitDestruction();
     });
+
+    this.onTagEvent('form_reset', 'click', (e) => {
+      this.showModal(
+        'All newly entered data will be removed. This will require you to start over the process of entering the details again',
+        'Clear Changes',
+        () => {
+          this.model.kitModel = viewModelResolver('kit'),
+            this.certificationOfDestructionFile = null;
+          this.makeStepActive('step-1', 'step-1-wrapper', e);
+          this.model.formIsInvalid = true;
+        },
+        () => {
+        },
+        {
+          disableExpanding: true,
+          cancelButtonText: 'Cancel',
+          confirmButtonText: 'Ok, let\'s start over',
+          id: 'confirm-modal'
+        }
+      );
+    });
+
+
+    this.onTagClick('download-file', async () => {
+        let fileDownloaderService = new FileDownloaderService();
+        window.WebCardinal.loader.hidden = false;
+        await fileDownloaderService.prepareDownloadFromBrowser(this.certificationOfDestructionFile);
+        fileDownloaderService.downloadFileToDevice(this.certificationOfDestructionFile.name);
+        window.WebCardinal.loader.hidden = true;
+    });
+
+  }
+
+  checkFormValidity(){
+
+    const requiredInputs = [
+      this.model.kitModel.form.destructionFacilityProvider.value,
+      this.model.kitModel.form.responsiblePerson.value,
+      this.model.kitModel.form.dateOfDestruction.value,
+      this.model.kitModel.form.destructionComment.value
+    ]
+
+    let validationConstraints = [
+      typeof this.certificationOfDestructionFile !=="undefined",
+      ...requiredInputs.map(input => typeof input !== 'undefined' && input.trim() !== "")
+    ];
+
+    this.model.formIsInvalid = typeof (validationConstraints.find(val => val !== true)) !== 'undefined';
   }
 
   async confirmKitDestruction() {
     window.WebCardinal.loader.hidden = false;
+    this.model.isSubmitting = true;
 
     const destroyedConfirmationData = {
       kitDestroyDetails : this.getDestroyedConfirmationData()
