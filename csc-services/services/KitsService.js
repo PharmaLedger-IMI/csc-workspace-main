@@ -218,11 +218,17 @@ class KitsService extends DSUService {
     let modifiedKit = studyKitDb.kits.find((kit) => {
       return kit.uid === kitDetails.uid;
     });
+
+    if (modifiedKit.hasRequestRelabeled) {
+      modifiedKit.hasRequestRelabeled = undefined;
+    }
+
     modifiedKit.status = kitDetails.status;
     if (status === kitsStatusesEnum.Assigned) {
       modifiedKit.investigatorId = kitDetails.investigatorId;
     }
-    return await this.storageService.updateRecord(this.KITS_TABLE, kitDetails.studyId, studyKitDb);
+    const kitsDbRecord  = await this.storageService.updateRecord(this.KITS_TABLE, kitDetails.studyId, studyKitDb);
+    return {...kitsDbRecord, modifiedKitId:kitDetails.kitId}
   }
 
   async addCertificationOfDestruction(file) {

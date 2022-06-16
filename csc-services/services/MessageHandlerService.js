@@ -324,7 +324,7 @@ class MessageHandlerService {
           kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsStatusesEnum.RequestRelabeling );
 
           // Sponsor get a message in order to update his kit id.
-          eventBusService.emitEventListeners(Topics.RefreshKits + data.data.kitId, null);
+          eventBusService.emitEventListeners(Topics.RefreshKits + kitsData.modifiedKitId, null);
         }
         break;
       }
@@ -351,7 +351,7 @@ class MessageHandlerService {
           eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
 
           // Sponsor get a message in order to update his kit id.
-          eventBusService.emitEventListeners(Topics.RefreshKits + data.data.kitId, null);
+          eventBusService.emitEventListeners(Topics.RefreshKits + kitsData.modifiedKitId, null);
         }
         break;
       }
@@ -379,7 +379,7 @@ class MessageHandlerService {
           eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
 
           // Sponsor get a message in order to update his kit id.
-          eventBusService.emitEventListeners(Topics.RefreshKits + data.data.kitId, null);
+          eventBusService.emitEventListeners(Topics.RefreshKits + kitsData.modifiedKitId, null);
         }
         break;
       }
@@ -393,6 +393,7 @@ class MessageHandlerService {
       case kitsStatusesEnum.Destroyed:{
         const { kitSSI } = data.data;
         kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI, kitsMessage);
+        eventBusService.emitEventListeners(Topics.RefreshKits + kitsData.modifiedKitId, null);
         break;
       }
     }

@@ -27,13 +27,13 @@ class SingleKitControllerImpl extends AccordionController {
     this.openFirstAccordion();
     this.attachEventListeners();
 
-    console.log(this.model);
   }
 
   attachEventListeners() {
     this.toggleAccordionItemHandler();
     this.navigationHandlers();
     this.attachDownloadHandler();
+    this.attachSiteEventHandlers();
   }
 
   attachDownloadHandler() {
@@ -83,26 +83,31 @@ class SingleKitControllerImpl extends AccordionController {
   attachRefreshListeners() {
     if (!this.addedRefreshListeners) {
       this.addedRefreshListeners = true;
-      this.refreshModalOpened = false;
-      eventBusService.addEventListener(Topics.RefreshKits + this.model.kitModel.kit.kitId, this.showKitUpdateModal.bind(this));
+      let modalOpen = false;
+
+      let updateViewHandler = ()=>{
+        modalOpen = false;
+        this.initViewModel();
+      };
+
+      eventBusService.addEventListener(Topics.RefreshKits + this.model.kitModel.kit.kitId, ()=>{
+        if (!modalOpen) {
+          modalOpen = true;
+          let title = 'Kit Updated';
+          let content = 'Kit was updated';
+          let modalOptions = {
+            disableExpanding: true,
+            disableClosing: true,
+            disableCancelButton: true,
+            confirmButtonText: 'Update View',
+            id: 'confirm-modal'
+          };
+          this.showModal(content, title, updateViewHandler, updateViewHandler, modalOptions);
+        }
+      });
     }
   }
 
-  showKitUpdateModal() {
-    if (!this.refreshModalOpened) {
-      this.refreshModalOpened = true;
-      let title = 'Kit Updated';
-      let content = 'Kit was updated';
-      let modalOptions = {
-        disableExpanding: true,
-        disableClosing: true,
-        disableCancelButton: true,
-        confirmButtonText: 'Update View',
-        id: 'confirm-modal'
-      };
-      this.showModal(content, title, this.initViewModel.bind(this), this.initViewModel.bind(this), modalOptions);
-    }
-  }
 
   attachSiteEventHandlers(){
     this.onTagClick('manage-kit', () => {
@@ -308,8 +313,6 @@ class SingleKitControllerImpl extends AccordionController {
     actions.relabeledAlreadyRequested = typeof kit.hasRequestRelabeled === 'boolean' && kit.hasRequestRelabeled;
     actions.canBlockKit = kit.status_value === kitsStatusesEnum.RequestRelabeling;
     actions.canMakeKitAvailable = kit.status_value === kitsStatusesEnum.Blocked;
-
-    this.attachSiteEventHandlers();
     return actions;
   }
 
@@ -454,7 +457,6 @@ class SingleKitControllerImpl extends AccordionController {
     if(this.actor === Roles.Sponsor) {
       window.WebCardinal.loader.hidden = false;
 
-      // Needed
       const shipments = await this.shipmentService.getShipments();
       const shipment = shipments.find(i =>{ return i.shipmentId === this.model.kitModel.kit.shipmentId });
       const siteId = shipment.siteId;
@@ -487,8 +489,6 @@ class SingleKitControllerImpl extends AccordionController {
       // Site updates the kit
       const data = await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Blocked);
 
-      // Site updates himself to refresh the kit
-      eventBusService.emitEventListeners(Topics.RefreshKits + this.model.kitModel.kit.kitId, null);
 
       // Site send a message to sponsor that the kit is blocked.
       await this.communicationService.sendMessage(sponsorId,{
@@ -496,6 +496,8 @@ class SingleKitControllerImpl extends AccordionController {
         data: {kitSSI: this.model.uid, kitId: this.model.kitModel.kit.kitId},
         shortDescription: kitsMessagesEnum.kitBlocked,
       });
+
+      await this.initViewModel();
 
       window.WebCardinal.loader.hidden = true;
     }
