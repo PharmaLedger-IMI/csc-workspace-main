@@ -132,6 +132,18 @@ label.status {
     row-gap: 2rem;
 }
 
+.comments-container.wrap-box{
+    border: 1px solid #DDD;
+    border-radius: 5px;
+}
+
+.comments-container .comment{
+    background: #F2F2F2;
+    border-radius: 5px;
+    color: #495057;
+    padding: 10px 10px;
+}
+
 .comments-wrapper {
     background: #e9ecef;
     border: 1px solid #ced4da;
