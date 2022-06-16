@@ -8,58 +8,137 @@
     <section class='header-section'>
       <div class='navigation-section'>
           <span class='nav-back' data-tag='nav-back'>
-            <i class="fa-solid fa-arrow-left"></i>
+            <i class='fa-solid fa-arrow-left'></i>
           </span>
 
-        <span data-tag='dashboard'>Dashboard</span> / <span data-tag='kits-management'>Kits Management</span> / <span data-tag='view-study-kits'>{{@studyId}} - {{@orderId}}/ Kits</span> / <span data-tag='view-kit'> {{@kitId}} </span>
+        <span data-tag='dashboard'>Dashboard</span> / <span data-tag='kits-management'>Kits Management</span> / <span
+        data-tag='view-study-kits'>{{@studyId}} - {{@orderId}}/ Kits</span> / <span
+        data-tag='view-kit'> {{@kitId}} </span>
         / <strong>Destruction Confirmation</strong>
       </div>
       <div class='body-main-section'>
+        <div class='stepper-container'>
 
-        <div class='entity-title text-center'>
-          <b>Confirm Kit Destruction</b>
+          <!--First Step -->
+          <div class='step-element step-active' data-tag='step-1' id='step-1'>1 - Add Details</div>
+          <!-- Line -->
+          <div class='step-break-line'></div>
+          <!--Second Step -->
+          <div class='step-element' data-tag='step-2' id='step-2' step-inactive='@formIsInvalid'>2 - Submit</div>
         </div>
 
-        <div class='form-group'>
-          <label>{{@kitModel.form.certificationOfDestruction.label}}<span class='required'>*</span></label>
-          <div class='input-group d-flex flex-column'>
-            <div class='input-group d-flex justify-content-between align-items-center'>
-              <input class='form-control' disabled value='@kitModel.form.certificationOfDestruction.name' />
-              <psk-files-chooser class='pl-3' data-view-model='@kitModel.form.certificationOfDestruction' accept='.*'
-                                 event-name='add-certification-of-destruction-file'></psk-files-chooser>
+        <div class='step-holder' id='step-1-wrapper'>
+          <div class='container'>
+            <div class='form-group'>
+              <label>Certification of Destruction<span class='required'>*</span></label>
+              <div class='input-group d-flex flex-column'>
+                <div class='input-group d-flex justify-content-between align-items-center'>
+                  <input class='form-control' disabled value='@kitModel.form.certificationOfDestruction.name' />
+                  <psk-files-chooser class='pl-3' data-view-model='@kitModel.form.certificationOfDestruction'
+                                     accept='.*'
+                                     event-name='add-certification-of-destruction-file'></psk-files-chooser>
+                </div>
+              </div>
             </div>
+
+            <div class='form-group'>
+              <label>{{@kitModel.form.destructionFacilityProvider.label}}<span class='required'>*</span></label>
+              <select class='form-control' data-for='@kitModel.form.destructionFacilityProvider.options'
+                      value='@kitModel.form.destructionFacilityProvider.value'>
+                <option value='@'>{{@}}</option>
+              </select>
+            </div>
+
+            <div class='form-group'>
+              <label>{{@kitModel.form.responsiblePerson.label}}<span class='required'>*</span></label>
+              <input class='form-control' name='@kitModel.form.responsiblePerson.name'
+                     placeholder='@kitModel.form.responsiblePerson.placeholder'
+                     value='@kitModel.form.responsiblePerson.value' />
+            </div>
+
+            <div class='form-group'>
+              <label>{{@kitModel.form.dateOfDestruction.label}}<span class='required'>*</span></label>
+              <input class='form-control' data-view-model='@kitModel.form.dateOfDestruction'
+                     value='@kitModel.form.dateOfDestruction.value' />
+            </div>
+
+            <div class='form-group'>
+              <label>{{@kitModel.form.destructionComment.label}}<span class='required'>*</span></label>
+              <input class='form-control' name='@kitModel.form.destructionComment.name'
+                     placeholder='@kitModel.form.destructionComment.placeholder'
+                     value='@kitModel.form.destructionComment.value' />
+            </div>
+            <!-- Navigation Between Steps-->
+            <div class='row-wrapper button-wrapper'>
+              <div></div>
+              <!-- Next Button -->
+              <button class='btn-default' data-tag='from_step_1_to_2' id='from_step_1_to_2' disabled='@formIsInvalid'>
+                Next
+                <i class='fas fa-angle-right'></i>
+              </button>
+            </div>
+
           </div>
         </div>
 
-        <div class='form-group'>
-          <label>{{@kitModel.form.destructionFacilityProvider.label}}<span class='required'>*</span></label>
-          <select class='form-control' data-for='@kitModel.form.destructionFacilityProvider.options' value='@kitModel.form.destructionFacilityProvider.value'>
-            <option value='@'>{{@}}</option>
-          </select>
-        </div>
+        <div class='step-holder step-hidden' id='step-2-wrapper'>
+          <div class='container'>
 
-       <div class='form-group'>
-          <label>{{@kitModel.form.responsiblePerson.label}}<span class='required'>*</span></label>
-          <input class="form-control form-control-sm" name="@kitModel.form.responsiblePerson.name" placeholder="@kitModel.form.responsiblePerson.placeholder" value="@kitModel.form.responsiblePerson.value" />
-        </div>
 
-        <div class='form-group'>
-          <label>{{@kitModel.form.dateOfDestruction.label}}<span class='required'>*</span></label>
-          <input class="form-control form-control-sm" data-view-model="@kitModel.form.dateOfDestruction" value="@kitModel.form.dateOfDestruction.value"/>
-        </div>
+            <div class='file-name-downloader form-group'>
+              <label>Certification of Destruction<span class='required'>*</span></label>
+              <div class='input-group'>
+                <input class='form-control' readonly type='text'
+                       value='@kitModel.form.certificationOfDestruction.name' />
+                <div class='input-group-append'>
+                  <button class='btn btn-outline-secondary' type='button' data-tag="download-file">
+                    <i class='fa fa-download'></i>
+                  </button>
+                </div>
+              </div>
+            </div>
 
-        <div class='form-group'>
-          <label>{{@kitModel.form.destructionComment.label}}</label>
-          <input class="form-control form-control-sm" name="@kitModel.form.destructionComment.name" placeholder="@kitModel.form.destructionComment.placeholder" value="@kitModel.form.destructionComment.value" />
-        </div>
+              <div class='form-group'>
+                <label>{{@kitModel.form.destructionFacilityProvider.label}}<span class='required'>*</span></label>
+                <select class='form-control' data-for='@kitModel.form.destructionFacilityProvider.options'
+                        value='@kitModel.form.destructionFacilityProvider.value' readonly>
+                  <option value='@'>{{@}}</option>
+                </select>
+              </div>
 
-        <div class='row-wrapper button-wrapper'>
+              <div class='form-group'>
+                <label>{{@kitModel.form.responsiblePerson.label}}<span class='required'>*</span></label>
+                <input class='form-control' name='@kitModel.form.responsiblePerson.name'
+                       placeholder='@kitModel.form.responsiblePerson.placeholder'
+                       value='@kitModel.form.responsiblePerson.value' readonly />
+              </div>
 
-          <button class='btn-default' data-tag='confirm-kit-destruction'>
-            <span class='fas fa-medkit mr-2'></span>
-            Confirm Kit Destruction
-          </button>
+              <div class='form-group'>
+                <label>{{@kitModel.form.dateOfDestruction.label}}<span class='required'>*</span></label>
+                <input class='form-control' data-view-model='@kitModel.form.dateOfDestruction' readonly
+                       value='@kitModel.form.dateOfDestruction.value' />
+              </div>
 
+              <div class='form-group'>
+                <label>{{@kitModel.form.destructionComment.label}}<span class='required'>*</span></label>
+                <input class='form-control' name='@kitModel.form.destructionComment.name'
+                       placeholder='@kitModel.form.destructionComment.placeholder'
+                       value='@kitModel.form.destructionComment.value' readonly />
+              </div>
+            </div>
+
+
+            <div class='row-wrapper button-wrapper'>
+              <button class="btn-reset" data-tag="form_reset" disabled='@isSubmitting'>
+                <i class="fas fa-times"></i>
+                Clear Changes
+              </button>
+              <button class='btn-default' data-tag='confirm-kit-destruction' disabled='@isSubmitting'>
+                <span class='fas fa-check mr-2'></span>
+                Submit
+              </button>
+            </div>
+          </div>
         </div>
 
       </div>
