@@ -1,4 +1,3 @@
-const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum,Commons } = require('./constants');
 const { shipmentStatusesEnum,shipmentsEventsEnum} = require('./constants/shipment');
@@ -13,7 +12,6 @@ class ShipmentsService extends DSUService {
 	constructor() {
 		super(FoldersEnum.Shipments);
 		this.communicationService = getCommunicationServiceInstance();
-		this.storageService = getSharedStorage(this.DSUStorage);
 	}
 
 	async addShipmentToDB(data, key) {
@@ -41,7 +39,7 @@ class ShipmentsService extends DSUService {
 	async createShipment(data) {
 
 		try{
-			this.DSUStorage.beginBatch();
+			this.storageService.beginBatch();
 		}
 		catch (e){
 			console.log(e);
@@ -79,7 +77,7 @@ class ShipmentsService extends DSUService {
 		};
 		const shipmentDb = await this.addShipmentToDB(shipmentDBData, shipmentDSU.uid);
 
-		await $$.promisify(this.DSUStorage.commitBatch)();
+		await this.storageService.commitBatch();
 		this.sendMessageToEntity(
 			shipmentDb.sponsorId,
 			shipmentStatusesEnum.InPreparation,

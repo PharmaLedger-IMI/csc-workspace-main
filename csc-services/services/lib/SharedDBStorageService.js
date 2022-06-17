@@ -1,6 +1,4 @@
-const KEYSSI_FILE_PATH = 'keyssi.json';
 const indexedTimestampField = "__timestamp";
-const keySSISpace = require('opendsu').loadApi('keyssi');
 
 class SharedStorage {
 

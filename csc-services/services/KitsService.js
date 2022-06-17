@@ -1,8 +1,7 @@
-const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
 const ShipmentsService = require('./ShipmentsService.js');
 const {getCommunicationServiceInstance} = require("./lib/CommunicationService");
-const { FoldersEnum, kit, Roles } = require('./constants');
+const { FoldersEnum, kit  } = require('./constants');
 const { kitsStatusesEnum } = kit;
 
 class KitsService extends DSUService {
@@ -11,7 +10,6 @@ class KitsService extends DSUService {
   constructor() {
     super(FoldersEnum.Kits);
     this.communicationService = getCommunicationServiceInstance();
-    this.storageService = getSharedStorage(this.DSUStorage);
     this.shipmentsService = new ShipmentsService();
   }
 
@@ -22,8 +20,7 @@ class KitsService extends DSUService {
 
   async getKitsDSU(kitsKeySSI) {
     const kitsDsuIdentifier = await this.getEntityPathAsync(kitsKeySSI,FoldersEnum.Kits);
-    const kitsDataDsu = await this.getEntityAsync(kitsDsuIdentifier, FoldersEnum.Kits);
-    return kitsDataDsu;
+    return await this.getEntityAsync(kitsDsuIdentifier, FoldersEnum.Kits);
   }
 
   // TODO: Fotis: Rafael why separate arg studyId? Isn't studyId inside studyKitData?
@@ -90,10 +87,9 @@ class KitsService extends DSUService {
 
   async getOrderKits(studyId, orderId) {
     let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, studyId);
-    const kits = studyKitDb.kits.filter((kit) => {
+    return studyKitDb.kits.filter((kit) => {
       return kit.orderId === orderId;
     });
-    return kits;
   }
 
   async getKitDetails(kitSSI) {

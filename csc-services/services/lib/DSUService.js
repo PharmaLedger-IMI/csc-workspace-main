@@ -2,6 +2,7 @@ const opendsu = require('opendsu');
 const resolver = opendsu.loadAPI('resolver');
 const storage = opendsu.loadApi('storage');
 const keySSISpace = opendsu.loadAPI('keyssi');
+const getSharedStorage = require('./SharedDBStorageService.js').getSharedStorage;
 
 class DSUService {
   PATH = '/';
@@ -11,6 +12,7 @@ class DSUService {
 
   constructor(path = this.PATH) {
     this.DSUStorage = storage.getDSUStorage();
+    this.storageService = getSharedStorage(this.DSUStorage);
     this.PATH = path;
 
     this.DSUStorage.enableDirectAccess(() => {
