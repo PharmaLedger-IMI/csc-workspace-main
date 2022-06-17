@@ -24,12 +24,12 @@ class SharedStorage {
     }, 10);
   }
 
-  dbReady() {
+  enclaveReady() {
     return (this.enclave !== undefined && this.enclave !== "initialising");
   }
 
   filter(tableName, query, sort, limit, callback) {
-    if (this.dbReady()) {
+    if (this.enclaveReady()) {
       this.enclave.filter(tableName, query, sort, limit, callback);
     } else {
       this.waitForDb(this.filter, [tableName, query, sort, limit, callback]);
@@ -38,7 +38,7 @@ class SharedStorage {
 
 
   getRecord(tableName, key, callback) {
-    if (this.dbReady()) {
+    if (this.enclaveReady()) {
       this.enclave.getRecord(tableName, key, callback);
     } else {
       this.waitForDb(this.getRecord, [tableName, key, callback]);
@@ -46,7 +46,7 @@ class SharedStorage {
   }
 
   insertRecord(tableName, key, record, callback) {
-    if (this.dbReady()) {
+    if (this.enclaveReady()) {
       this.enclave.insertRecord(tableName, key, record, (err, record) => {
         if (err) {
           return callback(err);
@@ -70,7 +70,7 @@ class SharedStorage {
   }
 
   updateRecord(tableName, key, record, callback) {
-    if (this.dbReady()) {
+    if (this.enclaveReady()) {
       this.enclave.updateRecord(tableName, key, record, callback);
     } else {
       this.waitForDb(this.updateRecord, [tableName, key, record, callback]);
@@ -78,7 +78,7 @@ class SharedStorage {
   }
 
   beginBatch(){
-    if (this.dbReady()) {
+    if (this.enclaveReady()) {
       this.enclave.beginBatch();
     } else {
       this.waitForDb(this.beginBatch);
@@ -86,7 +86,7 @@ class SharedStorage {
   }
 
   cancelBatch(callback){
-    if (this.dbReady()) {
+    if (this.enclaveReady()) {
       this.enclave.cancelBatch(callback);
     } else {
       this.waitForDb(this.cancelBatch, [callback]);
@@ -94,7 +94,7 @@ class SharedStorage {
   }
 
   commitBatch(callback){
-    if (this.dbReady()) {
+    if (this.enclaveReady()) {
       this.enclave.commitBatch(callback);
     } else {
       this.waitForDb(this.commitBatch, [callback]);
