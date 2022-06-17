@@ -9,7 +9,7 @@ class SharedStorage {
       if (err) {
         return console.log(err);
       }
-      this.mydb = enclaveDB;
+      this.enclave = enclaveDB;
       this.DSUStorage = dsuStorage;
     });
   }
@@ -25,12 +25,12 @@ class SharedStorage {
   }
 
   dbReady() {
-    return (this.mydb !== undefined && this.mydb !== "initialising");
+    return (this.enclave !== undefined && this.enclave !== "initialising");
   }
 
   filter(tableName, query, sort, limit, callback) {
     if (this.dbReady()) {
-      this.mydb.filter(tableName, query, sort, limit, callback);
+      this.enclave.filter(tableName, query, sort, limit, callback);
     } else {
       this.waitForDb(this.filter, [tableName, query, sort, limit, callback]);
     }
@@ -39,7 +39,7 @@ class SharedStorage {
 
   getRecord(tableName, key, callback) {
     if (this.dbReady()) {
-      this.mydb.getRecord(tableName, key, callback);
+      this.enclave.getRecord(tableName, key, callback);
     } else {
       this.waitForDb(this.getRecord, [tableName, key, callback]);
     }
@@ -47,16 +47,16 @@ class SharedStorage {
 
   insertRecord(tableName, key, record, callback) {
     if (this.dbReady()) {
-      this.mydb.insertRecord(tableName, key, record, (err, record) => {
+      this.enclave.insertRecord(tableName, key, record, (err, record) => {
         if (err) {
           return callback(err);
         }
-        this.mydb.getIndexedFields(tableName, (err, indexedFields) => {
+        this.enclave.getIndexedFields(tableName, (err, indexedFields) => {
           if (err) {
             return callback(err);
           }
           if (!indexedFields.includes(indexedTimestampField)) {
-            return this.mydb.addIndex(tableName, indexedTimestampField, ()=>{
+            return this.enclave.addIndex(tableName, indexedTimestampField, ()=>{
               callback(undefined, record);
             });
           }
@@ -71,7 +71,7 @@ class SharedStorage {
 
   updateRecord(tableName, key, record, callback) {
     if (this.dbReady()) {
-      this.mydb.updateRecord(tableName, key, record, callback);
+      this.enclave.updateRecord(tableName, key, record, callback);
     } else {
       this.waitForDb(this.updateRecord, [tableName, key, record, callback]);
     }
@@ -79,7 +79,7 @@ class SharedStorage {
 
   beginBatch(){
     if (this.dbReady()) {
-      this.mydb.beginBatch();
+      this.enclave.beginBatch();
     } else {
       this.waitForDb(this.beginBatch);
     }
@@ -87,7 +87,7 @@ class SharedStorage {
 
   cancelBatch(callback){
     if (this.dbReady()) {
-      this.mydb.cancelBatch(callback);
+      this.enclave.cancelBatch(callback);
     } else {
       this.waitForDb(this.cancelBatch, [callback]);
     }
@@ -95,7 +95,7 @@ class SharedStorage {
 
   commitBatch(callback){
     if (this.dbReady()) {
-      this.mydb.commitBatch(callback);
+      this.enclave.commitBatch(callback);
     } else {
       this.waitForDb(this.commitBatch, [callback]);
     }
