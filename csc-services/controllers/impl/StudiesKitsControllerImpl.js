@@ -123,7 +123,7 @@ class StudiesKitsControllerImpl extends WebcController {
 
           let redirectToStudyKits = async () => {
             await this.kitsService.markStudyKitsAsSynchronized(model.studyId);
-            eventBusService.emitEventListeners(Topics.RefreshKits, null);
+            eventBusService.dispatchEvent(Topics.RefreshKits, null);
           };
 
           this.showModalFromTemplate('kitMountingProgressModal', redirectToStudyKits.bind(this), redirectToStudyKits.bind(this), {

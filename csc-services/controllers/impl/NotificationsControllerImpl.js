@@ -106,7 +106,7 @@ class NotificationsControllerImpl extends WebcController {
 			window.WebCardinal.loader.hidden = false;
 			await this.notificationsService.changeNotificationStatus(model.pk);
 			await this.getNotifications();
-			eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+			eventBusService.dispatchEvent(Topics.RefreshNotifications, null);
 			window.WebCardinal.loader.hidden = true;
 		});
 	}

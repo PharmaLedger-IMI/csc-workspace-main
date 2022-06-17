@@ -140,7 +140,7 @@ class ScanShipmentController extends WebcController {
     payload.signature = true;
 
     await this.shipmentService.createAndMountTransitDSU(this.model.shipment.uid, payload);
-    eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
+    eventBusService.dispatchEvent(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
 
     this.showErrorModalAndRedirect('Shipment Pickedup, redirecting to dashboard...', 'Shipment Pickup', {
         tag: 'shipment',

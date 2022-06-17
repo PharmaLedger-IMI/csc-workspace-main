@@ -175,7 +175,7 @@ class ConfirmKitDestructionController extends WebcController {
 
     await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Destroyed, destroyedConfirmationData);
 
-    eventBusService.emitEventListeners(Topics.RefreshKits, null);
+    eventBusService.dispatchEvent(Topics.RefreshKits, null);
     this.showErrorModalAndRedirect('Kit is marked as destroyed', 'Kit Destroyed', {
       tag: 'kit',
       state: { uid: this.model.uid }

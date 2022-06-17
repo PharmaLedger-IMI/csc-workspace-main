@@ -65,7 +65,7 @@ class DispenseKitController extends WebcController {
     const dispensedData = this.getDispensedData();
     await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Dispensed, dispensedData);
 
-    eventBusService.emitEventListeners(Topics.RefreshKits, null);
+    eventBusService.dispatchEvent(Topics.RefreshKits, null);
     this.showErrorModalAndRedirect('Kit is marked as dispensed', 'Kit Dispensed', {
       tag: 'kit',
       state: { uid: this.model.uid }

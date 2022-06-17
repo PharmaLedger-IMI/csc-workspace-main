@@ -132,7 +132,7 @@ class MakeKitAvailableController extends WebcController {
       kitComment: receivedComment
     },kitsMessagesEnum.MakeKitAvailable);
 
-    eventBusService.emitEventListeners(Topics.RefreshKits + this.model.kit.uid, null);
+    eventBusService.dispatchEvent(Topics.RefreshKits + this.model.kit.uid, null);
 
     this.showErrorModalAndRedirect('Kit is marked as available for assignment', 'Kit Available', { tag: 'kit', state: { uid: this.model.kit.uid } }, 2000);
 

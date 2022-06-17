@@ -45,7 +45,7 @@ class WrongDeliveryAddressModalController extends WebcController {
 
     await this.shipmentService.reportWrongDeliveryAddress( this.model.shipmentModel.shipment.uid, payload);
     window.WebCardinal.loader.hidden = true;
-    eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, null);
+    eventBusService.dispatchEvent(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, null);
     this.element.destroy();
   }
 }

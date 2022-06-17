@@ -16,7 +16,7 @@ class EventBusService {
     }
   };
 
-  emitEventListeners = function (eventName, params) {
+  dispatchEvent = function (eventName, params) {
     if (!this.eventTopics[eventName] || this.eventTopics[eventName].length < 1) return;
     this.eventTopics[eventName].forEach(function (listener) {
       listener(params ? params : {});

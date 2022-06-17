@@ -131,7 +131,7 @@ class ScanKitController extends WebcController {
       kitComment: receivedComment
     });
 
-    eventBusService.emitEventListeners(Topics.RefreshKits, null);
+    eventBusService.dispatchEvent(Topics.RefreshKits, null);
     this.showErrorModalAndRedirect('Kit is marked as available for assignment', 'Kit Available', { tag: 'kit', state: { uid: this.model.kit.uid } }, 2000);
 
     window.WebCardinal.loader.hidden = true;

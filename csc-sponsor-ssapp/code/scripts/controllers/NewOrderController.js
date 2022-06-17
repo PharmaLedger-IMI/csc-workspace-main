@@ -218,7 +218,7 @@ export default class NewOrderController extends WebcController {
           console.log(e);
         }
 
-        eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+        eventBusService.dispatchEvent(Topics.RefreshNotifications, null);
 
         this.createWebcModal({
           template: 'orderCreatedModal',

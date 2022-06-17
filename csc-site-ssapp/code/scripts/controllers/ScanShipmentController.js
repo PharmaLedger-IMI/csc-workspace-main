@@ -131,7 +131,7 @@ class ScanShipmentController extends WebcController {
       }
 
       await this.shipmentService.createAndMountReceivedDSU(this.model.shipment.uid, payload, receivedComment);
-      eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
+      eventBusService.dispatchEvent(Topics.RefreshShipments + this.model.shipment.shipmentId, null);
 
 
       let {studyId, orderId}  = this.model.shipment;
