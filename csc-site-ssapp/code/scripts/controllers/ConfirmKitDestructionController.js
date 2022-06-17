@@ -169,8 +169,7 @@ class ConfirmKitDestructionController extends WebcController {
     };
 
     if (this.certificationOfDestructionFile) {
-      const certificationOfDestructionFileDSU = await this.kitsService.addCertificationOfDestruction(this.certificationOfDestructionFile);
-      destroyedConfirmationData.kitDestroyDetails.certificationOfDestructionSSI = certificationOfDestructionFileDSU.sReadSSI;
+      await this.kitsService.addCertificationOfDestruction(this.certificationOfDestructionFile, this.model.uid);
       destroyedConfirmationData.kitDestroyDetails.certificationOfDestructionName = this.certificationOfDestructionFile.name;
     }
 

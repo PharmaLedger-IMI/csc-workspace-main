@@ -41,23 +41,11 @@ class SingleKitControllerImpl extends AccordionController {
 
       window.WebCardinal.loader.hidden = false;
       const fileName = this.model.kitModel.kit.kitDestroyDetails.certificationOfDestructionName;
-      const keySSI  = this.model.kitModel.kit.kitDestroyDetails.certificationOfDestructionSSI;
-      const uid = this.kitsService.getUidFromSSI(keySSI);
-      const path = FoldersEnum.CertificationOfDestruction + '/' + uid + '/' + 'files';
+      const path = FoldersEnum.Kits + '/' + this.model.uid + '/' + 'files';
 
-      const downloadFile = async ()=>{
-        try{
-          await this.fileDownloaderService.prepareDownloadFromDsu(path, fileName);
-        }
-        catch (e){
-          await this.kitsService.mountCertificationOfDestruction(keySSI);
-          downloadFile(path, fileName, keySSI);
-        }
-        this.fileDownloaderService.downloadFileToDevice(fileName);
-        window.WebCardinal.loader.hidden = true;
-      }
-
-      await downloadFile();
+      await this.fileDownloaderService.prepareDownloadFromDsu(path, fileName);
+      this.fileDownloaderService.downloadFileToDevice(fileName);
+      window.WebCardinal.loader.hidden = true;
 
     });
   }

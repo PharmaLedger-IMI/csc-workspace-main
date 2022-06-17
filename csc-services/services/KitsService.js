@@ -231,25 +231,10 @@ class KitsService extends DSUService {
     return {...kitsDbRecord, modifiedKitId:kitDetails.kitId}
   }
 
-  async addCertificationOfDestruction(file) {
-    const certificationOfDestructionDSU = await this.saveEntityAsync(
-      {
-        file: {
-          name: file.name,
-          attached_by: Roles.Site,
-          date: new Date().getTime(),
-        },
-      },
-      FoldersEnum.CertificationOfDestruction
-    );
-
-    certificationOfDestructionDSU.file.attachmentKeySSI = await this.uploadFile(FoldersEnum.CertificationOfDestruction + '/' + certificationOfDestructionDSU.uid + '/' + 'files' + '/' + file.name, file);
-    return await this.updateEntityAsync(certificationOfDestructionDSU, FoldersEnum.CertificationOfDestruction);
+  async addCertificationOfDestruction(file, kitUid) {
+    return await this.uploadFile(FoldersEnum.Kits + '/' + kitUid + '/' + 'files' + '/' + file.name, file);
   }
 
-  async mountCertificationOfDestruction(ssi){
-    return await this.mountEntityAsync(ssi, FoldersEnum.CertificationOfDestruction);
-  }
 
   //TODO move to utils
   uploadFile(path, file) {
