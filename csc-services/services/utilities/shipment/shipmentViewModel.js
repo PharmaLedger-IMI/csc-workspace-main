@@ -1,5 +1,4 @@
 const constants = require("csc-services").constants
-const shipmentBusinessRequirements = constants.shipment.shipmentBusinessRequirements;
 const momentService = require("csc-services").momentService;
 const countries = constants.countries;
 const DAYS_AHEAD = 2;
@@ -21,7 +20,7 @@ const shipmentViewModel = {
 			name: 'courier-id',
 			id: 'courier-id',
 			required: true,
-			placeholder: 'Enter Courier ID',
+			placeholder: 'e.g did:ssi:name:dhl:dhl-sponsor',
 			disabled: false,
 			value: ""
 		},
@@ -84,7 +83,7 @@ const shipmentViewModel = {
 			value: 'Meters'
 		},
 		dimension: {
-			label: 'Dimension (' + shipmentBusinessRequirements.dimensionUnit + ')',
+			label: 'Dimension',
 			height: {
 				label: 'Height',
 				name: 'height',

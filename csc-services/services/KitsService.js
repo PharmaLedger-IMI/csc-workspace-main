@@ -1,8 +1,7 @@
-const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
 const ShipmentsService = require('./ShipmentsService.js');
 const {getCommunicationServiceInstance} = require("./lib/CommunicationService");
-const { FoldersEnum, kit, Roles } = require('./constants');
+const { FoldersEnum, kit  } = require('./constants');
 const { kitsStatusesEnum } = kit;
 
 class KitsService extends DSUService {
@@ -11,7 +10,6 @@ class KitsService extends DSUService {
   constructor() {
     super(FoldersEnum.Kits);
     this.communicationService = getCommunicationServiceInstance();
-    this.storageService = getSharedStorage(this.DSUStorage);
     this.shipmentsService = new ShipmentsService();
   }
 
@@ -22,8 +20,7 @@ class KitsService extends DSUService {
 
   async getKitsDSU(kitsKeySSI) {
     const kitsDsuIdentifier = await this.getEntityPathAsync(kitsKeySSI,FoldersEnum.Kits);
-    const kitsDataDsu = await this.getEntityAsync(kitsDsuIdentifier, FoldersEnum.Kits);
-    return kitsDataDsu;
+    return await this.getEntityAsync(kitsDsuIdentifier, FoldersEnum.Kits);
   }
 
   // TODO: Fotis: Rafael why separate arg studyId? Isn't studyId inside studyKitData?
@@ -90,10 +87,9 @@ class KitsService extends DSUService {
 
   async getOrderKits(studyId, orderId) {
     let studyKitDb = await this.storageService.getRecord(this.KITS_TABLE, studyId);
-    const kits = studyKitDb.kits.filter((kit) => {
+    return studyKitDb.kits.filter((kit) => {
       return kit.orderId === orderId;
     });
-    return kits;
   }
 
   async getKitDetails(kitSSI) {
@@ -218,32 +214,23 @@ class KitsService extends DSUService {
     let modifiedKit = studyKitDb.kits.find((kit) => {
       return kit.uid === kitDetails.uid;
     });
+
+    if (modifiedKit.hasRequestRelabeled) {
+      modifiedKit.hasRequestRelabeled = undefined;
+    }
+
     modifiedKit.status = kitDetails.status;
     if (status === kitsStatusesEnum.Assigned) {
       modifiedKit.investigatorId = kitDetails.investigatorId;
     }
-    return await this.storageService.updateRecord(this.KITS_TABLE, kitDetails.studyId, studyKitDb);
+    const kitsDbRecord  = await this.storageService.updateRecord(this.KITS_TABLE, kitDetails.studyId, studyKitDb);
+    return {...kitsDbRecord, modifiedKitId:kitDetails.kitId}
   }
 
-  async addCertificationOfDestruction(file) {
-    const certificationOfDestructionDSU = await this.saveEntityAsync(
-      {
-        file: {
-          name: file.name,
-          attached_by: Roles.Site,
-          date: new Date().getTime(),
-        },
-      },
-      FoldersEnum.CertificationOfDestruction
-    );
-
-    certificationOfDestructionDSU.file.attachmentKeySSI = await this.uploadFile(FoldersEnum.CertificationOfDestruction + '/' + certificationOfDestructionDSU.uid + '/' + 'files' + '/' + file.name, file);
-    return await this.updateEntityAsync(certificationOfDestructionDSU, FoldersEnum.CertificationOfDestruction);
+  async addCertificationOfDestruction(file, kitUid) {
+    return await this.uploadFile(FoldersEnum.Kits + '/' + kitUid + '/' + 'files' + '/' + file.name, file);
   }
 
-  async mountCertificationOfDestruction(ssi){
-    return await this.mountEntityAsync(ssi, FoldersEnum.CertificationOfDestruction);
-  }
 
   //TODO move to utils
   uploadFile(path, file) {

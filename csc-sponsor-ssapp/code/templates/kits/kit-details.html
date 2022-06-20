@@ -43,7 +43,7 @@
   <div class='overflow-auto'>
     <div class='container d-flex' data-if='@kit.comments'>
       <span class='py-3 text-muted' slot='false'>There is no comment added.</span>
-      <div class="comments-container py-5 flex-column" data-for="@kit.comments" slot='true'>
+      <div class="comments-container wrap-box py-5 flex-column" data-for="@kit.comments" slot='true'>
         <div class="comment">
           <div class="identity"><small>{{@entity}}</small>, <small>{{@date}}</small></div>
           <div>{{@comment}}</div>
@@ -62,7 +62,7 @@
     <div class='overflow-auto'>
         <div class='container d-flex' data-if='@kit.kitcomments'>
             <span class='py-3 text-muted' slot='false'>There is no comment added.</span>
-            <div class="comments-container py-5 flex-column" data-if="@kit.kitcomments" slot='true'>
+            <div class="comments-container wrap-box py-5 flex-column" data-if="@kit.kitcomments" slot='true'>
                 <div class="comment">
                     <div class="identity"><small>{{@kit.kitcomments.entity}}</small>, <small>{{@kit.kitcomments.date}}</small></div>
                     <div>{{@kit.kitcomments.comment}}</div>

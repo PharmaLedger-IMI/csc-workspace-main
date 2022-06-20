@@ -121,7 +121,7 @@ class DeliverShipmentController extends WebcController {
     window.WebCardinal.loader.hidden = false;
 
     await this.shipmentService.updateTransitShipmentDSU(this.model.shipment.uid, payload, shipmentStatusesEnum.Delivered);
-    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+    eventBusService.dispatchEvent(Topics.RefreshShipments, null);
     this.showErrorModalAndRedirect(`Shipment ${this.model.shipment.shipmentId}  was delivered`, "Shipment Delivered", {tag:'dashboard'}, 2000);
     window.WebCardinal.loader.hidden = true;
   }

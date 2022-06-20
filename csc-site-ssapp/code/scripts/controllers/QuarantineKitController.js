@@ -132,7 +132,7 @@ class QuarantineKitController extends WebcController {
       quarantineReason: this.model.kitModel.form.quarantineReason.value
     });
 
-    eventBusService.emitEventListeners(Topics.RefreshKits, null);
+    eventBusService.dispatchEvent(Topics.RefreshKits, null);
     this.showErrorModalAndRedirect('Kit is marked as being in Quarantine', 'Kit In Quarantine', { tag: 'kit', state: { uid: this.model.kit.uid } }, 2000);
     window.WebCardinal.loader.hidden = true;
   }

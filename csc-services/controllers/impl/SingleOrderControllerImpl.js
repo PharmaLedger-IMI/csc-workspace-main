@@ -279,10 +279,10 @@ class SingleOrderControllerImpl extends AccordionController {
     if (shipment) {
       orderLabel = 'Order and Shipment';
       await this.shipmentsService.updateShipment(shipment.uid, shipmentStatusesEnum.ShipmentCancelled);
-      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+      eventBusService.dispatchEvent(Topics.RefreshShipments, null);
     }
 
-    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+    eventBusService.dispatchEvent(Topics.RefreshOrders, null);
     window.WebCardinal.loader.hidden = true;
     this.showErrorModalAndRedirect(orderLabel + ' was canceled, redirecting to dashboard...', orderLabel + ' Cancelled', {tag:'dashboard'}, 2000);
   }
@@ -303,8 +303,8 @@ class SingleOrderControllerImpl extends AccordionController {
         shipmentSSI: shipmentResult.uid
       };
       await this.ordersService.updateOrder(order.uid, null, Roles.CMO, orderStatusesEnum.InProgress, otherOrderDetails);
-      eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+      eventBusService.dispatchEvent(Topics.RefreshOrders, null);
+      eventBusService.dispatchEvent(Topics.RefreshShipments, null);
       window.WebCardinal.loader.hidden = true;
       this.createWebcModal({
         template: 'prepareShipmentModal',

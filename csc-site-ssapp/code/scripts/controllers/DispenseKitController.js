@@ -36,30 +36,21 @@ class DispenseKitController extends WebcController {
     this.onTagClick('view-kit', () => {
       this.navigateToPageTag('kit', { uid: this.model.uid });
     });
-
   }
 
   async initViewModel() {
     let { studyId, orderId, uid, kitId } = this.history.location.state.kit;
 
-    const model = {
+    this.model = {
       kitModel: viewModelResolver('kit'),
-      userName: '',
       studyId: studyId,
       orderId: orderId,
       uid: uid,
-      kitId: kitId
+      kitId: kitId,
     };
 
-
     let didService = DidService.getDidServiceInstance();
-    didService.getUserDetails((err, userDetails) => {
-      if (err) {
-        return console.log('[UserDetails] [ERROR]', err);
-      }
-      model.userName = userDetails.username;
-      this.model = model;
-    });
+    this.model.kitModel.form.dispensingPartyId.value = await didService.getDID();
   }
 
   initHandlers() {
@@ -74,7 +65,7 @@ class DispenseKitController extends WebcController {
     const dispensedData = this.getDispensedData();
     await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Dispensed, dispensedData);
 
-    eventBusService.emitEventListeners(Topics.RefreshKits, null);
+    eventBusService.dispatchEvent(Topics.RefreshKits, null);
     this.showErrorModalAndRedirect('Kit is marked as dispensed', 'Kit Dispensed', {
       tag: 'kit',
       state: { uid: this.model.uid }

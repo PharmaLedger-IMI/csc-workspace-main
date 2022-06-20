@@ -1,4 +1,3 @@
-const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService.js');
 const { Roles, messagesEnum, order, FoldersEnum } = require('./constants');
 const orderStatusesEnum = order.orderStatusesEnum;
@@ -10,7 +9,6 @@ class OrdersService extends DSUService {
   constructor() {
     super(FoldersEnum.Orders);
     this.communicationService = getCommunicationServiceInstance();
-    this.storageService = getSharedStorage(this.DSUStorage);
   }
 
 
@@ -82,7 +80,7 @@ class OrdersService extends DSUService {
   async createOrder(data) {
 
     try{
-      this.DSUStorage.beginBatch();
+      this.storageService.beginBatch();
     }
     catch (e){
       console.log(e);
@@ -105,8 +103,6 @@ class OrdersService extends DSUService {
     const { statusDsu, kitIdsDsu } = await this.createOrderOtherDSUs(statusData,kitIdsData) ;
 
     const statusDsuKeySSI = statusDsu.keySSI;
-    //const status = await this.updateStatusDsu(orderStatusesEnum.Initiated, statusDsuKeySSI);
-
 
     await this.addKitsFileToDsu(kitIdsDsu, data.kitIdsFile);
     const kitIdKeySSIEncrypted = await EncryptionService.encryptData(kitIdsDsu.sReadSSI);
@@ -140,7 +136,7 @@ class OrdersService extends DSUService {
       },
       order.uid
     );
-    await $$.promisify(this.DSUStorage.commitBatch)();
+    await this.storageService.commitBatch();
 
     this.sendMessageToEntity(
       order.targetCmoId,
@@ -234,7 +230,7 @@ class OrdersService extends DSUService {
 
   async updateOrder(orderUID, comment, role, newStatus, otherDetails) {
     try{
-      this.DSUStorage.beginBatch();
+      this.storageService.beginBatch();
     }
     catch (e){
       console.log(e);
@@ -245,6 +241,10 @@ class OrdersService extends DSUService {
       const status = await this.updateStatusDsu(newStatus, orderDB.statusSSI);
       orderDB.status = status.history;
     }
+    //issue #775
+    /*if (comment) {
+      await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
+    }*/
 
     if (otherDetails) {
       Object.keys(otherDetails).forEach((key) => {
@@ -254,7 +254,7 @@ class OrdersService extends DSUService {
 
     const result = await this.updateOrderToDB(orderDB, orderUID);
 
-    await $$.promisify(this.DSUStorage.commitBatch)();
+    await this.storageService.commitBatch();
 
     let identity = role === Roles.CMO ? orderDB.sponsorId : orderDB.targetCmoId;
 

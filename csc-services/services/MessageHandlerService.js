@@ -70,9 +70,9 @@ class MessageHandlerService {
     };
 
     await this.notificationsService.insertNotification(notification);
-    eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-    eventBusService.emitEventListeners(Topics.RefreshOrders + orderData.orderId, null);
+    eventBusService.dispatchEvent(Topics.RefreshNotifications, null);
+    eventBusService.dispatchEvent(Topics.RefreshOrders, null);
+    eventBusService.dispatchEvent(Topics.RefreshOrders + orderData.orderId, null);
   }
 
   async handleShipmentMessages(data) {
@@ -96,19 +96,19 @@ class MessageHandlerService {
     };
 
     await this.notificationsService.insertNotification(notification);
-    eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
-    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
-    eventBusService.emitEventListeners(Topics.RefreshShipments + shipmentData.shipmentId, null);
+    eventBusService.dispatchEvent(Topics.RefreshNotifications, null);
+    eventBusService.dispatchEvent(Topics.RefreshShipments, null);
+    eventBusService.dispatchEvent(Topics.RefreshShipments + shipmentData.shipmentId, null);
 
     //shipment statuses InPreparation and Received will trigger an order status change (In Progress and Completed)
     if ([shipmentStatusesEnum.InPreparation, shipmentStatusesEnum.Received].indexOf(shipmentStatus)!==-1) {
-      eventBusService.emitEventListeners(Topics.RefreshOrders + shipmentData.orderId, null);
+      eventBusService.dispatchEvent(Topics.RefreshOrders + shipmentData.orderId, null);
     }
 
     //TODO: refactor this logic
     //added for the case when shipment is receiving a new shipmentId but the listeners are already using the initial shipmentId (which is orderId by convention)
     if (shipmentStatus === shipmentStatusesEnum.Dispatched || shipmentStatus === shipmentStatusesEnum.PickUpAtWarehouse && this.role === Roles.Sponsor) {
-      eventBusService.emitEventListeners(Topics.RefreshShipments + shipmentData.orderId, null);
+      eventBusService.dispatchEvent(Topics.RefreshShipments + shipmentData.orderId, null);
     }
 
   }
@@ -119,7 +119,7 @@ class MessageHandlerService {
     if (!kitsData || !notificationRole) {
       return;
     }
-    eventBusService.emitEventListeners(Topics.RefreshKits, null);
+    eventBusService.dispatchEvent(Topics.RefreshKits, null);
   }
 
   async processOrderMessage(data) {
@@ -284,7 +284,7 @@ class MessageHandlerService {
         await this.notificationsService.insertNotification(notification);
 
         // Refresh Notifications
-        eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+        eventBusService.dispatchEvent(Topics.RefreshNotifications, null);
 
         break;
       }
@@ -310,10 +310,10 @@ class MessageHandlerService {
           await this.notificationsService.insertNotification(notification);
 
           // Refresh Notifications
-          eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+          eventBusService.dispatchEvent(Topics.RefreshNotifications, null);
 
           // Site updates himself to refresh the kit
-          eventBusService.emitEventListeners(Topics.RefreshKits + kitId, null);
+          eventBusService.dispatchEvent(Topics.RefreshKits + kitId, null);
         }
 
         break;
@@ -324,7 +324,7 @@ class MessageHandlerService {
           kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsStatusesEnum.RequestRelabeling );
 
           // Sponsor get a message in order to update his kit id.
-          eventBusService.emitEventListeners(Topics.RefreshKits + data.data.kitId, null);
+          eventBusService.dispatchEvent(Topics.RefreshKits + kitsData.modifiedKitId, null);
         }
         break;
       }
@@ -348,10 +348,10 @@ class MessageHandlerService {
           await this.notificationsService.insertNotification(notification);
 
           // Refresh Notifications
-          eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+          eventBusService.dispatchEvent(Topics.RefreshNotifications, null);
 
           // Sponsor get a message in order to update his kit id.
-          eventBusService.emitEventListeners(Topics.RefreshKits + data.data.kitId, null);
+          eventBusService.dispatchEvent(Topics.RefreshKits + kitsData.modifiedKitId, null);
         }
         break;
       }
@@ -376,10 +376,10 @@ class MessageHandlerService {
           await this.notificationsService.insertNotification(notification);
 
           // Refresh Notifications
-          eventBusService.emitEventListeners(Topics.RefreshNotifications, null);
+          eventBusService.dispatchEvent(Topics.RefreshNotifications, null);
 
           // Sponsor get a message in order to update his kit id.
-          eventBusService.emitEventListeners(Topics.RefreshKits + data.data.kitId, null);
+          eventBusService.dispatchEvent(Topics.RefreshKits + kitsData.modifiedKitId, null);
         }
         break;
       }
@@ -393,6 +393,7 @@ class MessageHandlerService {
       case kitsStatusesEnum.Destroyed:{
         const { kitSSI } = data.data;
         kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI, kitsMessage);
+        eventBusService.dispatchEvent(Topics.RefreshKits + kitsData.modifiedKitId, null);
         break;
       }
     }

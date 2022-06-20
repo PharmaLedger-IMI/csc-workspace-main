@@ -162,7 +162,7 @@ class CourierSingleShipmentController extends ViewShipmentBaseController {
     };
 
     await this.shipmentsService.sendNewPickupDetailsRequest(this.model.shipmentModel.shipment.cmoId, pickupDateTimeChangeRequest);
-    eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, null);
+    eventBusService.dispatchEvent(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, null);
     window.WebCardinal.loader.hidden = true;
 
   }

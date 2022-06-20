@@ -63,7 +63,7 @@ const orderViewModel = {
             target_cmo_id: {
                 label: 'Target CMO ID',
                 name: 'target_cmo_id',
-                placeholder: 'Enter Target CMO ID',
+                placeholder: 'e.g did:ssi:name:nvs:sponsor-nvs',
                 required: true,
                 disabled: false,
                 value: "",
@@ -117,7 +117,7 @@ const orderViewModel = {
                 label: 'Site ID',
                 name: 'site_id',
                 id: 'site_id',
-                placeholder: 'Enter Site ID...',
+                placeholder: 'e.g did:ssi:name:epe:hospital-espirito-santo-evora',
                 required: true,
                 disabled: false,
                 value: "",
