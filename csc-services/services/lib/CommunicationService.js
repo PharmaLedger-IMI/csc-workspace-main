@@ -3,17 +3,19 @@ const w3cDID = opendsu.loadAPI('w3cdid');
 const scAPI = opendsu.loadAPI("sc");
 const DidService = require("./DidService");
 const messageQueueServiceInstance = require("./MessageQueueService");
+const DSUService = require('./DSUService.js');
 const MAX_RECONNECTION_ATTEMPTS = 5;
 const INITIAL_CONNECTION_DELAY = 1000;
 const MAX_RECONENCT_DELAY = INITIAL_CONNECTION_DELAY * 30;
 
-class CommunicationService {
+class CommunicationService  extends DSUService{
 
     /**
      * @param didType : String - the type of the did (did:name, did:group...)
      * @param publicName : String - the public name used by the sender to send a message
      */
     constructor() {
+        super();
         this.createOrLoadIdentity();
         this.connectionDelay = INITIAL_CONNECTION_DELAY;
         this.reconnectionAttempts  = 0;
@@ -59,7 +61,9 @@ class CommunicationService {
             return didDocument;
         } catch (e) {
             try {
+                this.storageService.beginBatch();
                 const didDocument = await $$.promisify(w3cDID.createIdentity)(didData.didType, didData.domain, didData.publicName);
+                await this.storageService.commitBatch();
                 console.log(`Identity ${didDocument.getIdentifier()} created successfully.`);
                 return didDocument;
 
