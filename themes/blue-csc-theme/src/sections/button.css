@@ -181,11 +181,10 @@ button > i {
     padding:0 5px;
 }
 
-.btn-default > span{
+.btn-default > span,
+.btn-cancel > span,
+.btn-reset > span{
     padding:0 5px;
 }
 
 
-.btn-cancel > span{
-    padding:0 5px;
-}
