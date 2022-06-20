@@ -241,6 +241,10 @@ class OrdersService extends DSUService {
       const status = await this.updateStatusDsu(newStatus, orderDB.statusSSI);
       orderDB.status = status.history;
     }
+    //issue #775
+    /*if (comment) {
+      await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
+    }*/
 
     if (otherDetails) {
       Object.keys(otherDetails).forEach((key) => {
