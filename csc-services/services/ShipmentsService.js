@@ -184,6 +184,7 @@ class ShipmentsService extends DSUService {
 		shipmentDB.transitShipmentIdentifier = transitShipment.uid;
 		shipmentDB.status = status.history;
 		shipmentDB.shipmentId = transitShipment.shipmentId;
+		shipmentDB.temperatureLoggerId = transitShipment.temperatureLoggerId;
 
 		if (role === Roles.CMO) {
 			//CMO is the owner of the ShipmentsDSU
@@ -238,17 +239,16 @@ class ShipmentsService extends DSUService {
 	}
 
 	async createAndMountTransitDSU(shipmentUid, transientDataModel) {
-
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentUid);
 
 		const shipmentTransitDSU = await this.saveEntityAsync(transientDataModel, FoldersEnum.ShipmentTransit);
 		const status = await this.updateStatusDsu(shipmentStatusesEnum.PickUpAtWarehouse, shipmentDB.statusSSI);
 		shipmentDB.transitDSUKeySSI = shipmentTransitDSU.keySSI;
 		shipmentDB.transitDSUUid =  shipmentTransitDSU.uid;
+		shipmentDB.shipmentId = transientDataModel.shipmentId;
+		shipmentDB.temperatureLoggerId = transientDataModel.temperatureLoggerId;
 		shipmentDB.status = status.history;
-		shipmentDB.shipmentId = shipmentTransitDSU.shipmentId;
 		await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentUid, shipmentDB);
-
 
 		const inTransitDSUMessage = {
 			transitShipmentSSI: shipmentTransitDSU.sReadSSI,
@@ -263,15 +263,12 @@ class ShipmentsService extends DSUService {
 			shipmentStatusesEnum.PickUpAtWarehouse
 		);
 
-		//Send a message to cmo
 		this.sendMessageToEntity(
 			shipmentDB.cmoId,
 			shipmentStatusesEnum.Dispatched,
 			inTransitDSUMessage,
 			shipmentStatusesEnum.Dispatched
 		);
-
-
 	}
 
 	async createAndMountReceivedDSU(shipmentIdentifier, transientDataModel, shipmentComments) {

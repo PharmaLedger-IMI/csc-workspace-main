@@ -1,6 +1,7 @@
 const constants = require("csc-services").constants
 const momentService = require("csc-services").momentService;
 const countries = constants.countries;
+const incoTerms = constants.incoTerms;
 const DAYS_AHEAD = 2;
 
 const shipmentViewModel = {
@@ -214,6 +215,47 @@ const shipmentViewModel = {
 			disabled: false,
 			value: '',
 		},
+		billOfLanding: {
+			label: 'Bill of Landing No.',
+			name: 'billOfLanding',
+			required: true,
+			placeholder: 'Bill of Landing No.',
+			disabled: false,
+			value: '',
+		},
+		serviceType: {
+			label: 'Service Type',
+			name: 'serviceType',
+			required: true,
+			placeholder: 'Service Type',
+			disabled: false,
+			value: '',
+		},
+		incoTerms: {
+			label: 'Inco Terms',
+			name: 'incoTerms',
+			required: true,
+			placeholder: 'Enter Inco Terms',
+			disabled: false,
+			options: incoTerms,
+			value: incoTerms[0].name
+		},
+		spotContractRates: {
+			label: 'Spot/Contract Rates',
+			name: 'spotContractRates',
+			required: true,
+			placeholder: 'Spot/Contract Rates',
+			disabled: false,
+			value: '',
+		},
+		temperatureLoggerId: {
+			label: 'Temperature Logger ID',
+			name: 'temperatureLoggerId',
+			required: true,
+			placeholder: 'Temperature Logger ID',
+			disabled: false,
+			value: '',
+		},
 		recipientName: {
 			label: 'Recipient Name',
 			name: 'recipient-name',
@@ -251,6 +293,7 @@ const shipmentViewModel = {
 			disabled: false,
 			value: '',
 		},
+		filesEmpty: true,
 		documents: [],
 		comments: [],
         receivedDate: {

@@ -1,4 +1,3 @@
-// MyModalController.js
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
 const viewModelResolver = cscServices.viewModelResolver;
@@ -73,12 +72,18 @@ class ScanShipmentController extends WebcController {
     }
 
   addModelChangeHandlers() {
-    this.shipmentIdHandler = () => {
+    this.model.onChange("shipmentModel.form.shipmentId.value", this.validateForm.bind(this));
+    this.model.onChange("shipmentModel.form.temperatureLoggerId.value", this.validateForm.bind(this));
+  }
 
-      this.model.uniqueShipmentIdError = this.shipmentIds.includes(this.model.shipmentModel.form.shipmentId.value.trim());
-      this.model.formIsInvalid = this.model.shipmentModel.form.shipmentId.value.trim() === '' || this.model.uniqueShipmentIdError;
-    };
-    this.model.onChange("shipmentModel.form.shipmentId.value", this.shipmentIdHandler.bind(this));
+  validateForm(){
+    this.model.formIsInvalid = false;
+
+    this.model.uniqueShipmentIdError = this.shipmentIds.includes(this.model.shipmentModel.form.shipmentId.value.trim());
+    if (this.model.shipmentModel.form.shipmentId.value.trim() === '' || this.model.uniqueShipmentIdError) this.model.formIsInvalid = true;
+    if (this.model.shipmentModel.form.temperatureLoggerId.value.trim() === '') this.model.formIsInvalid = true;
+
+    this.model.disableSign = this.model.formIsInvalid;
   }
 
   initStepperNavigationHandlers() {
@@ -88,7 +93,7 @@ class ScanShipmentController extends WebcController {
 
     this.onTagEvent('step-2', 'click', (e) => {
       this.makeStepActive('step-2', 'step-2-wrapper', e);
-      this.shipmentIdHandler();
+      this.validateForm();
     });
 
     this.onTagEvent('step-3', 'click', (e) => {
@@ -120,11 +125,6 @@ class ScanShipmentController extends WebcController {
     this.onTagEvent('sign_button', 'click', (e) => {
       this.sign();
     });
-
-  }
-
-  getDateTime() {
-    return this.model.shipmentModel.form.shipment_date.value + ' ' + this.model.shipmentModel.form.shipment_time.value;
   }
 
   async sign() {
@@ -137,6 +137,7 @@ class ScanShipmentController extends WebcController {
       payload[prop] = this.model.shipment[prop];
     });
     payload.shipmentId = this.model.shipmentModel.form.shipmentId.value;
+    payload.temperatureLoggerId = this.model.shipmentModel.form.temperatureLoggerId.value;
     payload.signature = true;
 
     await this.shipmentService.createAndMountTransitDSU(this.model.shipment.uid, payload);
@@ -147,12 +148,6 @@ class ScanShipmentController extends WebcController {
          state: { uid: uid }
         }, 2000);
     window.WebCardinal.loader.hidden = true;
-  }
-  
-  getModel() {
-    return {
-      formIsInvalid: true
-    }
   }
 
   makeStepActive(step_id, step_holder_id, e) {

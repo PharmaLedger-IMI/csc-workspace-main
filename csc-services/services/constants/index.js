@@ -10,6 +10,7 @@ const buttons = require('./buttons');
 const commons = require('./commons');
 const documentTypes = require('./documentTypes');
 const countries = require("./countries");
+const incoTerms = require("./incoTerms");
 
 module.exports = {
 	...messages,
@@ -23,5 +24,6 @@ module.exports = {
 	...buttons,
 	...commons,
 	...documentTypes,
-	countries
+	countries,
+	incoTerms
 };
