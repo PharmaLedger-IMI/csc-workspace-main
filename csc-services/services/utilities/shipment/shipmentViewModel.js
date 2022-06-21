@@ -135,7 +135,6 @@ const shipmentViewModel = {
 			min: '0.0001',
 			value: ''
 		},
-
 		destinationAddress:{
 			label:"Destination Address",
 			country:  {
@@ -181,7 +180,6 @@ const shipmentViewModel = {
 
 
 		},
-
 		specialInstructions: {
 			label: 'Special Instructions',
 			name: 'special-instructions',
@@ -253,21 +251,31 @@ const shipmentViewModel = {
 		},
 		documents: [],
 		comments: [],
-        receivedDate: {
-            label: 'Received Date/Time',
-            name: 'received_date',
-            required: true,
-            disabled: false,
-            type: 'date',
-            value: '',
-        },
-        receivedTime: {
-            name: 'received_time',
-            required: true,
-            disabled: false,
-            type: 'time',
-            value: '',
-        }
+		receivedDate: {
+				label: 'Received Date/Time',
+				name: 'received_date',
+				required: true,
+				disabled: false,
+				type: 'date',
+				value: '',
+		},
+		receivedTime: {
+			name: 'received_time',
+			required: true,
+			disabled: false,
+			type: 'time',
+			value: '',
+		},
+		temperatureLogger: {
+			label:"Temperature Logger",
+			name: 'temperature_logger',
+			id: 'temperature-logger',
+			required: true,
+			options: [
+				 'Switched Off', 'Not Used'
+			],
+			value: 'Switched Off'
+		}
 	}
 };
 
