@@ -3,9 +3,6 @@
 		<!-- Shipment ID -->
 		<label>{{@form.shipmentId.label}}</label>
 		<input class='form-control' value='@shipment.shipmentId' readonly />
-		<!-- Temperature Logger ID -->
-		<label>{{@form.temperatureLoggerId.label}}</label>
-		<input class='form-control form-control-sm' readonly value='@shipment.temperatureLoggerId' />
 		<!-- Courier ID -->
 		<label>{{@form.courierId.label}}</label>
 		<input class='form-control' value='@shipment.courierId' readonly />
@@ -98,6 +95,10 @@
 		<!-- Special Instructions -->
 		<label>{{@form.specialInstructions.label}}</label>
 		<textarea class='form-control' value='@shipment.specialInstructions' readonly></textarea>
+
+		<!-- Temperature Logger ID -->
+		<label>{{@form.temperatureLoggerId.label}}</label>
+		<input class='form-control form-control-sm' readonly value='@shipment.temperatureLoggerId' />
 
 	</div>
 </div>

@@ -40,31 +40,31 @@
           <div class='container'>
             <!-- Bill Number -->
             <div class='form-group'>
-              <label class='col-form-label'>{{@form.billNumber.label}}</label>
+              <label class='col-form-label'>{{@form.billNumber.label}} <span class='required'>*</span></label>
               <input class='form-control' data-view-model='@form.billNumber'
                      value='@form.billNumber.value' />
             </div>
             <!-- HS Code -->
             <div class='form-group'>
-              <label class='col-form-label'>{{@form.hsCode.label}}</label>
+              <label class='col-form-label'>{{@form.hsCode.label}} <span class='required'>*</span></label>
               <input class='form-control' data-view-model='@form.hsCode'
                      value='@form.hsCode.value' />
             </div>
             <!-- Bill of Landing No. -->
             <div class='form-group'>
-              <label class='col-form-label'>{{@form.billOfLanding.label}}</label>
+              <label class='col-form-label'>{{@form.billOfLanding.label}} <span class='required'>*</span></label>
               <input class='form-control' data-view-model='@form.billOfLanding'
                      value='@form.billOfLanding.value' />
             </div>
             <!-- Service type -->
             <div class='form-group'>
-              <label class='col-form-label'>{{@form.serviceType.label}}</label>
+              <label class='col-form-label'>{{@form.serviceType.label}} <span class='required'>*</span></label>
               <input class='form-control' data-view-model='@form.serviceType'
                      value='@form.serviceType.value' />
             </div>
             <!-- Inco Terms -->
             <div class='form-group'>
-              <label class='col-form-label'>{{@form.incoTerms.label}}</label>
+              <label class='col-form-label'>{{@form.incoTerms.label}} <span class='required'>*</span></label>
               <select class='form-control' data-for='@form.incoTerms.options'
                       value='@form.incoTerms.value'>
                 <option value='@name'>{{@name}}</option>
@@ -72,7 +72,7 @@
             </div>
             <!-- Spot/Contract Rates -->
             <div class='form-group'>
-              <label class='col-form-label'>{{@form.spotContractRates.label}}</label>
+              <label class='col-form-label'>{{@form.spotContractRates.label}} <span class='required'>*</span></label>
               <input class='form-control' data-view-model='@form.spotContractRates'
                      value='@form.spotContractRates.value' />
             </div>
