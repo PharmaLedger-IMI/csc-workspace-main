@@ -174,18 +174,17 @@
                   </div>
                   <div class='form-row ml-4'>
                     <div class='form-group col-md-6'>
-                      <label>{{@shipmentModel.form.destinationAddress.poBox.label}}</label>
-                      <input class='form-control form-control-sm' readonly
-                             name='@shipmentModel.form.destinationAddress.poBox.name'
-                             type='text' value='@shipment.destinationAddress.poBox' />
-
-                    </div>
-                    <div class='form-group col-md-6'>
                       <label>{{@shipmentModel.form.destinationAddress.building.label}}</label>
                       <input class='form-control form-control-sm' readonly
                              name='@shipmentModel.form.destinationAddress.building.name'
                              type='text' value='@shipment.destinationAddress.building' />
+                    </div>
 
+                    <div class='form-group col-md-6'>
+                      <label>{{@shipmentModel.form.destinationAddress.poBox.label}}</label>
+                      <input class='form-control form-control-sm' readonly
+                             name='@shipmentModel.form.destinationAddress.poBox.name'
+                             type='text' value='@shipment.destinationAddress.poBox' />
                     </div>
                   </div>
                 </div>

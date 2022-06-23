@@ -44,15 +44,15 @@
 
     <div class='form-row'>
       <div class='col-md-6'>
-        <label>{{@shipmentModel.form.destinationAddress.poBox.label}}</label>
-        <input class='form-control' type='text' value='@shipmentModel.shipment.destinationAddress.poBox'
-               readonly />
-
-      </div>
-      <div class='col-md-6'>
         <label>{{@shipmentModel.form.destinationAddress.building.label}}</label>
         <input class='form-control' type='text'
                value='@shipmentModel.shipment.destinationAddress.building'
+               readonly />
+      </div>
+
+      <div class='col-md-6'>
+        <label>{{@shipmentModel.form.destinationAddress.poBox.label}}</label>
+        <input class='form-control' type='text' value='@shipmentModel.shipment.destinationAddress.poBox'
                readonly />
       </div>
     </div>
