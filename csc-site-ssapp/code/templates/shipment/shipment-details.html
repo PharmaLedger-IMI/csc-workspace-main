@@ -54,6 +54,11 @@
 		<!-- Special Instructions -->
 		<label>{{@shipmentModel.form.specialInstructions.label}}</label>
 		<textarea class='form-control' value='@shipmentModel.shipment.specialInstructions' readonly></textarea>
+
+		<!-- Temperature Logger ID -->
+		<label>{{@shipmentModel.form.temperatureLoggerId.label}}</label>
+		<input class='form-control form-control-sm' readonly value='@shipmentModel.shipment.temperatureLoggerId' />
+
 		<!-- Keep Between -->
 		<label>{{@shipmentModel.form.inputs.keep_between_temperature.label}}</label>
 		<div>
