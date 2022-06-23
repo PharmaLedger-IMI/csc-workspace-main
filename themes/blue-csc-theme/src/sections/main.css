@@ -43,10 +43,6 @@ webc-spinner{
     flex-wrap: wrap;
 }
 
-.button-wrapper button {
-    padding: 0.5rem;
-    min-width: 11rem;
-}
 
 .full-flex-column {
     display: flex;
