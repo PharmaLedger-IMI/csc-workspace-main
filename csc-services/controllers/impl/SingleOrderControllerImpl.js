@@ -176,11 +176,13 @@ class SingleOrderControllerImpl extends AccordionController {
       data.status_normal = statuses.normalStatuses.includes(data.status_value);
       data.pending_action = this.getPendingAction(data.status_value);
 
-      if (data.comment) {
-        data.hasComment = true;
-        data.comment.date = momentService(data.comment.date).format(Commons.DateTimeFormatPattern);
+      if (data.comments) {
+        data.hasComments = true;
+        data.comments.forEach(comment=>{
+          comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
+        })
       } else {
-        data.hasComment = false;
+        data.hasComments = false;
       }
 
       if (data.documents) {
@@ -266,9 +268,9 @@ class SingleOrderControllerImpl extends AccordionController {
 
   async cancelOrder() {
     window.WebCardinal.loader.hidden = false;
-    const { uid } = this.model.order;
+    const { uid, sponsorId } = this.model.order;
     let comment = this.model.cancelOrderModal.comment.value ? {
-      entity: this.role,
+      entity:  '<' + Roles.Sponsor + '> (' +  sponsorId + ')',
       comment: this.model.cancelOrderModal.comment.value,
       date: new Date().getTime()
     }

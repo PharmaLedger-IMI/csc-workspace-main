@@ -120,7 +120,7 @@ class OrdersService extends DSUService {
       temperature_comments: data.temperature_comments,
       requestDate: new Date().getTime(),
       deliveryDate: data.delivery_date,
-      comment: comment,
+      comments: [comment],
       kitIdKeySSIEncrypted:kitIdKeySSIEncrypted
     };
 
@@ -241,10 +241,13 @@ class OrdersService extends DSUService {
       const status = await this.updateStatusDsu(newStatus, orderDB.statusSSI);
       orderDB.status = status.history;
     }
-    //issue #775
-    /*if (comment) {
-      await this.addCommentToDsu(comment, orderDB.commentsKeySSI);
-    }*/
+
+    if (comment) {
+      const orderDSU = await this.getEntityAsync(orderUID,FoldersEnum.Orders);
+      orderDSU.comments.push(comment);
+      orderDB.comments.push(comment);
+      await this.updateEntityAsync(orderDSU,FoldersEnum.Orders);
+    }
 
     if (otherDetails) {
       Object.keys(otherDetails).forEach((key) => {
@@ -268,10 +271,12 @@ class OrdersService extends DSUService {
   // -> Function for updating changed order locally
 
   async updateLocalOrder(orderKeySSI, otherDetails) {
-    const orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderKeySSI);
+    const orderDSU = await this.getEntityAsync(orderKeySSI,FoldersEnum.Orders);
+    let orderDB = await this.storageService.getRecord(this.ORDERS_TABLE, orderKeySSI);
     const statusIdentifier = await this.getEntityPathAsync(orderDB.statusSSI, FoldersEnum.Statuses);
     const status = await this.getEntityAsync(statusIdentifier, FoldersEnum.Statuses);
     orderDB.status = status.history;
+    orderDB = {...orderDB, ...orderDSU};
 
     if (otherDetails) {
       Object.keys(otherDetails).forEach((key) => {

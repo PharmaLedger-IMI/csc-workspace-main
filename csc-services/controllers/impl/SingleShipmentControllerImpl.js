@@ -130,7 +130,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     window.WebCardinal.loader.hidden = false;
     const keySSI = this.model.shipmentModel.shipment.orderSSI;
     let comment = this.model.cancelOrderModal.comment.value ? {
-          entity: this.role,
+          entity:  '<' + Roles.Sponsor + '> (' +  this.model.shipmentModel.shipment.sponsorId + ')',
           comment: this.model.cancelOrderModal.comment.value,
           date: new Date().getTime()
         }

@@ -3,6 +3,10 @@
   <label>{{@form.shipmentId.label}}</label>
   <input class="form-control form-control-sm" readonly name="@form.shipmentId.name" placeholder="@form.shipmentId.placeholder" type="text" value="@shipment.shipmentId" />
 
+  <!-- Temperature Logger ID -->
+  <label>{{@form.temperatureLoggerId.label}}</label>
+  <input class='form-control form-control-sm' readonly type='text' value='@form.temperatureLoggerId.value' />
+
   <!-- Courier ID -->
   <label>{{@form.courierId.label}}</label>
   <input class="form-control form-control-sm" readonly name="@form.courierId.name" placeholder="@form.courierId.placeholder" type="text" value="@shipment.courierId" />
@@ -88,15 +92,4 @@
   <label>{{@form.specialInstructions.label}}</label>
   <textarea class="form-control form-control-sm" readonly value="@shipment.specialInstructions"></textarea>
 </div>
-
-  <div data-if='@shipment.contextualContent.afterInTransit'>
-    <div class='grid-column-wrapper'>
-      <!-- Master-way bill number -->
-      <label>{{@form.billNumber.label}}</label>
-      <input class="form-control form-control-sm" readonly name="@form.billNumber.name" placeholder="@form.billNumber.placeholder" type="text" value="@shipment.bill.billNumber" />
-      <!-- HS Code -->
-      <label>{{@form.hsCode.label}}</label>
-      <input class="form-control form-control-sm" readonly name="@form.hsCode.name" placeholder="@form.hsCode.placeholder" type="text" value="@shipment.bill.hsCode" />
-    </div>
-  </div>
 

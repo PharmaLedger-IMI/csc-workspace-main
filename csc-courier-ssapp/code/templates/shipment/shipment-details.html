@@ -121,6 +121,10 @@
   <label>{{@shipmentModel.form.specialInstructions.label}}</label>
   <textarea class="form-control form-control-sm" readonly value="@shipmentModel.shipment.specialInstructions"></textarea>
 
+  <!-- Temperature Logger ID -->
+  <label>{{@shipmentModel.form.temperatureLoggerId.label}}</label>
+  <input class='form-control form-control-sm' readonly type='text' value='@shipmentModel.shipment.temperatureLoggerId' />
+
   <!-- Keep Between -->
   <label>{{@shipmentModel.form.inputs.keep_between_temperature.label}}</label>
   <div>
@@ -136,12 +140,25 @@
 
 <div data-if='@shipmentModel.shipment.contextualContent.afterInTransit'>
     <div class='grid-column-wrapper'>
-      <!-- Master-way bill number -->
+      <!-- Bill Number -->
       <label>{{@shipmentModel.form.billNumber.label}}</label>
-      <input class="form-control form-control-sm" readonly name="@shipmentModel.form.billNumber.name" placeholder="@shipmentModel.form.billNumber.placeholder" type="text" value="@shipmentModel.shipment.bill.billNumber" />
+      <input class='form-control form-control-sm' readonly type='text' value='@shipmentModel.shipment.bill.billNumber' />
       <!-- HS Code -->
       <label>{{@shipmentModel.form.hsCode.label}}</label>
-      <input class="form-control form-control-sm" readonly name="@shipmentModel.form.hsCode.name" placeholder="@shipmentModel.form.hsCode.placeholder" type="text" value="@shipmentModel.shipment.bill.hsCode" />
+      <input class='form-control form-control-sm' readonly type='text' value='@shipmentModel.shipment.bill.hsCode' />
+      <!-- Bill of Landing No. -->
+      <label class='col-form-label'>{{@shipmentModel.form.billOfLanding.label}}</label>
+      <input class='form-control' readonly type='text' value='@shipmentModel.shipment.bill.billOfLanding' />
+      <!-- Service type -->
+      <label class='col-form-label'>{{@shipmentModel.form.serviceType.label}}</label>
+      <input class='form-control' readonly type='text' value='@shipmentModel.shipment.bill.serviceType' />
+      <!-- Inco Terms -->
+      <label>{{@shipmentModel.form.incoTerms.label}}</label>
+      <input class='form-control form-control-sm' readonly type='text' value='@shipmentModel.shipment.bill.incoTerms' />
+      <!-- Spot/Contract Rates -->
+      <label>{{@shipmentModel.form.spotContractRates.label}}</label>
+      <input class='form-control form-control-sm' readonly type='text'
+             value='@shipmentModel.shipment.bill.spotContractRates' />
     </div>
 </div>
 
