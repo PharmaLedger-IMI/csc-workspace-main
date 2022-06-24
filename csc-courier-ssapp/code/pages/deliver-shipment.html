@@ -84,14 +84,14 @@
           <div class='step-holder step-hidden' id='step-2-wrapper'>
             <div class='grid-column-wrapper'>
               <!-- Recipient Name -->
-              <label>{{@form.recipientName.label}}</label>
+              <label>{{@form.recipientName.label}} <span class='required'>*</span></label>
               <input class='form-control form-control-sm' name='@form.recipientName.name'
                      placeholder='@form.recipientName.placeholder' type='text'
                      value='@form.recipientName.value' />
 
 
               <!-- Temperature Logger -->
-              <label>{{@form.temperatureLogger.label}}</label>
+              <label>{{@form.temperatureLogger.label}} <span class='required'>*</span></label>
               <select class='form-control form-control-sm' data-for='@form.temperatureLogger.options'
                       id='@form.temperatureLogger.name'
                       name='@form.temperatureLogger.name' value='@form.temperatureLogger.value'>
