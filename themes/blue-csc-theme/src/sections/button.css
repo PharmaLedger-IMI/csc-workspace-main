@@ -2,6 +2,15 @@ button i{
     color: #FFFFFF;
 }
 
+.button-wrapper button {
+    padding: 0.5rem;
+    min-width: 11rem;
+}
+
+.button-wrapper button.btn-stretched{
+    min-width: 8rem;
+}
+
 .btn-default,
 .btn-reset,
 .btn-cancel,

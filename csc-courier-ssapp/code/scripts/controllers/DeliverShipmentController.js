@@ -14,7 +14,6 @@ class DeliverShipmentController extends WebcController {
 
     this.shipmentService = new ShipmentService();
     this.model = this.getDeliverShipmentViewModel(shipment);
-
     this.model.shipment = this.originalShipment;
     this.model.disableSign = false;
 
@@ -114,6 +113,7 @@ class DeliverShipmentController extends WebcController {
   async sign() {
     let payload = {
       recipientName: this.model.form.recipientName.value,
+      temperatureLogger: this.model.form.temperatureLogger.value,
       signature: true,
       deliveryDateTime: new Date().getTime()
     };

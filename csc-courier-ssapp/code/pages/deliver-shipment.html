@@ -88,6 +88,15 @@
               <input class='form-control form-control-sm' name='@form.recipientName.name'
                      placeholder='@form.recipientName.placeholder' type='text'
                      value='@form.recipientName.value' />
+
+
+              <!-- Temperature Logger -->
+              <label>{{@form.temperatureLogger.label}}</label>
+              <select class='form-control form-control-sm' data-for='@form.temperatureLogger.options'
+                      id='@form.temperatureLogger.name'
+                      name='@form.temperatureLogger.name' value='@form.temperatureLogger.value'>
+                <option value='@'>{{@}}</option>
+              </select>
             </div>
 
             <!-- Navigation Between Steps-->
@@ -164,17 +173,17 @@
                   </div>
                   <div class='form-row ml-4'>
                     <div class='form-group col-md-6'>
-                      <label>{{@form.destinationAddress.poBox.label}}</label>
-                      <input class='form-control form-control-sm' readonly
-                             name='@form.destinationAddress.poBox.name'
-                             type='text' value='@shipment.destinationAddress.poBox' />
-
-                    </div>
-                    <div class='form-group col-md-6'>
                       <label>{{@form.destinationAddress.building.label}}</label>
                       <input class='form-control form-control-sm' readonly
                              name='@form.destinationAddress.building.name'
                              type='text' value='@shipment.destinationAddress.building' />
+                    </div>
+
+                    <div class='form-group col-md-6'>
+                      <label>{{@form.destinationAddress.poBox.label}}</label>
+                      <input class='form-control form-control-sm' readonly
+                             name='@form.destinationAddress.poBox.name'
+                             type='text' value='@shipment.destinationAddress.poBox' />
 
                     </div>
                   </div>
@@ -305,6 +314,15 @@
                   <label>{{@form.recipientName.label}}</label>
                   <input class='form-control form-control-sm' value='@form.recipientName.value'
                          placeholder='@form.recipientName.placeholder' readonly />
+                </div>
+              </div>
+
+              <!-- Temperature Logger -->
+              <div class='col-12'>
+                <div class='form-group'>
+                  <label>{{@form.temperatureLogger.label}}</label>
+                  <input class='form-control form-control-sm' value='@form.temperatureLogger.value'
+                         placeholder='@form.temperatureLogger.placeholder' readonly />
                 </div>
               </div>
 
