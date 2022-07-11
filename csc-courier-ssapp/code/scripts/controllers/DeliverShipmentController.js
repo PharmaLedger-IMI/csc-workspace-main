@@ -14,7 +14,6 @@ class DeliverShipmentController extends WebcController {
 
     this.shipmentService = new ShipmentService();
     this.model = this.getDeliverShipmentViewModel(shipment);
-
     this.model.shipment = this.originalShipment;
     this.model.disableSign = false;
 
@@ -114,13 +113,15 @@ class DeliverShipmentController extends WebcController {
   async sign() {
     let payload = {
       recipientName: this.model.form.recipientName.value,
+      temperatureLogger: this.model.form.temperatureLogger.value,
+      signature: true,
       deliveryDateTime: new Date().getTime()
     };
     this.model.disableSign = true;
     window.WebCardinal.loader.hidden = false;
 
     await this.shipmentService.updateTransitShipmentDSU(this.model.shipment.uid, payload, shipmentStatusesEnum.Delivered);
-    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+    eventBusService.dispatchEvent(Topics.RefreshShipments, null);
     this.showErrorModalAndRedirect(`Shipment ${this.model.shipment.shipmentId}  was delivered`, "Shipment Delivered", {tag:'dashboard'}, 2000);
     window.WebCardinal.loader.hidden = true;
   }

@@ -319,10 +319,6 @@ const shipmentCourierTableHeaders = [
 	}
 ];
 
-const shipmentBusinessRequirements = {
-	dimensionUnit: "M"
-}
-
 module.exports = {
 	shipmentStatusesEnum,
 	shipmentsEventsEnum,
@@ -331,5 +327,4 @@ module.exports = {
 	shipmentSponsorTableHeaders,
 	shipmentCourierTableHeaders,
 	shipmentPendingActionEnum,
-	shipmentBusinessRequirements
 };

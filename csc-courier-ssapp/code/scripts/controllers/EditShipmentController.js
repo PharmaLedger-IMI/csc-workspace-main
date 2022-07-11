@@ -16,7 +16,6 @@ export default class EditShipmentController extends WebcController {
 
     this.initServices().then(()=>{
       this.initViewModel();
-      this.initFormValidation();
       this.attachEventHandlers();
     })
   }
@@ -24,14 +23,6 @@ export default class EditShipmentController extends WebcController {
   async initServices(){
     this.shipmentsService = new ShipmentService();
     this.FileDownloaderService = new FileDownloaderService();
-  }
-
-  initFormValidation(){
-    // For form validation
-    this.model.formValidation = {
-      shipmentDetailsDisabled: true,
-      submitDisabled: true
-    };
   }
 
   attachEventHandlers() {
@@ -102,9 +93,8 @@ export default class EditShipmentController extends WebcController {
       this.showModal(content, title, confirmHandler, () => {}, modalOptions);
     });
     this.onTagClick('form_submit', () => {
-
-
-      if (!this.isFormValidated("submit")) {
+      this.validateForm();
+      if (this.model.formIsInvalid) {
         return this.showErrorModal("Please fill-in bill number, HS code and mandatory documents!", "Invalid form", () => {}, () => {}, {
           disableCancelButton: true,
           confirmButtonText: 'Close',
@@ -154,28 +144,25 @@ export default class EditShipmentController extends WebcController {
       }
     });
 
-    // When Bill Number Changes
-    this.model.onChange("form.billNumber.value", () => {
-      // Disable Shipment Details if the form is invalid
-      this.model.formValidation.shipmentDetailsDisabled = !this.isFormValidated("shipmentDetails");
-    });
-
-    // When Bill Number Changes
-    this.model.onChange("form.hsCode.value", () => {
-      // Disable Shipment Details if the form is invalid
-      this.model.formValidation.shipmentDetailsDisabled = !this.isFormValidated("shipmentDetails");
-    });
+    this.model.onChange('form.billNumber.value', this.validateForm.bind(this));
+    this.model.onChange('form.hsCode.value', this.validateForm.bind(this));
+    this.model.onChange('form.billOfLanding.value', this.validateForm.bind(this));
+    this.model.onChange('form.serviceType.value', this.validateForm.bind(this));
+    this.model.onChange('form.incoTerms.value', this.validateForm.bind(this));
+    this.model.onChange('form.spotContractRates.value', this.validateForm.bind(this));
   }
 
-  // Here you can validate the form by step or in the final submit
-  isFormValidated( validateStep ){
-    switch (validateStep) {
-      case "shipmentDetails":
-         return ((this.model.form.billNumber.value !== "") && ( this.model.form.hsCode.value !== ""));
-      case "submit":
-        return ((this.model.form.billNumber.value !== "") && ( this.model.form.hsCode.value !== ""));
-    }
+  validateForm() {
+    this.model.formIsInvalid = false;
 
+    if (this.model.form.billNumber.value.trim() === '') this.model.formIsInvalid = true;
+    if (this.model.form.hsCode.value.trim() === '') this.model.formIsInvalid = true;
+    if (this.model.form.billOfLanding.value.trim() === '') this.model.formIsInvalid = true;
+    if (this.model.form.serviceType.value.trim() === '') this.model.formIsInvalid = true;
+    if (this.model.form.incoTerms.value.trim() === '') this.model.formIsInvalid = true;
+    if (this.model.form.spotContractRates.value.trim() === '') this.model.formIsInvalid = true;
+
+    this.model.disableSubmit = this.model.formIsInvalid;
   }
 
   makeStepActive(stepId, stepHolderId) {
@@ -271,31 +258,30 @@ export default class EditShipmentController extends WebcController {
     this.model.form.documents = [];
     this.model.wizard = this.getWizardForm();
     this.model.form.filesEmpty = true;
-
-
+    this.model.formIsInvalid = true;
+    this.model.disableSubmit = true;
   }
 
   prepareShipmentData() {
-    const { billNumber, hsCode } = this.model.toObject('form');
+    const editShipmentForm = this.model.toObject('form');
     const documents = this.files.filter((x) => x.fileContent instanceof File).map((x) => x.fileContent);
     const editComment = {
-      entity:  '<' + Roles.Courier + '> (' +  this.model.shipment.courierId + ')',
+      entity: '<' + Roles.Courier + '> (' + this.model.shipment.courierId + ')',
       comment: this.model.form.add_comment.value,
-      date: new Date().getTime(),
+      date: new Date().getTime()
     };
 
     return {
-      bill: { billNumber: billNumber.value, hsCode: hsCode.value },
+      bill: {
+        billNumber: editShipmentForm.billNumber.value,
+        hsCode: editShipmentForm.hsCode.value,
+        billOfLanding: editShipmentForm.billOfLanding.value,
+        serviceType: editShipmentForm.serviceType.value,
+        incoTerms: editShipmentForm.incoTerms.value,
+        spotContractRates: editShipmentForm.spotContractRates.value
+      },
       documents,
       editComment
-    }
-  }
-
-  async downloadFile(filename, rootFolder, keySSI) {
-    window.WebCardinal.loader.hidden = false;
-    const path = rootFolder + '/' + keySSI + '/' + 'files';
-    await this.FileDownloaderService.prepareDownloadFromDsu(path, filename);
-    this.FileDownloaderService.downloadFileToDevice(filename);
-    window.WebCardinal.loader.hidden = true;
+    };
   }
 }

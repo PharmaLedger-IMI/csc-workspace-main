@@ -16,15 +16,15 @@ class WrongDeliveryAddressModalController extends WebcController {
         comment:{
           value: "",
           placeholder: "Enter elaboration",
-          isEmpty:true
-        }
+        },
+        submitIsDisabled:true
       }
     }
 
     this.shipmentService = new ShipmentService ();
 
     this.model.onChange('form.inputs.comment.value', () => {
-      this.model.form.inputs.comment.isEmpty = this.model.form.inputs.comment.value.trim() === '';
+      this.model.submitIsDisabled = this.model.form.inputs.comment.value.trim() === '';
     });
 
     this.onTagEvent('submit-wrong-delivery-comment', 'click', (e) => {
@@ -34,6 +34,8 @@ class WrongDeliveryAddressModalController extends WebcController {
 
 
   async submit(){
+    window.WebCardinal.loader.hidden = false;
+    this.model.submitIsDisabled = true;
 
     let payload = {
       date: new Date().getTime(),
@@ -42,12 +44,9 @@ class WrongDeliveryAddressModalController extends WebcController {
     };
 
     await this.shipmentService.reportWrongDeliveryAddress( this.model.shipmentModel.shipment.uid, payload);
-    eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, null);
+    window.WebCardinal.loader.hidden = true;
+    eventBusService.dispatchEvent(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, null);
     this.element.destroy();
-  }
-
-  hideModal(){
-    this.element.querySelectorAll('webc-modal').forEach(modal => modal.remove());
   }
 }
 

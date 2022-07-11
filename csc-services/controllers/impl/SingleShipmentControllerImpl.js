@@ -71,11 +71,9 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
   transformOrderData(data) {
     if (data) {
       data.delivery_date = this.getDateTime(data.deliveryDate);
-      data.documents = [];
-      if (data.sponsorDocuments) {
-        data.sponsorDocuments.forEach((doc) => {
+      if (data.documents) {
+        data.documents.forEach((doc) => {
           doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
-          data.documents.push(doc);
         });
       }
 
@@ -132,7 +130,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     window.WebCardinal.loader.hidden = false;
     const keySSI = this.model.shipmentModel.shipment.orderSSI;
     let comment = this.model.cancelOrderModal.comment.value ? {
-          entity: this.role,
+          entity:  '<' + Roles.Sponsor + '> (' +  this.model.shipmentModel.shipment.sponsorId + ')',
           comment: this.model.cancelOrderModal.comment.value,
           date: new Date().getTime()
         }
@@ -140,8 +138,8 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
     await this.ordersService.updateOrder(keySSI, comment, this.role, orderStatusesEnum.Canceled);
     await this.shipmentsService.updateShipment(this.model.uid, shipmentStatusesEnum.ShipmentCancelled);
 
-    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-    eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+    eventBusService.dispatchEvent(Topics.RefreshOrders, null);
+    eventBusService.dispatchEvent(Topics.RefreshShipments, null);
     window.WebCardinal.loader.hidden = true;
     this.showErrorModalAndRedirect('Order and Shipment were canceled, redirecting to dashboard...', 'Order and Shipment Cancelled', {tag:'dashboard'}, 2000);
   }
@@ -189,7 +187,7 @@ class SingleShipmentControllerImpl extends ViewShipmentBaseController{
         async ()=>{
           window.WebCardinal.loader.hidden = false;
           await this.shipmentsService.acceptNewPickupDateTimeRequest(this.model.shipmentModel.shipment.uid);
-          eventBusService.emitEventListeners(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, null);
+          eventBusService.dispatchEvent(Topics.RefreshShipments + this.model.shipmentModel.shipment.shipmentId, null);
           window.WebCardinal.loader.hidden = true;
         },
         () => {

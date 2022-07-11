@@ -1,4 +1,3 @@
-const getSharedStorage = require('./lib/SharedDBStorageService.js').getSharedStorage;
 const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum,Commons } = require('./constants');
 const { shipmentStatusesEnum,shipmentsEventsEnum} = require('./constants/shipment');
@@ -13,7 +12,6 @@ class ShipmentsService extends DSUService {
 	constructor() {
 		super(FoldersEnum.Shipments);
 		this.communicationService = getCommunicationServiceInstance();
-		this.storageService = getSharedStorage(this.DSUStorage);
 		this.JWTService = new JWTService();
 	}
 
@@ -40,9 +38,15 @@ class ShipmentsService extends DSUService {
 
 	// -> Functions for creation of shipment
 	async createShipment(data) {
-		const statusModel = { history: [] };
+
+		try{
+			this.storageService.beginBatch();
+		}
+		catch (e){
+			console.log(e);
+		}
+		const statusModel = { history: [{ status: shipmentStatusesEnum.InPreparation, date: new Date().getTime() }] };
 		const statusDSU = await this.saveEntityAsync(statusModel, FoldersEnum.ShipmentsStatuses);
-		const status = await this.updateStatusDsu(shipmentStatusesEnum.InPreparation, statusDSU.keySSI);
 		const order = await this.getEntityAsync(data.orderSSI, FoldersEnum.Orders);
 		const cmoId = await DidService.getDidServiceInstance().getDID();
 		const shipmentModel = {
@@ -60,7 +64,7 @@ class ShipmentsService extends DSUService {
 			studyId:data.studyId,
 			temperatures:data.temperatures,
 			temperature_comments:data.temperature_comments,
-			status: status.history,
+			status: statusDSU.history,
 			kitIdJWTVerifiablePresentation: order.kitIdJWTVerifiablePresentation
 		};
 		const shipmentDSU = await this.saveEntityAsync(shipmentModel);
@@ -72,6 +76,7 @@ class ShipmentsService extends DSUService {
 		};
 		const shipmentDb = await this.addShipmentToDB(shipmentDBData, shipmentDSU.uid);
 
+		await this.storageService.commitBatch();
 		this.sendMessageToEntity(
 			shipmentDb.sponsorId,
 			shipmentStatusesEnum.InPreparation,
@@ -94,8 +99,13 @@ class ShipmentsService extends DSUService {
 			status: status.history
 		};
     let shipmentDSU = await this.getEntityAsync(shipmentUid,FoldersEnum.Shipments);
-		shipmentDSU = {...shipmentDSU, ...newShipmentData};
-		await this.updateEntityAsync(shipmentDSU, FoldersEnum.Shipments);
+
+		//head-up: only cmo should be able to add additionalData
+		if(newShipmentData){
+			shipmentDSU = {...shipmentDSU, ...newShipmentData};
+			await this.updateEntityAsync(shipmentDSU, FoldersEnum.Shipments);
+		}
+
 		const result = await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentUid, shipmentDB);
 
 		let notifyIdentities = [];
@@ -172,6 +182,7 @@ class ShipmentsService extends DSUService {
 		shipmentDB.transitShipmentIdentifier = transitShipment.uid;
 		shipmentDB.status = status.history;
 		shipmentDB.shipmentId = transitShipment.shipmentId;
+		shipmentDB.temperatureLoggerId = transitShipment.temperatureLoggerId;
 
 		if (role === Roles.CMO) {
 			//CMO is the owner of the ShipmentsDSU
@@ -238,7 +249,6 @@ class ShipmentsService extends DSUService {
 	}
 
 	async createAndMountTransitDSU(shipmentUid, transientDataModel) {
-
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentUid);
 		transientDataModel.shipmentJWTVerifiableCredential = await this.JWTService
 			.createShipmentVerifiableCredential(shipmentDB.courierId, shipmentDB.siteId, {
@@ -250,8 +260,9 @@ class ShipmentsService extends DSUService {
 		const status = await this.updateStatusDsu(shipmentStatusesEnum.PickUpAtWarehouse, shipmentDB.statusSSI);
 		shipmentDB.transitDSUKeySSI = shipmentTransitDSU.keySSI;
 		shipmentDB.transitDSUUid =  shipmentTransitDSU.uid;
+		shipmentDB.shipmentId = transientDataModel.shipmentId;
+		shipmentDB.temperatureLoggerId = transientDataModel.temperatureLoggerId;
 		shipmentDB.status = status.history;
-		shipmentDB.shipmentId = shipmentTransitDSU.shipmentId;
 		await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentUid, shipmentDB);
 
 		const inTransitDSUMessage = {
@@ -267,15 +278,12 @@ class ShipmentsService extends DSUService {
 			shipmentStatusesEnum.PickUpAtWarehouse
 		);
 
-		//Send a message to cmo
 		this.sendMessageToEntity(
 			shipmentDB.cmoId,
 			shipmentStatusesEnum.Dispatched,
 			inTransitDSUMessage,
 			shipmentStatusesEnum.Dispatched
 		);
-
-
 	}
 
 	async createAndMountReceivedDSU(shipmentIdentifier, transientDataModel, shipmentComments) {
@@ -350,9 +358,10 @@ class ShipmentsService extends DSUService {
 	}
 
 	async createAndMountShipmentTransitOtherDSUs(shipmentUid, billData, shipmentDocuments, shipmentComments) {
+		this.storageService.beginBatch();
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentUid);
 
-		let { shipmentTransitBillingDSU, transitDocumentsDSU, transitCommentsDSU } = await this.createShipmentTransitOtherDSUs();
+		let { shipmentTransitBillingDSU, transitDocumentsDSU, transitCommentsDSU } = await this.createShipmentTransitOtherDSUs(billData, shipmentDocuments, shipmentComments);
 
 		for (let prop in billData) {
 			shipmentTransitBillingDSU[prop] = billData[prop];
@@ -365,19 +374,11 @@ class ShipmentsService extends DSUService {
 		shipmentDB.shipmentDocuments = transitDocumentsDSU.uid;
 		shipmentDB.shipmentComments = transitCommentsDSU.uid;
 
-		await this.updateEntityAsync(shipmentTransitBillingDSU, FoldersEnum.ShipmentTransitBilling);
-
-		if (shipmentDocuments) {
-			await this.addDocumentsToDsu(shipmentDocuments, transitDocumentsDSU.uid, Roles.Courier);
-		}
-
-		if (shipmentComments) {
-			await this.addCommentToDsu(shipmentComments, transitCommentsDSU.uid);
-		}
-
 		const status = await this.updateStatusDsu(shipmentStatusesEnum.InTransit, shipmentDB.statusSSI);
 
 		shipmentDB.status = status.history;
+		const dbRecord = await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentUid, shipmentDB);
+		await this.storageService.commitBatch();
 
 		const siteMessage = {
 			transitShipmentSSI: shipmentDB.transitDSUKeySSI,
@@ -407,7 +408,7 @@ class ShipmentsService extends DSUService {
 			shipmentStatusesEnum.InTransit
 		);
 
-		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentUid, shipmentDB);
+		return dbRecord;
 	}
 
 
@@ -452,17 +453,35 @@ class ShipmentsService extends DSUService {
 		return await this.getEntityAsync(receivedDSUIdentifier, FoldersEnum.ShipmentReceived);
 	}
 
-	async createShipmentTransitOtherDSUs() {
+	async createShipmentTransitOtherDSUs(billData, shipmentDocuments,shipmentComment ) {
 		const shipmentTransitBillingDSU = await this.saveEntityAsync(
-			{},
+			billData,
 			FoldersEnum.ShipmentTransitBilling
 		);
+
+		if(!shipmentDocuments){
+			shipmentDocuments = [];
+		}
+
+		const documents = shipmentDocuments.map(doc => {
+			return {
+				name: doc.name,
+				attached_by: Roles.Courier,
+				date: new Date().getTime()
+			};
+		});
+
 		const transitDocumentsDSU = await this.saveEntityAsync(
-			{ documents: [] },
+			{ documents: documents },
 			FoldersEnum.ShipmentDocuments
 		);
+
+		for (const file of shipmentDocuments) {
+				 await this.uploadFile(FoldersEnum.ShipmentDocuments + '/' + transitDocumentsDSU.uid + '/' + 'files' + '/' + file.name, file);
+		}
+
 		const transitCommentsDSU = await this.saveEntityAsync(
-			{ comments: [] },
+			{ comments: [shipmentComment] },
 			FoldersEnum.ShipmentComments
 		);
 
@@ -535,6 +554,7 @@ class ShipmentsService extends DSUService {
     	}
 
 	async updateLocalShipment(shipmentIdentifier, newShipmentData = {}) {
+		this.storageService.beginBatch();
 		shipmentIdentifier = this.getUidFromSSI(shipmentIdentifier);
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
 		const loadedShipmentDSU = await this.getEntityAsync(shipmentIdentifier, FoldersEnum.Shipments);
@@ -549,36 +569,12 @@ class ShipmentsService extends DSUService {
 			...newShipmentData,
 			status: status.history
 		};
-		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentIdentifier, shipmentDB);
+
+		const shipmentRecord =  await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentIdentifier, shipmentDB);
+		await this.storageService.commitBatch();
+		return shipmentRecord;
 	}
 
-	//TODO to be refactored and extracted in a separete service used also of adding orders comments, documents
-	async addDocumentsToDsu(files, keySSI, role) {
-		const documentsDsu = await this.getEntityAsync(keySSI, FoldersEnum.ShipmentDocuments);
-
-		const updatedDocumentsDSU = await this.updateEntityAsync(
-			{
-				...documentsDsu,
-				documents: [
-					...documentsDsu.documents,
-					...files.map((x) => ({
-						name: x.name,
-						attached_by: role,
-						date: new Date().getTime(),
-					})),
-				],
-			},
-			FoldersEnum.ShipmentDocuments
-		);
-
-		for (const file of files) {
-			const attachmentKeySSI = await this.uploadFile(FoldersEnum.ShipmentDocuments + '/' + updatedDocumentsDSU.uid + '/' + 'files' + '/' + file.name, file);
-			updatedDocumentsDSU.documents.find((x) => x.name === file.name).attachmentKeySSI = attachmentKeySSI;
-		}
-		const result = await this.updateEntityAsync(updatedDocumentsDSU, FoldersEnum.ShipmentDocuments);
-
-		return result;
-	}
 	//TODO to be refactored and extracted in a separete service used also of adding orders comments, documents
 	async addCommentToDsu(comments, keySSI) {
 		const commentsDsu = await this.getEntityAsync(keySSI, FoldersEnum.ShipmentComments);

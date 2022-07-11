@@ -43,10 +43,6 @@ webc-spinner{
     flex-wrap: wrap;
 }
 
-.button-wrapper button {
-    padding: 0.5rem;
-    min-width: 11rem;
-}
 
 .full-flex-column {
     display: flex;
@@ -130,6 +126,18 @@ label.status {
     width: 100%;
     padding: 0 2rem;
     row-gap: 2rem;
+}
+
+.comments-container.wrap-box{
+    border: 1px solid #DDD;
+    border-radius: 5px;
+}
+
+.comments-container .comment{
+    background: #F2F2F2;
+    border-radius: 5px;
+    color: #495057;
+    padding: 10px 10px;
 }
 
 .comments-wrapper {

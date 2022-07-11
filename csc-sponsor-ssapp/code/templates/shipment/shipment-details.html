@@ -34,15 +34,14 @@
 
 			<div class='form-row'>
 				<div class='col-md-6'>
-					<label>{{@form.destinationAddress.poBox.label}}</label>
-					<input class='form-control' type='text' value='@shipment.destinationAddress.poBox'
-								 readonly />
-
-				</div>
-				<div class='col-md-6'>
 					<label>{{@form.destinationAddress.building.label}}</label>
 					<input class='form-control' type='text'
 								 value='@shipment.destinationAddress.building'
+								 readonly />
+				</div>
+				<div class='col-md-6'>
+					<label>{{@form.destinationAddress.poBox.label}}</label>
+					<input class='form-control' type='text' value='@shipment.destinationAddress.poBox'
 								 readonly />
 				</div>
 			</div>
@@ -96,6 +95,10 @@
 		<label>{{@form.specialInstructions.label}}</label>
 		<textarea class='form-control' value='@shipment.specialInstructions' readonly></textarea>
 
+		<!-- Temperature Logger ID -->
+		<label>{{@form.temperatureLoggerId.label}}</label>
+		<input class='form-control form-control-sm' readonly value='@shipment.temperatureLoggerId' />
+
 	</div>
 </div>
 
@@ -103,10 +106,22 @@
 	<div class='grid-column-wrapper'>
 		<!-- Master-way bill number -->
 		<label>{{@form.billNumber.label}}</label>
-		<input class="form-control" value="@shipment.bill.billNumber" readonly />
+		<input class='form-control' readonly value='@shipment.bill.billNumber' />
 		<!-- HS Code -->
 		<label>{{@form.hsCode.label}}</label>
-		<input class="form-control" value="@shipment.bill.hsCode" readonly />
+		<input class='form-control' readonly value='@shipment.bill.hsCode' />
+		<!-- Bill of Landing No. -->
+		<label>{{@form.billOfLanding.label}}</label>
+		<input class='form-control' readonly value='@shipment.bill.billOfLanding' />
+		<!-- Service type -->
+		<label>{{@form.serviceType.label}}</label>
+		<input class='form-control' readonly value='@shipment.bill.serviceType' />
+		<!-- Inco Terms -->
+		<label>{{@form.incoTerms.label}}</label>
+		<input class='form-control form-control-sm' readonly value='@shipment.bill.incoTerms' />
+		<!-- Spot/Contract Rates -->
+		<label>{{@form.spotContractRates.label}}</label>
+		<input class='form-control form-control-sm' readonly value='@shipment.bill.spotContractRates' />
 	</div>
 </div>
 

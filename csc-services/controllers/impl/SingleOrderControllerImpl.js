@@ -41,14 +41,12 @@ class SingleOrderControllerImpl extends AccordionController {
 
     this.onTagClick('download-file', async (model, target, event) => {
       const filename = target.getAttribute('data-custom') || null;
-      if (filename) {
-        if (model.name && model.name === filename) {
-          const keySSI = this.model.order.sponsorDocumentsKeySSI;
-          await this.downloadFile(filename, FoldersEnum.Documents, keySSI);
-        } else {
-          await this.downloadFile(filename, FoldersEnum.KitIds, model.order.kitsSSI);
-        }
-      }
+      await this.downloadFile(filename, FoldersEnum.Orders, this.model.uid);
+    });
+
+    this.onTagClick('download-kits-file', async (model, target, event) => {
+      const filename = target.getAttribute('data-custom') || null;
+      await this.downloadFile(filename, FoldersEnum.KitIds, model.order.kitsSSI);
     });
 
     this.navigationHandlers();
@@ -123,7 +121,7 @@ class SingleOrderControllerImpl extends AccordionController {
 
     this.model.order.actions = this.setOrderActions();
     this.attachRefreshListeners();
-    this.model.order.filesEmpty = (this.model.order.documents.length == 0);
+    this.model.order.filesEmpty = !this.model.order.documents;
   }
 
    attachRefreshListeners() {
@@ -161,7 +159,6 @@ class SingleOrderControllerImpl extends AccordionController {
 
   transformOrderData(data) {
     if (data) {
-      data.documents = [];
 
       data.status_value = data.status.sort(function(a, b) {
         return new Date(b.date) - new Date(a.date);
@@ -180,15 +177,17 @@ class SingleOrderControllerImpl extends AccordionController {
       data.pending_action = this.getPendingAction(data.status_value);
 
       if (data.comments) {
-        data.comments.forEach((comment) => {
+        data.hasComments = true;
+        data.comments.forEach(comment=>{
           comment.date = momentService(comment.date).format(Commons.DateTimeFormatPattern);
-        });
+        })
+      } else {
+        data.hasComments = false;
       }
 
-      if (data.sponsorDocuments) {
-        data.sponsorDocuments.forEach((doc) => {
+      if (data.documents) {
+        data.documents.forEach((doc) => {
           doc.date = momentService(doc.date).format(Commons.DateTimeFormatPattern);
-          data.documents.push(doc);
         });
       }
 
@@ -269,9 +268,9 @@ class SingleOrderControllerImpl extends AccordionController {
 
   async cancelOrder() {
     window.WebCardinal.loader.hidden = false;
-    const { uid } = this.model.order;
+    const { uid, sponsorId } = this.model.order;
     let comment = this.model.cancelOrderModal.comment.value ? {
-      entity: this.role,
+      entity:  '<' + Roles.Sponsor + '> (' +  sponsorId + ')',
       comment: this.model.cancelOrderModal.comment.value,
       date: new Date().getTime()
     }
@@ -282,10 +281,10 @@ class SingleOrderControllerImpl extends AccordionController {
     if (shipment) {
       orderLabel = 'Order and Shipment';
       await this.shipmentsService.updateShipment(shipment.uid, shipmentStatusesEnum.ShipmentCancelled);
-      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+      eventBusService.dispatchEvent(Topics.RefreshShipments, null);
     }
 
-    eventBusService.emitEventListeners(Topics.RefreshOrders, null);
+    eventBusService.dispatchEvent(Topics.RefreshOrders, null);
     window.WebCardinal.loader.hidden = true;
     this.showErrorModalAndRedirect(orderLabel + ' was canceled, redirecting to dashboard...', orderLabel + ' Cancelled', {tag:'dashboard'}, 2000);
   }
@@ -306,8 +305,8 @@ class SingleOrderControllerImpl extends AccordionController {
         shipmentSSI: shipmentResult.uid
       };
       await this.ordersService.updateOrder(order.uid, null, Roles.CMO, orderStatusesEnum.InProgress, otherOrderDetails);
-      eventBusService.emitEventListeners(Topics.RefreshOrders, null);
-      eventBusService.emitEventListeners(Topics.RefreshShipments, null);
+      eventBusService.dispatchEvent(Topics.RefreshOrders, null);
+      eventBusService.dispatchEvent(Topics.RefreshShipments, null);
       window.WebCardinal.loader.hidden = true;
       this.createWebcModal({
         template: 'prepareShipmentModal',

@@ -39,7 +39,7 @@ class AssignKitController extends WebcController {
     await this.kitsService.updateKit(this.model.kit.uid, kitsStatusesEnum.Assigned, {
       investigatorId: this.model.kitModel.form.investigatorId.value
     });
-    eventBusService.emitEventListeners(Topics.RefreshKits, null);
+    eventBusService.dispatchEvent(Topics.RefreshKits, null);
 
     this.showErrorModalAndRedirect('Kit is marked as assigned', 'Kit Assigned', { tag: 'kit', state: { uid: this.model.kit.uid } }, 2000);
 

@@ -1,3 +1,22 @@
+.history-modal{
+    max-height: calc(100vh - 10%);
+}
+.history-modal .row{
+    overflow: auto;
+}
+
+.kit-history{
+    position: absolute;
+    top:0;
+    bottom:0.75rem;
+    left:0.5rem;
+    right:0.5rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.kit-history .row{
+    padding: 0.5rem 0.5rem 1rem 0.5rem;
+}
 .modal-main-title {
     font-size: 16px;
     text-align: center;
