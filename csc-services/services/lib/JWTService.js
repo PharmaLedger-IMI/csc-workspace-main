@@ -1,5 +1,7 @@
 const openDSU = require('opendsu');
 const credentials = openDSU.loadApi('credentials');
+const validationStrategies = credentials.validationStrategies;
+const validationStrategiesTypes = validationStrategies.VALIDATION_STRATEGIES;
 
 class JWTService {
 
@@ -33,7 +35,7 @@ class JWTService {
     const encodedJwtVc = await jwtVcInstance.getEncodedJWTAsync();
 
     const jwtVpInstance = await this.createVerifiablePresentation(sponsorDID, { aud: siteDID });
-    const addZKPCredentialResult = await jwtVpInstance.addZeroKnowledgeProofCredentialAsync(encodedJwtVc);
+    const addZKPCredentialResult = await jwtVpInstance.addEncryptedCredentialAsync(encodedJwtVc);
     const encodedJwtVp = await jwtVpInstance.getEncodedJWTAsync();
 
     console.log('encoded jwtVc and jwtVp of the kits id dsu: ', encodedJwtVc, addZKPCredentialResult, encodedJwtVp);
@@ -41,7 +43,7 @@ class JWTService {
     return encodedJwtVp;
   }
 
-  async verifyKitsIdsPresentation(kitIdJWTVerifiablePresentation) {
+  async validateKitsIdsPresentation(kitIdJWTVerifiablePresentation) {
     const jwtVpVerifyResult = await this.verifyPresentation(kitIdJWTVerifiablePresentation);
     const kitsIdsSReadSSI = jwtVpVerifyResult.vp.verifiableCredential[0].kitsIdsSReadSSI;
 
@@ -78,21 +80,27 @@ class JWTService {
     return encodedJwtVp;
   }
 
-  async verifyShipmentPresentation(shipmentJWTVerifiablePresentation, courierId) {
-    const jwtVpVerifyResult = await this.verifyPresentation(shipmentJWTVerifiablePresentation, new Date().getTime(), [courierId]);
+  async validateShipmentPresentation(shipmentJWTVerifiablePresentation, environmentData) {
+    const jwtVpVerifyResult = await this.verifyPresentation(shipmentJWTVerifiablePresentation, environmentData.atDate, environmentData.rootsOfTrust);
     const {
       shipmentIdentifier,
       shipmentPickupAtWarehouseSigned,
       shipmentDeliveredSigned
     } = jwtVpVerifyResult.vp.verifiableCredential[0];
 
+    const validationResult = await validationStrategies.validatePresentation(
+      [validationStrategiesTypes.DEFAULT, validationStrategiesTypes.ROOTS_OF_TRUST],
+      environmentData,
+      jwtVpVerifyResult);
     console.log('shipment details from presentation: ', jwtVpVerifyResult, shipmentIdentifier, shipmentPickupAtWarehouseSigned, shipmentDeliveredSigned);
+    console.log('validation result: ', validationResult);
 
     return {
       shipmentIdentifier,
       shipmentPickupAtWarehouseSigned,
       shipmentDeliveredSigned,
-      jwtVpVerifyResult
+      jwtVpVerifyResult,
+      validationResult
     };
   }
 
@@ -104,7 +112,7 @@ class JWTService {
     const encodedJwtVc = await jwtVcInstance.getEncodedJWTAsync();
 
     const jwtVpInstance = await this.createVerifiablePresentation(courierDID, { aud: sponsorDID });
-    const addJWTVcResult = await jwtVpInstance.addZeroKnowledgeProofCredentialAsync(encodedJwtVc);
+    const addJWTVcResult = await jwtVpInstance.addEncryptedCredentialAsync(encodedJwtVc);
     const encodedJwtVp = await jwtVpInstance.getEncodedJWTAsync();
 
     console.log('encoded jwtVc and jwtVp of the shipment billing dsu data: ', encodedJwtVc, addJWTVcResult, encodedJwtVp);
@@ -112,16 +120,22 @@ class JWTService {
     return encodedJwtVp;
   }
 
-  async verifyShipmentBillingPresentation(shipmentBillingJWTVP) {
-    const jwtVpVerifyResult = await this.verifyPresentation(shipmentBillingJWTVP);
+  async validateShipmentBillingPresentation(shipmentBillingJWTVP, environmentData) {
+    const jwtVpVerifyResult = await this.verifyPresentation(shipmentBillingJWTVP, environmentData.atDate);
     const { billNumber, hsCode } = jwtVpVerifyResult.vp.verifiableCredential[0];
 
+    const validationResult = await validationStrategies.validatePresentation(
+      [validationStrategiesTypes.DEFAULT],
+      environmentData,
+      jwtVpVerifyResult);
     console.log('shipment billing details from presentation: ', jwtVpVerifyResult, billNumber, hsCode);
+    console.log('validation result: ', validationResult);
 
     return {
       billNumber,
       hsCode,
-      jwtVpVerifyResult
+      jwtVpVerifyResult,
+      validationResult
     };
   }
 
@@ -141,15 +155,21 @@ class JWTService {
     return encodedJwtVp;
   }
 
-  async verifyShipmentReceivedPresentation(shipmentJWTVerifiablePresentation, siteId) {
-    const jwtVpVerifyResult = await this.verifyPresentation(shipmentJWTVerifiablePresentation, new Date().getTime(), [siteId]);
+  async validateShipmentReceivedPresentation(shipmentJWTVerifiablePresentation, environmentData) {
+    const jwtVpVerifyResult = await this.verifyPresentation(shipmentJWTVerifiablePresentation, environmentData.atDate, environmentData.rootsOfTrust);
     const { shipmentReceivedSigned } = jwtVpVerifyResult.vp.verifiableCredential[0];
 
+    const validationResult = await validationStrategies.validatePresentation(
+      [validationStrategiesTypes.DEFAULT, validationStrategiesTypes.ROOTS_OF_TRUST],
+      environmentData,
+      jwtVpVerifyResult);
     console.log('shipment details from presentation: ', jwtVpVerifyResult, shipmentReceivedSigned);
+    console.log('validation result: ', validationResult);
 
     return {
       shipmentReceivedSigned,
-      jwtVpVerifyResult
+      jwtVpVerifyResult,
+      validationResult
     };
   }
 }
