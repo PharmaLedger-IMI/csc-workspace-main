@@ -88,7 +88,7 @@ class JWTService {
       shipmentDeliveredSigned
     } = jwtVpVerifyResult.vp.verifiableCredential[0];
 
-    const validationResult = await validationStrategies.validatePresentation(
+    const validationResult = await validationStrategies.validatePresentationAsync(
       [validationStrategiesTypes.DEFAULT, validationStrategiesTypes.ROOTS_OF_TRUST],
       environmentData,
       jwtVpVerifyResult);
@@ -124,7 +124,7 @@ class JWTService {
     const jwtVpVerifyResult = await this.verifyPresentation(shipmentBillingJWTVP);
     const { billNumber, hsCode } = jwtVpVerifyResult.vp.verifiableCredential[0];
 
-    const validationResult = await validationStrategies.validatePresentation(
+    const validationResult = await validationStrategies.validatePresentationAsync(
       [validationStrategiesTypes.DEFAULT],
       environmentData,
       jwtVpVerifyResult);
@@ -159,7 +159,7 @@ class JWTService {
     const jwtVpVerifyResult = await this.verifyPresentation(shipmentJWTVerifiablePresentation, environmentData.rootsOfTrust);
     const { shipmentReceivedSigned } = jwtVpVerifyResult.vp.verifiableCredential[0];
 
-    const validationResult = await validationStrategies.validatePresentation(
+    const validationResult = await validationStrategies.validatePresentationAsync(
       [validationStrategiesTypes.DEFAULT, validationStrategiesTypes.ROOTS_OF_TRUST],
       environmentData,
       jwtVpVerifyResult);
