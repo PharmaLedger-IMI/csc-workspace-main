@@ -9,9 +9,9 @@ class JWTService {
     return await credentials.createJWTVerifiableCredentialAsync(issuer, subject, options);
   }
 
-  async verifyCredential(encodedJWTVerifiableCredential, atDate = new Date().getTime(), rootsOfTrust = []) {
+  async verifyCredential(encodedJWTVerifiableCredential, rootsOfTrust = []) {
     const jwtVcInstance = await credentials.loadJWTVerifiableCredentialAsync(encodedJWTVerifiableCredential);
-    const verifyCredentialStatus = await jwtVcInstance.verifyJWTAsync(atDate, rootsOfTrust);
+    const verifyCredentialStatus = await jwtVcInstance.verifyJWTAsync(rootsOfTrust);
 
     console.log(jwtVcInstance, verifyCredentialStatus);
     return { jwtVcInstance, verifyCredentialStatus };
@@ -21,9 +21,9 @@ class JWTService {
     return await credentials.createJWTVerifiablePresentationAsync(issuer, options);
   }
 
-  async verifyPresentation(encodedJWTVerifiablePresentation, atDate = new Date().getTime(), rootsOfTrust = []) {
+  async verifyPresentation(encodedJWTVerifiablePresentation, rootsOfTrust = []) {
     const loadedPresentation = await credentials.loadJWTVerifiablePresentationAsync(encodedJWTVerifiablePresentation);
-    const verifyPresentationStatus = await loadedPresentation.verifyJWTAsync(atDate, rootsOfTrust);
+    const verifyPresentationStatus = await loadedPresentation.verifyJWTAsync(rootsOfTrust);
 
     console.log(verifyPresentationStatus);
     return verifyPresentationStatus;
@@ -81,7 +81,7 @@ class JWTService {
   }
 
   async validateShipmentPresentation(shipmentJWTVerifiablePresentation, environmentData) {
-    const jwtVpVerifyResult = await this.verifyPresentation(shipmentJWTVerifiablePresentation, environmentData.atDate, environmentData.rootsOfTrust);
+    const jwtVpVerifyResult = await this.verifyPresentation(shipmentJWTVerifiablePresentation, environmentData.rootsOfTrust);
     const {
       shipmentIdentifier,
       shipmentPickupAtWarehouseSigned,
@@ -121,7 +121,7 @@ class JWTService {
   }
 
   async validateShipmentBillingPresentation(shipmentBillingJWTVP, environmentData) {
-    const jwtVpVerifyResult = await this.verifyPresentation(shipmentBillingJWTVP, environmentData.atDate);
+    const jwtVpVerifyResult = await this.verifyPresentation(shipmentBillingJWTVP);
     const { billNumber, hsCode } = jwtVpVerifyResult.vp.verifiableCredential[0];
 
     const validationResult = await validationStrategies.validatePresentation(
@@ -156,7 +156,7 @@ class JWTService {
   }
 
   async validateShipmentReceivedPresentation(shipmentJWTVerifiablePresentation, environmentData) {
-    const jwtVpVerifyResult = await this.verifyPresentation(shipmentJWTVerifiablePresentation, environmentData.atDate, environmentData.rootsOfTrust);
+    const jwtVpVerifyResult = await this.verifyPresentation(shipmentJWTVerifiablePresentation, environmentData.rootsOfTrust);
     const { shipmentReceivedSigned } = jwtVpVerifyResult.vp.verifiableCredential[0];
 
     const validationResult = await validationStrategies.validatePresentation(
