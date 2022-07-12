@@ -153,7 +153,6 @@ class ConfirmKitDestructionController extends WebcController {
     ]
 
     let validationConstraints = [
-      typeof this.certificationOfDestructionFile !=="undefined",
       ...requiredInputs.map(input => typeof input !== 'undefined' && input.trim() !== "")
     ];
 
