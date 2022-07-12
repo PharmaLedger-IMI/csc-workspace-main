@@ -123,7 +123,6 @@ class ScanShipmentController extends WebcController {
       this.model.disableSign = true;
       window.WebCardinal.loader.hidden = false;
       payload.shipmentId = this.model.shipment.shipmentId;
-      payload.signature = true;
       let receivedComment = {
           date: new Date().getTime(),
           entity: '<' + Roles.Courier + '> (' +  this.model.shipment.courierId + ')',

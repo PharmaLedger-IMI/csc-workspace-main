@@ -2,13 +2,14 @@ const DSUService = require('./lib/DSUService.js');
 const { Roles, messagesEnum, order, FoldersEnum } = require('./constants');
 const orderStatusesEnum = order.orderStatusesEnum;
 const {getCommunicationServiceInstance} = require("./lib/CommunicationService");
-const EncryptionService = require('./lib/EncryptionService.js');
+const JWTService = require('./lib/JWTService.js');
 class OrdersService extends DSUService {
   ORDERS_TABLE = 'orders';
 
   constructor() {
     super(FoldersEnum.Orders);
     this.communicationService = getCommunicationServiceInstance();
+    this.JWTService = new JWTService();
   }
 
 
@@ -105,7 +106,7 @@ class OrdersService extends DSUService {
     const statusDsuKeySSI = statusDsu.keySSI;
 
     await this.addKitsFileToDsu(kitIdsDsu, data.kitIdsFile);
-    const kitIdKeySSIEncrypted = await EncryptionService.encryptData(kitIdsDsu.sReadSSI);
+    const kitIdJWTVerifiablePresentation = await this.JWTService.createKitsIdsPresentationForSite(data.sponsor_id, data.site_id, kitIdsDsu.sReadSSI);
     const comment = { entity:  '<' + Roles.Sponsor + '> (' +  data.sponsor_id + ')' , comment: data.add_comment, date: new Date().getTime() };
 
     const orderModel = {
@@ -121,7 +122,7 @@ class OrdersService extends DSUService {
       requestDate: new Date().getTime(),
       deliveryDate: data.delivery_date,
       comments: [comment],
-      kitIdKeySSIEncrypted:kitIdKeySSIEncrypted
+      kitIdJWTVerifiablePresentation: kitIdJWTVerifiablePresentation
     };
 
     const order = await this.saveOrderDsu(orderModel, data.files, Roles.Sponsor);
