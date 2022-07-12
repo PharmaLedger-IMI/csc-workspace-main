@@ -281,6 +281,8 @@ class SingleKitControllerImpl extends AccordionController {
       model.actions = this.setKitActions(model.kitModel.kit);
     }
 
+    model.kitModel.kit.isBlockKitDisabled = false;
+
     this.model = model;
     this.attachRefreshListeners();
   }
@@ -301,6 +303,7 @@ class SingleKitControllerImpl extends AccordionController {
     actions.relabeledAlreadyRequested = typeof kit.hasRequestRelabeled === 'boolean' && kit.hasRequestRelabeled;
     actions.canBlockKit = kit.status_value === kitsStatusesEnum.RequestRelabeling;
     actions.canMakeKitAvailable = kit.status_value === kitsStatusesEnum.Blocked;
+
     return actions;
   }
 
@@ -467,6 +470,8 @@ class SingleKitControllerImpl extends AccordionController {
 
   async blockKit(){
     if(this.actor === Roles.Site) {
+      model.kitModel.kit.isBlockKitDisabled = true;
+
       window.WebCardinal.loader.hidden = false;
 
       // Needed
@@ -488,6 +493,7 @@ class SingleKitControllerImpl extends AccordionController {
       await this.initViewModel();
 
       window.WebCardinal.loader.hidden = true;
+
     }
   }
 

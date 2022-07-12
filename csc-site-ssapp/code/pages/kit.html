@@ -159,7 +159,7 @@
             </div>
 
             <div data-if='@actions.canBlockKit'>
-              <button class='btn-reset' data-tag='block-kit'>
+              <button class='btn-reset' data-tag='block-kit' disabled='@kitModel.kit.isBlockKitDisabled'>
                 <span class='fas fa-check'></span>
                 Block Kit
               </button>
