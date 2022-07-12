@@ -3,7 +3,6 @@
   "port": 8080,
   "preventRateLimit": true,
   "activeComponents": [
-    "admin",
     "virtualMQ",
     "messaging",
     "notifications",
@@ -12,6 +11,7 @@
     "bricksLedger",
     "bricksFabric",
     "bricking",
+	"cloudWallet",
     "mq",
     "anchoring",
     "staticServer"
