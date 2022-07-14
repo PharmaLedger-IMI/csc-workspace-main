@@ -181,15 +181,16 @@ const kitViewModel = {
       required: true,
       placeholder: 'e.g. 10',
       disabled: false,
+      step: '0.01',
       value: '',
       min: '0'
     },
     visitId: {
-      label: 'Visit ID',
+      label: 'Patient Visit ID',
       name: 'visit-id',
       id: 'visit-id',
       required: true,
-      placeholder: 'Enter visit ID',
+      placeholder: 'Enter patient visit ID',
       disabled: false,
       value: ''
     },
