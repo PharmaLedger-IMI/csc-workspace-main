@@ -9,7 +9,7 @@ const kitsStatusesEnum = {
 	PendingDestruction:"Pending Destruction",
 	Destroyed:"Destroyed",
 	RequestRelabeling: "Request Relabeling",
-	Blocked: "Blocked"
+	Blocked: "Blocked for Relabelling"
 };
 
 
