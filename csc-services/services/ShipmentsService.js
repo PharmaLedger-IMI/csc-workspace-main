@@ -2,9 +2,9 @@ const DSUService = require('./lib/DSUService');
 const { Roles, FoldersEnum,Commons } = require('./constants');
 const { shipmentStatusesEnum,shipmentsEventsEnum} = require('./constants/shipment');
 const {getCommunicationServiceInstance} = require("./lib/CommunicationService");
-const EncryptionService = require('./lib/EncryptionService.js');
 const momentService  = require('./lib/moment.min');
 const DidService  = require('./lib/DidService');
+const JWTService  = require('./lib/JWTService');
 
 class ShipmentsService extends DSUService {
 	SHIPMENTS_TABLE = 'shipments';
@@ -12,6 +12,7 @@ class ShipmentsService extends DSUService {
 	constructor() {
 		super(FoldersEnum.Shipments);
 		this.communicationService = getCommunicationServiceInstance();
+		this.JWTService = new JWTService();
 	}
 
 	async addShipmentToDB(data, key) {
@@ -64,9 +65,7 @@ class ShipmentsService extends DSUService {
 			temperatures:data.temperatures,
 			temperature_comments:data.temperature_comments,
 			status: statusDSU.history,
-			encryptedMessages: {
-				kitIdKeySSIEncrypted: order.kitIdKeySSIEncrypted
-			}
+			kitIdJWTVerifiablePresentation: order.kitIdJWTVerifiablePresentation
 		};
 		const shipmentDSU = await this.saveEntityAsync(shipmentModel);
 		const shipmentDBData = {
@@ -170,10 +169,9 @@ class ShipmentsService extends DSUService {
 		let shipmentDB;
 		if (role === Roles.Site) {
 			shipmentDB = await this.mountAndReceiveShipment(shipmentIdentifier, role, statusKeySSI);
-			let kitIdKeySSIEncrypted = shipmentDB.encryptedMessages.kitIdKeySSIEncrypted;
-			const kitIdSSI = await EncryptionService.decryptData(kitIdKeySSIEncrypted);
-			shipmentDB.kitIdSSI = kitIdSSI;
-			await this.mountEntityAsync(kitIdSSI, FoldersEnum.KitIds);
+			const { kitsIdsSReadSSI } = await this.JWTService.validateKitsIdsPresentation(shipmentDB.kitIdJWTVerifiablePresentation);
+			shipmentDB.kitIdSSI = kitsIdsSReadSSI;
+			await this.mountEntityAsync(kitsIdsSReadSSI, FoldersEnum.KitIds);
 		}
 		else {
 			shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
@@ -208,19 +206,32 @@ class ShipmentsService extends DSUService {
 	}
 
 	//update shipmentDB with data from shipmentTransitDSU
-	async updateShipmentDB(shipmentIdentifier) {
-		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
+	async updateShipmentDB(shipmentUUID) {
+		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentUUID);
 		const transitShipment = await this.getEntityAsync(shipmentDB.transitShipmentIdentifier, FoldersEnum.ShipmentTransit);
+		console.log("transitShipment.shipmentJWTVerifiablePresentation", transitShipment.shipmentJWTVerifiablePresentation);
+		if (transitShipment.shipmentJWTVerifiablePresentation) {
+			const envData = {
+				atDate: new Date().getTime(),
+				credentialPublicClaims: {
+					shipmentIdentifier: shipmentUUID,
+					shipmentPickupAtWarehouseSigned: true,
+					shipmentDeliveredSigned: true
+				},
+				rootsOfTrust: [shipmentDB.courierId]
+			};
+			const validationResult = await this.JWTService.validateShipmentPresentation(transitShipment.shipmentJWTVerifiablePresentation, envData);
+			console.log('validationResult result', validationResult);
+		}
 		shipmentDB = {
 			...shipmentDB,
 			recipientName: transitShipment.recipientName,
-			deliveryDateTime: transitShipment.deliveryDateTime,
-			signature: transitShipment.signature
+			deliveryDateTime: transitShipment.deliveryDateTime
 		}
 		const statusIdentifier = await this.getEntityPathAsync(shipmentDB.statusSSI,FoldersEnum.ShipmentsStatuses);
 		const status = await this.getEntityAsync(statusIdentifier, FoldersEnum.ShipmentsStatuses);
 		shipmentDB.status = status.history;
-		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentIdentifier, shipmentDB);
+		return await this.storageService.updateRecord(this.SHIPMENTS_TABLE, shipmentUUID, shipmentDB);
 	}
 
 	async updateStatusDsu(newStatus, knownIdentifier) {
@@ -240,6 +251,11 @@ class ShipmentsService extends DSUService {
 
 	async createAndMountTransitDSU(shipmentUid, transientDataModel) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentUid);
+		transientDataModel.shipmentJWTVerifiableCredential = await this.JWTService
+			.createShipmentVerifiableCredential(shipmentDB.courierId, shipmentDB.siteId, {
+				shipmentIdentifier: shipmentUid,
+				shipmentPickupAtWarehouseSigned: true
+			});
 
 		const shipmentTransitDSU = await this.saveEntityAsync(transientDataModel, FoldersEnum.ShipmentTransit);
 		const status = await this.updateStatusDsu(shipmentStatusesEnum.PickUpAtWarehouse, shipmentDB.statusSSI);
@@ -274,6 +290,8 @@ class ShipmentsService extends DSUService {
 	async createAndMountReceivedDSU(shipmentIdentifier, transientDataModel, shipmentComments) {
 
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
+		transientDataModel.shipmentReceivedJWTVerifiablePresentation = await this.JWTService
+			.createShipmentReceivedPresentation(shipmentDB.siteId, shipmentDB.courierId, { shipmentReceivedSigned: true });
 		const shipmentReceivedDSU = await this.saveEntityAsync(transientDataModel, FoldersEnum.ShipmentReceived);
 		const status = await this.updateStatusDsu(shipmentStatusesEnum.Received, shipmentDB.statusSSI);
 
@@ -310,8 +328,12 @@ class ShipmentsService extends DSUService {
 	//add new data to shipmentTransitDSU and update shipment status
 	async updateTransitShipmentDSU(shipmentIdentifier, data, newStatus) {
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
-
 		let shipmentTransitDSU = await this.getEntityAsync(shipmentDB.transitDSUUid, FoldersEnum.ShipmentTransit);
+		const shipmentJWTVerifiableCredential = await this.JWTService
+			.updateShipmentVerifiableCredential(shipmentTransitDSU.shipmentJWTVerifiableCredential, { shipmentDeliveredSigned: true });
+		data.shipmentJWTVerifiablePresentation = await this.JWTService
+			.createShipmentPresentation(shipmentJWTVerifiableCredential, shipmentDB.courierId);
+
 		shipmentTransitDSU = { ...shipmentTransitDSU, ...data };
 		await this.updateEntityAsync(shipmentTransitDSU, FoldersEnum.ShipmentTransit);
 		const status = await this.updateStatusDsu(newStatus, shipmentDB.statusSSI);
@@ -345,6 +367,8 @@ class ShipmentsService extends DSUService {
 		for (let prop in billData) {
 			shipmentTransitBillingDSU[prop] = billData[prop];
 		}
+		shipmentTransitBillingDSU.shipmentBillingJWTVerifiablePresentation = await this.JWTService
+			.createShipmentBillingPresentationForSponsor(shipmentDB.courierId, shipmentDB.sponsorId, billData);
 
 		shipmentDB.bill = billData;
 		shipmentDB.shipmentBilling = shipmentTransitBillingDSU.uid;
@@ -472,6 +496,14 @@ class ShipmentsService extends DSUService {
 		shipmentDB.shipmentTransitBillingDSU = shipmentTransitDSU.uid;
 		shipmentDB.bill = await this.getEntityAsync(shipmentDB.shipmentTransitBillingDSU, FoldersEnum.ShipmentTransitBilling);
 
+		console.log('billing data:', shipmentDB.bill);
+		const envData = {
+			atDate: new Date().getTime(),
+			credentialPublicClaims: shipmentDB.bill
+		};
+		const validationResult = await this.JWTService.validateShipmentBillingPresentation(shipmentTransitDSU.shipmentBillingJWTVerifiablePresentation, envData);
+		console.log('[shipmentTransitBillingDSU]', validationResult);
+
 		const statusIdentifier = await this.getEntityPathAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
 		const status = await this.getEntityAsync(statusIdentifier, FoldersEnum.ShipmentsStatuses);
 		shipmentDB.status = status.history;
@@ -499,6 +531,17 @@ class ShipmentsService extends DSUService {
 		const receivedShipmentDsu = await this.mountEntityAsync(receivedShipmentSSI, FoldersEnum.ShipmentReceived);
 		//TODO refactor this to use proper property name for receivedShipmentDSu uid. use identifier instead of receivedDSUKeySSI
 		shipmentDB.receivedDSUKeySSI = receivedShipmentDsu.uid;
+
+		const envData = {
+			adDate: new Date().getTime(),
+			credentialPublicClaims: {
+				shipmentReceivedSigned: true
+			},
+			rootsOfTrust: [shipmentDB.siteId]
+		};
+		const validationResult = await this.JWTService.validateShipmentReceivedPresentation(receivedShipmentDsu.shipmentReceivedJWTVerifiablePresentation, envData);
+		console.log("[shipmentReceivedSigned] validationResult", validationResult);
+
 		const statusIdentifier = await this.getEntityPathAsync(shipmentDB.statusSSI, FoldersEnum.ShipmentsStatuses);
 		const status = await this.getEntityAsync(statusIdentifier, FoldersEnum.ShipmentsStatuses);
 		shipmentDB.status = status.history;
@@ -542,7 +585,7 @@ class ShipmentsService extends DSUService {
 		return shipmentRecord;
 	}
 
-	//TODO to be refactored and extracted in a separete service used also of adding orders comments, documents
+	//TODO to be refactored and extracted in a separate service used also of adding orders comments, documents
 	async addCommentToDsu(comments, keySSI) {
 		const commentsDsu = await this.getEntityAsync(keySSI, FoldersEnum.ShipmentComments);
 		const result = await this.updateEntityAsync(
@@ -560,7 +603,7 @@ class ShipmentsService extends DSUService {
 		shipmentDB.pickupDateTimeChangeRequest = {
 			requestPickupDateTime: pickupDateTimeChangeRequest.requestPickupDateTime,
 			reason: pickupDateTimeChangeRequest.reason,
-			date: Date.now()
+			date: new Date().getTime()
 		};
 		await this.storageService.updateRecord(this.SHIPMENTS_TABLE, pickupDateTimeChangeRequest.shipmentSSI, shipmentDB);
 		this.sendMessageToEntity(cmoId, shipmentsEventsEnum.PickupDateTimeChangeRequest, pickupDateTimeChangeRequest, shipmentsEventsEnum.PickupDateTimeChangeRequest);
@@ -607,7 +650,7 @@ class ShipmentsService extends DSUService {
 	uploadFile(path, file) {
 		function getFileContentAsBuffer(file, callback) {
 			let fileReader = new FileReader();
-			fileReader.onload = function (evt) {
+			fileReader.onload = function () {
 				let arrayBuffer = fileReader.result;
 				callback(undefined, arrayBuffer);
 			};
@@ -630,7 +673,6 @@ class ShipmentsService extends DSUService {
 			});
 		});
 	}
-
 
 }
 
