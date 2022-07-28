@@ -194,19 +194,6 @@ const kitViewModel = {
       disabled: false,
       value: ''
     },
-    visit_date: {
-      label: 'Visit Date/Time',
-      name: 'visit_date',
-      required: true,
-      disabled: false,
-      value: momentService(new Date()).format(constants.Commons.YearMonthDayPattern),
-      min: momentService(new Date()).add(DAYS_AHEAD, 'days').format(constants.Commons.YearMonthDayPattern)
-    },
-    visit_time: {
-      name: 'visit_time',
-      disabled: false,
-      value: momentService(new Date()).format(constants.Commons.HourFormatPattern)
-    },
     dispensingPartyId: {
       label: 'Dispensing Party ID',
       name: 'dispensing-id',
