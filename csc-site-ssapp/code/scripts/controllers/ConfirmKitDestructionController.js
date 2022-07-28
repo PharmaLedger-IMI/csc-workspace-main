@@ -101,6 +101,15 @@ class ConfirmKitDestructionController extends WebcController {
 
     this.model.wizard = this.getWizardForm();
     this.model.formIsInvalid = true;
+
+    this.model.addExpression(
+      "isCertificationOfDestructionFileEmpty",
+      () => {
+        return this.model.kitModel.form.certificationOfDestruction === null;
+      },
+      "kitModel.form.certificationOfDestruction"
+    );
+
   }
 
   initHandlers() {
@@ -133,12 +142,15 @@ class ConfirmKitDestructionController extends WebcController {
     });
 
 
+
     this.onTagClick('download-file', async () => {
+      if(this.certificationOfDestructionFile != null){
         let fileDownloaderService = new FileDownloaderService();
         window.WebCardinal.loader.hidden = false;
         await fileDownloaderService.prepareDownloadFromBrowser(this.certificationOfDestructionFile);
         fileDownloaderService.downloadFileToDevice(this.certificationOfDestructionFile.name);
         window.WebCardinal.loader.hidden = true;
+      }
     });
 
   }

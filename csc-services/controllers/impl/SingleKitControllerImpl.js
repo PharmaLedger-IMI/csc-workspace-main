@@ -282,6 +282,14 @@ class SingleKitControllerImpl extends AccordionController {
     }
 
     this.model = model;
+
+    this.model.addExpression(
+      "isCertificationOfDestructionFileEmpty",
+      () => {
+        return this.model.kit.form.certificationOfDestruction === null;
+      },
+      "kitModel.form.certificationOfDestruction"
+    );
     this.attachRefreshListeners();
   }
 
