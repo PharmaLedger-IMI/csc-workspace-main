@@ -72,6 +72,7 @@ button i{
 .btn-approve[disabled] {
     background: #888888;
     opacity: 0.5;
+    pointer-events: none;
 }
 
 .btn-filter {
