@@ -5,6 +5,12 @@
     padding: 0.5rem 1rem;
 }
 
+.header-right{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
 .header {
     background: #00345b;
     display: flex;
