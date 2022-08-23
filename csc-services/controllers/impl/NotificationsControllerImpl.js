@@ -94,9 +94,13 @@ class NotificationsControllerImpl extends WebcController {
 					}
 				}
 
-				if (pageTag) {
-					this.navigateToPageTag(pageTag, state);
-				}
+				window.WebCardinal.loader.hidden = false;
+				this.notificationsService.changeNotificationStatus(model.pk, true).then(()=>{
+					window.WebCardinal.loader.hidden = true;
+					if (pageTag) {
+						this.navigateToPageTag(pageTag, state);
+					}
+				});
 			}
 		});
 	}
