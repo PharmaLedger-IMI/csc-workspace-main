@@ -11,6 +11,7 @@ class ConfirmKitDestructionController extends WebcController {
 
   constructor(...props) {
     super(...props);
+    this.certificationOfDestructionFile = null;
     this.kitsService = new KitsService();
     this.initViewModel();
     this.initHandlers();
@@ -103,9 +104,9 @@ class ConfirmKitDestructionController extends WebcController {
     this.model.formIsInvalid = true;
 
     this.model.addExpression(
-      "isCertificationOfDestructionFileEmpty",
+      "certificationOfDestructionFileIsAdded",
       () => {
-        return this.model.kitModel.form.certificationOfDestruction === null;
+        return this.certificationOfDestructionFile !== null;
       },
       "kitModel.form.certificationOfDestruction"
     );
@@ -125,8 +126,8 @@ class ConfirmKitDestructionController extends WebcController {
         'All newly entered data will be removed. This will require you to start over the process of entering the details again',
         'Clear Changes',
         () => {
-          this.model.kitModel = viewModelResolver('kit'),
-            this.certificationOfDestructionFile = null;
+          this.model.kitModel = viewModelResolver('kit');
+          this.certificationOfDestructionFile = null;
           this.makeStepActive('step-1', 'step-1-wrapper', e);
           this.model.formIsInvalid = true;
         },
