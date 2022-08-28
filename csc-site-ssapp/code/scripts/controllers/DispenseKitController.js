@@ -15,6 +15,7 @@ class DispenseKitController extends WebcController {
     this.initViewModel();
     this.initHandlers();
     this.navigationHandlers();
+
   }
 
   navigationHandlers() {
@@ -36,6 +37,11 @@ class DispenseKitController extends WebcController {
     this.onTagClick('view-kit', () => {
       this.navigateToPageTag('kit', { uid: this.model.uid });
     });
+
+    this.model.onChange('form.inputs.doseVolume.value', () => {
+      console.log('hi');
+    })
+
   }
 
   async initViewModel() {
@@ -85,6 +91,8 @@ class DispenseKitController extends WebcController {
       receivedTime: this.model.kitModel.form.receivedTime.value
     };
   }
+
+
 }
 
 export default DispenseKitController;
