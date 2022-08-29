@@ -18,12 +18,13 @@ apihub-root/csc-cmo-wallet/wallet-patch/seed
 apihub-root/csc-cmo-wallet/loader
 apihub-root/external-volume/domains
 apihub-root/external-volume/mqs/
-apihub-root/fgt-mah-wallet/apps-patch
 apihub-root/csc-sponsor-wallet/apps-patch
 apihub-root/csc-site-wallet/apps-patch
 apihub-root/csc-courier-wallet/apps-patch/csc-courier-ssapp/readme
 apihub-root/csc-courier-wallet/apps-patch
 apihub-root/csc-cmo-wallet/apps-patch
+apihub-root/demiurge-wallet/wallet-patch/seed
+apihub-root/demiurge-wallet-wallet/loader
 apihub-root/dossier-explorer/**
 apihub-root/seedsBackup
 dossier-explorer-ssapp
@@ -36,3 +37,5 @@ latest-change-set.txt
 builds
 tmp
 apihub-root/external-volume/mq_JWT_Auth_Seeder
+gtin-resolver
+demiurge

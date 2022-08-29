@@ -37,7 +37,7 @@
     },
     {
       "name": "privatesky",
-      "src": "http://github.com/privatesky/psk-release.git",
+      "src": "http://github.com/privatesky/privatesky.git",
       "actions": [
         {
           "type": "smartClone",
@@ -47,6 +47,10 @@
         {
           "type": "execute",
           "cmd": "cd privatesky && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd privatesky && npm run build"
         }
       ]
     },
@@ -123,6 +127,63 @@
         {
           "type": "execute",
           "cmd": "cd apihub-root/csc-courier-wallet/loader && npm run build"
+        }
+      ]
+    },
+    {
+      "name": "gtin-resolver",
+      "src": "https://github.com/PharmaLedger-IMI/gtin-resolver.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd gtin-resolver && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd gtin-resolver && npm run build"
+        }
+      ]
+    },
+    {
+      "name": "demiurge",
+      "src": "https://github.com/OpenDSU/demiurge.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd demiurge && npm install"
+        }
+      ]
+    },
+    {
+      "name": "apihub-root/demiurge-wallet/loader",
+      "src": "http://github.com/privatesky/web-dossier-loader.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/demiurge-wallet/loader && npm install"
+        },
+        {
+          "type": "copy",
+          "src": "apihub-root/demiurge-wallet/loader/loader-config.local.json-template",
+          "target": "apihub-root/demiurge-wallet/loader/loader-config.local.json",
+          "options": {
+            "overwrite": true
+          }
         }
       ]
     },
@@ -380,44 +441,6 @@
           "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-courier-wallet/apps-patch/csc-courier-ssapp/readme"
         }
       ]
-    },
-    {
-      "name": "trust-loader-config",
-      "actions": [
-        {
-          "type": "copy",
-          "src": "./trust-loader-config",
-          "target": "./apihub-root",
-          "options": {
-            "overwrite": true
-          }
-        }
-      ]
-    },
-    {
-      "name": "copy-bundles",
-      "actions": [
-        {
-          "type": "execute",
-          "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
-        },
-        {
-          "type": "execute",
-          "cmd": "cd apihub-root/csc-sponsor-wallet/loader && npm install"
-        },
-        {
-          "type": "execute",
-          "cmd": "cd apihub-root/csc-cmo-wallet/loader && npm install"
-        },
-        {
-          "type": "execute",
-          "cmd": "cd apihub-root/csc-site-wallet/loader && npm install"
-        },
-        {
-          "type": "execute",
-          "cmd": "cd apihub-root/csc-courier-wallet/loader && npm install"
-        }
-      ]
     }
   ],
   "build": [
@@ -462,6 +485,36 @@
       ]
     },
     {
+      "name": "demiurge-wallet_bind_to_demiurge",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd demiurge && npm run build"
+        },
+        {
+          "type": "copySeed",
+          "src": "./demiurge/seed",
+          "target": "./apihub-root/external-volume/wallets/demiurge-wallet/apps-patch/demiurge/seed",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "copySeed",
+          "src": "./demiurge/seed",
+          "target": "./apihub-root/external-volume/wallets/demiurge-wallet/wallet-patch/seed",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "execute",
+          "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/external-volume/wallets/demiurge-wallet/apps-patch/demiurge/readme"
+        }
+      ]
+    },
+    {
       "name": "dossier-explorer-wallet-prototype-build",
       "src": "",
       "actions": [
@@ -498,6 +551,94 @@
         {
           "type": "execute",
           "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/readme"
+        }
+      ]
+    }
+  ],
+  "demiurge-build": [
+    {
+      "name": "gtin-resolver-build",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd gtin-resolver && npm run build"
+        }
+      ]
+    },
+    {
+      "name": "demiurge-build",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd demiurge && npm run build"
+        }
+      ]
+    }
+  ],
+  "patch": [
+    {
+      "name": "trust-loader-config",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "./trust-loader-config",
+          "target": "./apihub-root",
+          "options": {
+            "overwrite": true,
+            "ignoreErrors": true
+          }
+        }
+      ]
+    }
+  ],
+  "postinstall": [
+    {
+      "name": "trust-loader-config",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./bin/octopusRun.js patch\""
+        }
+      ]
+    },
+    {
+      "name": "copy-bundles",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/csc-sponsor-wallet/loader && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/csc-cmo-wallet/loader && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/csc-site-wallet/loader && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/csc-courier-wallet/loader && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/demiurge-wallet/loader && npm install"
+        }
+      ]
+    },
+    {
+      "name": "gtin-resolver-build",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd gtin-resolver && npm run build"
         }
       ]
     }
