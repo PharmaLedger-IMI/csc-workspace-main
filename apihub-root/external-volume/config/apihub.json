@@ -11,6 +11,7 @@
     "bricksLedger",
     "bricksFabric",
     "bricking",
+	"cloudWallet",
     "mq",
     "anchoring",
     "staticServer"
