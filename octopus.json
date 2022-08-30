@@ -536,28 +536,6 @@
       ]
     }
   ],
-  "demiurge-build": [
-    {
-      "name": "gtin-resolver-build",
-      "src": "",
-      "actions": [
-        {
-          "type": "execute",
-          "cmd": "cd gtin-resolver && npm run build"
-        }
-      ]
-    },
-    {
-      "name": "demiurge-build",
-      "src": "",
-      "actions": [
-        {
-          "type": "execute",
-          "cmd": "cd demiurge && npm run build"
-        }
-      ]
-    }
-  ],
   "patch": [
     {
       "name": "trust-loader-config",
