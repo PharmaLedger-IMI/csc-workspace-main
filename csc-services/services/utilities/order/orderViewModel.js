@@ -82,14 +82,14 @@ const orderViewModel = {
                 required: true,
                 disabled: false,
                 value: '',
-                min: momentService(new Date()).add(DAYS_AHEAD, 'days').format(constants.Commons.YearMonthDayPattern)
+
             },
             study_duration_to:{
                 name: 'study_duration_to',
                 required: true,
                 disabled: false,
                 value: '',
-                min: ""
+                min: momentService(new Date()).add(DAYS_AHEAD, 'days').format(constants.Commons.YearMonthDayPattern)
             },
             order_id: {
                 label: 'Order ID',

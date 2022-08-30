@@ -28,11 +28,14 @@ module.exports = class NotificationsService  extends DSUService {
 		return await this.storageService.getRecord(this.NOTIFICATIONS_TABLE, id);
 	}
 
-	async changeNotificationStatus(id) {
+	async changeNotificationStatus(id, wasRead) {
 		const notification = await this.getNotification(id);
+		if(!wasRead){
+			wasRead = !notification.read;
+		}
 		await this.storageService.updateRecord(this.NOTIFICATIONS_TABLE, id, {
 			...notification,
-			read: !notification.read
+			read: wasRead
 		});
 	}
 };

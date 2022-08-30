@@ -15,6 +15,7 @@ class DispenseKitController extends WebcController {
     this.initViewModel();
     this.initHandlers();
     this.navigationHandlers();
+
   }
 
   navigationHandlers() {
@@ -80,11 +81,11 @@ class DispenseKitController extends WebcController {
       doseUom: this.model.kitModel.form.doseUom.value,
       doseVolume: this.model.kitModel.form.doseVolume.value,
       visitId: this.model.kitModel.form.visitId.value,
-      dispensingPartyId: this.model.kitModel.form.dispensingPartyId.value,
-      receivedDate: this.model.kitModel.form.receivedDate.value,
-      receivedTime: this.model.kitModel.form.receivedTime.value
+      dispensingPartyId: this.model.kitModel.form.dispensingPartyId.value
     };
   }
+
+
 }
 
 export default DispenseKitController;

@@ -3,6 +3,8 @@
   "port": 8080,
   "preventRateLimit": true,
   "activeComponents": [
+    "admin",
+    "cloudWallet",
     "virtualMQ",
     "messaging",
     "notifications",
@@ -11,37 +13,35 @@
     "bricksLedger",
     "bricksFabric",
     "bricking",
-	"cloudWallet",
-    "mq",
     "anchoring",
+    "debugLogger",
+    "mq",
+    "secrets",
     "staticServer"
   ],
   "componentsConfig": {
+    "staticServer": {
+      "excludedFiles": [
+        ".*.secret"
+      ]
+    },
     "bricking": {},
     "anchoring": {}
   },
+  "responseHeaders": {
+    "X-Frame-Options": "SAMEORIGIN",
+    "X-XSS-Protection": "1; mode=block"
+  },
   "enableRequestLogger": true,
   "enableJWTAuthorisation": false,
+  "enableOAuth": false,
   "enableLocalhostAuthorization": false,
-  "skipJWTAuthorisation": [
+  "serverAuthentication": false,
+  "skipOAuth": [
     "/assets",
-    "/leaflet-wallet",
-    "/dsu-fabric-wallet",
-    "/directory-summary",
-    "/resources",
     "/bdns",
-    "/anchor/epi",
-    "/anchor/default",
-    "/anchor/vault",
-    "/bricking",
-    "/bricksFabric",
-    "/bricksledger",
-    "/create-channel",
-    "/forward-zeromq",
-    "/send-message",
-    "/receive-message",
-    "/files",
-    "/notifications",
-    "/mq"
+    "/bundles",
+    "/getAuthorization",
+    "/external-volume/config/oauthConfig.js"
   ]
 }

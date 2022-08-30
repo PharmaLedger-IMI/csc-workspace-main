@@ -387,6 +387,10 @@ class SingleKitControllerImpl extends AccordionController {
          afterDestroyedConfirmation:data.status.findIndex(el => el.status === kitsStatusesEnum.Destroyed) !== -1,
          afterRequestRelabeling:data.status.findIndex(el => el.status === kitsStatusesEnum.Blocked) !== -1
        };
+
+      if (data.contextualContent.afterDestroyedConfirmation) {
+        data.kitDestroyDetails.hasCertificationOfDestruction = typeof data.kitDestroyDetails.certificationOfDestructionName !== 'undefined';
+      }
       return data;
     }
     return {};
