@@ -19,6 +19,7 @@ apihub-root/mqs/
 apihub-root/seedsBackup
 apihub-root/external-volume/domains
 apihub-root/external-volume/mqs/
+apihub-root/external-volume/wallets/
 apihub-root/external-volume/mq_JWT_Auth_Seeder
 
 apihub-root/dsu-explorer/loader
