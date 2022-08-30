@@ -314,6 +314,15 @@
           "cmd": "cd themes/blue-csc-theme && npm install"
         }
       ]
+    },
+    {
+      "name": "postinstall-patch",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./bin/octopusRun.js postinstall\""
+        }
+      ]
     }
   ],
   "build-use-case": [
