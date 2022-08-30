@@ -8,5 +8,8 @@
       "addAnchor": "anchor"
     }
   },
-  "enable": ["mq"]
+  "enable": [
+    "mq",
+    "enclave"
+  ]
 }

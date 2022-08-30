@@ -347,7 +347,7 @@
         {
           "type": "copySeed",
           "src": "./csc-sponsor-ssapp/seed",
-          "target": "./apihub-root/external-volume/wallets/csc-sponsor-wallet/wallet-patch/seed",
+          "target": "./apihub-root/csc-sponsor-wallet/wallet-patch/seed",
           "options": {
             "overwrite": true
           }
@@ -355,7 +355,7 @@
         {
           "type": "copySeed",
           "src": "./csc-sponsor-ssapp/seed",
-          "target": "./apihub-root/external-volume/wallets/csc-sponsor-wallet/apps-patch/csc-sponsor-ssapp/seed",
+          "target": "./apihub-root/csc-sponsor-wallet/apps-patch/csc-sponsor-ssapp/seed",
           "options": {
             "overwrite": true
           }
@@ -373,7 +373,7 @@
         {
           "type": "copySeed",
           "src": "./csc-cmo-ssapp/seed",
-          "target": "./apihub-root/external-volume/wallets/csc-cmo-wallet/wallet-patch/seed",
+          "target": "./apihub-root/csc-cmo-wallet/wallet-patch/seed",
           "options": {
             "overwrite": true
           }
@@ -381,7 +381,7 @@
         {
           "type": "copySeed",
           "src": "./csc-cmo-ssapp/seed",
-          "target": "./apihub-root/external-volume/wallets/csc-cmo-wallet/apps-patch/csc-cmo-ssapp/seed",
+          "target": "./apihub-root/csc-cmo-wallet/apps-patch/csc-cmo-ssapp/seed",
           "options": {
             "overwrite": true
           }
@@ -399,7 +399,7 @@
         {
           "type": "copySeed",
           "src": "./csc-site-ssapp/seed",
-          "target": "./apihub-root/external-volume/wallets/csc-site-wallet/wallet-patch/seed",
+          "target": "./apihub-root/csc-site-wallet/wallet-patch/seed",
           "options": {
             "overwrite": true
           }
@@ -407,7 +407,7 @@
         {
           "type": "copySeed",
           "src": "./csc-site-ssapp/seed",
-          "target": "./apihub-root/external-volume/wallets/csc-site-wallet/apps-patch/csc-site-ssapp/seed",
+          "target": "./apihub-root/csc-site-wallet/apps-patch/csc-site-ssapp/seed",
           "options": {
             "overwrite": true
           }
@@ -425,7 +425,7 @@
         {
           "type": "copySeed",
           "src": "./csc-courier-ssapp/seed",
-          "target": "./apihub-root/external-volume/wallets/csc-courier-wallet/wallet-patch/seed",
+          "target": "./apihub-root/csc-courier-wallet/wallet-patch/seed",
           "options": {
             "overwrite": true
           }
@@ -433,7 +433,7 @@
         {
           "type": "copySeed",
           "src": "./csc-site-ssapp/seed",
-          "target": "./apihub-root/external-volume/wallets/csc-courier-wallet/apps-patch/csc-courier-ssapp/seed",
+          "target": "./apihub-root/csc-courier-wallet/apps-patch/csc-courier-ssapp/seed",
           "options": {
             "overwrite": true
           }
@@ -519,7 +519,7 @@
         {
           "type": "copySeed",
           "src": "./dossier-explorer-wallet-prototype/seed",
-          "target": "./apihub-root/external-volume/wallets/dsu-explorer/wallet-patch/seed",
+          "target": "./apihub-root/dsu-explorer/wallet-patch/seed",
           "options": {
             "overwrite": true
           }
@@ -537,7 +537,7 @@
         {
           "type": "copySeed",
           "src": "./dossier-explorer-ssapp/seed",
-          "target": "./apihub-root/external-volume/wallets/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed",
+          "target": "./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed",
           "options": {
             "overwrite": true
           }
