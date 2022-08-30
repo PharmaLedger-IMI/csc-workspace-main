@@ -13,6 +13,7 @@ module.exports = {
     FileDownloaderService: require('./services/lib/FileDownloaderService'),
     utils: require('./services/lib/utils'),
     SearchService: require('./services/lib/SearchService'),
+    JWTService: require('./services/lib/JWTService'),
     MessageHandlerService:require("./services/MessageHandlerService"),
 
     viewModelResolver: function (viewModel) {

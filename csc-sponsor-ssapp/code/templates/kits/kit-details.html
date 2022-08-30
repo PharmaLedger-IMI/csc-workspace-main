@@ -107,8 +107,8 @@
 <div data-if='@kit.contextualContent.afterDestroyedConfirmation'>
   <div class='grid-column-wrapper'>
     <label> Certification of Destruction </label>
-    <div class='file-name-downloader'>
-      <div class='input-group'>
+    <div class='file-name-downloader justify-content-start' data-if='@kit.kitDestroyDetails.hasCertificationOfDestruction'>
+      <div class='input-group' slot='true'>
         <input class='form-control form-control-sm' readonly type='text'
                value='@kit.kitDestroyDetails.certificationOfDestructionName' />
         <div class='input-group-append'>
@@ -116,6 +116,11 @@
                   data-tag='download-certification-of-destruction-file'>
             <i class='fa fa-download'></i>
           </button>
+        </div>
+      </div>
+      <div slot='false'>
+        <div class="alert alert-light m-0 p-0" role="alert">
+          <i class='fa fa-exclamation-circle'></i> No destruction certificate was provided
         </div>
       </div>
     </div>

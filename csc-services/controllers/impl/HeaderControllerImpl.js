@@ -22,6 +22,21 @@ class HeaderControllerImpl extends WebcController {
 			this.model.userName = userDetails.username;
 
 		});
+
+		this.onTagClick("logout",()=>{
+			let iframeIdentity;
+			if (window.frameElement) {
+				iframeIdentity = window.frameElement.getAttribute('identity');
+
+				if (!iframeIdentity) {
+					throw new Error("App was not loaded from a wallet loader")
+				}
+
+				window.parent.document.dispatchEvent(new CustomEvent(iframeIdentity, {
+					detail: {status: "sign-out"}
+				}));
+			}
+		})
 	}
 }
 

@@ -28,12 +28,21 @@ class MessageHandlerService {
       this.shipmentService.onReady(() => {
         this.communicationService.listenForMessages(async (err, data) => {
 
+          const onConfirmRefresh = function (event) {
+            event.preventDefault();
+            return event.returnValue = "Are you sure you want to leave?";
+          }
+
           if (err) {
             return this.errorCallback(err);
           }
 
-          //TODO refactor handling messages
+
           console.log('message received', data);
+          //prevent page refresh. it only works if user interacted with page before
+          //TODO think to a solution of storing message in localstorage and consume them from there, in order not to lose messages.
+          window.WebCardinal.loader.hidden = false;
+          window.addEventListener("beforeunload", onConfirmRefresh, { capture: true });
 
           switch (this.role) {
             case Roles.Courier:
@@ -44,6 +53,9 @@ class MessageHandlerService {
               await this.handleShipmentMessages(data);
               await this.handleKitsMessages(data);
           }
+
+          window.WebCardinal.loader.hidden = true;
+          window.removeEventListener("beforeunload", onConfirmRefresh, { capture: true });
 
         });
       });
