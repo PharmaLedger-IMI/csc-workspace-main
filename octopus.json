@@ -350,10 +350,6 @@
           "options": {
             "overwrite": true
           }
-        },
-        {
-          "type": "execute",
-          "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-sponsor-wallet/apps-patch/csc-sponsor-ssapp/readme"
         }
       ]
     },
@@ -380,10 +376,6 @@
           "options": {
             "overwrite": true
           }
-        },
-        {
-          "type": "execute",
-          "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-cmo-wallet/apps-patch/csc-cmo-ssapp/readme"
         }
       ]
     },
@@ -410,10 +402,6 @@
           "options": {
             "overwrite": true
           }
-        },
-        {
-          "type": "execute",
-          "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-site-wallet/apps-patch/csc-site-ssapp/readme"
         }
       ]
     },
@@ -440,10 +428,6 @@
           "options": {
             "overwrite": true
           }
-        },
-        {
-          "type": "execute",
-          "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-courier-wallet/apps-patch/csc-courier-ssapp/readme"
         }
       ]
     }
@@ -512,10 +496,6 @@
           "options": {
             "overwrite": true
           }
-        },
-        {
-          "type": "execute",
-          "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/external-volume/wallets/demiurge-wallet/apps-patch/demiurge/readme"
         }
       ]
     },
@@ -552,10 +532,6 @@
           "options": {
             "overwrite": true
           }
-        },
-        {
-          "type": "execute",
-          "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/readme"
         }
       ]
     }
