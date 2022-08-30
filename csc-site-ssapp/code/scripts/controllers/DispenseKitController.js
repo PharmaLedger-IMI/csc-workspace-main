@@ -50,6 +50,7 @@ class DispenseKitController extends WebcController {
       kitId: kitId,
     };
 
+    console.log(this.model);
     let didService = DidService.getDidServiceInstance();
     this.model.kitModel.form.dispensingPartyId.value = await didService.getDID();
   }
