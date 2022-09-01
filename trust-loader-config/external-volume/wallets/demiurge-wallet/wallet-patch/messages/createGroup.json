@@ -1,46 +1,17 @@
 [
   {
     "messageType": "CreateGroup",
-    "groupName": "CSC Administration Group"
+    "groupName": "CSC Administration Group",
+    "groupTags": "Demiurge"
   },
   {
     "messageType": "CreateGroup",
-    "groupName": "CSC Write Group"
+    "groupName": "Shipment Write Group",
+    "groupTags": "CMO,Courier,Sponsor"
   },
   {
     "messageType": "CreateGroup",
-    "groupName": "CSC Read Group"
-  },
-  {
-    "messageType": "CreateGroup",
-    "groupName": "CMO Write Group"
-  },
-  {
-    "messageType": "CreateGroup",
-    "groupName": "CMO Read Group"
-  },
-  {
-    "messageType": "CreateGroup",
-    "groupName": "Courier Write Group"
-  },
-  {
-    "messageType": "CreateGroup",
-    "groupName": "Courier Read Group"
-  },
-  {
-    "messageType": "CreateGroup",
-    "groupName": "Site Write Group"
-  },
-  {
-    "messageType": "CreateGroup",
-    "groupName": "Site Read Group"
-  },
-  {
-    "messageType": "CreateGroup",
-    "groupName": "Sponsor Write Group"
-  },
-  {
-    "messageType": "CreateGroup",
-    "groupName": "Sponsor Read Group"
+    "groupName": "Shipment Read Group",
+    "groupTags": "Site"
   }
 ]

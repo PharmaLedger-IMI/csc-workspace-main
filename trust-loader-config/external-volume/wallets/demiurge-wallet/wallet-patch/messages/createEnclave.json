@@ -6,27 +6,7 @@
   },
   {
     "messageType": "CreateEnclave",
-    "enclaveName": "cscEnclave",
-    "enclaveType": "WalletDBEnclave"
-  },
-  {
-    "messageType": "CreateEnclave",
-    "enclaveName": "cmoEnclave",
-    "enclaveType": "WalletDBEnclave"
-  },
-  {
-    "messageType": "CreateEnclave",
-    "enclaveName": "courierEnclave",
-    "enclaveType": "WalletDBEnclave"
-  },
-  {
-    "messageType": "CreateEnclave",
-    "enclaveName": "siteEnclave",
-    "enclaveType": "WalletDBEnclave"
-  },
-  {
-    "messageType": "CreateEnclave",
-    "enclaveName": "sponsorEnclave",
+    "enclaveName": "ssappspEnclave",
     "enclaveType": "WalletDBEnclave"
   }
 ]
