@@ -136,27 +136,8 @@
       ]
     },
     {
-      "name": "gtin-resolver",
-      "src": "https://github.com/PharmaLedger-IMI/gtin-resolver.git",
-      "actions": [
-        {
-          "type": "smartClone",
-          "target": ".",
-          "collectLog": false
-        },
-        {
-          "type": "execute",
-          "cmd": "cd gtin-resolver && npm install"
-        },
-        {
-          "type": "execute",
-          "cmd": "cd gtin-resolver && npm run build"
-        }
-      ]
-    },
-    {
       "name": "demiurge",
-      "src": "https://github.com/OpenDSU/demiurge.git",
+      "src": "https://github.com/paiusCatalin/demiurge.git",
       "actions": [
         {
           "type": "smartClone",
@@ -597,16 +578,6 @@
         {
           "type": "execute",
           "cmd": "cd apihub-root/demiurge-wallet/loader && npm install"
-        }
-      ]
-    },
-    {
-      "name": "gtin-resolver-build",
-      "src": "",
-      "actions": [
-        {
-          "type": "execute",
-          "cmd": "cd gtin-resolver && npm run build"
         }
       ]
     }
