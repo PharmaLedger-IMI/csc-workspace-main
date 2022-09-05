@@ -3,7 +3,7 @@
     "messageType": "CreateGroup",
     "groupName": "CSC Administration Group",
     "groupTags": "Demiurge",
-    "accessModes": "adminSharedEnclave:write"
+    "accessModes": "demiurgeSharedEnclave:admin"
   },
   {
     "messageType": "CreateGroup",

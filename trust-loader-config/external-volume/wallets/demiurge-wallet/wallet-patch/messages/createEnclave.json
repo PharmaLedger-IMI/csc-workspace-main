@@ -1,7 +1,7 @@
 [
   {
     "messageType": "CreateEnclave",
-    "enclaveName": "adminSharedEnclave",
+    "enclaveName": "demiurgeSharedEnclave",
     "enclaveType": "WalletDBEnclave"
   },
   {

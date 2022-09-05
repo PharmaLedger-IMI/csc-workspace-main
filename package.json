@@ -33,7 +33,8 @@
     "docs": "node ./node_modules/octopus/scripts/run docs devmode",
     "incversion": "npm --no-git-tag-version version patch",
     "debug": "nodemon -e html,js,css,json --watch csc-sponsor-ssapp/code --ignore csc-sponsor-ssapp/code/constitution --ignore csc-sponsor-ssapp/code/scripts/bundles --exec \"npm run build csc-sponsor-ssapp\"",
-    "build-test": "cd themes/blue-csc-theme && npm run build-dossier && cd ../.. && npm run build csc-cmo-ssapp && npm run build csc-sponsor-ssapp && npm run build csc-site-ssapp && npm run build csc-courier-ssapp"
+    "build-test": "cd themes/blue-csc-theme && npm run build-dossier && cd ../.. && npm run build csc-cmo-ssapp && npm run build csc-sponsor-ssapp && npm run build csc-site-ssapp && npm run build csc-courier-ssapp",
+    "patch": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./bin/octopusRun.js patch\""
   },
   "repository": {
     "type": "git",
