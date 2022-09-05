@@ -2,16 +2,31 @@
   {
     "messageType": "CreateGroup",
     "groupName": "CSC Administration Group",
-    "groupTags": "Demiurge"
+    "groupTags": "Demiurge",
+    "accessModes": "adminSharedEnclave:write"
   },
   {
     "messageType": "CreateGroup",
-    "groupName": "Shipment Write Group",
-    "groupTags": "CMO,Courier,Sponsor"
+    "groupName": "RMS Write Group",
+    "groupTags": "RMS",
+    "accessModes": "sponsorEnclave:write"
   },
   {
     "messageType": "CreateGroup",
-    "groupName": "Shipment Read Group",
-    "groupTags": "Site"
+    "groupName": "RMS Read Group",
+    "groupTags": "RMS",
+    "accessModes": "sponsorEnclave:read"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "Certh Write Group",
+    "groupTags": "Certh",
+    "accessModes": "courierEnclave:write"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "Certh Read Group",
+    "groupTags": "Certh",
+    "accessModes": "courierEnclave:read"
   }
 ]

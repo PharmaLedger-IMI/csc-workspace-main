@@ -1,12 +1,27 @@
 [
   {
     "messageType": "CreateEnclave",
-    "enclaveName": "demiurgeSharedEnclave",
+    "enclaveName": "adminSharedEnclave",
     "enclaveType": "WalletDBEnclave"
   },
   {
     "messageType": "CreateEnclave",
-    "enclaveName": "ssappspEnclave",
+    "enclaveName": "siteEnclave",
+    "enclaveType": "WalletDBEnclave"
+  },
+  {
+    "messageType": "CreateEnclave",
+    "enclaveName": "courierEnclave",
+    "enclaveType": "WalletDBEnclave"
+  },
+  {
+    "messageType": "CreateEnclave",
+    "enclaveName": "cmoEnclave",
+    "enclaveType": "WalletDBEnclave"
+  },
+  {
+    "messageType": "CreateEnclave",
+    "enclaveName": "sponsorEnclave",
     "enclaveType": "WalletDBEnclave"
   }
 ]
