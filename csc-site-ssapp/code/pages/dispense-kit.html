@@ -42,24 +42,15 @@
 
         <div class='form-group'>
           <label>{{@kitModel.form.doseVolume.label}}</label>
-          <input class="form-control form-control" name="@kitModel.form.doseVolume.name" placeholder="@kitModel.form.doseVolume.placeholder" value="@kitModel.form.doseVolume.value" type="number"/>
+          <input class="form-control form-control" name="@kitModel.form.doseVolume.name"
+                 placeholder="@kitModel.form.doseVolume.placeholder" value="@kitModel.form.doseVolume.value"
+                 step="@kitModel.form.doseVolume.step" min='@kitModel.form.doseVolume.min'
+                 type="number"/>
         </div>
 
         <div class='form-group'>
           <label>{{@kitModel.form.visitId.label}}</label>
           <input class="form-control form-control" name="@kitModel.form.visitId.name" placeholder="@kitModel.form.visitId.placeholder" value="@kitModel.form.visitId.value" />
-        </div>
-
-        <div class='form-group'>
-          <label>{{@kitModel.form.visit_date.label}}</label>
-          <div class='row'>
-            <div class='col-8'>
-              <input class='form-control' data-view-model='@kitModel.form.visit_date' type='date' readonly />
-            </div>
-            <div class='col-4'>
-              <input class='form-control' data-view-model='@kitModel.form.visit_time' type='time' readonly />
-            </div>
-          </div>
         </div>
 
         <div class='form-group'>

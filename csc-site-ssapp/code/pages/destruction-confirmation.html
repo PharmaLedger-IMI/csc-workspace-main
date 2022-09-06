@@ -30,7 +30,7 @@
         <div class='step-holder' id='step-1-wrapper'>
           <div class='container'>
             <div class='form-group'>
-              <label>Certification of Destruction<span class='required'>*</span></label>
+              <label>Certification of Destruction</label>
               <div class='input-group d-flex flex-column'>
                 <div class='input-group d-flex justify-content-between align-items-center'>
                   <input class='form-control' disabled value='@kitModel.form.certificationOfDestruction.name' />
@@ -86,14 +86,21 @@
 
 
             <div class='file-name-downloader form-group'>
-              <label>Certification of Destruction<span class='required'>*</span></label>
-              <div class='input-group'>
-                <input class='form-control' readonly type='text'
-                       value='@kitModel.form.certificationOfDestruction.name' />
-                <div class='input-group-append'>
-                  <button class='btn btn-outline-secondary' type='button' data-tag="download-file">
-                    <i class='fa fa-download'></i>
-                  </button>
+              <label>Certification of Destruction</label>
+              <div data-if='@certificationOfDestructionFileIsAdded'>
+                <div class='input-group' slot='true'>
+                  <input class='form-control' readonly type='text'
+                         value='@kitModel.form.certificationOfDestruction.name' />
+                  <div class='input-group-append'>
+                    <button class='btn btn-outline-secondary' type='button' data-tag='download-file'>
+                      <i class='fa fa-download'></i>
+                    </button>
+                  </div>
+                </div>
+                <div slot='false'>
+                  <div class='alert alert-light m-0 p-0' role='alert'>
+                    <i class='fa fa-exclamation-circle'></i> No destruction certificate was provided
+                  </div>
                 </div>
               </div>
             </div>
@@ -101,7 +108,7 @@
               <div class='form-group'>
                 <label>{{@kitModel.form.destructionFacilityProvider.label}}<span class='required'>*</span></label>
                 <select class='form-control' data-for='@kitModel.form.destructionFacilityProvider.options'
-                        value='@kitModel.form.destructionFacilityProvider.value' readonly>
+                        value='@kitModel.form.destructionFacilityProvider.value' disabled>
                   <option value='@'>{{@}}</option>
                 </select>
               </div>
