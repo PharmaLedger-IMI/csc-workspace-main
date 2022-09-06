@@ -340,17 +340,17 @@ class MessageHandlerService {
         }
         break;
       }
-      case kitsMessagesEnum.kitBlocked:{
+      case kitsMessagesEnum.ForRelabeling:{
         if(this.role === Roles.Sponsor) {
           const { kitSSI } = data.data;
-          kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsStatusesEnum.Blocked );
+          kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsStatusesEnum.BlockedForRelabeling );
 
           const notification = {
             operation: NotificationTypes.UpdateKitStatus,
             studyId: kitsData.studyId,
             orderId: kitsData.kits[0].orderId,
             read: false,
-            status: kitsStatusesEnum.Blocked,
+            status: kitsStatusesEnum.BlockedForRelabeling,
             uid: kitsData.uid,
             role: Roles.Site,
             did: data.senderIdentity,
