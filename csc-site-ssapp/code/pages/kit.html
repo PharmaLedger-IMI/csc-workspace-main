@@ -145,21 +145,21 @@
             </div>
 
             <div data-if='@actions.canReturnKit'>
-              <button class='btn-default' data-tag='return-kit'>
+              <button class='btn-default' data-tag='return-kit' disabled='@isReconcileKitDisabled'>
                 <span class='fas fa-rotate-left mr-2'></span>
                 Return Kit
               </button>
             </div>
 
             <div data-if='@actions.canReconcileKit'>
-              <button class='btn-default' data-tag='reconcile-kit'>
+              <button class='btn-default' data-tag='reconcile-kit' disabled='@isReconcileKitDisabled'>
                 <span class='fas fa-user-check mr-2'></span>
                 Reconcile Kit
               </button>
             </div>
 
             <div data-if='@actions.canBlockKit'>
-              <button class='btn-reset' data-tag='block-kit' disabled='@kitModel.kit.isBlockKitDisabled'>
+              <button class='btn-reset' data-tag='block-kit' disabled='@isBlockKitDisabled'>
                 <span class='fas fa-check'></span>
                 Block Kit
               </button>

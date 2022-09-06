@@ -259,6 +259,9 @@ class SingleKitControllerImpl extends AccordionController {
 
     let { uid } = this.history.location.state;
     model.uid = uid;
+
+    debugger;
+
     model.kitModel.kit = await this.kitsService.getKitDetails(model.uid);
 
     const currentDate = new Date();
@@ -282,6 +285,7 @@ class SingleKitControllerImpl extends AccordionController {
     }
 
     model.kitModel.kit.isBlockKitDisabled = false;
+    model.kitModel.kit.isSubmitting = false;
 
     this.model = model;
 
@@ -292,6 +296,30 @@ class SingleKitControllerImpl extends AccordionController {
       },
       "kitModel.form.certificationOfDestruction"
     );
+
+    this.model.addExpression(
+      "isBlockKitDisabled",
+      () => {
+        return !this.model.actions.canBlockKit || this.model.kitModel.kit.isSubmitting;
+      },
+      "");
+
+    this.model.addExpression(
+      "isReconcileKitDisabled",
+      () => {
+        return !this.model.actions.canReconcileKit || this.model.kitModel.kit.isSubmitting;
+      },
+      "");
+
+    this.model.addExpression(
+      "isReturnKitDisabled",
+      () => {
+        return !this.model.actions.canReturnKit || this.model.kitModel.kit.isSubmitting;
+      },
+      "");
+
+
+
     this.attachRefreshListeners();
   }
 
@@ -421,6 +449,8 @@ class SingleKitControllerImpl extends AccordionController {
 
   async returnKit(){
     window.WebCardinal.loader.hidden = false;
+    this.model.kitModel.kit.isSubmitting = true;
+
     const returnedData = {
       returnedDate:Date.now()
     }
@@ -432,33 +462,45 @@ class SingleKitControllerImpl extends AccordionController {
     }, 2000);
 
     window.WebCardinal.loader.hidden = true;
+    this.model.kitModel.kit.isSubmitting = false;
   }
 
   async reconcileKit(){
+
     window.WebCardinal.loader.hidden = false;
+    this.model.kitModel.kit.isSubmitting = true;
+
     await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Reconciled,{});
     await this.initViewModel();
     this.showErrorModalAndRedirect('Kit is marked as Reconciled', 'Kit Reconciled', {
       tag: 'kit',
       state: { uid: this.model.uid }
     }, 2000);
+
     window.WebCardinal.loader.hidden = true;
+    this.model.kitModel.kit.isSubmitting = false;
   }
 
   async requestKitDestruction(){
     window.WebCardinal.loader.hidden = false;
+    this.model.kitModel.kit.isSubmitting = true;
+
     await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.PendingDestruction,{});
     await this.initViewModel();
     this.showErrorModalAndRedirect('Kit destruction was requested', 'Destruction Request', {
       tag: 'kit',
       state: { uid: this.model.uid }
     }, 2000);
+
     window.WebCardinal.loader.hidden = true;
+    this.model.kitModel.kit.isSubmitting = false;
   }
 
   async requestRelabelingKit(){
     if(this.actor === Roles.Sponsor) {
       window.WebCardinal.loader.hidden = false;
+
+      this.model.kitModel.kit.isSubmitting = true;
 
       const shipments = await this.shipmentService.getShipments();
       const shipment = shipments.find(i =>{ return i.shipmentId === this.model.kitModel.kit.shipmentId });
@@ -476,15 +518,17 @@ class SingleKitControllerImpl extends AccordionController {
         shortDescription: kitsMessagesEnum.KitRequestRelabeled,
       });
       await this.initViewModel();
+
       window.WebCardinal.loader.hidden = true;
+      this.model.kitModel.kit.isSubmitting = false;
     }
   }
 
   async blockKit(){
     if(this.actor === Roles.Site) {
-      model.kitModel.kit.isBlockKitDisabled = true;
-
       window.WebCardinal.loader.hidden = false;
+
+      this.model.kitModel.kit.isSubmitting = true;
 
       // Needed
       const shipments = await this.shipmentService.getShipments();
@@ -505,6 +549,7 @@ class SingleKitControllerImpl extends AccordionController {
       await this.initViewModel();
 
       window.WebCardinal.loader.hidden = true;
+      this.model.kitModel.kit.isSubmitting = false;
 
     }
   }
