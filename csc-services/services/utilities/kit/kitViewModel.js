@@ -202,6 +202,14 @@ const kitViewModel = {
       placeholder: 'Dispensing Party ID',
       value: ''
     },
+    kitStorageCondition:{
+      label: 'Kit Storage Condition',
+      name: 'kit-storage-condition-id',
+      id: 'kit-storage-condition-id',
+      required: true,
+      placeholder: 'DKit Storage Condition',
+      value: ''
+    },
     investigatorId: {
       label: 'Investigator ID',
       name: 'investigator-id',
