@@ -9,24 +9,48 @@
     "messageType": "CreateGroup",
     "groupName": "RMS Write Group",
     "groupTags": "RMS",
-    "accessModes": "sponsorEnclave:write"
+    "accessModes": "cmoEnclave:write"
   },
   {
     "messageType": "CreateGroup",
     "groupName": "RMS Read Group",
     "groupTags": "RMS",
+    "accessModes": "cmoEnclave:read"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "PDM Write Group",
+    "groupTags": "PDM",
+    "accessModes": "courierEnclave:write"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "PDM Read Group",
+    "groupTags": "PDM",
+    "accessModes": "courierEnclave:read"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "Novartis Write Group",
+    "groupTags": "Novartis",
+    "accessModes": "sponsorEnclave:write"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "Novartis Read Group",
+    "groupTags": "Novartis",
     "accessModes": "sponsorEnclave:read"
   },
   {
     "messageType": "CreateGroup",
     "groupName": "Certh Write Group",
     "groupTags": "Certh",
-    "accessModes": "courierEnclave:write"
+    "accessModes": "siteEnclave:write"
   },
   {
     "messageType": "CreateGroup",
     "groupName": "Certh Read Group",
     "groupTags": "Certh",
-    "accessModes": "courierEnclave:read"
+    "accessModes": "siteEnclave:read"
   }
 ]
