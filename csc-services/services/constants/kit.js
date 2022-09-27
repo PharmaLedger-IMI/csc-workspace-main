@@ -9,7 +9,7 @@ const kitsStatusesEnum = {
 	PendingDestruction:"Pending Destruction",
 	Destroyed:"Destroyed",
 	RequestRelabeling: "Request Relabeling",
-	Blocked: "Blocked"
+	BlockedForRelabeling: "Blocked for Relabeling"
 };
 
 
@@ -24,14 +24,14 @@ const kitsPendingActionEnum = {
 	SubmitDestructionDetails:"Submit Destruction Details",
 	NoFurtherActionsRequired: 'No further actions required',
 	RequestRelabeling: "Block",
-	Blocked: "Available for Assignment"
+	BlockedForRelabeling: "Available for Assignment"
 };
 
 const kitsMessagesEnum = {
 	ShipmentSigned: 'Shipment Signed By Site',
 	MakeKitAvailable: "Make Kit Available",
 	KitRequestRelabeled: 'Kit Relabel Request',
-	kitBlocked: 'Kit Blocked'
+	kitBlockedForRelabeling: 'Kit Blocked For Relabeling'
 }
 
 const studiesKitsTableHeaders = [
