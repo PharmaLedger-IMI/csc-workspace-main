@@ -23,7 +23,6 @@ class MessageHandlerService {
     this.kitsService = new KitsService();
     this.communicationService = getCommunicationServiceInstance();
 
-
     this.ordersService.onReady(() => {
       this.shipmentService.onReady(() => {
         this.communicationService.listenForMessages(async (err, data) => {

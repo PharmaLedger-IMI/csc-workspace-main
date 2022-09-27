@@ -19,10 +19,10 @@ class DidService {
 			});
 	}
 
-	async getDidDomain() {
+	async getVaultDomain() {
 		const opendsu = require("opendsu");
 		const config = opendsu.loadAPI("config");
-			let domain = await $$.promisify(config.getEnv)("didDomain");
+			let domain = await $$.promisify(config.getEnv)("vaultDomain");
 			if (!domain) {
 				throw new Error("No domain was set up in the environment configuration file.")
 			}
@@ -41,9 +41,9 @@ class DidService {
 						return reject(err);
 					}
 
-					const domain = await this.getDidDomain();
+					const vaultDomain = await this.getVaultDomain();
 					const companyName = userDetails.company.replaceAll(" ", "_");
-					const did = `did:ssi:name:${domain}:${companyName}/${userDetails.username}`;
+					const did = `did:ssi:name:${vaultDomain}:${companyName}/${userDetails.username}`;
 					this.did = did;
 					resolve(did);
 				});

@@ -61,12 +61,9 @@ class CommunicationService  extends DSUService{
             return didDocument;
         } catch (e) {
             try {
-                this.storageService.beginBatch();
                 const didDocument = await $$.promisify(w3cDID.createIdentity)(didData.didType, didData.domain, didData.publicName);
-                await this.storageService.commitBatch();
                 console.log(`Identity ${didDocument.getIdentifier()} created successfully.`);
                 return didDocument;
-
             } catch (e) {
                 console.log(`DID creation failed for didType:'${didData.didType}' , publicName: '${didData.publicName}' , domain: '${didData.domain}'`)
                 throw e;
