@@ -14,6 +14,7 @@ class DispenseKitController extends WebcController {
     this.kitsService = new KitsService();
     this.initViewModel();
     this.initHandlers();
+    this.initStepperNavigationHandlers();
     this.navigationHandlers();
 
   }
@@ -50,14 +51,92 @@ class DispenseKitController extends WebcController {
       kitId: kitId,
     };
 
+    this.model.wizard_form = [
+      { id: 'step-1', holder_id: 'step-1-wrapper', name: 'Add Details', visible: true, validated: false },
+      { id: 'step-2', holder_id: 'step-2-wrapper', name: 'Submit', visible: false, validated: false, },
+    ];
+    this.model.wizard_form_navigation = [
+      { id: 'from_step_1_to_2', name: 'Next', visible: true, validated: false },
+      { id: 'from_step_2_to_1', name: 'Previous', visible: true, validated: false },
+    ];
+
     let didService = DidService.getDidServiceInstance();
     this.model.kitModel.form.dispensingPartyId.value = await didService.getDID();
+
+    this.model.addExpression(
+      "formIsInvalid",
+      () => {
+        return !this.isFormValid();
+      },
+    );
+
+    this.model.addExpression(
+      "formIsValid",
+      () => {
+        return this.isFormValid();
+      },
+    );
+
   }
 
+  isFormValid(){
+    return true;
+  }
   initHandlers() {
     this.onTagEvent('dispense-kit', 'click', (e) => {
       this.dispenseKit();
     });
+  }
+
+  step1NavigationHandler() {
+    this.model.enableStep1Navigation = this.model.canScanKit === false && this.model.isKitScannerActive === false;
+  }
+
+  initStepperNavigationHandlers() {
+    this.onTagEvent('step-1', 'click', (e) => {
+      this.makeStepActive('step-1', 'step-1-wrapper', e);
+    });
+
+    this.onTagEvent('step-2', 'click', (e) => {
+      this.makeStepActive('step-2', 'step-2-wrapper', e);
+    });
+
+    this.onTagEvent('from_step_1_to_2', 'click', (e) => {
+      this.makeStepActive('step-2', 'step-2-wrapper', e);
+    });
+
+    this.onTagEvent('from_step_2_to_1', 'click', (e) => {
+      this.makeStepActive('step-1', 'step-1-wrapper', e);
+      this.model.formIsInvalid = false;
+    });
+
+  }
+
+  makeStepActive(step_id, step_holder_id, e) {
+    if (e) {
+      e.wizard_form.forEach((item) => {
+        let element = document.getElementById(item.id);
+        element.classList.remove('step-active');
+        this.hideStep(item.holder_id);
+      });
+
+      document.getElementById(step_id).classList.add('step-active');
+      this.showStep(step_holder_id);
+    }
+  }
+
+  hideStep(item) {
+    const el = document.getElementById(item);
+    if (el) {
+      el.classList.add('step-hidden');
+    }
+  }
+
+  showStep(item) {
+    const el = document.getElementById(item);
+    if (el) {
+      el.classList.remove('step-hidden');
+    }
   }
 
   async dispenseKit() {
@@ -81,7 +160,8 @@ class DispenseKitController extends WebcController {
       doseUom: this.model.kitModel.form.doseUom.value,
       doseVolume: this.model.kitModel.form.doseVolume.value,
       visitId: this.model.kitModel.form.visitId.value,
-      dispensingPartyId: this.model.kitModel.form.dispensingPartyId.value
+      dispensingPartyId: this.model.kitModel.form.dispensingPartyId.value,
+      kitStorageCondition: this.model.kitModel.form.kitStorageCondition.value
     };
   }
 
