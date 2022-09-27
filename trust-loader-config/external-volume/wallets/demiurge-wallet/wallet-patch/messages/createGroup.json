@@ -7,14 +7,14 @@
   },
   {
     "messageType": "CreateGroup",
-    "groupName": "RMS Write Group",
-    "groupTags": "RMS",
+    "groupName": "RomSoft Write Group",
+    "groupTags": "RomSoft",
     "accessModes": "cmoEnclave:write"
   },
   {
     "messageType": "CreateGroup",
-    "groupName": "RMS Read Group",
-    "groupTags": "RMS",
+    "groupName": "RomSoft Read Group",
+    "groupTags": "RomSoft",
     "accessModes": "cmoEnclave:read"
   },
   {

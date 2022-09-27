@@ -42,7 +42,8 @@ class DidService {
 					}
 
 					const domain = await this.getDidDomain();
-					const did = `did:ssi:name:${domain}:${userDetails.username}`;
+					const companyName = userDetails.company.replaceAll(" ", "_");
+					const did = `did:ssi:name:${domain}:${companyName}/${userDetails.username}`;
 					this.did = did;
 					resolve(did);
 				});

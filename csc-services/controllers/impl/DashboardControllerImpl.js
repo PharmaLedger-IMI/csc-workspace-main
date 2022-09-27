@@ -1,26 +1,44 @@
 const { WebcController } = WebCardinal.controllers;
 const cscServices = require('csc-services');
+const { messagesEnum } = require('../../services/constants');
 const { Roles, Topics } = cscServices.constants;
 const MessageHandlerService = cscServices.MessageHandlerService;
 
 class DashboardControllerImpl extends WebcController {
   constructor(role, ...props) {
     super(...props);
+
     this.role = role;
-    let selectedTab;
-    MessageHandlerService.init(role, () => {
+    this.init();
+  }
+
+  async init() {
+    this.attachHandlers();
+    this.initModel();
+    this.initServices();
+    this.checkUserAuthorization();
+  }
+
+  initServices() {
+    MessageHandlerService.init(this.role, () => {
         //TODO new message consuming in progress
-      }, () => {
-        ////TODO message consumed finished
+      }, (data) => {
+        // TODO: Message consumed finished
+        // Current implementation is for demiurge when the user is added to a group
+        this.model.isMemberAddedToGroup = data.messageType === messagesEnum.AddMemberToGroup;
       },
       (err) => {
         //some fatal error occurred
-       alert("An error occurred! Please refresh your wallet")
+        alert('An error occurred! Please refresh your wallet');
       });
+  }
+
+  initModel() {
+    let selectedTab;
     if (this.history.location.state && this.history.location.state.tab) {
       selectedTab = this.history.location.state.tab;
     } else {
-      switch (role) {
+      switch (this.role) {
         case Roles.Site:
         case Roles.Courier:
           selectedTab = Topics.Shipment;
@@ -31,12 +49,41 @@ class DashboardControllerImpl extends WebcController {
     }
 
     this.model = {
+      isMemberAddedToGroup: false,
       tabNavigator: {
         selected: selectedTab
       }
     };
+  }
 
-    this.attachHandlers();
+  checkUserAuthorization() {
+    const openDSU = require('opendsu');
+    const scAPI = openDSU.loadAPI('sc');
+    const sc = scAPI.getSecurityContext();
+
+    const _waitForAuthorization = async () => {
+      const mainEnclave = await $$.promisify(scAPI.getMainEnclave)();
+      let credential;
+      try {
+        credential = await $$.promisify(mainEnclave.readKey)('credential');
+      } catch (e) {
+        console.log('[Demiurge] User is not added to any group. Waiting for authorization...');
+      }
+
+      if (!credential || credential === 'deleted') {
+        return;
+      }
+
+      // Authorization is done
+      console.log('[Demiurge] User is authorized!');
+      this.model.isMemberAddedToGroup = true;
+    };
+
+    if (sc.isInitialised()) {
+      return _waitForAuthorization();
+    }
+
+    sc.on('initialised', _waitForAuthorization);
   }
 
   attachHandlers() {
