@@ -308,7 +308,7 @@ export default class NewOrderController extends WebcController {
       if(momentService(fromDateObj).add(DAYS_AHEAD, 'days') > new Date()){
         return toDate.min = momentService(fromDate.value).add(DAYS_AHEAD, 'days').format(Commons.YearMonthDayPattern);
       }
-      toDate.min = momentService(new Date()).add(DAYS_AHEAD, 'days').format(constants.Commons.YearMonthDayPattern)
+      toDate.min = momentService(new Date()).add(DAYS_AHEAD, 'days').format(Commons.YearMonthDayPattern);
     };
 
     let orderIdChangeHandler = () => {
