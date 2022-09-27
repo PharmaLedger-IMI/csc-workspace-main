@@ -1,21 +1,34 @@
-const indexedTimestampField = "__timestamp";
+const indexedTimestampField = '__timestamp';
 
 class SharedStorage {
 
   constructor(dsuStorage) {
-
-    const scApi = require("opendsu").loadApi("sc");
-    scApi.getMainEnclave((err, enclaveDB) => {
+    this.waitForSharedEnclave((err, sharedEnclave) => {
       if (err) {
-        return console.log(err);
+        return console.error(err);
       }
-      this.enclave = enclaveDB;
+
+      this.enclave = sharedEnclave;
       this.DSUStorage = dsuStorage;
     });
   }
 
+  waitForSharedEnclave(callback) {
+    const scApi = require('opendsu').loadApi('sc');
+    scApi.getSharedEnclave((err, sharedEnclave) => {
+      if (err) {
+        console.log('Shared enclave not available! The user does not have access to the application. Waiting for authorization...');
+        return setTimeout(() => {
+          this.waitForSharedEnclave(callback);
+        }, 1000);
+      }
+
+      callback(undefined, sharedEnclave);
+    });
+  }
+
   waitForDb(func, args) {
-    if(typeof args === "undefined"){
+    if(typeof args === 'undefined'){
       args = [];
     }
     func = func.bind(this)
@@ -25,7 +38,7 @@ class SharedStorage {
   }
 
   enclaveReady() {
-    return (this.enclave !== undefined && this.enclave !== "initialising");
+    return (this.enclave !== undefined && this.enclave !== 'initialising');
   }
 
   filter(tableName, query, sort, limit, callback) {
@@ -104,16 +117,17 @@ class SharedStorage {
 }
 
 let instance;
-module.exports.getSharedStorage = function (dsuStorage) {
-    if (typeof instance === 'undefined') {
-      instance = new SharedStorage(dsuStorage);
-      const promisifyFns = ["cancelBatch","commitBatch","filter","getRecord","insertRecord","updateRecord"]
-      for(let i = 0; i<promisifyFns.length; i++){
-        let prop = promisifyFns[i];
-        if(typeof instance[prop] ==="function"){
-          instance[prop] = $$.promisify(instance[prop].bind(instance));
-        }
+module.exports.getSharedStorage = function(dsuStorage) {
+  if (typeof instance === 'undefined') {
+    instance = new SharedStorage(dsuStorage);
+    const promisifyFns = ['cancelBatch', 'commitBatch', 'filter', 'getRecord', 'insertRecord', 'updateRecord'];
+    for (let i = 0; i < promisifyFns.length; i++) {
+      let prop = promisifyFns[i];
+      if (typeof instance[prop] === 'function') {
+        instance[prop] = $$.promisify(instance[prop].bind(instance));
       }
     }
+  }
+
   return instance;
-}
+};

@@ -4,7 +4,7 @@ const ShipmentsService = require("./ShipmentsService");
 const KitsService = require("./KitsService");
 const NotificationsService = require("./lib/NotificationService");
 const eventBusService = require("./lib/EventBusService");
-const { order, shipment, Roles, Topics, kit, notifications } = require("./constants");
+const { order, shipment, Roles, Topics, kit, notifications, messagesEnum } = require("./constants");
 const { NotificationTypes } = notifications;
 const { orderStatusesEnum } = order;
 const { shipmentStatusesEnum,shipmentsEventsEnum} = shipment;
@@ -23,7 +23,6 @@ class MessageHandlerService {
     this.kitsService = new KitsService();
     this.communicationService = getCommunicationServiceInstance();
 
-
     this.ordersService.onReady(() => {
       this.shipmentService.onReady(() => {
         this.communicationService.listenForMessages(async (err, data) => {
@@ -36,22 +35,28 @@ class MessageHandlerService {
           if (err) {
             return this.errorCallback(err);
           }
-
-
-          console.log('message received', data);
+          
+          console.log("message received", data);
           //prevent page refresh. it only works if user interacted with page before
           //TODO think to a solution of storing message in localstorage and consume them from there, in order not to lose messages.
           window.WebCardinal.loader.hidden = false;
           window.addEventListener("beforeunload", onConfirmRefresh, { capture: true });
 
-          switch (this.role) {
-            case Roles.Courier:
-              await this.handleShipmentMessages(data);
-              break;
-            default:
-              await this.handleOrderMessages(data);
-              await this.handleShipmentMessages(data);
-              await this.handleKitsMessages(data);
+          data = JSON.parse(data);
+          if (data.messageType === messagesEnum.AddMemberToGroup
+            || data.messageType === messagesEnum.RemoveMembersFromGroup
+            || data.messageType === messagesEnum.DeactivateMember) {
+            await this.handleDemiurgeMembershipMessage(data);
+          } else {
+            switch (this.role) {
+              case Roles.Courier:
+                await this.handleShipmentMessages(data);
+                break;
+              default:
+                await this.handleOrderMessages(data);
+                await this.handleShipmentMessages(data);
+                await this.handleKitsMessages(data);
+            }
           }
 
           window.WebCardinal.loader.hidden = true;
@@ -62,9 +67,42 @@ class MessageHandlerService {
     });
   }
 
+  async handleDemiurgeMembershipMessage(messageData) {
+    const openDSU = require("opendsu");
+    const scAPI = openDSU.loadAPI("sc");
+    const mainEnclave = await $$.promisify(scAPI.getMainEnclave)();
+    const mainDSU = await $$.promisify(scAPI.getMainDSU)();
+    const { messageType, credential, enclave } = messageData;
+
+    if (messageType === messagesEnum.AddMemberToGroup) {
+      await $$.promisify(mainEnclave.writeKey)("credential", credential);
+      let env = await $$.promisify(mainDSU.readFile)("/environment.json");
+      env = JSON.parse(env.toString());
+      env[openDSU.constants.SHARED_ENCLAVE.TYPE] = enclave.enclaveType;
+      env[openDSU.constants.SHARED_ENCLAVE.DID] = enclave.enclaveDID;
+      env[openDSU.constants.SHARED_ENCLAVE.KEY_SSI] = enclave.enclaveKeySSI;
+      await $$.promisify(mainDSU.refresh)();
+      await $$.promisify(mainDSU.writeFile)("/environment.json", JSON.stringify(env));
+      scAPI.refreshSecurityContext();
+
+      // Send completed message back to DashboardController
+      this.messageCompleted({ messageType });
+    } else {
+      try {
+        await $$.promisify(mainEnclave.writeKey)("credential", "deleted");
+        await $$.promisify(scAPI.deleteSharedEnclave)();
+        await $$.promisify(mainDSU.refresh)();
+        scAPI.refreshSecurityContext();
+
+        // Send completed message back to DashboardController
+        this.messageCompleted({ messageType });
+      } catch (err) {
+        console.log("Error on delete wallet ", err);
+      }
+    }
+  }
 
   async handleOrderMessages(data) {
-    data = JSON.parse(data);
     const [orderData, orderStatus, notificationRole] = await this.processOrderMessage(data);
     if (!orderData || !orderStatus || !notificationRole) {
       return;
@@ -88,8 +126,6 @@ class MessageHandlerService {
   }
 
   async handleShipmentMessages(data) {
-    data = JSON.parse(data);
-
     const [shipmentData, shipmentStatus, notificationRole] = await this.processShipmentMessage(data);
     if (!shipmentData || !shipmentStatus || !notificationRole) {
       return;
@@ -126,7 +162,6 @@ class MessageHandlerService {
   }
 
   async handleKitsMessages(data) {
-    data = JSON.parse(data);
     const [kitsData, notificationRole] = await this.processKitsMessage(data);
     if (!kitsData || !notificationRole) {
       return;
