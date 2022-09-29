@@ -362,13 +362,13 @@ class ShipmentsService extends DSUService {
 		this.storageService.beginBatch();
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentUid);
 
+		billData.shipmentBillingJWTVerifiablePresentation = await this.JWTService
+			.createShipmentBillingPresentationForSponsor(shipmentDB.courierId, shipmentDB.sponsorId, billData);
 		let { shipmentTransitBillingDSU, transitDocumentsDSU, transitCommentsDSU } = await this.createShipmentTransitOtherDSUs(billData, shipmentDocuments, shipmentComments);
 
 		for (let prop in billData) {
 			shipmentTransitBillingDSU[prop] = billData[prop];
 		}
-		shipmentTransitBillingDSU.shipmentBillingJWTVerifiablePresentation = await this.JWTService
-			.createShipmentBillingPresentationForSponsor(shipmentDB.courierId, shipmentDB.sponsorId, billData);
 
 		shipmentDB.bill = billData;
 		shipmentDB.shipmentBilling = shipmentTransitBillingDSU.uid;
