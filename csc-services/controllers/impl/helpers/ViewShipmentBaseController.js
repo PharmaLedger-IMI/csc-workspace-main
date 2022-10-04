@@ -159,6 +159,7 @@ class ViewShipmentBaseControllerImpl extends AccordionController{
         afterReadyForDispatch: data.status.findIndex(el => el.status === shipmentStatusesEnum.ReadyForDispatch) !== -1,
         afterInTransit: data.status.findIndex(el => el.status === shipmentStatusesEnum.InTransit) !== -1 && data.hasOwnProperty('bill'),
         afterDelivered: data.status.findIndex(el => el.status === shipmentStatusesEnum.Delivered) !== -1,
+        afterPickupAtWarehouse: data.status.findIndex(el => el.status === shipmentStatusesEnum.PickUpAtWarehouse) !== -1,
         afterReceived: data.status.findIndex(el => el.status === shipmentStatusesEnum.Received) !== -1
       };
 
