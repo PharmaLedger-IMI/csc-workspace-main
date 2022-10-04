@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Clinical Supply Chain</title>
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link href="assets/css/all.min.css" rel="stylesheet" />
     <script>var plEnvironment = (window.location.href && window.location.href.indexOf("localhost")>=0)
         ? ' localhost'
         : (window.location.href && window.location.href.indexOf("-dev.pharmaledger.")>=0)
@@ -26,51 +27,53 @@
         Choose your role to continue
     </div>
 
-    <div id="holder" class="center-aligned-controls vertical-align">
-
-        <a class="dsu-fabric_button scale-up" href="csc-sponsor-wallet/loader/" target="_blank">
+    <div class="center-aligned-controls vertical-align">
+        <a class="role-button scale-up" href="csc-sponsor-wallet/loader/" target="_blank">
             <div class="left-side">
-                <img src="assets/images/sponsor.svg" alt="SPONSOR-app">
+              <i class="fa-solid fa-handshake fa-3x"></i>
             </div>
             <div class="right-side">
                 <p>SPONSOR</p>
             </div>
         </a>
 
-        <a class="dsu-fabric_button scale-up" href="csc-cmo-wallet/loader/" target="_blank">
+        <a class="role-button scale-up" href="csc-cmo-wallet/loader/" target="_blank">
             <div class="left-side">
-                <img src="assets/images/cmo.svg" alt="CMO-app">
+              <i class="fa-sharp fa-solid fa-arrows-rotate fa-3x"></i>
             </div>
             <div class="right-side">
                 <p>CMO</p>
             </div>
         </a>
 
-        <a class="dsu-fabric_button scale-up" href="csc-site-wallet/loader/" target="_blank">
+        <a class="role-button scale-up" href="csc-site-wallet/loader/" target="_blank">
             <div class="left-side">
-                <img src="assets/images/site.svg" alt="CMO-app">
+                <i class="fa-solid fa-hospital fa-3x"></i>
             </div>
             <div class="right-side">
                 <p>SITE</p>
             </div>
         </a>
 
-        <a class="dsu-fabric_button scale-up" href="csc-courier-wallet/loader/" target="_blank">
+        <a class="role-button scale-up" href="csc-courier-wallet/loader/" target="_blank">
             <div class="left-side">
-                <img src="assets/images/courier.svg" alt="CMO-app">
+                <i class="fa-sharp fa-solid fa-truck-fast fa-3x"></i>
             </div>
             <div class="right-side">
                 <p>COURIER</p>
             </div>
         </a>
-<!--        <a class="web-wallet_button scale-up" href="dsu-explorer/loader/" target="_blank">-->
-<!--            <div class="left-side">-->
-<!--                <img src="assets/images/cube.png" alt="DSU-Explorer">-->
-<!--            </div>-->
-<!--            <div class="right-side">-->
-<!--                <p>DSU Explorer</p>-->
-<!--            </div>-->
-<!--        </a>-->
+    </div>
+
+    <div class="center-aligned-controls vertical-align">
+        <a class="role-button scale-up" href="demiurge-wallet/loader/" target="_blank">
+            <div class="left-side">
+                <i class="fa-solid fa-atom fa-4x"></i>
+            </div>
+            <div class="right-side">
+                <p>DEMIURGE</p>
+            </div>
+        </a>
     </div>
 
 </body>
