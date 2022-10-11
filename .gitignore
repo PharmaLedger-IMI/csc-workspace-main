@@ -17,6 +17,7 @@ tmp
 
 apihub-root/mqs/
 apihub-root/seedsBackup
+apihub-root/external-volume/cache
 apihub-root/external-volume/domains
 apihub-root/external-volume/mqs/
 apihub-root/external-volume/wallets/
