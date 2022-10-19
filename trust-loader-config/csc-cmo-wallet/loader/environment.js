@@ -1,4 +1,5 @@
 export default {
+  companyName: "RomSoft",
   appName: 'Cmo App',
   appVersion: '0.1.1',
   vault: 'server',

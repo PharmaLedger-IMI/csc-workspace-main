@@ -1,4 +1,5 @@
 export default {
+  companyName: "PDM",
   appName: 'Courier App',
   appVersion: '0.1.1',
   vault: 'server',
