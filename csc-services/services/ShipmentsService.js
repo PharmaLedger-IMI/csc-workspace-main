@@ -565,7 +565,7 @@ class ShipmentsService extends DSUService {
 
 	async updateLocalShipment(shipmentIdentifier, newShipmentData = {}) {
 		this.storageService.beginBatch();
-		shipmentIdentifier = this.getUidFromSSI(shipmentIdentifier);
+		shipmentIdentifier = await this.getUidFromSSIAsync(shipmentIdentifier);
 		let shipmentDB = await this.storageService.getRecord(this.SHIPMENTS_TABLE, shipmentIdentifier);
 		const loadedShipmentDSU = await this.getEntityAsync(shipmentIdentifier, FoldersEnum.Shipments);
 
