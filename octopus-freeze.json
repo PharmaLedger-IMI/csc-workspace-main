@@ -9,7 +9,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "7569f1980579c9cd4f303df5a78e3c963926bb84"
+                    "commit": "5fd3347d130ac43c3e2bdca575235873f0369306"
                 },
                 {
                     "type": "execute",
@@ -39,13 +39,13 @@
         },
         {
             "name": "privatesky",
-            "src": "http://github.com/privatesky/psk-release.git",
+            "src": "http://github.com/Mastaleru/psk-release.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "be8027202d04032bed93fb8de74253d61ec6a3b9"
+                    "commit": "0fbfc90772b6f31baae5fcd88cd67f0ba64ea3fc"
                 },
                 {
                     "type": "execute",
@@ -141,7 +141,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "911467635bcebdfea2c3bacc745d059cb0bb1a74"
+                    "commit": "8443b3f6044b68f0c5f589ed2f1dab46e7565528"
                 },
                 {
                     "type": "execute",
