@@ -9,6 +9,10 @@
     line-height: 150%;
 }
 
+.dispense-kit-container-height{
+    min-height: 720px!important;
+}
+
 .barcode-container{
     position: relative;
     height: 100%;

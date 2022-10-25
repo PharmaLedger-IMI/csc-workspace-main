@@ -24,7 +24,7 @@
           </button>
         </div>
 
-        <div class="step-holder-modal barcode-container" id="step-1-wrapper">
+        <div class="step-holder-modal barcode-container dispense-kit-container-height" id="step-1-wrapper">
           <div class='entity-title text-center'>
             <b>Dispense Kit</b>
           </div>
@@ -73,7 +73,7 @@
           </div>
 
           <div class="row-wrapper button-wrapper">
-            <button class="btn-default" data-tag="from_step_1_to_2" disabled="@formIsInvalid" id="from_step_1_to_2">
+            <button class="btn-default" data-tag="from_step_1_to_2" disabled="@formIsInvalid"  id="from_step_1_to_2">
               Next
               <i class="fas fa-angle-right"></i>
             </button>
@@ -122,12 +122,12 @@
           </div>
 
 
-          <div class='row-wrapper button-wrapper' data-if='@formIsValid'>
-            <button class="btn-default" data-tag="from_step_2_to_1" disabled="@formIsInvalid" id="from_step_2_to_1">
-              Previous
-              <i class="fas fa-angle-left"></i>
+          <div class='row-wrapper button-wrapper'>
+            <button class='btn-reset' data-tag='form-reset'>
+              <i class='fas fa-times'></i>
+              Clear Changes
             </button>
-            <button class='btn-default' data-tag='dispense-kit'>
+            <button class='btn-default' disabled='@formIsInvalid' data-tag='dispense-kit'>
               <span class='fas fa-medkit mr-2'></span>
               Dispense Kit
             </button>

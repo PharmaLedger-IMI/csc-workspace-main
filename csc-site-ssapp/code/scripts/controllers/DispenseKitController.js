@@ -63,31 +63,61 @@ class DispenseKitController extends WebcController {
     let didService = DidService.getDidServiceInstance();
     this.model.kitModel.form.dispensingPartyId.value = await didService.getDID();
 
+  }
+
+
+
+
+  initHandlers() {
+
+    this.modelExpressionsHandler();
+
+    this.onTagEvent('dispense-kit', 'click', (e) => {
+      this.dispenseKit();
+    });
+    //When you reset form
+    this.onTagEvent('form-reset', 'click', (e) => {
+      this.showModal(
+        'All newly entered data will be removed. This will require you to start over the process of entering the details again',
+        'Clear Changes',
+        () => {
+          this.model.kitModel = viewModelResolver('kit');
+
+          this.makeStepActive('step-1', 'step-1-wrapper', e);
+        },
+        this.cancelModalHandler,
+        {
+          disableExpanding: true,
+          cancelButtonText: 'Cancel',
+          confirmButtonText: 'Ok, let\'s start over',
+          id: 'confirm-modal'
+        }
+      );
+    });
+
+  }
+
+  modelExpressionsHandler(){
     this.model.addExpression(
       "formIsInvalid",
-      () => {
-        return !this.isFormValid();
-      },
+      () => { return !this.isFormValid(); },
+      "kitModel.form"
     );
 
     this.model.addExpression(
       "formIsValid",
-      () => {
-        return this.isFormValid();
-      },
+      () => { return this.isFormValid(); },
+      "kitModel.form"
     );
-
   }
 
   isFormValid(){
-    return true;
+    return (
+      this.model.kitModel.form.patientId.value !== '' &&
+      this.model.kitModel.form.doseVolume.value !== '' &&
+      this.model.kitModel.form.visitId.value !== ''
+    );
   }
-  initHandlers() {
-    this.onTagEvent('dispense-kit', 'click', (e) => {
-      this.dispenseKit();
-    });
-  }
-
   step1NavigationHandler() {
     this.model.enableStep1Navigation = this.model.canScanKit === false && this.model.isKitScannerActive === false;
   }
