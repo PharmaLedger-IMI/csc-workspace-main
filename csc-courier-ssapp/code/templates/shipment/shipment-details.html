@@ -121,9 +121,6 @@
   <label>{{@shipmentModel.form.specialInstructions.label}}</label>
   <textarea class="form-control form-control-sm" readonly value="@shipmentModel.shipment.specialInstructions"></textarea>
 
-  <!-- Temperature Logger ID -->
-  <label>{{@shipmentModel.form.temperatureLoggerId.label}}</label>
-  <input class='form-control form-control-sm' readonly type='text' value='@shipmentModel.shipment.temperatureLoggerId' />
 
   <!-- Keep Between -->
   <label>{{@shipmentModel.form.inputs.keep_between_temperature.label}}</label>
@@ -136,6 +133,14 @@
   <!-- Temperature Comments -->
   <label>{{@shipmentModel.form.inputs.temperature_comments.label}}</label>
   <input class="form-control form-control-sm" readonly name="@shipmentModel.form.inputs.temperature_comments.name" type="text" value="@shipmentModel.shipment.temperature_comments" />
+</div>
+
+<div data-if='@shipmentModel.shipment.contextualContent.afterPickupAtWarehouse'> 
+  <div class='grid-column-wrapper'>
+    <!-- Temperature Logger ID -->
+    <label>{{@shipmentModel.form.temperatureLoggerId.label}}</label>
+    <input class='form-control form-control-sm' readonly type='text' value='@shipmentModel.shipment.temperatureLoggerId' />
+  </div>
 </div>
 
 <div data-if='@shipmentModel.shipment.contextualContent.afterInTransit'>

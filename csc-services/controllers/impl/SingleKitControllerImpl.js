@@ -282,6 +282,14 @@ class SingleKitControllerImpl extends AccordionController {
     }
 
     this.model = model;
+
+    this.model.addExpression(
+      "isCertificationOfDestructionFileEmpty",
+      () => {
+        return this.model.kit.form.certificationOfDestruction === null;
+      },
+      "kitModel.form.certificationOfDestruction"
+    );
     this.attachRefreshListeners();
   }
 
@@ -300,7 +308,7 @@ class SingleKitControllerImpl extends AccordionController {
     actions.canRequestRelabelingKit = (kit.status_value === kitsStatusesEnum.AvailableForAssignment);
     actions.relabeledAlreadyRequested = typeof kit.hasRequestRelabeled === 'boolean' && kit.hasRequestRelabeled;
     actions.canBlockKit = kit.status_value === kitsStatusesEnum.RequestRelabeling;
-    actions.canMakeKitAvailable = kit.status_value === kitsStatusesEnum.Blocked;
+    actions.canMakeKitAvailable = kit.status_value === kitsStatusesEnum.BlockedForRelabeling;
     return actions;
   }
 
@@ -374,8 +382,12 @@ class SingleKitControllerImpl extends AccordionController {
          afterReturned: data.status.findIndex(el => el.status === kitsStatusesEnum.Returned) !== -1,
          afterQuarantined:data.status.findIndex(el => el.status === kitsStatusesEnum.InQuarantine) !== -1,
          afterDestroyedConfirmation:data.status.findIndex(el => el.status === kitsStatusesEnum.Destroyed) !== -1,
-         afterRequestRelabeling:data.status.findIndex(el => el.status === kitsStatusesEnum.Blocked) !== -1
+         afterRequestRelabeling:data.status.findIndex(el => el.status === kitsStatusesEnum.BlockedForRelabeling) !== -1
        };
+
+      if (data.contextualContent.afterDestroyedConfirmation) {
+        data.kitDestroyDetails.hasCertificationOfDestruction = typeof data.kitDestroyDetails.certificationOfDestructionName !== 'undefined';
+      }
       return data;
     }
     return {};
@@ -475,14 +487,14 @@ class SingleKitControllerImpl extends AccordionController {
       const sponsorId = shipment.sponsorId;
 
       // Site updates the kit
-      const data = await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Blocked);
+      const data = await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.BlockedForRelabeling);
 
 
       // Site send a message to sponsor that the kit is blocked.
       await this.communicationService.sendMessage(sponsorId,{
-        operation: kitsMessagesEnum.kitBlocked,
+        operation: kitsMessagesEnum.kitBlockedForRelabeling,
         data: {kitSSI: this.model.uid, kitId: this.model.kitModel.kit.kitId},
-        shortDescription: kitsMessagesEnum.kitBlocked,
+        shortDescription: kitsMessagesEnum.kitBlockedForRelabeling,
       });
 
       await this.initViewModel();

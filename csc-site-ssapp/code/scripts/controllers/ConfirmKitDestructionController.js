@@ -11,6 +11,7 @@ class ConfirmKitDestructionController extends WebcController {
 
   constructor(...props) {
     super(...props);
+    this.certificationOfDestructionFile = null;
     this.kitsService = new KitsService();
     this.initViewModel();
     this.initHandlers();
@@ -101,6 +102,15 @@ class ConfirmKitDestructionController extends WebcController {
 
     this.model.wizard = this.getWizardForm();
     this.model.formIsInvalid = true;
+
+    this.model.addExpression(
+      "certificationOfDestructionFileIsAdded",
+      () => {
+        return this.certificationOfDestructionFile !== null;
+      },
+      "kitModel.form.certificationOfDestruction"
+    );
+
   }
 
   initHandlers() {
@@ -116,8 +126,8 @@ class ConfirmKitDestructionController extends WebcController {
         'All newly entered data will be removed. This will require you to start over the process of entering the details again',
         'Clear Changes',
         () => {
-          this.model.kitModel = viewModelResolver('kit'),
-            this.certificationOfDestructionFile = null;
+          this.model.kitModel = viewModelResolver('kit');
+          this.certificationOfDestructionFile = null;
           this.makeStepActive('step-1', 'step-1-wrapper', e);
           this.model.formIsInvalid = true;
         },
@@ -133,12 +143,15 @@ class ConfirmKitDestructionController extends WebcController {
     });
 
 
+
     this.onTagClick('download-file', async () => {
+      if(this.certificationOfDestructionFile != null){
         let fileDownloaderService = new FileDownloaderService();
         window.WebCardinal.loader.hidden = false;
         await fileDownloaderService.prepareDownloadFromBrowser(this.certificationOfDestructionFile);
         fileDownloaderService.downloadFileToDevice(this.certificationOfDestructionFile.name);
         window.WebCardinal.loader.hidden = true;
+      }
     });
 
   }
@@ -153,7 +166,6 @@ class ConfirmKitDestructionController extends WebcController {
     ]
 
     let validationConstraints = [
-      typeof this.certificationOfDestructionFile !=="undefined",
       ...requiredInputs.map(input => typeof input !== 'undefined' && input.trim() !== "")
     ];
 

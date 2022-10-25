@@ -140,9 +140,9 @@ add a file under ```docs/bin``` called ```drawio_exec_command.os``` containing t
 * csc-site-wallet
     * Wallets for each one of the actors
 * trust-loader-config: custom config to override the wallet loader default ones for each case:
-    * csc-sponsor-fabric-wallet/loader;
-    * csc-cmo-fabric-wallet/loader;
-    * csc-courier-fabric-wallet/loader;
+    * csc-sponsor-wallet/loader;
+    * csc-cmo-wallet/loader;
+    * csc-courier-wallet/loader;
     * csc-site-wallet/loader;
 
 #### post install (after running npm install)
@@ -159,9 +159,9 @@ add a file under ```docs/bin``` called ```drawio_exec_command.os``` containing t
 * Use case related:
     * Apihub-root: Folder changes:
         * wallet loaders: clones the loader into each of the wallets:
-            * csc-sponsor-fabric-wallet/loader;
-            * csc-cmo-fabric-wallet/loader;
-            * csc-courier-fabric-wallet/loader;
+            * csc-sponsor-wallet/loader;
+            * csc-cmo-wallet/loader;
+            * csc-courier-wallet/loader;
             * csc-site-wallet/loader;
 
     * csc-sponsor-ssapp: The application for the sponsor;

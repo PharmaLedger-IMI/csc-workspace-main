@@ -72,7 +72,7 @@ class StatusesService {
           pendingDestructionStatuses : [kitsStatusesEnum.PendingDestruction],
           canceledKitsStatuses : [kitsStatusesEnum.Destroyed],
           requestRelabelingStatuses : [kitsStatusesEnum.RequestRelabeling],
-          blockedStatuses: [kitsStatusesEnum.Blocked]
+          blockedStatuses: [kitsStatusesEnum.BlockedForRelabeling]
         }
       }
 }

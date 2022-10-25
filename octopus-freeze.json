@@ -9,7 +9,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "d6a80ff39a897da05595c36241e20952ce455884"
+                    "commit": "5fd3347d130ac43c3e2bdca575235873f0369306"
                 },
                 {
                     "type": "execute",
@@ -39,13 +39,13 @@
         },
         {
             "name": "privatesky",
-            "src": "http://github.com/privatesky/psk-release.git",
+            "src": "http://github.com/Mastaleru/psk-release.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "8ed5e63573cafcbd8885f45796887ee51bec89d0"
+                    "commit": "0fbfc90772b6f31baae5fcd88cd67f0ba64ea3fc"
                 },
                 {
                     "type": "execute",
@@ -61,7 +61,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "734cdac7e3ed3c8c603982fcd7c2022a4bb2a250"
+                    "commit": "d7f9cc7c9a814709c8c735dcfdcbcbc57c001044"
                 },
                 {
                     "type": "execute",
@@ -81,7 +81,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "734cdac7e3ed3c8c603982fcd7c2022a4bb2a250"
+                    "commit": "d7f9cc7c9a814709c8c735dcfdcbcbc57c001044"
                 },
                 {
                     "type": "execute",
@@ -101,7 +101,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "734cdac7e3ed3c8c603982fcd7c2022a4bb2a250"
+                    "commit": "d7f9cc7c9a814709c8c735dcfdcbcbc57c001044"
                 },
                 {
                     "type": "execute",
@@ -121,7 +121,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "734cdac7e3ed3c8c603982fcd7c2022a4bb2a250"
+                    "commit": "d7f9cc7c9a814709c8c735dcfdcbcbc57c001044"
                 },
                 {
                     "type": "execute",
@@ -130,6 +130,46 @@
                 {
                     "type": "execute",
                     "cmd": "cd apihub-root/csc-courier-wallet/loader && npm run build"
+                }
+            ]
+        },
+        {
+            "name": "demiurge",
+            "src": "https://github.com/paiusCatalin/demiurge.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "8443b3f6044b68f0c5f589ed2f1dab46e7565528"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd demiurge && npm install"
+                }
+            ]
+        },
+        {
+            "name": "apihub-root/demiurge-wallet/loader",
+            "src": "http://github.com/privatesky/web-dossier-loader.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "d7f9cc7c9a814709c8c735dcfdcbcbc57c001044"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/demiurge-wallet/loader && npm install"
+                },
+                {
+                    "type": "copy",
+                    "src": "apihub-root/demiurge-wallet/loader/loader-config.local.json-template",
+                    "target": "apihub-root/demiurge-wallet/loader/loader-config.local.json",
+                    "options": {
+                        "overwrite": true
+                    }
                 }
             ]
         },
@@ -157,7 +197,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "734cdac7e3ed3c8c603982fcd7c2022a4bb2a250"
+                    "commit": "d7f9cc7c9a814709c8c735dcfdcbcbc57c001044"
                 },
                 {
                     "type": "execute",
@@ -259,6 +299,15 @@
                     "cmd": "cd themes/blue-csc-theme && npm install"
                 }
             ]
+        },
+        {
+            "name": "postinstall-patch",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./bin/octopusRun.js postinstall\""
+                }
+            ]
         }
     ],
     "build-use-case": [
@@ -295,10 +344,6 @@
                     "options": {
                         "overwrite": true
                     }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-sponsor-wallet/apps-patch/csc-sponsor-ssapp/readme"
                 }
             ]
         },
@@ -325,10 +370,6 @@
                     "options": {
                         "overwrite": true
                     }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-cmo-wallet/apps-patch/csc-cmo-ssapp/readme"
                 }
             ]
         },
@@ -355,10 +396,6 @@
                     "options": {
                         "overwrite": true
                     }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-site-wallet/apps-patch/csc-site-ssapp/readme"
                 }
             ]
         },
@@ -385,48 +422,6 @@
                     "options": {
                         "overwrite": true
                     }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/csc-courier-wallet/apps-patch/csc-courier-ssapp/readme"
-                }
-            ]
-        },
-        {
-            "name": "trust-loader-config",
-            "actions": [
-                {
-                    "type": "copy",
-                    "src": "./trust-loader-config",
-                    "target": "./apihub-root",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
-            "name": "copy-bundles",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/csc-sponsor-wallet/loader && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/csc-cmo-wallet/loader && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/csc-site-wallet/loader && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/csc-courier-wallet/loader && npm install"
                 }
             ]
         }
@@ -473,6 +468,32 @@
             ]
         },
         {
+            "name": "demiurge-wallet_bind_to_demiurge",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd demiurge && npm run build"
+                },
+                {
+                    "type": "copySeed",
+                    "src": "./demiurge/seed",
+                    "target": "./apihub-root/external-volume/wallets/demiurge-wallet/apps-patch/demiurge/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "copySeed",
+                    "src": "./demiurge/seed",
+                    "target": "./apihub-root/external-volume/wallets/demiurge-wallet/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
             "name": "dossier-explorer-wallet-prototype-build",
             "src": "",
             "actions": [
@@ -505,10 +526,62 @@
                     "options": {
                         "overwrite": true
                     }
+                }
+            ]
+        }
+    ],
+    "patch": [
+        {
+            "name": "trust-loader-config",
+            "actions": [
+                {
+                    "type": "copy",
+                    "src": "./trust-loader-config",
+                    "target": "./apihub-root",
+                    "options": {
+                        "overwrite": true,
+                        "ignoreErrors": true
+                    }
+                }
+            ]
+        }
+    ],
+    "postinstall": [
+        {
+            "name": "trust-loader-config",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./bin/octopusRun.js patch\""
+                }
+            ]
+        },
+        {
+            "name": "copy-bundles",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
                 },
                 {
                     "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/readme"
+                    "cmd": "cd apihub-root/csc-sponsor-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/csc-cmo-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/csc-site-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/csc-courier-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/demiurge-wallet/loader && npm install"
                 }
             ]
         }

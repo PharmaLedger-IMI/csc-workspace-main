@@ -1,59 +1,70 @@
-
-body{
-    background:#00345b;
+body {
+    background: #00345b;
 }
 
-.logo-holder{
+.logo-holder {
     text-align: center;
     margin: 60px 0;
 }
 
-.logo-holder img{
-    width:200px;
+.logo-holder img {
+    width: 200px;
 }
+
 html {
     background-color: #00345b;
     font-family: "Open Sans", "Helvetica Neue", sans-serif;
 }
 
+#demiurge {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    padding: 0 1rem;
+}
+
+#demiurge a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 0.5rem;
+    text-decoration: none;
+    color: #fff;
+    background-color: #008898;
+    background-image: linear-gradient(125deg, #008898, #335f80);
+    padding: 0.5rem;
+    border-radius: 4%;
+}
+
+
 .center-aligned-controls {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-}
-
-.vertical-align {
+    padding: 2.5rem 1rem;
 }
 
 .center-aligned-controls a {
-    margin: 10px;
-    padding: 20px 70px;
+    padding: 2rem 5rem 0.5rem;
     width: 150px;
     height: 130px;
+    row-gap: 1rem;
     border-radius: 10px;
     text-decoration: none;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.center-aligned-controls a img {
-    height: 60px;
-    width: 60px;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
+.center-aligned-controls a i {
+    color: #000000;
 }
 
 .left-side {
     display: flex;
     align-items: center;
     filter: invert(1);
-}
-
-.right-side {
-    margin-left: 20px;
-    width: 110px;
-    display: block;
-    text-align: center;
 }
 
 .center-aligned-controls p {
@@ -63,41 +74,23 @@ html {
     color: white;
 }
 
-.description-text{
+.description-text {
     text-align: center;
     margin: 60px 0;
     color: #b0e8ff;
-
 }
+
 .scale-up:hover {
     transform: scale(1.2);
     box-shadow: 0 0 24px -2px rgba(0, 0, 0, 0.75);
 }
 
-.dsu-fabric_button {
+.role-button {
     background-color: #008898;
-    background-image: linear-gradient(125deg, #008898 , #335f80 );
+    background-image: linear-gradient(125deg, #008898, #335f80);
 }
 
-.dsu-fabric_button:hover {
+.role-button:hover {
     background-color: #008898;
-    background-image: linear-gradient(125deg, #008898 , #335f80 );
-}
-
-.leaflet-wallet_button {
-    background-color: #976ff9;
-    background-image: linear-gradient(125deg, #976ff9 , #784BA0 );
-}
-
-.leaflet-wallet_button:hover {
-    background-image: linear-gradient(150deg, #976ff9 , #784BA0 );
-}
-
-.web-wallet_button {
-    background: #74ebd5;
-    background-image: linear-gradient(125deg, #ACB6E5, #74ebd5);
-}
-
-.web-wallet_button:hover {
-    background-image: linear-gradient(150deg, #ACB6E5, #74ebd5);
+    background-image: linear-gradient(125deg, #008898, #335f80);
 }

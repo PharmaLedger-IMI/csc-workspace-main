@@ -95,10 +95,17 @@
 		<label>{{@form.specialInstructions.label}}</label>
 		<textarea class='form-control' value='@shipment.specialInstructions' readonly></textarea>
 
+
+
+	</div>
+</div>
+
+
+<div data-if='@shipment.contextualContent.afterPickupAtWarehouse'>
+	<div class='grid-column-wrapper'>
 		<!-- Temperature Logger ID -->
 		<label>{{@form.temperatureLoggerId.label}}</label>
 		<input class='form-control form-control-sm' readonly value='@shipment.temperatureLoggerId' />
-
 	</div>
 </div>
 

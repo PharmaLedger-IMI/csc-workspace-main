@@ -120,31 +120,35 @@ class DSUService {
           }
 
           const keySSIObj = keySSISpace.parse(seedSSI);
-          const anchorId = keySSIObj.getAnchorId();
-
-          dsuInstance.getKeySSIAsString('sread', (err, sreadSSI) => {
+          keySSIObj.getAnchorId((err, anchorId) => {
             if (err) {
               return callback(err);
             }
-            entity.uid = anchorId;
-
-            this.updateDSUData(dsuInstance, path, entity, (err) => {
+            dsuInstance.getKeySSIAsString('sread', (err, sreadSSI) => {
               if (err) {
-                return callback(err, entity);
+                return callback(err);
               }
-              entity.keySSI = seedSSI;
-              entity.sReadSSI = sreadSSI;
+              entity.uid = anchorId;
 
-              this.DSUStorage.mount(path + '/' + anchorId, seedSSI, (err) => {
+              this.updateDSUData(dsuInstance, path, entity, (err) => {
                 if (err) {
-                  console.log(err);
+                  return callback(err, entity);
                 }
-                callback(undefined, entity);
+                entity.keySSI = seedSSI;
+                entity.sReadSSI = sreadSSI;
+
+                this.DSUStorage.mount(path + '/' + anchorId, seedSSI, (err) => {
+                  if (err) {
+                    console.log(err);
+                  }
+                  callback(undefined, entity);
+                });
+
               });
 
             });
-
           });
+
         });
       });
 
@@ -178,13 +182,17 @@ class DSUService {
     [path, callback] = this.swapParamsIfPathIsMissing(path, callback);
 
     const keySSIObj = keySSISpace.parse(keySSI);
-    const anchorId = keySSIObj.getAnchorId();
-    this.DSUStorage.mount(path + '/' + anchorId, keySSI, (err) => {
-      this.getEntity(anchorId, path, (err, entity) => {
-        if (err) {
-          return callback(err, undefined);
-        }
-        callback(undefined, entity);
+    keySSIObj.getAnchorId((err, anchorId) => {
+      if (err) {
+        return callback(err);
+      }
+      this.DSUStorage.mount(path + '/' + anchorId, keySSI, (err) => {
+        this.getEntity(anchorId, path, (err, entity) => {
+          if (err) {
+            return callback(err, undefined);
+          }
+          callback(undefined, entity);
+        });
       });
     });
   }
@@ -243,9 +251,13 @@ class DSUService {
     });
   };
 
-  getUidFromSSI(ssi) {
+  getUidFromSSI(ssi, callback) {
     const ssiObj = keySSISpace.parse(ssi);
-    return ssiObj.getAnchorId();
+    ssiObj.getAnchorId(callback);
+  }
+
+  async getUidFromSSIAsync(ssi){
+    return this.asyncMyFunction(this.getUidFromSSI, [...arguments]);
   }
 }
 

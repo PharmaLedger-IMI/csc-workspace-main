@@ -14,67 +14,126 @@
         <span data-tag='dashboard'>Dashboard</span> / <span data-tag='kits-management'>Kits Management</span> / <span data-tag='view-study-kits'>{{@studyId}} - {{@orderId}}/ Kits</span> / <span data-tag='view-kit'> {{@kitId}} </span>
         / <strong>Dispense Kit</strong>
       </div>
+
       <div class='body-main-section'>
-
-        <div class='entity-title text-center'>
-          <b>Dispense Kit</b>
-        </div>
-        <!--                <div class="grid-column-wrapper">-->
-        <div class='form-group'>
-          <label>{{@kitModel.form.patientId.label}}</label>
-          <input class="form-control form-control" name="@kitModel.form.patientId.name" placeholder="@kitModel.form.patientId.placeholder" value="@kitModel.form.patientId.value" />
+        <div class='stepper-container'>
+          <button id='step-1' data-tag='step-1' disabled='@formIsInvalid' class='step-element step-active'>2 - Add Details
+          </button>
+          <div class="step-break-line"></div>
+          <button id='step-2' data-tag='step-2' disabled='@formIsInvalid' class='step-element'>3 - Submit
+          </button>
         </div>
 
-        <div class='form-group'>
-          <label>{{@kitModel.form.doseType.label}}</label>
-          <select class='form-control' data-for='@kitModel.form.doseType.options' value='@kitModel.form.doseType.value'>
-            <option value='@'>{{@}}</option>
-          </select>
-        </div>
+        <div class="step-holder-modal barcode-container" id="step-1-wrapper">
+          <div class='entity-title text-center'>
+            <b>Dispense Kit</b>
+          </div>
+          <!--                <div class="grid-column-wrapper">-->
+          <div class='form-group'>
+            <label>{{@kitModel.form.patientId.label}}</label>
+            <input class="form-control form-control" name="@kitModel.form.patientId.name" placeholder="@kitModel.form.patientId.placeholder" value="@kitModel.form.patientId.value" />
+          </div>
 
-        <div class='form-group'>
-          <label>{{@kitModel.form.doseUom.label}}</label>
-          <select class='form-control' data-for='@kitModel.form.doseUom.options' value='@kitModel.form.doseUom.value'>
-            <option value='@'>{{@}}</option>
-          </select>
-        </div>
+          <div class='form-group'>
+            <label>{{@kitModel.form.doseType.label}}</label>
+            <select class='form-control' data-for='@kitModel.form.doseType.options' value='@kitModel.form.doseType.value'>
+              <option value='@'>{{@}}</option>
+            </select>
+          </div>
+
+          <div class='form-group'>
+            <label>{{@kitModel.form.doseUom.label}}</label>
+            <select class='form-control' data-for='@kitModel.form.doseUom.options' value='@kitModel.form.doseUom.value'>
+              <option value='@'>{{@}}</option>
+            </select>
+          </div>
 
 
-        <div class='form-group'>
-          <label>{{@kitModel.form.doseVolume.label}}</label>
-          <input class="form-control form-control" name="@kitModel.form.doseVolume.name" placeholder="@kitModel.form.doseVolume.placeholder" value="@kitModel.form.doseVolume.value" type="number"/>
-        </div>
+          <div class='form-group'>
+            <label>{{@kitModel.form.doseVolume.label}}</label>
+            <input class="form-control form-control" name="@kitModel.form.doseVolume.name"
+                   placeholder="@kitModel.form.doseVolume.placeholder" value="@kitModel.form.doseVolume.value"
+                   step="@kitModel.form.doseVolume.step" min='@kitModel.form.doseVolume.min'
+                   type="number"/>
+          </div>
 
-        <div class='form-group'>
-          <label>{{@kitModel.form.visitId.label}}</label>
-          <input class="form-control form-control" name="@kitModel.form.visitId.name" placeholder="@kitModel.form.visitId.placeholder" value="@kitModel.form.visitId.value" />
-        </div>
+          <div class='form-group'>
+            <label>{{@kitModel.form.visitId.label}}</label>
+            <input class="form-control form-control" name="@kitModel.form.visitId.name" placeholder="@kitModel.form.visitId.placeholder" value="@kitModel.form.visitId.value" />
+          </div>
 
-        <div class='form-group'>
-          <label>{{@kitModel.form.visit_date.label}}</label>
-          <div class='row'>
-            <div class='col-8'>
-              <input class='form-control' data-view-model='@kitModel.form.visit_date' type='date' readonly />
-            </div>
-            <div class='col-4'>
-              <input class='form-control' data-view-model='@kitModel.form.visit_time' type='time' readonly />
-            </div>
+          <div class='form-group'>
+            <label>{{@kitModel.form.dispensingPartyId.label}}</label>
+            <input class="form-control form-control" readonly name="@kitModel.form.dispensingPartyId.name" placeholder="@kitModel.form.dispensingPartyId.placeholder" value="@kitModel.form.dispensingPartyId.value" />
+          </div>
+
+          <div class='form-group'>
+            <label>{{@kitModel.form.kitStorageCondition.label}}</label>
+            <input class="form-control form-control" name="@kitModel.form.kitStorageCondition.name" placeholder="@kitModel.form.kitStorageCondition.placeholder" value="@kitModel.form.kitStorageCondition.value" />
+          </div>
+
+          <div class="row-wrapper button-wrapper">
+            <button class="btn-default" data-tag="from_step_1_to_2" disabled="@formIsInvalid" id="from_step_1_to_2">
+              Next
+              <i class="fas fa-angle-right"></i>
+            </button>
           </div>
         </div>
 
-        <div class='form-group'>
-          <label>{{@kitModel.form.dispensingPartyId.label}}</label>
-          <input class="form-control form-control" readonly name="@kitModel.form.dispensingPartyId.name" placeholder="@kitModel.form.dispensingPartyId.placeholder" value="@kitModel.form.dispensingPartyId.value" />
+        <div class="step-holder-modal step-hidden" id="step-2-wrapper">
+
+          <div class='form-group'>
+            <label>{{@kitModel.form.patientId.label}}</label>
+            <input readonly class="form-control form-control" name="@kitModel.form.patientId.name" placeholder="@kitModel.form.patientId.placeholder" value="@kitModel.form.patientId.value" />
+          </div>
+
+          <div class='form-group'>
+            <label>{{@kitModel.form.doseType.label}}</label>
+            <input readonly class="form-control form-control" name="@kitModel.form.patientId.name" placeholder="@kitModel.form.patientId.placeholder" value="@kitModel.form.doseType.value" />
+          </div>
+
+          <div class='form-group'>
+            <label>{{@kitModel.form.doseUom.label}}</label>
+            <input readonly class="form-control form-control" name="@kitModel.form.patientId.name" placeholder="@kitModel.form.patientId.placeholder" value="@kitModel.form.doseUom.value" />
+          </div>
+
+
+          <div class='form-group'>
+            <label>{{@kitModel.form.doseVolume.label}}</label>
+            <input class="form-control form-control" name="@kitModel.form.doseVolume.name"
+                   placeholder="@kitModel.form.doseVolume.placeholder" value="@kitModel.form.doseVolume.value"
+                   step="@kitModel.form.doseVolume.step" min='@kitModel.form.doseVolume.min'
+                   type="number" readonly/>
+          </div>
+
+          <div class='form-group'>
+            <label>{{@kitModel.form.visitId.label}}</label>
+            <input readonly class="form-control form-control" name="@kitModel.form.visitId.name" placeholder="@kitModel.form.visitId.placeholder" value="@kitModel.form.visitId.value" />
+          </div>
+
+          <div class='form-group'>
+            <label>{{@kitModel.form.dispensingPartyId.label}}</label>
+            <input readonly class="form-control form-control" readonly name="@kitModel.form.dispensingPartyId.name" placeholder="@kitModel.form.dispensingPartyId.placeholder" value="@kitModel.form.dispensingPartyId.value" />
+          </div>
+
+          <div class='form-group'>
+            <label>{{@kitModel.form.kitStorageCondition.label}}</label>
+            <input readonly class="form-control form-control" name="@kitModel.form.kitStorageCondition.name" placeholder="@kitModel.form.kitStorageCondition.placeholder" value="@kitModel.form.kitStorageCondition.value" />
+          </div>
+
+
+          <div class='row-wrapper button-wrapper' data-if='@formIsValid'>
+            <button class="btn-default" data-tag="from_step_2_to_1" disabled="@formIsInvalid" id="from_step_2_to_1">
+              Previous
+              <i class="fas fa-angle-left"></i>
+            </button>
+            <button class='btn-default' data-tag='dispense-kit'>
+              <span class='fas fa-medkit mr-2'></span>
+              Dispense Kit
+            </button>
+          </div>
         </div>
 
-        <div class='row-wrapper button-wrapper'>
-
-          <button class='btn-default' data-tag='dispense-kit'>
-            <span class='fas fa-medkit mr-2'></span>
-            Dispense Kit
-          </button>
-
-        </div>
 
       </div>
     </section>

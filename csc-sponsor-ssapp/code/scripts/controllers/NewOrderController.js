@@ -2,13 +2,15 @@ const { WebcController } = WebCardinal.controllers;
 
 const cscServices = require('csc-services');
 const eventBusService = cscServices.EventBusService;
-const { Topics, Roles, DocumentTypes, Commons } = cscServices.constants;
+const { Topics, Roles, DocumentTypes, Commons, order } = cscServices.constants;
 const OrdersService = cscServices.OrderService;
 const DidService = cscServices.DidService;
 const momentService = cscServices.momentService;
 const viewModelResolver = cscServices.viewModelResolver;
 const FileDownloaderService = cscServices.FileDownloaderService;
 const { uuidv4 } = cscServices.utils;
+const orderBusinessRequirements = order.orderBusinessRequirements;
+const DAYS_AHEAD = orderBusinessRequirements.DeliveryDateDaysAhead;
 
 export default class NewOrderController extends WebcController {
   files = [];
@@ -300,10 +302,13 @@ export default class NewOrderController extends WebcController {
       let fromDateObj = new Date(fromDate.value);
       let toDateObj = new Date(toDate.value);
 
-      if (fromDateObj > toDateObj || !(toDateObj instanceof Date)) {
-        toDate.value = fromDate.value;
+      if (momentService(fromDateObj).add(DAYS_AHEAD, 'days') > toDateObj || !(toDateObj instanceof Date)) {
+        toDate.value = momentService(fromDate.value).add(DAYS_AHEAD, 'days').format(Commons.YearMonthDayPattern);
       }
-      toDate.min = momentService(fromDate.value).format(Commons.YearMonthDayPattern);
+      if(momentService(fromDateObj).add(DAYS_AHEAD, 'days') > new Date()){
+        return toDate.min = momentService(fromDate.value).add(DAYS_AHEAD, 'days').format(Commons.YearMonthDayPattern);
+      }
+      toDate.min = momentService(new Date()).add(DAYS_AHEAD, 'days').format(Commons.YearMonthDayPattern);
     };
 
     let orderIdChangeHandler = () => {

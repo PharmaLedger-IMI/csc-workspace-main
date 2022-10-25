@@ -2,11 +2,24 @@
 	<main class="full-flex-column">
 		<section>
 			<webc-template template="header-template"></webc-template>
-			<webc-template template="dashboard-menu"></webc-template>
+			<div data-if="@isMemberAddedToGroup">
+				<webc-template template="dashboard-menu"></webc-template>
+			</div>
 		</section>
 
-		<section class="content-section">
-			<webc-template  template="shipment/dashboard"></webc-template>
+		<section class="content-section"data-if="@isMemberAddedToGroup">
+			<section id="action-required-container" slot="false">
+				<h2 class="title">Action Required</h2>
+				<div>
+					<label>User Identity:</label>
+					<share-did class="w-50"></share-did>
+				</div>
+				<label>
+					Share this identity with a user that has admin privileges in order to gain access
+				</label>
+			</section>
+
+			<webc-template  template="shipment/dashboard" slot="true"></webc-template>
 		</section>
 	</main>
 </webc-container>

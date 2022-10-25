@@ -2,19 +2,32 @@
 	<main class='full-flex-column'>
 		<section>
 			<webc-template template='header-template'></webc-template>
-			<webc-template template='dashboard-menu'></webc-template>
+			<div data-if='@isMemberAddedToGroup'>
+				<webc-template template='dashboard-menu'></webc-template>
+			</div>
 		</section>
 
-		<section class='content-section'>
-			<div data-if='@isOrdersSelected'>
+		<section class='content-section' data-if='@isMemberAddedToGroup'>
+			<section id='action-required-container' slot='false'>
+				<h2 class='title'>Action Required</h2>
+				<div>
+					<label>User Identity:</label>
+					<share-did class='w-50'></share-did>
+				</div>
+				<label>
+					Share this identity with a user that has admin privileges in order to gain access
+				</label>
+			</section>
+
+			<div data-if='@isOrdersSelected' slot='true'>
 				<webc-template template='order/dashboard'></webc-template>
 			</div>
 
-			<div data-if='@isShipmentsSelected'>
-				<webc-template template="shipment/dashboard-shipment"></webc-template>
+			<div data-if='@isShipmentsSelected' slot='true'>
+				<webc-template template='shipment/dashboard-shipment'></webc-template>
 			</div>
 
-			<div data-if='@isKitsSelected'>
+			<div data-if='@isKitsSelected' slot='true'>
 				<webc-template template='kits/dashboard'></webc-template>
 			</div>
 		</section>

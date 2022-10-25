@@ -1,0 +1,56 @@
+[
+  {
+    "messageType": "CreateGroup",
+    "groupName": "CSC Administration Group",
+    "groupTags": "Demiurge",
+    "accessModes": "demiurgeSharedEnclave:admin"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "RomSoft Write Group",
+    "groupTags": "RomSoft",
+    "accessModes": "cmoEnclave:write"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "RomSoft Read Group",
+    "groupTags": "RomSoft",
+    "accessModes": "cmoEnclave:read"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "PDM Write Group",
+    "groupTags": "PDM",
+    "accessModes": "courierEnclave:write"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "PDM Read Group",
+    "groupTags": "PDM",
+    "accessModes": "courierEnclave:read"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "Novartis Write Group",
+    "groupTags": "Novartis",
+    "accessModes": "sponsorEnclave:write"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "Novartis Read Group",
+    "groupTags": "Novartis",
+    "accessModes": "sponsorEnclave:read"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "Certh Write Group",
+    "groupTags": "Certh",
+    "accessModes": "siteEnclave:write"
+  },
+  {
+    "messageType": "CreateGroup",
+    "groupName": "Certh Read Group",
+    "groupTags": "Certh",
+    "accessModes": "siteEnclave:read"
+  }
+]

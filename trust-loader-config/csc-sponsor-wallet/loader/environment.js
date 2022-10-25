@@ -1,4 +1,5 @@
 export default {
+  companyName: "Novartis",
   appName: 'Sponsor App',
   appVersion: '0.1.1',
   vault: 'server',

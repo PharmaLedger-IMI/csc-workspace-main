@@ -181,30 +181,18 @@ const kitViewModel = {
       required: true,
       placeholder: 'e.g. 10',
       disabled: false,
+      step: '0.01',
       value: '',
       min: '0'
     },
     visitId: {
-      label: 'Visit ID',
+      label: 'Patient Visit ID',
       name: 'visit-id',
       id: 'visit-id',
       required: true,
-      placeholder: 'Enter visit ID',
+      placeholder: 'Enter patient visit ID',
       disabled: false,
       value: ''
-    },
-    visit_date: {
-      label: 'Visit Date/Time',
-      name: 'visit_date',
-      required: true,
-      disabled: false,
-      value: momentService(new Date()).format(constants.Commons.YearMonthDayPattern),
-      min: momentService(new Date()).add(DAYS_AHEAD, 'days').format(constants.Commons.YearMonthDayPattern)
-    },
-    visit_time: {
-      name: 'visit_time',
-      disabled: false,
-      value: momentService(new Date()).format(constants.Commons.HourFormatPattern)
     },
     dispensingPartyId: {
       label: 'Dispensing Party ID',
@@ -212,6 +200,14 @@ const kitViewModel = {
       id: 'dispensing-id',
       required: true,
       placeholder: 'Dispensing Party ID',
+      value: ''
+    },
+    kitStorageCondition:{
+      label: 'Kit Storage Condition',
+      name: 'kit-storage-condition-id',
+      id: 'kit-storage-condition-id',
+      required: true,
+      placeholder: 'DKit Storage Condition',
       value: ''
     },
     investigatorId: {

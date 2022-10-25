@@ -3,4 +3,7 @@ module.exports.messagesEnum = {
   StatusApproved: 'Completed',
   StatusCanceled: 'Canceled',
   ShipmentInPreparation: 'Shipment In Preparation',
+  RemoveMembersFromGroup: 'RemoveMembersFromGroup',
+  DeactivateMember: 'DeactivateMember',
+  AddMemberToGroup: 'AddMemberToGroup'
 };
