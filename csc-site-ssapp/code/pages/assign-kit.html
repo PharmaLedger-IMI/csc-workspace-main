@@ -21,14 +21,14 @@
 
 
                 <div class="form-group button-wrapper">
-                    <label>{{@kitModel.form.investigatorId.label}}</label>
+                    <label>{{@kitModel.form.investigatorId.label}} <span data-if='@isFormInvalid'>*</span></label>
                     <input class='form-control' style="width: 50%;" name='@kitModel.form.investigatorId.name'
                      placeholder='@kitModel.form.investigatorId.placeholder' type='text'
                      value='@kitModel.form.investigatorId.value' />
                 </div>
 
                 <div class='row-wrapper button-wrapper'>
-                    <button class='btn-default' data-tag='assign-kit'>
+                    <button class='btn-default' data-tag='assign-kit' disabled='@isFormInvalid'>
                         <span class='fas fa-medkit mr-2'></span>
                         Assign Kit
                     </button>
