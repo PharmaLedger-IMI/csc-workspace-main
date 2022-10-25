@@ -286,15 +286,6 @@
           "cmd": "cd themes/blue-csc-theme && npm install"
         }
       ]
-    },
-    {
-      "name": "postinstall-patch",
-      "actions": [
-        {
-          "type": "execute",
-          "cmd": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./bin/octopusRun.js postinstall\""
-        }
-      ]
     }
   ],
   "build-use-case": [
@@ -515,6 +506,15 @@
           }
         }
       ]
+    },
+    {
+      "name": "trust-loader-patch",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./bin/octopusRun.js patch\""
+        }
+      ]
     }
   ],
   "patch": [
@@ -529,46 +529,6 @@
             "overwrite": true,
             "ignoreErrors": true
           }
-        }
-      ]
-    }
-  ],
-  "postinstall": [
-    {
-      "name": "trust-loader-config",
-      "actions": [
-        {
-          "type": "execute",
-          "cmd": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./bin/octopusRun.js patch\""
-        }
-      ]
-    },
-    {
-      "name": "copy-bundles",
-      "actions": [
-        {
-          "type": "execute",
-          "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
-        },
-        {
-          "type": "execute",
-          "cmd": "cd apihub-root/csc-sponsor-wallet/loader && npm install"
-        },
-        {
-          "type": "execute",
-          "cmd": "cd apihub-root/csc-cmo-wallet/loader && npm install"
-        },
-        {
-          "type": "execute",
-          "cmd": "cd apihub-root/csc-site-wallet/loader && npm install"
-        },
-        {
-          "type": "execute",
-          "cmd": "cd apihub-root/csc-courier-wallet/loader && npm install"
-        },
-        {
-          "type": "execute",
-          "cmd": "cd apihub-root/demiurge-wallet/loader && npm install"
         }
       ]
     }
