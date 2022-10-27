@@ -46,3 +46,5 @@ apihub-root/csc-courier-wallet/wallet-patch/seed
 apihub-root/demiurge-wallet/loader
 apihub-root/demiurge-wallet/apps-patch
 apihub-root/demiurge-wallet/wallet-patch/seed
+/apihub-root/external-volume/config/admin/adminEnclave
+/apihub-root/external-volume/config/admin/mainDomain
