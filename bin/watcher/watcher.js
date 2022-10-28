@@ -1,11 +1,11 @@
 /**
- * Wrapper script for `privatesky/bin/scripts/watcher.js`.
+ * Wrapper script for `opendsu-sdk/bin/scripts/watcher.js`.
  */
 const path = require('path');
 const childProcess = require('child_process');
 
 const rootDir = path.resolve([__dirname, '..', '..'].join(path.sep));
-const watcherScriptPath = [rootDir, 'privatesky', 'bin', 'scripts', 'watcher.js'].join(path.sep);
+const watcherScriptPath = [rootDir, 'opendsu-sdk', 'bin', 'scripts', 'watcher.js'].join(path.sep);
 const writeTimestampScriptPath = [rootDir, 'bin', 'watcher', 'write-timestamp.js'].join(path.sep);
 
 const appTemplatesToWatch = [];

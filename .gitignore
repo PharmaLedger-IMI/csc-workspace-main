@@ -2,7 +2,7 @@
 .prettierignore
 cardinal
 webcardinal
-privatesky
+opendsu-sdk
 gtin-resolver
 demiurge
 dossier-explorer-ssapp

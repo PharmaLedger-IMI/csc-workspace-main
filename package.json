@@ -18,16 +18,16 @@
     "update": "node ./node_modules/octopus/scripts/update",
     "bind-app": "node ./node_modules/octopus/scripts/bind --type=app",
     "bind-wallet": "node ./node_modules/octopus/scripts/bind --type=wallet",
-    "server": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"cd privatesky && npm run start\"",
-    "apihub": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"cd privatesky && npm run start\"",
-    "switch-to-release": "npm run remove privatesky && npm run add privatesky http://github.com/privatesky/psk-release.git 0",
-    "switch-to-dev": "npm run remove privatesky && npm run add privatesky http://github.com/privatesky/privatesky.git 0",
+    "server": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"cd opendsu-sdk && npm run start\"",
+    "apihub": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"cd opendsu-sdk && npm run start\"",
+    "switch-to-release": "npm run remove opendsu-sdk && npm run add opendsu-sdk http://github.com/opendsu-sdk/psk-release.git 0",
+    "switch-to-dev": "npm run remove opendsu-sdk && npm run add opendsu-sdk http://github.com/opendsu-sdk/opendsu-sdk.git 0",
     "build-use-case": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./bin/octopusRun.js build-use-case\" && node ./bin/seedsBackupTool.js",
     "watch": "node ./bin/watcher/watcher.js",
-    "test": "npm run build && node ./privatesky/bin/scripts/testrunner.js --directory=./tests",
-    "coverage": "./node_modules/.bin/istanbul cover node ./privatesky/bin/scripts/testrunner.js --directory=./test",
+    "test": "npm run build && node ./opendsu-sdk/bin/scripts/testrunner.js --directory=./tests",
+    "coverage": "./node_modules/.bin/istanbul cover node ./opendsu-sdk/bin/scripts/testrunner.js --directory=./test",
     "clean": "node ./bin/clean.js ./",
-    "clean-build": "npm run clean && npm run build privatesky && npm run build-all",
+    "clean-build": "npm run clean && npm run build opendsu-sdk && npm run build-all",
     "build-web-ion": "node ./node_modules/octopus/scripts/setEnv --file=../../../env.json \"node ./node_modules/octopus/scripts/run pre-build-web-cardinal-ion\"",
     "freeze": "node ./node_modules/octopus/scripts/freeze dependencies install-mobile",
     "docs": "node ./node_modules/octopus/scripts/run docs devmode",
@@ -51,7 +51,7 @@
     "npm": "~6"
   },
   "dependencies": {
-    "octopus": "git+https://github.com/PrivateSky/octopus.git"
+    "octopus": "git+https://github.com/opendsu/octopus.git"
   },
   "devDependencies": {
     "form-data": "v3.0.0",

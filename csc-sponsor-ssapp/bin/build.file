@@ -1,8 +1,8 @@
 delete /
 addfolder code
-addfile ../privatesky/psknode/bundles/pskruntime.js scripts/bundles/pskruntime.js
-addfile ../privatesky/psknode/bundles/webshims.js scripts/bundles/webshims.js
-addfile ../privatesky/psknode/bundles/iframeBoot.js scripts/bundles/iframeBoot.js
+addfile ../opendsu-sdk/psknode/bundles/pskruntime.js scripts/bundles/pskruntime.js
+addfile ../opendsu-sdk/psknode/bundles/webshims.js scripts/bundles/webshims.js
+addfile ../opendsu-sdk/psknode/bundles/iframeBoot.js scripts/bundles/iframeBoot.js
 addfile ../csc-services/build/bundles/cscServices.js scripts/bundles/cscServices.js
 mount ../webcardinal/seed /webcardinal
 mount ../themes/blue-csc-theme/seed /themes/blue-csc-theme

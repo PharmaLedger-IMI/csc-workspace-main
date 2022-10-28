@@ -1,4 +1,4 @@
-require("./privatesky/psknode/bundles/openDSU");
+require("./opendsu-sdk/psknode/bundles/openDSU");
 openDSURequire('overwrite-require');
 const opendsu = openDSURequire("opendsu");
 const http = opendsu.loadApi("http");

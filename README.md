@@ -151,9 +151,9 @@ add a file under ```docs/bin``` called ```drawio_exec_command.os``` containing t
     * cardinal: the web framework used for frontend;
     * pharmaledger-wallet: the default wallet implementation to be used by all ssapps - comes from http://github.com/privatesky/menu-wallet-prototype.git
     * node_modules: node modules folder (includes the octopus custom builder)
-    * privatesky: the openDSU code. notable folders are:
-        * privatesky/modules: all the code for the several modules (openDSU is one of them);
-        * privatesky/psknode/bundles: all the code from the previous path, with each module bundled into a single file;
+    * opendsu-sdk: notable folders are:
+        * opendsu-sdk/modules: all the code for the several modules (openDSU is one of them);
+        * opendsu-sdk/psknode/bundles: all the code from the previous path, with each module bundled into a single file;
     * themes: the folder with all the installed themes:
         * pharmaledger-theme: custom theme for the pharmaledger implementation comes from https://github.com/PrivateSky/blue-fluorite-theme;
 * Use case related:
