@@ -19,13 +19,13 @@
         },
         {
             "name": "cardinal",
-            "src": "https://github.com/PrivateSky/cardinal.git",
+            "src": "https://github.com/opendsu/cardinal.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "517a141d5b84fd87f69b2e51d838cd410652febd"
+                    "commit": "1fff8f862530b58efd9fc94462a112da795176a5"
                 },
                 {
                     "type": "execute",
@@ -38,30 +38,39 @@
             ]
         },
         {
-            "name": "privatesky",
-            "src": "http://github.com/Mastaleru/psk-release.git",
+            "name": "opendsu-sdk",
+            "src": "http://github.com/opendsu/opendsu-sdk.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "0fbfc90772b6f31baae5fcd88cd67f0ba64ea3fc"
+                    "commit": "99cff1275cfad996393e949428e0557819132167"
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd privatesky && npm install"
+                    "cmd": "cd opendsu-sdk && npm install"
+                }
+            ]
+        },
+        {
+            "name": "build opendsu-sdk",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd opendsu-sdk && npm run build"
                 }
             ]
         },
         {
             "name": "apihub-root/csc-sponsor-wallet/loader",
-            "src": "https://github.com/PrivateSky/trust-loader.git",
+            "src": "https://github.com/opendsu/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "d7f9cc7c9a814709c8c735dcfdcbcbc57c001044"
+                    "commit": "040088f4eb785c6adb7eef791ce8b204d2843f3e"
                 },
                 {
                     "type": "execute",
@@ -75,13 +84,13 @@
         },
         {
             "name": "apihub-root/csc-cmo-wallet/loader",
-            "src": "https://github.com/PrivateSky/trust-loader.git",
+            "src": "https://github.com/opendsu/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "d7f9cc7c9a814709c8c735dcfdcbcbc57c001044"
+                    "commit": "040088f4eb785c6adb7eef791ce8b204d2843f3e"
                 },
                 {
                     "type": "execute",
@@ -95,13 +104,13 @@
         },
         {
             "name": "apihub-root/csc-site-wallet/loader",
-            "src": "https://github.com/PrivateSky/trust-loader.git",
+            "src": "https://github.com/opendsu/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "d7f9cc7c9a814709c8c735dcfdcbcbc57c001044"
+                    "commit": "040088f4eb785c6adb7eef791ce8b204d2843f3e"
                 },
                 {
                     "type": "execute",
@@ -115,13 +124,13 @@
         },
         {
             "name": "apihub-root/csc-courier-wallet/loader",
-            "src": "https://github.com/PrivateSky/trust-loader.git",
+            "src": "https://github.com/opendsu/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "d7f9cc7c9a814709c8c735dcfdcbcbc57c001044"
+                    "commit": "040088f4eb785c6adb7eef791ce8b204d2843f3e"
                 },
                 {
                     "type": "execute",
@@ -141,7 +150,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "87f3ba8853cd93c6ea631536e07b4d168705c9f6"
+                    "commit": "94dd0b10bb558cf1dc239e6ca9ea0bb370d3949f"
                 },
                 {
                     "type": "execute",
@@ -151,13 +160,13 @@
         },
         {
             "name": "apihub-root/demiurge-wallet/loader",
-            "src": "http://github.com/privatesky/web-dossier-loader.git",
+            "src": "http://github.com/opendsu/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "d7f9cc7c9a814709c8c735dcfdcbcbc57c001044"
+                    "commit": "040088f4eb785c6adb7eef791ce8b204d2843f3e"
                 },
                 {
                     "type": "execute",
@@ -175,13 +184,13 @@
         },
         {
             "name": "dossier-explorer-wallet-prototype",
-            "src": "https://github.com/PrivateSky/dossier-explorer-wallet-prototype.git",
+            "src": "https://github.com/opendsu/dossier-explorer-wallet-prototype.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "bcb4b80bc3b4b5576a9dfded5bb169163ec44690"
+                    "commit": "93bb76309913e780932bb367a0a599e54a04578d"
                 },
                 {
                     "type": "execute",
@@ -191,13 +200,13 @@
         },
         {
             "name": "apihub-root/dsu-explorer/loader",
-            "src": "https://github.com/PrivateSky/web-dossier-loader.git",
+            "src": "https://github.com/opendsu/trust-loader.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "d7f9cc7c9a814709c8c735dcfdcbcbc57c001044"
+                    "commit": "040088f4eb785c6adb7eef791ce8b204d2843f3e"
                 },
                 {
                     "type": "execute",
@@ -215,13 +224,13 @@
         },
         {
             "name": "dossier-explorer-ssapp",
-            "src": "https://github.com/PrivateSky/dossier-explorer-ssapp.git",
+            "src": "https://github.com/opendsu/dossier-explorer-ssapp.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "5af2aaf2b3b862de6fdf209e63aba02a504979c8"
+                    "commit": "c85115879c6d5614a4872dfc5e38cd852ad95c77"
                 },
                 {
                     "type": "execute",
@@ -276,13 +285,13 @@
         },
         {
             "name": "themes/blue-fluorite-theme",
-            "src": "https://github.com/PrivateSky/blue-fluorite-theme.git",
+            "src": "https://github.com/opendsu/blue-fluorite-theme.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "9559e0dc32a4bfd8cd8c6159877171edb857c63d"
+                    "commit": "bd830104fa3aafb54b948b7c2a19f6f303e08a1c"
                 },
                 {
                     "type": "execute",
