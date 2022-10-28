@@ -152,7 +152,7 @@
     },
     {
       "name": "apihub-root/demiurge-wallet/loader",
-      "src": "http://github.com/opendsu/web-dossier-loader.git",
+      "src": "http://github.com/opendsu/trust-loader.git",
       "actions": [
         {
           "type": "smartClone",
@@ -190,7 +190,7 @@
     },
     {
       "name": "apihub-root/dsu-explorer/loader",
-      "src": "https://github.com/opendsu/web-dossier-loader.git",
+      "src": "https://github.com/opendsu/trust-loader.git",
       "actions": [
         {
           "type": "smartClone",
