@@ -22,6 +22,9 @@ class AssignKitController extends WebcController {
     this.model.kitId = kitId;
     console.log("originalKit " + JSON.stringify(this.model.kit));
 
+    this.model.addExpression("isFormInvalid", () => this.model.kitModel.form.investigatorId.value.trim().length === 0, "kitModel.form");
+
+
     this.initHandlers();
     this.navigationHandlers();
   }
