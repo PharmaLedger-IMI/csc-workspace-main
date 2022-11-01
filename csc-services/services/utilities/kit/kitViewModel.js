@@ -207,7 +207,7 @@ const kitViewModel = {
       name: 'kit-storage-condition-id',
       id: 'kit-storage-condition-id',
       required: true,
-      placeholder: 'DKit Storage Condition',
+      placeholder: 'Kit Storage Condition',
       value: ''
     },
     investigatorId: {

@@ -24,7 +24,8 @@
           </button>
         </div>
 
-        <div class="step-holder-modal barcode-container" id="step-1-wrapper">
+        <div class="step-holder" id="step-1-wrapper">
+          <div class='d-flex w-100 flex-column'>
           <div class='entity-title text-center'>
             <b>Dispense Kit</b>
           </div>
@@ -78,10 +79,11 @@
               <i class="fas fa-angle-right"></i>
             </button>
           </div>
+          </div>
         </div>
 
-        <div class="step-holder-modal step-hidden" id="step-2-wrapper">
-
+        <div class="step-holder step-hidden" id="step-2-wrapper">
+          <div class='d-flex w-100 flex-column'>
           <div class='form-group'>
             <label>{{@kitModel.form.patientId.label}}</label>
             <input readonly class="form-control form-control" name="@kitModel.form.patientId.name" placeholder="@kitModel.form.patientId.placeholder" value="@kitModel.form.patientId.value" />
@@ -124,8 +126,8 @@
 
           <div class='row-wrapper button-wrapper' data-if='@formIsValid'>
             <button class="btn-default" data-tag="from_step_2_to_1" disabled="@formIsInvalid" id="from_step_2_to_1">
-              Previous
               <i class="fas fa-angle-left"></i>
+              Previous
             </button>
             <button class='btn-default' data-tag='dispense-kit'>
               <span class='fas fa-medkit mr-2'></span>
@@ -133,7 +135,7 @@
             </button>
           </div>
         </div>
-
+        </div>
 
       </div>
     </section>
