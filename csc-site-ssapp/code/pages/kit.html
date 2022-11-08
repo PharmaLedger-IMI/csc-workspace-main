@@ -110,14 +110,14 @@
             </div>
 
             <div data-if='@actions.canRequestDestruction'>
-              <button class='btn-reset' data-tag='request-kit-destruction'>
+              <button class='btn-reset' data-tag='request-kit-destruction' disabled='@kitModel.kit.isRequestKitDestructionDisabled'>
                 <i class="fas fa-triangle-exclamation"></i>
                 Request Destruction
               </button>
             </div>
 
             <div data-if='@actions.canConfirmDestruction'>
-              <button class='btn-reset' data-tag='confirm-kit-destruction'>
+              <button class='btn-reset' data-tag='confirm-kit-destruction' disabled='@kitModel.kit.isReturnKitDisabled'>
                 <i class="fas fa-triangle-exclamation"></i>
                Confirm Destruction
               </button>
@@ -131,7 +131,7 @@
             </div>
 
             <div data-if='@actions.canAssignKit'>
-              <button class='btn-default' data-tag='assign-kit' disabled='@kitModel.kit.studyHasEnded'>
+              <button class='btn-default' data-tag='assign-kit'>
                 <span class='fas fa-medkit mr-2'></span>
                 Assign Kit
               </button>
@@ -145,21 +145,21 @@
             </div>
 
             <div data-if='@actions.canReturnKit'>
-              <button class='btn-default' data-tag='return-kit'>
+              <button class='btn-default' data-tag='return-kit' disabled='@kitModel.kit.isReturnKitDisabled'>
                 <span class='fas fa-rotate-left mr-2'></span>
                 Return Kit
               </button>
             </div>
 
             <div data-if='@actions.canReconcileKit'>
-              <button class='btn-default' data-tag='reconcile-kit'>
+              <button class='btn-default' data-tag='reconcile-kit' disabled='@kitModel.kit.isReconcileKitDisabled'>
                 <span class='fas fa-user-check mr-2'></span>
                 Reconcile Kit
               </button>
             </div>
 
             <div data-if='@actions.canBlockKit'>
-              <button class='btn-reset' data-tag='block-kit'>
+              <button class='btn-reset' data-tag='block-kit' disabled='@kitModel.kit.isBlockKitDisabled'>
                 <span class='fas fa-check'></span>
                 Block Kit
               </button>
