@@ -117,7 +117,7 @@
             </div>
 
             <div data-if='@actions.canConfirmDestruction'>
-              <button class='btn-reset' data-tag='confirm-kit-destruction' disabled='@kitModel.kit.isReturnKitDisabled'>
+              <button class='btn-reset' data-tag='confirm-kit-destruction' disabled='@kitModel.kit.isConfirmDestructionDisabled'>
                 <i class="fas fa-triangle-exclamation"></i>
                Confirm Destruction
               </button>
@@ -131,7 +131,7 @@
             </div>
 
             <div data-if='@actions.canAssignKit'>
-              <button class='btn-default' data-tag='assign-kit'>
+              <button class='btn-default' data-tag='assign-kit' disabled='@kitModel.kit.studyHasEnded'>
                 <span class='fas fa-medkit mr-2'></span>
                 Assign Kit
               </button>

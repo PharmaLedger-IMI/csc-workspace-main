@@ -186,6 +186,7 @@ class SingleKitControllerImpl extends AccordionController {
     });
 
     this.onTagClick('confirm-kit-destruction', () => {
+      this.model.kitModel.kit.isConfirmDestructionDisabled = true;
       this.navigateToPageTag('destruction-confirmation', {
         kit: {
           kitId: this.model.kitModel.kit.kitId,
@@ -295,6 +296,7 @@ class SingleKitControllerImpl extends AccordionController {
     this.model.kitModel.kit.isRequestKitDestructionDisabled = false;
     this.model.kitModel.kit.isReconcileKitDisabled = false;
     this.model.kitModel.kit.isReturnKitDisabled = false;
+    this.model.kitModel.kit.isConfirmDestructionDisabled = false;
 
     this.attachRefreshListeners();
   }
