@@ -77,6 +77,8 @@ class DispenseKitController extends WebcController {
       },
     );
 
+    this.model.submitButtonDisabled = false;
+
   }
 
   isFormValid(){
@@ -141,7 +143,7 @@ class DispenseKitController extends WebcController {
 
   async dispenseKit() {
     window.WebCardinal.loader.hidden = false;
-
+    this.model.submitButtonDisabled = true;
     const dispensedData = this.getDispensedData();
     await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Dispensed, dispensedData);
 
@@ -151,6 +153,7 @@ class DispenseKitController extends WebcController {
       state: { uid: this.model.uid }
     }, 2000);
     window.WebCardinal.loader.hidden = true;
+
   }
 
   getDispensedData() {

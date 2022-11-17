@@ -186,6 +186,7 @@ class SingleKitControllerImpl extends AccordionController {
     });
 
     this.onTagClick('confirm-kit-destruction', () => {
+      this.model.kitModel.kit.isConfirmDestructionDisabled = true;
       this.navigateToPageTag('destruction-confirmation', {
         kit: {
           kitId: this.model.kitModel.kit.kitId,
@@ -290,6 +291,13 @@ class SingleKitControllerImpl extends AccordionController {
       },
       "kitModel.form.certificationOfDestruction"
     );
+
+    this.model.kitModel.kit.isBlockKitDisabled = false;
+    this.model.kitModel.kit.isRequestKitDestructionDisabled = false;
+    this.model.kitModel.kit.isReconcileKitDisabled = false;
+    this.model.kitModel.kit.isReturnKitDisabled = false;
+    this.model.kitModel.kit.isConfirmDestructionDisabled = false;
+
     this.attachRefreshListeners();
   }
 
@@ -308,6 +316,7 @@ class SingleKitControllerImpl extends AccordionController {
     actions.canRequestRelabelingKit = (kit.status_value === kitsStatusesEnum.AvailableForAssignment);
     actions.relabeledAlreadyRequested = typeof kit.hasRequestRelabeled === 'boolean' && kit.hasRequestRelabeled;
     actions.canBlockKit = kit.status_value === kitsStatusesEnum.RequestRelabeling;
+    actions.blockKitAlreadyRequested = typeof kit.hasBlockKit === 'boolean' && kit.hasRequestRelabeled;
     actions.canMakeKitAvailable = kit.status_value === kitsStatusesEnum.BlockedForRelabeling;
     return actions;
   }
@@ -418,6 +427,9 @@ class SingleKitControllerImpl extends AccordionController {
 
   async returnKit(){
     window.WebCardinal.loader.hidden = false;
+
+    this.model.kitModel.kit.isReturnKitDisabled = true;
+
     const returnedData = {
       returnedDate:Date.now()
     }
@@ -433,6 +445,9 @@ class SingleKitControllerImpl extends AccordionController {
 
   async reconcileKit(){
     window.WebCardinal.loader.hidden = false;
+
+    this.model.kitModel.kit.isReconcileKitDisabled = true;
+
     await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.Reconciled,{});
     await this.initViewModel();
     this.showErrorModalAndRedirect('Kit is marked as Reconciled', 'Kit Reconciled', {
@@ -444,6 +459,9 @@ class SingleKitControllerImpl extends AccordionController {
 
   async requestKitDestruction(){
     window.WebCardinal.loader.hidden = false;
+
+    this.model.kitModel.kit.isRequestKitDestructionDisabled = true;
+
     await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.PendingDestruction,{});
     await this.initViewModel();
     this.showErrorModalAndRedirect('Kit destruction was requested', 'Destruction Request', {
@@ -480,6 +498,9 @@ class SingleKitControllerImpl extends AccordionController {
   async blockKit(){
     if(this.actor === Roles.Site) {
       window.WebCardinal.loader.hidden = false;
+
+
+      this.model.kitModel.kit.isBlockKitDisabled = true;
 
       // Needed
       const shipments = await this.shipmentService.getShipments();

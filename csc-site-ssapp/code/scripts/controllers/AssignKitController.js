@@ -20,9 +20,10 @@ class AssignKitController extends WebcController {
     this.model.orderId = orderId;
     this.model.uid = uid;
     this.model.kitId = kitId;
-    console.log("originalKit " + JSON.stringify(this.model.kit));
 
-    this.model.addExpression("isFormInvalid", () => this.model.kitModel.form.investigatorId.value.trim().length === 0, "kitModel.form");
+    this.model.kitModel.disabledSubmitButton = false;
+
+    this.model.addExpression("isFormInvalid", () => this.model.kitModel.form.investigatorId.value.trim().length === 0 || this.model.kitModel.disabledSubmitButton, "kitModel");
 
 
     this.initHandlers();
@@ -38,7 +39,7 @@ class AssignKitController extends WebcController {
   async sign() {
     this.model.disableSign = true;
     window.WebCardinal.loader.hidden = false;
-    
+    this.model.kitModel.disabledSubmitButton = true;
     await this.kitsService.updateKit(this.model.kit.uid, kitsStatusesEnum.Assigned, {
       investigatorId: this.model.kitModel.form.investigatorId.value
     });
