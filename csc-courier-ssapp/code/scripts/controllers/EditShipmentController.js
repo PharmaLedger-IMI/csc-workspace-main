@@ -118,6 +118,7 @@ export default class EditShipmentController extends WebcController {
 
   async onSubmitYesResponse() {
     window.WebCardinal.loader.hidden = false;
+    this.model.disableSubmit = true;
     let billingData = {...this.shipmentData.bill};
     let {uid}  = this.model.shipment;
 
@@ -259,7 +260,7 @@ export default class EditShipmentController extends WebcController {
     this.model.wizard = this.getWizardForm();
     this.model.form.filesEmpty = true;
     this.model.formIsInvalid = true;
-    this.model.disableSubmit = true;
+    this.model.submitButtonDisabled = false;
   }
 
   prepareShipmentData() {
