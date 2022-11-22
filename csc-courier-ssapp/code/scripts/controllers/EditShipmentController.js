@@ -154,16 +154,10 @@ export default class EditShipmentController extends WebcController {
   }
 
   validateForm() {
-    this.model.formIsInvalid = false;
-
-    if (this.model.form.billNumber.value.trim() === '') this.model.formIsInvalid = true;
-    if (this.model.form.hsCode.value.trim() === '') this.model.formIsInvalid = true;
-    if (this.model.form.billOfLanding.value.trim() === '') this.model.formIsInvalid = true;
-    if (this.model.form.serviceType.value.trim() === '') this.model.formIsInvalid = true;
-    if (this.model.form.incoTerms.value.trim() === '') this.model.formIsInvalid = true;
-    if (this.model.form.spotContractRates.value.trim() === '') this.model.formIsInvalid = true;
-
-    this.model.disableSubmit = this.model.formIsInvalid;
+      this.model.formIsInvalid = (this.model.form.billNumber.value.trim() === '' || this.model.form.hsCode.value.trim() === '' ||
+      this.model.form.billOfLanding.value.trim() === '' || this.model.form.serviceType.value.trim() === '' ||
+      this.model.form.incoTerms.value.trim() === '' || this.model.form.spotContractRates.value.trim() === '' );
+      this.model.disableSubmit = this.model.formIsInvalid;
   }
 
   makeStepActive(stepId, stepHolderId) {
