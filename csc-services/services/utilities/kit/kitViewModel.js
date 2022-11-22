@@ -182,7 +182,7 @@ const kitViewModel = {
       placeholder: 'e.g. 10',
       disabled: false,
       step: '0.01',
-      value: '',
+      value: 0,
       min: '0'
     },
     visitId: {
