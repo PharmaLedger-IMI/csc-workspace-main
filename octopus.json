@@ -51,15 +51,6 @@
       ]
     },
     {
-      "name": "build opendsu-sdk",
-      "actions": [
-        {
-          "type": "execute",
-          "cmd": "cd opendsu-sdk && npm run build"
-        }
-      ]
-    },
-    {
       "name": "apihub-root/csc-sponsor-wallet/loader",
       "src": "https://github.com/opendsu/trust-loader.git",
       "actions": [
