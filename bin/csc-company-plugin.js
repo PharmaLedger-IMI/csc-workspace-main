@@ -1,4 +1,4 @@
-require("./opendsu-sdk/psknode/bundles/openDSU");
+require("../opendsu-sdk/psknode/bundles/openDSU");
 openDSURequire('overwrite-require');
 const opendsu = openDSURequire("opendsu");
 const http = opendsu.loadApi("http");
@@ -14,11 +14,11 @@ const VAULT_NAME_BASE = "vault";
 const cloneMainDomain = "csc";
 const cloneVaultDomain = "vault";
 
-const CMO_ENV_TEMPLATE = 'export default { "appName": "CMO App", "appVersion": "0.1.1", "vault": "server", "agent": "browser", "system": "any", "browser": "any", "mode": "dev-secure", "domain": "${domain}", "didDomain": "${didDomain}", "vaultDomain": "${vaultDomain}", "enclaveType": "WalletDBEnclave", "sw": false, "pwa": false};'
-const SITE_ENV_TEMPLATE = 'export default { "appName": "Site App", "appVersion": "0.1.1", "vault": "server", "agent": "browser", "system": "any", "browser": "any", "mode": "dev-secure", "domain": "${domain}", "didDomain": "${didDomain}", "vaultDomain": "${vaultDomain}", "enclaveType": "WalletDBEnclave", "sw": false, "pwa": false};';
-const SPONSOR_ENV_TEMPLATE = 'export default { "appName": "Sponsor App", "appVersion": "0.1.1", "vault": "server", "agent": "browser", "system": "any", "browser": "any", "mode": "dev-secure", "domain": "${domain}", "didDomain": "${didDomain}", "vaultDomain": "${vaultDomain}", "enclaveType": "WalletDBEnclave", "sw": false, "pwa": false};';
-const COURIER_ENV_TEMPLATE = 'export default { "appName": "Courier App", "appVersion": "0.1.1", "vault": "server", "agent": "browser", "system": "any", "browser": "any", "mode": "dev-secure", "domain": "${domain}", "didDomain": "${didDomain}", "vaultDomain": "${vaultDomain}", "enclaveType": "WalletDBEnclave", "sw": false, "pwa": false};';
-const DEMIURGE_ENV_TEMPLATE = 'export default { "appName": "Demiurge", "appVersion": "0.1.1", "vault": "server", "agent": "browser", "system": "any", "browser": "any", "mode": "dev-secure", "domain": "${domain}", "didDomain": "${didDomain}", "vaultDomain": "${vaultDomain}", "enclaveType": "WalletDBEnclave", "sw": false, "pwa": false, "disabledFeatures": "add-group", "hiddenMenuItems": ["Governance", "Audit", "BDNS", "My Keys", "Workspaces", "Contracts", "Subdomains"],};';
+const CMO_ENV_TEMPLATE = 'export default { "companyName":"${companyName}", "appName": "CMO App", "appVersion": "0.1.1", "vault": "server", "agent": "browser", "system": "any", "browser": "any", "mode": "dev-secure", "domain": "${domain}", "didDomain": "${didDomain}", "vaultDomain": "${vaultDomain}", "enclaveType": "WalletDBEnclave", "sw": false, "pwa": false};'
+const SITE_ENV_TEMPLATE = 'export default { "companyName":"${companyName}", "appName": "Site App", "appVersion": "0.1.1", "vault": "server", "agent": "browser", "system": "any", "browser": "any", "mode": "dev-secure", "domain": "${domain}", "didDomain": "${didDomain}", "vaultDomain": "${vaultDomain}", "enclaveType": "WalletDBEnclave", "sw": false, "pwa": false};';
+const SPONSOR_ENV_TEMPLATE = 'export default { "companyName":"${companyName}", "appName": "Sponsor App", "appVersion": "0.1.1", "vault": "server", "agent": "browser", "system": "any", "browser": "any", "mode": "dev-secure", "domain": "${domain}", "didDomain": "${didDomain}", "vaultDomain": "${vaultDomain}", "enclaveType": "WalletDBEnclave", "sw": false, "pwa": false};';
+const COURIER_ENV_TEMPLATE = 'export default { "companyName":"${companyName}", "appName": "Courier App", "appVersion": "0.1.1", "vault": "server", "agent": "browser", "system": "any", "browser": "any", "mode": "dev-secure", "domain": "${domain}", "didDomain": "${didDomain}", "vaultDomain": "${vaultDomain}", "enclaveType": "WalletDBEnclave", "sw": false, "pwa": false};';
+const DEMIURGE_ENV_TEMPLATE = 'export default { "companyName":"${companyName}", "appName": "Demiurge", "appVersion": "0.1.1", "vault": "server", "agent": "browser", "system": "any", "browser": "any", "mode": "dev-secure", "domain": "${domain}", "didDomain": "${didDomain}", "vaultDomain": "${vaultDomain}", "enclaveType": "WalletDBEnclave", "sw": false, "pwa": false, "disabledFeatures": "add-group", "hiddenMenuItems": ["Governance", "Audit", "BDNS", "My Keys", "Workspaces", "Contracts", "Subdomains"]};';
 
 const templates = {
   "/csc-cmo-wallet/loader/environment.js": CMO_ENV_TEMPLATE,
@@ -29,7 +29,12 @@ const templates = {
 };
 
 const companies = ["nvs", "rms", "pdm", "certh"];
-
+const companyNames = {
+  "nvs":"Novartis",
+  "rms":"RomSoft",
+  "pdm":"PDM",
+  "certh":"Certh"
+}
 function getCompanyDNSDomain(name) {
   return MAIN_DOMAIN + "." + name + "." + dnsDomain;
 }
@@ -42,14 +47,14 @@ function getCompanyVaultDomain(name) {
   return VAULT_NAME_BASE + "." + name;
 }
 
-function getCompanyVars(companyName) {
+function getCompanyVars(companyIdentifier) {
   return {
-    companyName: companyName,
+    companyName: companyNames[companyIdentifier],
     mainDomain: MAIN_DOMAIN,
-    domain:getCompanySubDomain(companyName),
-    subDomain: getCompanySubDomain(companyName),
-    didDomain: getCompanyVaultDomain(companyName),
-    vaultDomain: getCompanyVaultDomain(companyName),
+    domain:getCompanySubDomain(companyIdentifier),
+    subDomain: getCompanySubDomain(companyIdentifier),
+    didDomain: getCompanyVaultDomain(companyIdentifier),
+    vaultDomain: getCompanyVaultDomain(companyIdentifier),
   };
 }
 
