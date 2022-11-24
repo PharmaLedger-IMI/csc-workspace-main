@@ -63,8 +63,7 @@ class ScanShipmentController extends WebcController {
   }
 
   async getKits(kitIdSSI) {
-    const kitDSU = await this.kitsService.getKitIdsDsu(kitIdSSI);
-    return kitDSU;
+    return await this.kitsService.getKitIdsDsu(kitIdSSI);
   }
 
   initStepperNavigationHandlers() {
@@ -125,7 +124,7 @@ class ScanShipmentController extends WebcController {
       payload.shipmentId = this.model.shipment.shipmentId;
       let receivedComment = {
           date: new Date().getTime(),
-          entity: '<' + Roles.Courier + '> (' +  this.model.shipment.courierId + ')',
+          entity: '<' + Roles.Site + '> (' +  this.model.shipment.siteId + ')',
           comment: this.model.shipmentModel.form.add_comment.value
       }
 
