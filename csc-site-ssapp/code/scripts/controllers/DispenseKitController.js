@@ -16,7 +16,8 @@ class DispenseKitController extends WebcController {
     this.initHandlers();
     this.initStepperNavigationHandlers();
     this.navigationHandlers();
-
+    this.model.formIsInvalid = true;
+    this.validationConstraints = ["patientId","doseType","doseUom","doseVolume","visitId","dispensingPartyId","kitStorageCondition"];
   }
 
   navigationHandlers() {
@@ -63,35 +64,27 @@ class DispenseKitController extends WebcController {
     let didService = DidService.getDidServiceInstance();
     this.model.kitModel.form.dispensingPartyId.value = await didService.getDID();
 
-    this.model.addExpression(
-      "formIsInvalid",
-      () => {
-        return !this.isFormValid();
-      },
-    );
-
-    this.model.addExpression(
-      "formIsValid",
-      () => {
-        return this.isFormValid();
-      },
-    );
-
+    for(let i = 0; i<this.validationConstraints.length; i++){
+      let input = this.validationConstraints[i];
+      this.model.onChange(`kitModel.form.${input}`,this.checkFormValidity.bind(this));
+    }
     this.model.submitButtonDisabled = false;
-
   }
 
-  isFormValid(){
-    return true;
+  checkFormValidity(){
+    for(let i = 0; i<this.validationConstraints.length; i++){
+      let input = this.validationConstraints[i];
+      if(this.model.kitModel.form[input].required && this.model.kitModel.form[input].value.trim() === ""){
+        this.model.formIsInvalid = true;
+        return;
+      }
+    }
+    this.model.formIsInvalid = false;
   }
   initHandlers() {
     this.onTagEvent('dispense-kit', 'click', (e) => {
       this.dispenseKit();
     });
-  }
-
-  step1NavigationHandler() {
-    this.model.enableStep1Navigation = this.model.canScanKit === false && this.model.isKitScannerActive === false;
   }
 
   initStepperNavigationHandlers() {
@@ -167,7 +160,6 @@ class DispenseKitController extends WebcController {
       kitStorageCondition: this.model.kitModel.form.kitStorageCondition.value
     };
   }
-
 
 }
 
