@@ -52,7 +52,7 @@ const shipmentCMOTableHeaders = [
 		desc: null
 	},
 	{
-		column: 'transportType',
+		column: 'transportMode',
 		label: 'Mode of Transport',
 		notSortable: false,
 		type: 'string',
