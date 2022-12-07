@@ -312,7 +312,7 @@
                 },
                 {
                     "type": "execute",
-                    "cmd": "cd metrics-middleware/metrics && npm install"
+                    "cmd": "cd metrics-middleware/middleware && npm install"
                 }
             ]
         }

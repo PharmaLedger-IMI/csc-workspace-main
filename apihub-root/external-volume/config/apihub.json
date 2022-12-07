@@ -29,7 +29,7 @@
     "bricking": {},
     "anchoring": {},
     "metrics-middleware": {
-	"module": "./../../metrics-middleware/metrics"
+	"module": "./../../metrics-middleware/middleware"
     }
   },
   "responseHeaders": {
