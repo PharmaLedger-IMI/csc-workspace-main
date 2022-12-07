@@ -14,6 +14,7 @@ themes/blue-fluorite-theme
 latest-change-set.txt
 builds
 tmp
+metrics-middleware
 
 apihub-root/mqs/
 apihub-root/seedsBackup

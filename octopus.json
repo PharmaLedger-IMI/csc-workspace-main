@@ -286,6 +286,21 @@
           "cmd": "cd themes/blue-csc-theme && npm install"
         }
       ]
+    },
+    {
+      "name": "metrics-middleware",
+      "src": "http://github.com/paiusCatalin/metrics-middleware.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd metrics-middleware/metrics && npm install"
+        }
+      ]
     }
   ],
   "build-use-case": [
