@@ -61,7 +61,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "29d9388ba9fdc841f1b132a6c6d83a72ba586c0d"
+                    "commit": "a244e4a50ede54ef3dcec4600593fc3623254d93"
                 },
                 {
                     "type": "execute",
@@ -81,7 +81,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "29d9388ba9fdc841f1b132a6c6d83a72ba586c0d"
+                    "commit": "a244e4a50ede54ef3dcec4600593fc3623254d93"
                 },
                 {
                     "type": "execute",
@@ -101,7 +101,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "29d9388ba9fdc841f1b132a6c6d83a72ba586c0d"
+                    "commit": "a244e4a50ede54ef3dcec4600593fc3623254d93"
                 },
                 {
                     "type": "execute",
@@ -121,7 +121,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "29d9388ba9fdc841f1b132a6c6d83a72ba586c0d"
+                    "commit": "a244e4a50ede54ef3dcec4600593fc3623254d93"
                 },
                 {
                     "type": "execute",
@@ -141,7 +141,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "cb0e0595351ae15bded706cddcc213f724df1b5b"
+                    "commit": "7b33c618d2cd1d83d78066a3d3c8d43868af1490"
                 },
                 {
                     "type": "execute",
@@ -157,7 +157,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "29d9388ba9fdc841f1b132a6c6d83a72ba586c0d"
+                    "commit": "a244e4a50ede54ef3dcec4600593fc3623254d93"
                 },
                 {
                     "type": "execute",
@@ -197,7 +197,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "29d9388ba9fdc841f1b132a6c6d83a72ba586c0d"
+                    "commit": "a244e4a50ede54ef3dcec4600593fc3623254d93"
                 },
                 {
                     "type": "execute",
@@ -297,6 +297,22 @@
                 {
                     "type": "execute",
                     "cmd": "cd themes/blue-csc-theme && npm install"
+                }
+            ]
+        },
+        {
+            "name": "metrics-middleware",
+            "src": "http://github.com/paiusCatalin/metrics-middleware.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false,
+                    "commit": "a347df789b5e95b08d2cf3dd47cfee11bfadf64e"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd metrics-middleware/metrics && npm install"
                 }
             ]
         }
