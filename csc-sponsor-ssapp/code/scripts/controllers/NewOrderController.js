@@ -333,7 +333,8 @@ export default class NewOrderController extends WebcController {
   }
 
   async getAllOrderIds() {
-    this.orderIds = (await this.ordersService.getOrders()).map(order => order.orderId);
+    const sponsorId = await DidService.getDidServiceInstance().getDID();
+    this.orderIds = (await this.ordersService.getOrders()).filter( (i) => { return i.sponsorId === sponsorId; }).map(order => order.orderId);
   }
 
   didIsValid(did){
