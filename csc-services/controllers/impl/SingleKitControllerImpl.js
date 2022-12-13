@@ -510,12 +510,11 @@ class SingleKitControllerImpl extends AccordionController {
       // Site updates the kit
       const data = await this.kitsService.updateKit(this.model.uid, kitsStatusesEnum.BlockedForRelabeling);
 
-
       // Site send a message to sponsor that the kit is blocked.
       await this.communicationService.sendMessage(sponsorId,{
-        operation: kitsMessagesEnum.kitBlockedForRelabeling,
+        operation: kitsMessagesEnum.BlockedForRelabeling,
         data: {kitSSI: this.model.uid, kitId: this.model.kitModel.kit.kitId},
-        shortDescription: kitsMessagesEnum.kitBlockedForRelabeling,
+        shortDescription: kitsMessagesEnum.BlockedForRelabeling,
       });
 
       await this.initViewModel();
