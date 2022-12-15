@@ -13,6 +13,7 @@ export default class EditShipmentController extends WebcController {
     super(...props);
 
     this.originalShipment = this.history.location.state.shipment;
+    this.validationConstraints = ["billNumber","hsCode","billOfLanding","serviceType","incoTerms","spotContractRates"];
 
     this.initServices().then(()=>{
       this.initViewModel();
@@ -153,6 +154,17 @@ export default class EditShipmentController extends WebcController {
     this.model.onChange('form.spotContractRates.value', this.validateForm.bind(this));
   }
 
+  checkFormValidity(){
+    for(let i = 0; i<this.validationConstraints.length; i++){
+      let input = this.validationConstraints[i];
+      if(this.model.kitModel.form[input].required && this.model.kitModel.form[input].value.trim() === ""){
+        this.model.formIsInvalid = true;
+        return;
+      }
+    }
+    this.model.formIsInvalid = false;
+  }
+
   validateForm() {
     this.model.formIsInvalid = false;
 
@@ -261,6 +273,11 @@ export default class EditShipmentController extends WebcController {
     this.model.form.filesEmpty = true;
     this.model.formIsInvalid = true;
     this.model.submitButtonDisabled = false;
+
+    for(let i = 0; i<this.validationConstraints.length; i++){
+      let input = this.validationConstraints[i];
+      this.model.onChange(`form.${input}`,this.checkFormValidity.bind(this));
+    }
   }
 
   prepareShipmentData() {
