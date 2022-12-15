@@ -375,7 +375,7 @@ class MessageHandlerService {
         }
         break;
       }
-      case kitsMessagesEnum.ForRelabeling:{
+      case kitsMessagesEnum.BlockedForRelabeling:{
         if(this.role === Roles.Sponsor) {
           const { kitSSI } = data.data;
           kitsData = await this.kitsService.updateStudyKitRecordKitSSI(kitSSI,kitsStatusesEnum.BlockedForRelabeling );
