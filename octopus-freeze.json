@@ -135,7 +135,7 @@
         },
         {
             "name": "demiurge",
-            "src": "https://github.com/paiusCatalin/demiurge.git",
+            "src": "https://github.com/opendsu/demiurge.git",
             "actions": [
                 {
                     "type": "smartClone",
@@ -308,7 +308,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "cdf53d40903b3e4b3297a06e678cbe2da9c2d7bf"
+                    "commit": "4dcb2ec281f837c27cfcb612db07630d00177b9d"
                 },
                 {
                     "type": "execute",
