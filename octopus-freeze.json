@@ -45,7 +45,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "8ba4ba7914a612bcde31004ddaa06581598a8ae3"
+                    "commit": "b50398b3f8269b81d57b599a7aaf3cfcc8918443"
                 },
                 {
                     "type": "execute",
@@ -61,7 +61,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "783a302b2c1f228f486654167f460c2068235f53"
+                    "commit": "35354341a275ef9f190331dfbd0a4f68339dc06c"
                 },
                 {
                     "type": "execute",
@@ -81,7 +81,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "783a302b2c1f228f486654167f460c2068235f53"
+                    "commit": "35354341a275ef9f190331dfbd0a4f68339dc06c"
                 },
                 {
                     "type": "execute",
@@ -101,7 +101,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "783a302b2c1f228f486654167f460c2068235f53"
+                    "commit": "35354341a275ef9f190331dfbd0a4f68339dc06c"
                 },
                 {
                     "type": "execute",
@@ -121,7 +121,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "783a302b2c1f228f486654167f460c2068235f53"
+                    "commit": "35354341a275ef9f190331dfbd0a4f68339dc06c"
                 },
                 {
                     "type": "execute",
@@ -157,7 +157,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "783a302b2c1f228f486654167f460c2068235f53"
+                    "commit": "35354341a275ef9f190331dfbd0a4f68339dc06c"
                 },
                 {
                     "type": "execute",
@@ -197,7 +197,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "783a302b2c1f228f486654167f460c2068235f53"
+                    "commit": "35354341a275ef9f190331dfbd0a4f68339dc06c"
                 },
                 {
                     "type": "execute",
@@ -302,13 +302,13 @@
         },
         {
             "name": "metrics-middleware",
-            "src": "http://github.com/paiusCatalin/metrics-middleware.git",
+            "src": "http://github.com/pharmaledger-imi/metrics-middleware.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "b913286f76c0b302981eb5e73f9c5f7afc839ad1"
+                    "commit": "cdf53d40903b3e4b3297a06e678cbe2da9c2d7bf"
                 },
                 {
                     "type": "execute",
