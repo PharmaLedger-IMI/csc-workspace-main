@@ -128,7 +128,7 @@
     },
     {
       "name": "demiurge",
-      "src": "https://github.com/paiusCatalin/demiurge.git",
+      "src": "https://github.com/opendsu/demiurge.git",
       "actions": [
         {
           "type": "smartClone",
