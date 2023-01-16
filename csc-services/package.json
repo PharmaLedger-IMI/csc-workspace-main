@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node ./node_modules/octopus/scripts/run build devmode"
   },
-  "author": "",
+  "author": "CERTH&RMS",
   "license": "MIT",
   "dependencies": {
     "octopus": "git+http://github.com/opendsu/octopus.git"

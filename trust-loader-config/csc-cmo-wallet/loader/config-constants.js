@@ -4,7 +4,7 @@ let LOADER_GLOBALS = {
   SHOW_ACTION_BUTTON: false,
   LABELS_DICTIONARY: {
     APP_NAME: 'Cmo App',
-    APP_DESCRIPTION: 'The traceability application for Marketing Authorization Holders',
+    APP_DESCRIPTION: 'The CMO application for CSC use case',
     NEW_WALLET: 'New Account',
     ACCESS_WALLET: 'Access Account',
     WALLET_AUTHORIZATION: 'Authorization',
@@ -59,8 +59,8 @@ let LOADER_GLOBALS = {
   PASSWORD_REGEX:
     /^(?=.*[A-Z])(?=.*[`~:;\'\"\.,<>/\?\!@#$%\^&\*\(\)\[\]\{\}|\\\-_\=\+])(?=.*[0-9])(?=.*[a-z].*[a-z].*[a-z]).*$/,
   NEW_WALLET_MORE_INFORMATION: `<div class="jumbotron p-0 m-0" align="center">
-  <h1 class="display-6">Welcome to Pharmacy traceability app!</h1>
-  <p class="lead">After completing the following wizard you will gain access to Pharmacy app.</p>
+  <h1 class="display-6">Welcome to CSC app!</h1>
+  <p class="lead">After completing the following wizard you will gain access to CSC app.</p>
   <p class="m-0">In order to gain access you have to set up your credentials.</p>
   <hr/>
 </div>`,

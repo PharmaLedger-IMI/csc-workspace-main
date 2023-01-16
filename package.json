@@ -38,14 +38,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PharmaLedger-IMI/fgt-workspace.git"
+    "url": "git+https://github.com/PharmaLedger-IMI/csc-workspace-main.git"
   },
-  "author": "",
+  "author": "CERTH&RMS",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/PharmaLedger-IMI/fgt-workspace/issues"
+    "url": "https://github.com/PharmaLedger-IMI/csc-workspace-main/issues"
   },
-  "homepage": "https://github.com/PharmaLedger-IMI/fgt-workspace#readme",
+  "homepage": "https://github.com/PharmaLedger-IMI/csc-workspace-main/",
   "engines": {
     "node": "~12",
     "npm": "~6"

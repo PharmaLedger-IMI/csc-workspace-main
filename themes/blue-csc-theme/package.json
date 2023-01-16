@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+ssh://git@github.com/PharmaLedger-IMI/blue-csc-theme.git"
   },
-  "author": "",
+  "author": "CERTH&RMS",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/PharmaLedger-IMI/blue-csc-theme/issues"

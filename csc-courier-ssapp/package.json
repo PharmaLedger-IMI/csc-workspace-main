@@ -1,7 +1,7 @@
 {
   "name": "csc-sponsor-ssapp",
   "version": "0.1.1",
-  "description": "The Pharmaledger Traceability Application for Marketing Authorization Holders",
+  "description": "The Courier Application for CSC use case",
   "main": "index.js",
   "scripts": {
     "prebuild": "node ./node_modules/octopus/scripts/run prebuild devmode",
@@ -21,8 +21,8 @@
   "keywords": [
     "ssapp"
   ],
-  "author": "PDM&FC",
+  "author": "CERTH&RMS",
   "license": "MIT",
   "bugs": {},
-  "homepage": "https://github.com/PharmaLedger-IMI/fgt-workspace/fgt-mah-ssapp#readme"
+  "homepage": "https://github.com/PharmaLedger-IMI/csc-workspace-main/"
 }
